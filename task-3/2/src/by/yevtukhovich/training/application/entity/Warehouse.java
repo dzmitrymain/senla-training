@@ -14,11 +14,13 @@ public class Warehouse {
 
     public boolean addItem(Item item) {
 
-        for (int i = 0; i < items.length; i++) {
-            if (this.items[i] == null) {
-                this.items[i] = item;
-                totalWeight += item.getWeight();
-                return true;
+        if (item != null) {
+            for (int i = 0; i < items.length; i++) {
+                if (this.items[i] == null) {
+                    this.items[i] = item;
+                    totalWeight += item.getWeight();
+                    return true;
+                }
             }
         }
         return false;
@@ -26,11 +28,13 @@ public class Warehouse {
 
     public boolean removeItem(Item item) {
 
-        for (int i = 0; i < items.length; i++) {
-            if (this.items[i] == item) {
-                this.items[i] = null;
-                totalWeight -= item.getWeight();
-                return true;
+        if (item != null) {
+            for (int i = 0; i < items.length; i++) {
+                if (this.items[i] == item) {
+                    this.items[i] = null;
+                    totalWeight -= item.getWeight();
+                    return true;
+                }
             }
         }
         return false;
