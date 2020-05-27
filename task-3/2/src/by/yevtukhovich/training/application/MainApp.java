@@ -6,11 +6,12 @@ import by.yevtukhovich.training.application.entity.item.household.*;
 
 public class MainApp {
 
-    private static int WAREHOUSE_CAPACITY=5;
+    private static final int WAREHOUSE_INITIAL_CAPACITY=3;
+    private static final double WAREHOUSE_WEIGHT_CAPACITY=200;
 
     public static void main(String[] args) {
 
-        Warehouse warehouse=new Warehouse(WAREHOUSE_CAPACITY);
+        Warehouse warehouse=new Warehouse(WAREHOUSE_INITIAL_CAPACITY,WAREHOUSE_WEIGHT_CAPACITY);
 
         Item cookie=new Foodstuff("Awesome cookie",1.5,3);
         Item jeans=new Clothes("Men's jeans",9,'M');
@@ -26,6 +27,6 @@ public class MainApp {
         warehouse.addItem(sofa);
         warehouse.addItem(fridge);
 
-        System.out.println("Warehouse items total weight: "+warehouse.getTotalWeight());
+        System.out.println(warehouse);
     }
 }

@@ -42,7 +42,7 @@ public class Furniture extends Household {
     @Override
     public String toString() {
         return "Furniture{" +
-                "material='" + material + '\'' +
+                "weight='" + getWeight() +
                 '}';
     }
 }

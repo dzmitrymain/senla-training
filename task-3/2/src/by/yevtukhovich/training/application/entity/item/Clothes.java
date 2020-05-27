@@ -40,7 +40,7 @@ public class Clothes extends Item {
     @Override
     public String toString() {
         return "Clothes{" +
-                "size=" + size +
+                "weight=" + getWeight() +
                 '}';
     }
 }

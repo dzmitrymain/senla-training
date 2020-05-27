@@ -4,24 +4,30 @@ import java.util.Arrays;
 
 public class Warehouse {
 
+    private static final double ARRAY_EXPANSION_CONSTANT = 1.5;
+
     private Item[] items;
     private double totalWeight;
+    private double weightCapacity;
 
-    public Warehouse(int warehouseCapacity) {
-        items = new Item[warehouseCapacity];
+    public Warehouse(int initialArrayCapacity, double weightCapacity) {
+        items = new Item[initialArrayCapacity];
+        this.weightCapacity = weightCapacity;
         totalWeight = 0;
     }
 
     public boolean addItem(Item item) {
 
-        if (item != null) {
+        if (item != null && (item.getWeight() + totalWeight) <= weightCapacity) {
             for (int i = 0; i < items.length; i++) {
-                if (this.items[i] == null) {
-                    this.items[i] = item;
-                    totalWeight += item.getWeight();
+                if (items[i] == null) {
+                    addItemWithWeight(i, item);
                     return true;
                 }
             }
+            int index = expandArray();
+            addItemWithWeight(index, item);
+            return true;
         }
         return false;
     }
@@ -40,15 +46,19 @@ public class Warehouse {
         return false;
     }
 
+    private int expandArray() {
+        int oldItemsLength = items.length;
 
-    public boolean hasEmptySpace() {
+        Item[] newItems = new Item[(int) ((oldItemsLength * ARRAY_EXPANSION_CONSTANT)+1)];
+        System.arraycopy(items, 0, newItems, 0, oldItemsLength);
+        items = newItems;
 
-        for (Item item : items) {
-            if (item == null) {
-                return true;
-            }
-        }
-        return false;
+        return oldItemsLength;
+    }
+
+    private void addItemWithWeight(int index, Item item) {
+        items[index] = item;
+        totalWeight += item.getWeight();
     }
 
     public Item[] getItems() {

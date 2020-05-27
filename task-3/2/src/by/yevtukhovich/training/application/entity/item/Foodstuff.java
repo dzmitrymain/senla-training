@@ -39,8 +39,8 @@ public class Foodstuff extends Item {
 
     @Override
     public String toString() {
-        return "Foodstuffs{" +
-                "expiryDate=" + expiryDate +
+        return "Foodstuff{" +
+                "weight=" + getWeight() +
                 '}';
     }
 }

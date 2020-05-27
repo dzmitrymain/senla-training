@@ -40,7 +40,7 @@ public class Electronics extends Household {
     @Override
     public String toString() {
         return "Electronics{" +
-                "powerConsumption=" + powerConsumption +
+                "weight=" + getWeight() +
                 '}';
     }
 }
