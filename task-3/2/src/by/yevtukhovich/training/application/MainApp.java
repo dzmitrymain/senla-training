@@ -2,7 +2,7 @@ package by.yevtukhovich.training.application;
 
 import by.yevtukhovich.training.application.entity.*;
 import by.yevtukhovich.training.application.entity.item.*;
-import by.yevtukhovich.training.application.entity.item.households.*;
+import by.yevtukhovich.training.application.entity.item.household.*;
 
 public class MainApp {
 

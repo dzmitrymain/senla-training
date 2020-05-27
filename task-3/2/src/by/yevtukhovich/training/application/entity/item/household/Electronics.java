@@ -1,4 +1,4 @@
-package by.yevtukhovich.training.application.entity.item.households;
+package by.yevtukhovich.training.application.entity.item.household;
 
 import by.yevtukhovich.training.application.entity.item.Household;
 
