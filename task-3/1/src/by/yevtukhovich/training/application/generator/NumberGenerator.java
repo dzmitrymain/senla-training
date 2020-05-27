@@ -1,4 +1,4 @@
-package by.yevtukhovich.application.generator;
+package by.yevtukhovich.training.application.generator;
 
 import java.util.Random;
 

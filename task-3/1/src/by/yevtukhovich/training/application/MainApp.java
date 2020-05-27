@@ -1,6 +1,6 @@
-package by.yevtukhovich.application;
-import by.yevtukhovich.application.generator.NumberGenerator;
-import by.yevtukhovich.application.util.MathOperations;
+package by.yevtukhovich.training.application;
+import by.yevtukhovich.training.application.generator.NumberGenerator;
+import by.yevtukhovich.training.application.util.MathOperations;
 
 public class MainApp {
 

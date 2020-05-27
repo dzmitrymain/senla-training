@@ -1,4 +1,4 @@
-package by.yevtukhovich.application.util;
+package by.yevtukhovich.training.application.util;
 
 public class MathOperations {
 
