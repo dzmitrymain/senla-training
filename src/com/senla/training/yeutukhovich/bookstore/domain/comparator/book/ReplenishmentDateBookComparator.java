@@ -6,6 +6,7 @@ import java.util.Comparator;
 
 public class ReplenishmentDateBookComparator implements Comparator<Book> {
 
+    // проверки на всевозможные налы - это очень хорошо
     @Override
     public int compare(Book o1, Book o2) {
         if (o1 == null && o2 == null) {

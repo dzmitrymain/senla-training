@@ -1,9 +1,11 @@
+// обычно компараторы не лежат в пакете с моделями, по функции это ближе к утилитам
 package com.senla.training.yeutukhovich.bookstore.domain.comparator.book;
 
 import com.senla.training.yeutukhovich.bookstore.domain.Book;
 
 import java.util.Comparator;
 
+// не испольуется
 public class AvailabilityBookComparator implements Comparator<Book> {
 
     @Override

@@ -9,12 +9,16 @@ public class Book extends AbstractEntity {
     private static int bookIdNumber;
 
     private String title;
+    // начинаем забывать про примитивы, используем объекты
     private boolean isAvailable;
     private Date editionDate;
     private Date replenishmentDate;
     private BigDecimal price;
 
     public Book(String title, boolean isAvailable, Date editionDate, BigDecimal price) {
+        // очевидная, но, как считается, неправильная реализация айди счетчика
+        // про айдишки поговорим отдельно
+        // подсказка: нарушение принципа единственной ответственности SOLID
         super(++bookIdNumber);
         this.title = title;
         this.setAvailable(isAvailable);

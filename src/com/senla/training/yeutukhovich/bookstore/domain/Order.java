@@ -30,6 +30,8 @@ public class Order extends AbstractEntity {
     }
 
     public void setState(OrderState state) {
+        // убираем бизнес логику из моделей, тут только простейшие геттеры-сеттеры,
+        // конструкторы и другие атрибуты модели
         if (state == OrderState.COMPLETED) {
             completionDate = new Date();
         }
@@ -81,6 +83,7 @@ public class Order extends AbstractEntity {
         return newOrder;
     }
 
+    // в следующей домашке будет UI, начинай делать туСтринг более красивым и читабельным
     @Override
     public String toString() {
         return "Order{" +

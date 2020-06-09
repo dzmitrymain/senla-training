@@ -4,6 +4,7 @@ import com.senla.training.yeutukhovich.bookstore.domain.Request;
 
 import java.util.Comparator;
 
+// не используется
 public class ActiveRequestComparator implements Comparator<Request> {
 
     @Override

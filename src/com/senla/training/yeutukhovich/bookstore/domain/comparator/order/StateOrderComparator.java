@@ -4,6 +4,7 @@ import com.senla.training.yeutukhovich.bookstore.domain.Order;
 
 import java.util.Comparator;
 
+// не используется
 public class StateOrderComparator implements Comparator<Order> {
 
     @Override

@@ -4,6 +4,7 @@ import com.senla.training.yeutukhovich.bookstore.domain.Book;
 
 import java.util.Comparator;
 
+// не используется
 public class PriceBookComparator implements Comparator<Book> {
 
     @Override

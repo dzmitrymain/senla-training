@@ -33,7 +33,9 @@ public class BookstoreServiceImpl implements BookstoreService {
 
     @Override
     public void replenishBook(Book book) {
-        if (book != null) {
+        if (book != null) { // а если равен нулю? можно что-то напечатать
+            // от кастования избавиться очень просто - для каждой энтити свой репозиторий (не объект, а класс)
+            // второй вариант, который можно уже заиспользовать - дженерики
             Book checkedBook = (Book) bookRepository.findById(book.getId());
             if (checkedBook != null && !checkedBook.isAvailable()) {
                 checkedBook.setAvailable(true);
@@ -136,6 +138,7 @@ public class BookstoreServiceImpl implements BookstoreService {
 
         int desiredOrdersNumber = 0;
         for (Order order : orders) {
+            // следим за длиной строки
             if (order.getState() == OrderState.COMPLETED && order.getCompletionDate().after(startDate) && order.getCompletionDate().before(endDate)) {
                 desiredOrders[desiredOrdersNumber++] = order;
             }
@@ -199,6 +202,7 @@ public class BookstoreServiceImpl implements BookstoreService {
         Book[] books = findAllBooks(new TitleBookComparator());
 
         for (int i = 0, j = 0; i < books.length; i++) {
+            // этот фор больше похож на while
             for (; j < soldBooks.length; ) {
                 if (soldBooks[j].equals(books[i])) {
                     j++;
@@ -214,6 +218,7 @@ public class BookstoreServiceImpl implements BookstoreService {
 
     @Override
     public Book[] findStaleBooks() {
+        // такие литералы надо выносить в константы
         final int staleMonthNumber = 6;
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MONTH, -staleMonthNumber);
