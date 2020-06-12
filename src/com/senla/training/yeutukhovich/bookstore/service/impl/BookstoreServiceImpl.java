@@ -21,6 +21,8 @@ import java.util.Date;
 
 public class BookstoreServiceImpl implements BookstoreService {
 
+    private static final int STALE_MONTH_NUMBER = 6;
+
     private EntityRepository bookRepository;
     private EntityRepository orderRepository;
     private EntityRepository requestRepository;
@@ -138,7 +140,8 @@ public class BookstoreServiceImpl implements BookstoreService {
 
         int desiredOrdersNumber = 0;
         for (Order order : orders) {
-            if (order.getState() == OrderState.COMPLETED && order.getCompletionDate().after(startDate) && order.getCompletionDate().before(endDate)) {
+            if (order.getState() == OrderState.COMPLETED && order.getCompletionDate().after(startDate)
+                    && order.getCompletionDate().before(endDate)) {
                 desiredOrders[desiredOrdersNumber++] = order;
             }
         }
@@ -201,7 +204,7 @@ public class BookstoreServiceImpl implements BookstoreService {
         Book[] books = findAllBooks(new TitleBookComparator());
 
         for (int i = 0, j = 0; i < books.length; i++) {
-            for (; j < soldBooks.length; ) {
+            while (j < soldBooks.length) {
                 if (soldBooks[j].equals(books[i])) {
                     j++;
                     books[i++] = null;
@@ -216,9 +219,8 @@ public class BookstoreServiceImpl implements BookstoreService {
 
     @Override
     public Book[] findStaleBooks() {
-        final int staleMonthNumber = 6;
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MONTH, -staleMonthNumber);
+        calendar.add(Calendar.MONTH, -STALE_MONTH_NUMBER);
         Date currentDate = new Date();
         Date staleDate = new Date(calendar.getTimeInMillis());
 
