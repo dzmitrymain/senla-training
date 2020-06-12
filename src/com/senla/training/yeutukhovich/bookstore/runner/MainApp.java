@@ -3,8 +3,11 @@ package com.senla.training.yeutukhovich.bookstore.runner;
 import com.senla.training.yeutukhovich.bookstore.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.domain.Order;
 import com.senla.training.yeutukhovich.bookstore.domain.Request;
-import com.senla.training.yeutukhovich.bookstore.service.BookstoreService;
-import com.senla.training.yeutukhovich.bookstore.service.impl.BookstoreServiceImpl;
+import com.senla.training.yeutukhovich.bookstore.repository.EntityRepository;
+import com.senla.training.yeutukhovich.bookstore.service.BookService;
+import com.senla.training.yeutukhovich.bookstore.service.OrderService;
+import com.senla.training.yeutukhovich.bookstore.service.impl.BookServiceImpl;
+import com.senla.training.yeutukhovich.bookstore.service.impl.OrderServiceImpl;
 import com.senla.training.yeutukhovich.bookstore.util.comparator.book.TitleBookComparator;
 import com.senla.training.yeutukhovich.bookstore.util.comparator.order.PriceOrderComparator;
 import com.senla.training.yeutukhovich.bookstore.util.converter.DateConverter;
@@ -16,23 +19,28 @@ public class MainApp {
 
     public static void main(String[] args) {
 
-        BookstoreService bookstoreService = new BookstoreServiceImpl(initBooks(), new Order[1], new Request[1]);
+        EntityRepository<Book> bookRepository = new EntityRepository<>(initBooks());
+        EntityRepository<Order> orderRepository = new EntityRepository<>(new Order[1]);
+        EntityRepository<Request> requestRepository = new EntityRepository<>(new Request[1]);
 
-        Book[] books = bookstoreService.findAllBooks(new TitleBookComparator());
+        BookService bookService = new BookServiceImpl(bookRepository, orderRepository, requestRepository);
+        OrderService orderService = new OrderServiceImpl(bookRepository, orderRepository, requestRepository);
+
+        Book[] books = bookService.findAllBooks(new TitleBookComparator());
 
         for (int i = 0, j = 0; i < books.length; i++) {
-            bookstoreService.createOrder(books[i], "Customer" + ++j);
+            orderService.createOrder(books[i], "Customer" + ++j);
         }
 
         for (Book book : books) {
             if (!book.isAvailable()) {
-                bookstoreService.replenishBook(book);
+                bookService.replenishBook(book);
             }
         }
 
-        Order[] orders = bookstoreService.findAllOrders(new PriceOrderComparator());
+        Order[] orders = orderService.findAllOrders(new PriceOrderComparator());
         for (Order order : orders) {
-            bookstoreService.completeOrder(order);
+            orderService.completeOrder(order);
         }
     }
 
