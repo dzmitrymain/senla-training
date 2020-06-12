@@ -1,4 +1,4 @@
-package com.senla.training.yeutukhovich.bookstore.domain.comparator.order;
+package com.senla.training.yeutukhovich.bookstore.util.comparator.order;
 
 import com.senla.training.yeutukhovich.bookstore.domain.Order;
 

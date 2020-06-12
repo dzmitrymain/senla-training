@@ -1,4 +1,4 @@
-package com.senla.training.yeutukhovich.bookstore.domain.comparator.request;
+package com.senla.training.yeutukhovich.bookstore.util.comparator.request;
 
 import com.senla.training.yeutukhovich.bookstore.domain.Request;
 

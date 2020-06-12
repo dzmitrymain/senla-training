@@ -1,10 +1,10 @@
-package com.senla.training.yeutukhovich.bookstore.domain.comparator.order;
+package com.senla.training.yeutukhovich.bookstore.util.comparator.order;
 
 import com.senla.training.yeutukhovich.bookstore.domain.Order;
 
 import java.util.Comparator;
 
-public class StateOrderComparator implements Comparator<Order> {
+public class PriceOrderComparator implements Comparator<Order> {
 
     @Override
     public int compare(Order o1, Order o2) {
@@ -15,7 +15,7 @@ public class StateOrderComparator implements Comparator<Order> {
         } else if (o2 == null) {
             return -1;
         } else {
-            return o1.getState().compareTo(o2.getState());
+            return o1.getCurrentBookPrice().compareTo(o2.getCurrentBookPrice());
         }
     }
 }
