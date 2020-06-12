@@ -23,20 +23,20 @@ public class BookstoreServiceImpl implements BookstoreService {
 
     private static final int STALE_MONTH_NUMBER = 6;
 
-    private EntityRepository bookRepository;
-    private EntityRepository orderRepository;
-    private EntityRepository requestRepository;
+    private EntityRepository<Book> bookRepository;
+    private EntityRepository<Order> orderRepository;
+    private EntityRepository<Request> requestRepository;
 
     public BookstoreServiceImpl(Book[] books, Order[] orders, Request[] requests) {
-        this.bookRepository = new EntityRepository(books);
-        this.orderRepository = new EntityRepository(orders);
-        this.requestRepository = new EntityRepository(requests);
+        this.bookRepository = new EntityRepository<>(books);
+        this.orderRepository = new EntityRepository<>(orders);
+        this.requestRepository = new EntityRepository<>(requests);
     }
 
     @Override
     public void replenishBook(Book book) {
         if (book != null) {
-            Book checkedBook = (Book) bookRepository.findById(book.getId());
+            Book checkedBook = bookRepository.findById(book.getId());
             if (checkedBook != null && !checkedBook.isAvailable()) {
                 checkedBook.setAvailable(true);
                 checkedBook.setReplenishmentDate(new Date());
@@ -51,7 +51,7 @@ public class BookstoreServiceImpl implements BookstoreService {
     @Override
     public void writeOffBook(Book book) {
         if (book != null) {
-            Book checkedBook = (Book) bookRepository.findById(book.getId());
+            Book checkedBook = bookRepository.findById(book.getId());
             if (checkedBook != null && checkedBook.isAvailable()) {
                 checkedBook.setAvailable(false);
                 bookRepository.update(checkedBook);
@@ -64,7 +64,7 @@ public class BookstoreServiceImpl implements BookstoreService {
     @Override
     public Order createOrder(Book book, String customerData) {
         if (book != null) {
-            Book checkedBook = (Book) bookRepository.findById(book.getId());
+            Book checkedBook = bookRepository.findById(book.getId());
             if (checkedBook != null) {
                 if (!checkedBook.isAvailable()) {
                     createRequest(checkedBook, customerData);
@@ -81,7 +81,7 @@ public class BookstoreServiceImpl implements BookstoreService {
     @Override
     public void cancelOrder(Order order) {
         if (order != null) {
-            Order checkedOrder = (Order) orderRepository.findById(order.getId());
+            Order checkedOrder = orderRepository.findById(order.getId());
             if (checkedOrder != null && checkedOrder.getState() == OrderState.CREATED) {
                 checkedOrder.setState(OrderState.CANCELED);
                 orderRepository.update(checkedOrder);
@@ -93,7 +93,7 @@ public class BookstoreServiceImpl implements BookstoreService {
     @Override
     public void completeOrder(Order order) {
         if (order != null) {
-            Order checkedOrder = (Order) orderRepository.findById(order.getId());
+            Order checkedOrder = orderRepository.findById(order.getId());
             if (checkedOrder != null && checkedOrder.getBook().isAvailable() && checkedOrder.getState() == OrderState.CREATED) {
                 checkedOrder.setState(OrderState.COMPLETED);
                 checkedOrder.setCompletionDate(new Date());
@@ -106,7 +106,7 @@ public class BookstoreServiceImpl implements BookstoreService {
     @Override
     public Request createRequest(Book book, String requesterData) {
         if (book != null) {
-            Book checkedBook = (Book) bookRepository.findById(book.getId());
+            Book checkedBook = bookRepository.findById(book.getId());
             if (checkedBook != null && !checkedBook.isAvailable()) {
                 Request request = new Request(checkedBook, requesterData);
                 requestRepository.add(request);
@@ -119,7 +119,7 @@ public class BookstoreServiceImpl implements BookstoreService {
 
     @Override
     public Book[] findAllBooks(Comparator<Book> bookComparator) {
-        Book[] books = (Book[]) bookRepository.findAll();
+        Book[] books = bookRepository.findAll();
         Arrays.sort(books, bookComparator);
         System.out.println("All books has been found.");
         return books;
@@ -127,7 +127,7 @@ public class BookstoreServiceImpl implements BookstoreService {
 
     @Override
     public Order[] findAllOrders(Comparator<Order> orderComparator) {
-        Order[] orders = (Order[]) orderRepository.findAll();
+        Order[] orders = orderRepository.findAll();
         Arrays.sort(orders, orderComparator);
         System.out.println("All orders has been found.");
         return orders;
@@ -135,7 +135,7 @@ public class BookstoreServiceImpl implements BookstoreService {
 
     @Override
     public Order[] findCompletedOrdersBetweenDates(Date startDate, Date endDate, Comparator<Order> orderComparator) {
-        Order[] orders = (Order[]) orderRepository.findAll();
+        Order[] orders = orderRepository.findAll();
         Order[] desiredOrders = new Order[orders.length];
 
         int desiredOrdersNumber = 0;
@@ -152,7 +152,7 @@ public class BookstoreServiceImpl implements BookstoreService {
 
     @Override
     public Request[] findBookRequests(Book book, Comparator<Request> requestComparator) {
-        Request[] requests = (Request[]) requestRepository.findAll();
+        Request[] requests = requestRepository.findAll();
         Arrays.sort(requests, requestComparator);
         System.out.println("Book requests {" + book.getTitle() + "} has been found.");
         return (Request[]) requestRepository.findAll();
@@ -239,7 +239,7 @@ public class BookstoreServiceImpl implements BookstoreService {
 
     @Override
     public OrderDetails showOrderDetails(Order order) {
-        Order checkedOrder = (Order) orderRepository.findById(order.getId());
+        Order checkedOrder = orderRepository.findById(order.getId());
         OrderDetails orderDetails = new OrderDetails();
         if (checkedOrder != null) {
             orderDetails.setCustomerData(checkedOrder.getCustomerData());
@@ -257,7 +257,7 @@ public class BookstoreServiceImpl implements BookstoreService {
 
     @Override
     public BookDescription showBookDescription(Book book) {
-        Book checkedBook = (Book) bookRepository.findById(book.getId());
+        Book checkedBook = bookRepository.findById(book.getId());
         BookDescription bookDescription = new BookDescription();
         if (checkedBook != null) {
             bookDescription.setTitle(checkedBook.toString());
@@ -268,7 +268,7 @@ public class BookstoreServiceImpl implements BookstoreService {
     }
 
     private void closeRequests(Book book) {
-        Request[] requests = (Request[]) requestRepository.findAll();
+        Request[] requests = requestRepository.findAll();
         for (Request request : requests) {
             if (request != null && request.isActive() && request.getBook().getId() == book.getId()) {
                 request.setActive(false);
@@ -279,7 +279,7 @@ public class BookstoreServiceImpl implements BookstoreService {
     }
 
     private void updateOrders(Book book) {
-        Order[] orders = (Order[]) orderRepository.findAll();
+        Order[] orders = orderRepository.findAll();
         for (Order order : orders) {
             if (order != null && order.getState() == OrderState.CREATED && order.getBook().getId() == book.getId()) {
                 order.setBook(book);

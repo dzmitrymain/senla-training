@@ -4,51 +4,51 @@ import com.senla.training.yeutukhovich.bookstore.domain.AbstractEntity;
 
 import java.util.Arrays;
 
-public class EntityRepository {
+public class EntityRepository<T extends AbstractEntity> {
 
     private static final double ARRAY_EXPANSION_CONSTANT = 1.5;
 
-    private AbstractEntity[] entities;
+    private T[] entities;
 
-    public EntityRepository(AbstractEntity[] entities) {
+    public EntityRepository(T[] entities) {
         this.entities = entities;
     }
 
-    public AbstractEntity[] findAll() {
-        AbstractEntity[] safeArray = Arrays.copyOf(entities, entities.length - calculateNullNumber(entities));
+    public T[] findAll() {
+        T[] safeArray = Arrays.copyOf(entities, entities.length - calculateNullNumber(entities));
         for (int i = 0, j = 0; i < entities.length; i++) {
             if (entities[i] != null) {
-                safeArray[j++] = entities[i].clone();
+                safeArray[j++] = (T) entities[i].clone();
             }
         }
         return safeArray;
     }
 
-    public AbstractEntity findById(Long id) {
-        for (AbstractEntity abstractEntity : entities) {
+    public T findById(Long id) {
+        for (T abstractEntity : entities) {
             if (abstractEntity != null && abstractEntity.getId().equals(id)) {
-                return abstractEntity.clone();
+                return (T) abstractEntity.clone();
             }
         }
         return null;
     }
 
-    public void update(AbstractEntity abstractEntity) {
+    public void update(T abstractEntity) {
         if (abstractEntity != null) {
             for (int i = 0; i < entities.length; i++) {
-                if (entities[i] != null && entities[i].getId() == abstractEntity.getId()) {
-                    entities[i] = abstractEntity.clone();
+                if (entities[i] != null && entities[i].getId().equals(abstractEntity.getId())) {
+                    entities[i] = (T) abstractEntity.clone();
                     return;
                 }
             }
         }
     }
 
-    public void add(AbstractEntity abstractEntity) {
+    public void add(T abstractEntity) {
         if (abstractEntity != null) {
             for (int i = 0; i < entities.length; i++) {
                 if (entities[i] == null) {
-                    entities[i] = abstractEntity.clone();
+                    entities[i] = (T) abstractEntity.clone();
                     return;
                 }
             }
@@ -57,13 +57,13 @@ public class EntityRepository {
         }
     }
 
-    private AbstractEntity[] expandArray(AbstractEntity[] entities) {
+    private T[] expandArray(T[] entities) {
         return Arrays.copyOf(entities, (int) ((entities.length * ARRAY_EXPANSION_CONSTANT) + 1));
     }
 
-    private int calculateNullNumber(AbstractEntity[] entities) {
+    private int calculateNullNumber(T[] entities) {
         int nullNumber = 0;
-        for (AbstractEntity abstractEntity : entities) {
+        for (T abstractEntity : entities) {
             if (abstractEntity == null) {
                 nullNumber++;
             }
