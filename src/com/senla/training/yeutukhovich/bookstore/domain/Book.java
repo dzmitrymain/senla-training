@@ -14,10 +14,11 @@ public class Book extends AbstractEntity {
     private Date replenishmentDate;
     private BigDecimal price;
 
-    public Book(String title, Boolean isAvailable, Date editionDate, BigDecimal price) {
+    public Book(String title, Boolean isAvailable, Date editionDate, Date replenishmentDate, BigDecimal price) {
         super(IdGenerator.getInstance().getNextBookIdNumber());
         this.title = title;
         this.setAvailable(isAvailable);
+        this.replenishmentDate = replenishmentDate;
         this.editionDate = editionDate;
         this.price = price;
     }
@@ -34,10 +35,7 @@ public class Book extends AbstractEntity {
         return isAvailable;
     }
 
-    public void setAvailable(boolean available) {
-        if (available) {
-            replenishmentDate = new Date();
-        }
+    public void setAvailable(Boolean available) {
         isAvailable = available;
     }
 
@@ -51,6 +49,10 @@ public class Book extends AbstractEntity {
 
     public Date getReplenishmentDate() {
         return replenishmentDate;
+    }
+
+    public void setReplenishmentDate(Date replenishmentDate) {
+        this.replenishmentDate = replenishmentDate;
     }
 
     public BigDecimal getPrice() {
@@ -82,9 +84,6 @@ public class Book extends AbstractEntity {
             return false;
         }
         Book book = (Book) o;
-        if (isAvailable != book.isAvailable) {
-            return false;
-        }
         if (!Objects.equals(title, book.title)) {
             return false;
         }
@@ -100,7 +99,6 @@ public class Book extends AbstractEntity {
     @Override
     public int hashCode() {
         int result = title != null ? title.hashCode() : 0;
-        result = 31 * result + (isAvailable ? 1 : 0);
         result = 31 * result + (editionDate != null ? editionDate.hashCode() : 0);
         result = 31 * result + (replenishmentDate != null ? replenishmentDate.hashCode() : 0);
         result = 31 * result + (price != null ? price.hashCode() : 0);

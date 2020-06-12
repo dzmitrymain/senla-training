@@ -3,15 +3,15 @@ package com.senla.training.yeutukhovich.bookstore.service.impl;
 import com.senla.training.yeutukhovich.bookstore.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.domain.Order;
 import com.senla.training.yeutukhovich.bookstore.domain.Request;
-import com.senla.training.yeutukhovich.bookstore.util.comparator.book.ReplenishmentDateBookComparator;
-import com.senla.training.yeutukhovich.bookstore.util.comparator.book.TitleBookComparator;
-import com.senla.training.yeutukhovich.bookstore.util.comparator.order.CompletionDateOrderComparator;
-import com.senla.training.yeutukhovich.bookstore.util.comparator.order.PriceOrderComparator;
 import com.senla.training.yeutukhovich.bookstore.domain.state.OrderState;
 import com.senla.training.yeutukhovich.bookstore.repository.EntityRepository;
 import com.senla.training.yeutukhovich.bookstore.service.BookstoreService;
 import com.senla.training.yeutukhovich.bookstore.service.dto.BookDescription;
 import com.senla.training.yeutukhovich.bookstore.service.dto.OrderDetails;
+import com.senla.training.yeutukhovich.bookstore.util.comparator.book.ReplenishmentDateBookComparator;
+import com.senla.training.yeutukhovich.bookstore.util.comparator.book.TitleBookComparator;
+import com.senla.training.yeutukhovich.bookstore.util.comparator.order.CompletionDateOrderComparator;
+import com.senla.training.yeutukhovich.bookstore.util.comparator.order.PriceOrderComparator;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -37,6 +37,7 @@ public class BookstoreServiceImpl implements BookstoreService {
             Book checkedBook = (Book) bookRepository.findById(book.getId());
             if (checkedBook != null && !checkedBook.isAvailable()) {
                 checkedBook.setAvailable(true);
+                checkedBook.setReplenishmentDate(new Date());
                 bookRepository.update(checkedBook);
                 closeRequests(checkedBook);
                 updateOrders(checkedBook);
@@ -93,6 +94,7 @@ public class BookstoreServiceImpl implements BookstoreService {
             Order checkedOrder = (Order) orderRepository.findById(order.getId());
             if (checkedOrder != null && checkedOrder.getBook().isAvailable() && checkedOrder.getState() == OrderState.CREATED) {
                 checkedOrder.setState(OrderState.COMPLETED);
+                checkedOrder.setCompletionDate(new Date());
                 orderRepository.update(checkedOrder);
                 System.out.println("Order {" + checkedOrder.getBook().getTitle() + "} has been completed.");
             }

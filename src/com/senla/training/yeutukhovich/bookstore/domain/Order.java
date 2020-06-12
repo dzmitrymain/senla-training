@@ -29,9 +29,6 @@ public class Order extends AbstractEntity {
     }
 
     public void setState(OrderState state) {
-        if (state == OrderState.COMPLETED) {
-            completionDate = new Date();
-        }
         this.state = state;
     }
 
@@ -57,6 +54,10 @@ public class Order extends AbstractEntity {
 
     public Date getCompletionDate() {
         return completionDate;
+    }
+
+    public void setCompletionDate(Date completionDate) {
+        this.completionDate = completionDate;
     }
 
     public String getCustomerData() {
