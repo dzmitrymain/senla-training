@@ -1,21 +1,21 @@
 package com.senla.training.yeutukhovich.bookstore.domain;
 
+import com.senla.training.yeutukhovich.bookstore.util.generator.IdGenerator;
+
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 
 public class Book extends AbstractEntity {
 
-    private static int bookIdNumber;
-
     private String title;
-    private boolean isAvailable;
+    private Boolean isAvailable;
     private Date editionDate;
     private Date replenishmentDate;
     private BigDecimal price;
 
-    public Book(String title, boolean isAvailable, Date editionDate, BigDecimal price) {
-        super(++bookIdNumber);
+    public Book(String title, Boolean isAvailable, Date editionDate, BigDecimal price) {
+        super(IdGenerator.getInstance().getNextBookIdNumber());
         this.title = title;
         this.setAvailable(isAvailable);
         this.editionDate = editionDate;
@@ -30,7 +30,7 @@ public class Book extends AbstractEntity {
         this.title = title;
     }
 
-    public boolean isAvailable() {
+    public Boolean isAvailable() {
         return isAvailable;
     }
 

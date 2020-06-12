@@ -24,9 +24,9 @@ public class EntityRepository {
         return safeArray;
     }
 
-    public AbstractEntity findById(int id) {
+    public AbstractEntity findById(Long id) {
         for (AbstractEntity abstractEntity : entities) {
-            if (abstractEntity != null && abstractEntity.getId() == id) {
+            if (abstractEntity != null && abstractEntity.getId().equals(id)) {
                 return abstractEntity.clone();
             }
         }

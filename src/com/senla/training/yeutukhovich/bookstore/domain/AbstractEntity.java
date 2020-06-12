@@ -2,13 +2,13 @@ package com.senla.training.yeutukhovich.bookstore.domain;
 
 public abstract class AbstractEntity implements Cloneable {
 
-    protected final int id;
+    protected final Long id;
 
-    protected AbstractEntity(int id) {
+    protected AbstractEntity(Long id) {
         this.id = id;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 

@@ -1,13 +1,12 @@
 package com.senla.training.yeutukhovich.bookstore.domain;
 
 import com.senla.training.yeutukhovich.bookstore.domain.state.OrderState;
+import com.senla.training.yeutukhovich.bookstore.util.generator.IdGenerator;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
 public class Order extends AbstractEntity {
-
-    private static int orderIdNumber;
 
     private OrderState state;
     private Book book;
@@ -17,7 +16,7 @@ public class Order extends AbstractEntity {
     private String customerData;
 
     public Order(Book book, String customerData) {
-        super(++orderIdNumber);
+        super(IdGenerator.getInstance().getNextOrderIdNumber());
         state = OrderState.CREATED;
         this.book = book;
         currentBookPrice = book.getPrice();
