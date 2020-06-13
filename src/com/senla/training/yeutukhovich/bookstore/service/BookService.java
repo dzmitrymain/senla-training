@@ -8,9 +8,9 @@ import java.util.Date;
 
 public interface BookService {
 
-    void replenishBook(Book book);
+    void replenishBook(Long id);
 
-    void writeOffBook(Book book);
+    void writeOffBook(Long id);
 
     Book[] findAllBooks(Comparator<Book> bookComparator);
 
@@ -20,5 +20,5 @@ public interface BookService {
 
     Book[] findStaleBooks();
 
-    BookDescription showBookDescription(Book book);
+    BookDescription showBookDescription(Long id);
 }

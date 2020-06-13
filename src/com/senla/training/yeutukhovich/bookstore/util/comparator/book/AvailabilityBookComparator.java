@@ -6,6 +6,15 @@ import java.util.Comparator;
 
 public class AvailabilityBookComparator implements Comparator<Book> {
 
+    private static AvailabilityBookComparator instance;
+
+    public static AvailabilityBookComparator getInstance() {
+        if (instance == null) {
+            instance = new AvailabilityBookComparator();
+        }
+        return instance;
+    }
+
     @Override
     public int compare(Book o1, Book o2) {
         if (o1 == null && o2 == null) {

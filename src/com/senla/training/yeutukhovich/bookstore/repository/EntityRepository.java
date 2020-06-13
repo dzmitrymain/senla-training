@@ -25,9 +25,11 @@ public class EntityRepository<T extends AbstractEntity> {
     }
 
     public T findById(Long id) {
-        for (T abstractEntity : entities) {
-            if (abstractEntity != null && abstractEntity.getId().equals(id)) {
-                return (T) abstractEntity.clone();
+        if (id != null) {
+            for (T abstractEntity : entities) {
+                if (abstractEntity != null && abstractEntity.getId().equals(id)) {
+                    return (T) abstractEntity.clone();
+                }
             }
         }
         return null;

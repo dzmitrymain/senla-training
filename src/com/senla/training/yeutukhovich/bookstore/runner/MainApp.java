@@ -34,7 +34,7 @@ public class MainApp {
 
         for (Book book : books) {
             if (!book.isAvailable()) {
-                bookService.replenishBook(book);
+                bookService.replenishBook(book.getId());
             }
         }
 
