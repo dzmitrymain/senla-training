@@ -5,7 +5,7 @@ import com.senla.training.yeutukhovich.bookstore.util.reader.InputReader;
 import com.senla.training.yeutukhovich.bookstore.service.BookService;
 import com.senla.training.yeutukhovich.bookstore.service.impl.BookServiceImpl;
 import com.senla.training.yeutukhovich.bookstore.util.converter.DateConverter;
-import com.senla.training.yeutukhovich.bookstore.util.printer.EntityPrinter;
+import com.senla.training.yeutukhovich.bookstore.util.printer.ResponsePrinter;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -23,7 +23,7 @@ public class ShowSoldBooksBetweenDatesAction implements Action {
         Date secondDate = InputReader.readInputDate(DateConverter.DAY_DATE_FORMAT);
 
         if (firstDate != null && secondDate != null) {
-           EntityPrinter.printEntity(Arrays.asList(bookService.findSoldBooksBetweenDates(firstDate, secondDate)));
+           ResponsePrinter.printEntities(Arrays.asList(bookService.findSoldBooksBetweenDates(firstDate, secondDate)));
         }
     }
 }

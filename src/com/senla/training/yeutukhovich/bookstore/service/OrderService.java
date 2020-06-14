@@ -6,6 +6,7 @@ import com.senla.training.yeutukhovich.bookstore.service.dto.OrderDetails;
 import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 
 public interface OrderService {
 
@@ -15,9 +16,9 @@ public interface OrderService {
 
     void completeOrder(Long orderId);
 
-    Order[] findAllOrders(Comparator<Order> orderComparator);
+    List<Order> findAllOrders(Comparator<Order> orderComparator);
 
-    Order[] findCompletedOrdersBetweenDates(Date startDate, Date endDate);
+    List<Order> findCompletedOrdersBetweenDates(Date startDate, Date endDate);
 
     BigDecimal calculateProfitBetweenDates(Date startDate, Date endDate);
 

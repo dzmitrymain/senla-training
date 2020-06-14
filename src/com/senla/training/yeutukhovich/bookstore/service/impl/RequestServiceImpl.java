@@ -5,8 +5,9 @@ import com.senla.training.yeutukhovich.bookstore.domain.Request;
 import com.senla.training.yeutukhovich.bookstore.repository.EntityRepository;
 import com.senla.training.yeutukhovich.bookstore.service.RequestService;
 
-import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class RequestServiceImpl implements RequestService {
 
@@ -44,9 +45,8 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public Request[] findAllRequests(Comparator<Request> requestComparator) {
-        Request[] requests = requestRepository.findAll();
-        Arrays.sort(requests, requestComparator);
-        return requests;
+    public List<Request> findAllRequests(Comparator<Request> requestComparator) {
+        List<Request> requests = requestRepository.findAll();
+        return requests.stream().sorted(requestComparator).collect(Collectors.toList());
     }
 }

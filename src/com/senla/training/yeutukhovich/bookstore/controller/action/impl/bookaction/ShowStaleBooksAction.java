@@ -3,9 +3,7 @@ package com.senla.training.yeutukhovich.bookstore.controller.action.impl.bookact
 import com.senla.training.yeutukhovich.bookstore.controller.action.Action;
 import com.senla.training.yeutukhovich.bookstore.service.BookService;
 import com.senla.training.yeutukhovich.bookstore.service.impl.BookServiceImpl;
-import com.senla.training.yeutukhovich.bookstore.util.printer.EntityPrinter;
-
-import java.util.Arrays;
+import com.senla.training.yeutukhovich.bookstore.util.printer.ResponsePrinter;
 
 public class ShowStaleBooksAction implements Action {
 
@@ -13,6 +11,6 @@ public class ShowStaleBooksAction implements Action {
     public void execute() {
 
         BookService bookService = BookServiceImpl.getInstance();
-        EntityPrinter.printEntity(Arrays.asList(bookService.findStaleBooks()));
+        ResponsePrinter.printEntities(bookService.findStaleBooks());
     }
 }

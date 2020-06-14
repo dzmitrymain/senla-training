@@ -9,9 +9,10 @@ import com.senla.training.yeutukhovich.bookstore.service.OrderService;
 import com.senla.training.yeutukhovich.bookstore.service.dto.OrderDetails;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class OrderServiceImpl implements OrderService {
 
@@ -44,7 +45,7 @@ public class OrderServiceImpl implements OrderService {
         Book checkedBook = bookRepository.findById(bookId);
         if (checkedBook != null) {
             if (!checkedBook.isAvailable()) {
-                createRequest(checkedBook, customerData);
+                createRequest(bookId, customerData);
             }
             Order order = new Order(checkedBook, customerData);
             orderRepository.add(order);
@@ -76,33 +77,27 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order[] findAllOrders(Comparator<Order> orderComparator) {
-        Order[] orders = orderRepository.findAll();
-        Arrays.sort(orders, orderComparator);
+    public List<Order> findAllOrders(Comparator<Order> orderComparator) {
+        List<Order> orders = orderRepository.findAll();
+        orders = orders.stream().sorted(orderComparator).collect(Collectors.toList());
         System.out.println("All orders has been found.");
         return orders;
     }
 
     @Override
-    public Order[] findCompletedOrdersBetweenDates(Date startDate, Date endDate) {
-        Order[] orders = orderRepository.findAll();
-        Order[] desiredOrders = new Order[orders.length];
+    public List<Order> findCompletedOrdersBetweenDates(Date startDate, Date endDate) {
+        List<Order> orders = orderRepository.findAll();
+        List<Order> desiredOrders = orders.stream().filter((order) -> order.getState() == OrderState.COMPLETED &&
+                order.getCompletionDate().after(startDate) &&
+                order.getCompletionDate().before(endDate)).collect(Collectors.toList());
 
-        int desiredOrdersNumber = 0;
-        for (Order order : orders) {
-            if (order.getState() == OrderState.COMPLETED && order.getCompletionDate().after(startDate)
-                    && order.getCompletionDate().before(endDate)) {
-                desiredOrders[desiredOrdersNumber++] = order;
-            }
-        }
         System.out.println("Completed orders between dates has been found.");
-        return Arrays.copyOf(desiredOrders, desiredOrdersNumber);
+        return desiredOrders;
     }
 
     @Override
     public BigDecimal calculateProfitBetweenDates(Date startDate, Date endDate) {
-        Order[] completedOrders = findCompletedOrdersBetweenDates(startDate, endDate);
-
+        List<Order> completedOrders = findCompletedOrdersBetweenDates(startDate, endDate);
         BigDecimal profit = new BigDecimal(0);
         for (Order order : completedOrders) {
             profit = profit.add(order.getCurrentBookPrice());
@@ -114,7 +109,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public int calculateCompletedOrdersNumberBetweenDates(Date startDate, Date endDate) {
         System.out.println("Completed orders number has been calculated.");
-        return findCompletedOrdersBetweenDates(startDate, endDate).length;
+        return findCompletedOrdersBetweenDates(startDate, endDate).size();
     }
 
     @Override
@@ -136,14 +131,12 @@ public class OrderServiceImpl implements OrderService {
         return orderDetails;
     }
 
-    private void createRequest(Book book, String requesterData) {
-        if (book != null) {
-            Book checkedBook = bookRepository.findById(book.getId());
-            if (checkedBook != null && !checkedBook.isAvailable()) {
-                Request request = new Request(checkedBook, requesterData);
-                requestRepository.add(request);
-                System.out.println("Request {" + checkedBook.getTitle() + "} has been created.");
-            }
+    private void createRequest(Long bookId, String requesterData) {
+        Book checkedBook = bookRepository.findById(bookId);
+        if (checkedBook != null && !checkedBook.isAvailable()) {
+            Request request = new Request(checkedBook, requesterData);
+            requestRepository.add(request);
+            System.out.println("Request {" + checkedBook.getTitle() + "} has been created.");
         }
     }
 }

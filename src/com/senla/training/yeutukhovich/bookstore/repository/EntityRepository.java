@@ -6,8 +6,8 @@ import com.senla.training.yeutukhovich.bookstore.domain.Order;
 import com.senla.training.yeutukhovich.bookstore.domain.Request;
 import com.senla.training.yeutukhovich.bookstore.util.initializer.EntityInitializer;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.ListIterator;
 
 public class EntityRepository<T extends AbstractEntity> {
 
@@ -16,9 +16,7 @@ public class EntityRepository<T extends AbstractEntity> {
     private static EntityRepository<Order> orderRepositoryInstance;
     private static EntityRepository<Request> requestRepositoryInstance;
 
-    private static final double ARRAY_EXPANSION_CONSTANT = 1.5;
-
-    private T[] entities;
+    private List<T> entities;
 
     public static EntityRepository<Book> getBookRepositoryInstance() {
         if (bookRepositoryInstance == null) {
@@ -41,25 +39,19 @@ public class EntityRepository<T extends AbstractEntity> {
         return requestRepositoryInstance;
     }
 
-    private EntityRepository(T[] entities) {
+    private EntityRepository(List<T> entities) {
         this.entities = entities;
     }
 
-    public T[] findAll() {
-        T[] safeArray = Arrays.copyOf(entities, entities.length - calculateNullNumber(entities));
-        for (int i = 0, j = 0; i < entities.length; i++) {
-            if (entities[i] != null) {
-                safeArray[j++] = (T) entities[i].clone();
-            }
-        }
-        return safeArray;
+    public List<T> findAll() {
+        return List.copyOf(entities);
     }
 
     public T findById(Long id) {
         if (id != null) {
             for (T abstractEntity : entities) {
-                if (abstractEntity != null && abstractEntity.getId().equals(id)) {
-                    return (T) abstractEntity.clone();
+                if (abstractEntity.getId().equals(id)) {
+                    return abstractEntity;
                 }
             }
         }
@@ -68,10 +60,11 @@ public class EntityRepository<T extends AbstractEntity> {
 
     public void update(T abstractEntity) {
         if (abstractEntity != null) {
-            for (int i = 0; i < entities.length; i++) {
-                if (entities[i] != null && entities[i].getId().equals(abstractEntity.getId())) {
-                    entities[i] = (T) abstractEntity.clone();
-                    return;
+            ListIterator<T> listIterator = entities.listIterator();
+            while (listIterator.hasNext()) {
+                AbstractEntity repositoryEntity = listIterator.next();
+                if (repositoryEntity.getId().equals(abstractEntity.getId())) {
+                    listIterator.set(abstractEntity);
                 }
             }
         }
@@ -79,28 +72,7 @@ public class EntityRepository<T extends AbstractEntity> {
 
     public void add(T abstractEntity) {
         if (abstractEntity != null) {
-            for (int i = 0; i < entities.length; i++) {
-                if (entities[i] == null) {
-                    entities[i] = (T) abstractEntity.clone();
-                    return;
-                }
-            }
-            entities = expandArray(entities);
-            add(abstractEntity);
+            entities.add(abstractEntity);
         }
-    }
-
-    private T[] expandArray(T[] entities) {
-        return Arrays.copyOf(entities, (int) ((entities.length * ARRAY_EXPANSION_CONSTANT) + 1));
-    }
-
-    private int calculateNullNumber(T[] entities) {
-        int nullNumber = 0;
-        for (T abstractEntity : entities) {
-            if (abstractEntity == null) {
-                nullNumber++;
-            }
-        }
-        return nullNumber;
     }
 }

@@ -5,6 +5,7 @@ import com.senla.training.yeutukhovich.bookstore.service.dto.BookDescription;
 
 import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 
 public interface BookService {
 
@@ -12,13 +13,13 @@ public interface BookService {
 
     void writeOffBook(Long id);
 
-    Book[] findAllBooks(Comparator<Book> bookComparator);
+    List<Book> findAllBooks(Comparator<Book> bookComparator);
 
-    Book[] findSoldBooksBetweenDates(Date startDate, Date endDate);
+    List<Book> findSoldBooksBetweenDates(Date startDate, Date endDate);
 
-    Book[] findUnsoldBooksBetweenDates(Date startDate, Date endDate);
+    List<Book> findUnsoldBooksBetweenDates(Date startDate, Date endDate);
 
-    Book[] findStaleBooks();
+    List<Book> findStaleBooks();
 
     BookDescription showBookDescription(Long id);
 }

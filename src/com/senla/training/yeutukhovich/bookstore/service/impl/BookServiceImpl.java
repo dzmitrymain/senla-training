@@ -7,14 +7,10 @@ import com.senla.training.yeutukhovich.bookstore.domain.state.OrderState;
 import com.senla.training.yeutukhovich.bookstore.repository.EntityRepository;
 import com.senla.training.yeutukhovich.bookstore.service.BookService;
 import com.senla.training.yeutukhovich.bookstore.service.dto.BookDescription;
-import com.senla.training.yeutukhovich.bookstore.util.comparator.book.ReplenishmentDateBookComparator;
 import com.senla.training.yeutukhovich.bookstore.util.comparator.book.TitleBookComparator;
-import com.senla.training.yeutukhovich.bookstore.util.comparator.order.CompletionDateOrderComparator;
 
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Comparator;
-import java.util.Date;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class BookServiceImpl implements BookService {
 
@@ -52,7 +48,8 @@ public class BookServiceImpl implements BookService {
             bookRepository.update(checkedBook);
             closeRequests(checkedBook);
             updateOrders(checkedBook);
-            System.out.println("Book: {" + checkedBook.getTitle() + "} has been replenished. All requests has been closed.");
+            System.out.println("Book: {" + checkedBook.getTitle() +
+                    "} has been replenished. All requests has been closed.");
         }
     }
 
@@ -68,72 +65,50 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Book[] findAllBooks(Comparator<Book> bookComparator) {
-        Book[] books = bookRepository.findAll();
-        Arrays.sort(books, bookComparator);
+    public List<Book> findAllBooks(Comparator<Book> bookComparator) {
+        List<Book> books = bookRepository.findAll();
+        books=books.stream().sorted(bookComparator).collect(Collectors.toList());
         System.out.println("All books has been found.");
         return books;
     }
 
     @Override
-    public Book[] findSoldBooksBetweenDates(Date startDate, Date endDate) {
-        Order[] completedOrders = findCompletedOrdersBetweenDates(startDate, endDate, new CompletionDateOrderComparator());
-
-        Book[] soldBooks = new Book[completedOrders.length];
-        int uniqueSoldBooksNumber = 0;
-        for (Order completedOrder : completedOrders) {
-            boolean isBookUnique = true;
-            for (Book book : soldBooks) {
-                if (completedOrder.getBook().equals(book)) {
-                    isBookUnique = false;
-                    break;
-                }
-            }
-            if (isBookUnique) {
-                soldBooks[uniqueSoldBooksNumber++] = completedOrder.getBook();
-            }
+    public List<Book> findSoldBooksBetweenDates(Date startDate, Date endDate) {
+        List<Order> completedOrders = findCompletedOrdersBetweenDates(startDate, endDate);
+        List<Book> books = new ArrayList<>();
+        for (Order order : completedOrders) {
+            books.add(order.getBook());
         }
+        books = books.stream().distinct().collect(Collectors.toList());
+
         System.out.println("Sold books between dates has been found.");
-        return Arrays.copyOf(soldBooks, uniqueSoldBooksNumber);
+        return books;
     }
 
     @Override
-    public Book[] findUnsoldBooksBetweenDates(Date startDate, Date endDate) {
-        Book[] soldBooks = findSoldBooksBetweenDates(startDate, endDate);
-        Book[] books = findAllBooks(new TitleBookComparator());
+    public List<Book> findUnsoldBooksBetweenDates(Date startDate, Date endDate) {
+        List<Book> soldBooks = findSoldBooksBetweenDates(startDate, endDate);
+        List<Book> books = findAllBooks(new TitleBookComparator());
 
-        for (int i = 0, j = 0; i < books.length; i++) {
-            while (j < soldBooks.length) {
-                if (soldBooks[j].equals(books[i])) {
-                    j++;
-                    books[i++] = null;
-                    break;
-                }
-            }
-        }
-        Arrays.sort(books, new ReplenishmentDateBookComparator());
+        books = books.stream().filter(book -> !soldBooks.contains(book)).collect(Collectors.toList());
+
         System.out.println("Unsold books between dates has been found.");
-        return Arrays.copyOf(books, books.length - soldBooks.length);
+        return books;
     }
 
     @Override
-    public Book[] findStaleBooks() {
+    public List<Book> findStaleBooks() {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MONTH, -STALE_MONTH_NUMBER);
         Date currentDate = new Date();
         Date staleDate = new Date(calendar.getTimeInMillis());
 
-        Book[] unsoldBooks = findUnsoldBooksBetweenDates(staleDate, currentDate);
+        List<Book> unsoldBooks = findUnsoldBooksBetweenDates(staleDate, currentDate);
 
-        Book[] staleBooks = new Book[unsoldBooks.length];
-        int staleBooksNumber = 0;
-        for (Book book : unsoldBooks) {
-            if (book.getReplenishmentDate() != null && book.getReplenishmentDate().before(staleDate)) {
-                staleBooks[staleBooksNumber++] = book;
-            }
-        }
+        unsoldBooks = unsoldBooks.stream().filter(book -> book.getReplenishmentDate() != null &&
+                book.getReplenishmentDate().before(staleDate)).collect(Collectors.toList());
         System.out.println("Stale books has been found.");
-        return Arrays.copyOf(staleBooks, staleBooksNumber);
+        return unsoldBooks;
     }
 
     @Override
@@ -149,7 +124,7 @@ public class BookServiceImpl implements BookService {
     }
 
     private void closeRequests(Book book) {
-        Request[] requests = requestRepository.findAll();
+        List<Request> requests = requestRepository.findAll();
         for (Request request : requests) {
             if (request != null && request.isActive() && request.getBook().getId().equals(book.getId())) {
                 request.setActive(false);
@@ -160,7 +135,7 @@ public class BookServiceImpl implements BookService {
     }
 
     private void updateOrders(Book book) {
-        Order[] orders = orderRepository.findAll();
+        List<Order> orders = orderRepository.findAll();
         for (Order order : orders) {
             if (order != null && order.getState() == OrderState.CREATED && order.getBook().getId().equals(book.getId())) {
                 order.setBook(book);
@@ -169,19 +144,13 @@ public class BookServiceImpl implements BookService {
         }
     }
 
-    private Order[] findCompletedOrdersBetweenDates(Date startDate, Date endDate, Comparator<Order> orderComparator) {
-        Order[] orders = orderRepository.findAll();
-        Order[] desiredOrders = new Order[orders.length];
+    private List<Order> findCompletedOrdersBetweenDates(Date startDate, Date endDate) {
+        List<Order> orders = orderRepository.findAll();
+        List<Order> desiredOrders = orders.stream().filter((order) -> order.getState() == OrderState.COMPLETED &&
+                order.getCompletionDate().after(startDate) &&
+                order.getCompletionDate().before(endDate)).collect(Collectors.toList());
 
-        int desiredOrdersNumber = 0;
-        for (Order order : orders) {
-            if (order.getState() == OrderState.COMPLETED && order.getCompletionDate().after(startDate)
-                    && order.getCompletionDate().before(endDate)) {
-                desiredOrders[desiredOrdersNumber++] = order;
-            }
-        }
-        Arrays.sort(desiredOrders, orderComparator);
         System.out.println("Completed orders between dates has been found.");
-        return Arrays.copyOf(desiredOrders, desiredOrdersNumber);
+        return desiredOrders;
     }
 }
