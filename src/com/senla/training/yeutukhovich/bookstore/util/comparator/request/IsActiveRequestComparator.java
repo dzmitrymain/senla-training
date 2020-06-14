@@ -4,7 +4,16 @@ import com.senla.training.yeutukhovich.bookstore.domain.Request;
 
 import java.util.Comparator;
 
-public class ActiveRequestComparator implements Comparator<Request> {
+public class IsActiveRequestComparator implements Comparator<Request> {
+
+    private static IsActiveRequestComparator instance;
+
+    public static IsActiveRequestComparator getInstance() {
+        if (instance == null) {
+            instance = new IsActiveRequestComparator();
+        }
+        return instance;
+    }
 
     @Override
     public int compare(Request o1, Request o2) {

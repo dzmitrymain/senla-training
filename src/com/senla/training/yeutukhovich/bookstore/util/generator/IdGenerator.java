@@ -16,14 +16,14 @@ public class IdGenerator {
     }
 
     public long getNextBookIdNumber(){
-        return bookIdNumber++;
+        return ++bookIdNumber;
     }
 
     public long getNextOrderIdNumber(){
-        return orderIdNumber++;
+        return ++orderIdNumber;
     }
 
     public long getNextRequestIdNumber(){
-        return requestIdNumber++;
+        return ++requestIdNumber;
     }
 }

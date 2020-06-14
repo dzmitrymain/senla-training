@@ -6,6 +6,15 @@ import java.util.Comparator;
 
 public class StateOrderComparator implements Comparator<Order> {
 
+    private static StateOrderComparator instance;
+
+    public static StateOrderComparator getInstance() {
+        if (instance == null) {
+            instance = new StateOrderComparator();
+        }
+        return instance;
+    }
+
     @Override
     public int compare(Order o1, Order o2) {
         if (o1 == null && o2 == null) {

@@ -2,7 +2,7 @@ package com.senla.training.yeutukhovich.bookstore.controller;
 
 import com.senla.training.yeutukhovich.bookstore.controller.menu.builder.MenuBuilder;
 import com.senla.training.yeutukhovich.bookstore.controller.menu.navigator.MenuNavigator;
-import com.senla.training.yeutukhovich.bookstore.controller.menu.util.reader.InputReader;
+import com.senla.training.yeutukhovich.bookstore.util.reader.InputReader;
 
 public class MenuController {
 

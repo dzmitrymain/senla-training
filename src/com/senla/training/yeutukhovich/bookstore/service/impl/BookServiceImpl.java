@@ -10,7 +10,6 @@ import com.senla.training.yeutukhovich.bookstore.service.dto.BookDescription;
 import com.senla.training.yeutukhovich.bookstore.util.comparator.book.ReplenishmentDateBookComparator;
 import com.senla.training.yeutukhovich.bookstore.util.comparator.book.TitleBookComparator;
 import com.senla.training.yeutukhovich.bookstore.util.comparator.order.CompletionDateOrderComparator;
-import com.senla.training.yeutukhovich.bookstore.util.initializer.EntityInitializer;
 
 import java.util.Arrays;
 import java.util.Calendar;
@@ -29,16 +28,16 @@ public class BookServiceImpl implements BookService {
     public static BookServiceImpl getInstance() {
         if (instance == null) {
             instance = new BookServiceImpl(
-                    new EntityRepository<>(EntityInitializer.getBooks()),
-                    new EntityRepository<>(EntityInitializer.getOrders()),
-                    new EntityRepository<>(EntityInitializer.getRequests()));
+                    EntityRepository.getBookRepositoryInstance(),
+                    EntityRepository.getOrderRepositoryInstance(),
+                    EntityRepository.getRequestRepositoryInstance());
         }
         return instance;
     }
 
-    public BookServiceImpl(EntityRepository<Book> bookRepository,
-                           EntityRepository<Order> orderRepository,
-                           EntityRepository<Request> requestRepository) {
+    private BookServiceImpl(EntityRepository<Book> bookRepository,
+                            EntityRepository<Order> orderRepository,
+                            EntityRepository<Request> requestRepository) {
         this.bookRepository = bookRepository;
         this.orderRepository = orderRepository;
         this.requestRepository = requestRepository;
@@ -46,26 +45,26 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void replenishBook(Long id) {
-            Book checkedBook = bookRepository.findById(id);
-            if (checkedBook != null && !checkedBook.isAvailable()) {
-                checkedBook.setAvailable(true);
-                checkedBook.setReplenishmentDate(new Date());
-                bookRepository.update(checkedBook);
-                closeRequests(checkedBook);
-                updateOrders(checkedBook);
-                System.out.println("Book: {" + checkedBook.getTitle() + "} has been replenished. All requests has been closed.");
-            }
+        Book checkedBook = bookRepository.findById(id);
+        if (checkedBook != null && !checkedBook.isAvailable()) {
+            checkedBook.setAvailable(true);
+            checkedBook.setReplenishmentDate(new Date());
+            bookRepository.update(checkedBook);
+            closeRequests(checkedBook);
+            updateOrders(checkedBook);
+            System.out.println("Book: {" + checkedBook.getTitle() + "} has been replenished. All requests has been closed.");
+        }
     }
 
     @Override
     public void writeOffBook(Long id) {
-            Book checkedBook = bookRepository.findById(id);
-            if (checkedBook != null && checkedBook.isAvailable()) {
-                checkedBook.setAvailable(false);
-                bookRepository.update(checkedBook);
-                updateOrders(checkedBook);
-                System.out.println("Book {" + checkedBook.getTitle() + "} has been written off.");
-            }
+        Book checkedBook = bookRepository.findById(id);
+        if (checkedBook != null && checkedBook.isAvailable()) {
+            checkedBook.setAvailable(false);
+            bookRepository.update(checkedBook);
+            updateOrders(checkedBook);
+            System.out.println("Book {" + checkedBook.getTitle() + "} has been written off.");
+        }
     }
 
     @Override

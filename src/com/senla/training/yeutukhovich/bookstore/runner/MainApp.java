@@ -19,29 +19,29 @@ public class MainApp {
 
     public static void main(String[] args) {
 
-        EntityRepository<Book> bookRepository = new EntityRepository<>(initBooks());
-        EntityRepository<Order> orderRepository = new EntityRepository<>(new Order[1]);
-        EntityRepository<Request> requestRepository = new EntityRepository<>(new Request[1]);
+//        EntityRepository<Book> bookRepository = new EntityRepository<>(initBooks());
+//        EntityRepository<Order> orderRepository = new EntityRepository<>(new Order[1]);
+//        EntityRepository<Request> requestRepository = new EntityRepository<>(new Request[1]);
 
-        BookService bookService = new BookServiceImpl(bookRepository, orderRepository, requestRepository);
-        OrderService orderService = new OrderServiceImpl(bookRepository, orderRepository, requestRepository);
+       // BookService bookService = new BookServiceImpl(bookRepository, orderRepository, requestRepository);
+       // OrderService orderService = new OrderServiceImpl(bookRepository, orderRepository, requestRepository);
 
-        Book[] books = bookService.findAllBooks(new TitleBookComparator());
-
-        for (int i = 0, j = 0; i < books.length; i++) {
-            orderService.createOrder(books[i], "Customer" + ++j);
-        }
-
-        for (Book book : books) {
-            if (!book.isAvailable()) {
-                bookService.replenishBook(book.getId());
-            }
-        }
-
-        Order[] orders = orderService.findAllOrders(new PriceOrderComparator());
-        for (Order order : orders) {
-            orderService.completeOrder(order);
-        }
+//        Book[] books = bookService.findAllBooks(new TitleBookComparator());
+//
+//        for (int i = 0, j = 0; i < books.length; i++) {
+//            orderService.createOrder(books[i], "Customer" + ++j);
+//        }
+//
+//        for (Book book : books) {
+//            if (!book.isAvailable()) {
+//                bookService.replenishBook(book.getId());
+//            }
+//        }
+//
+//        Order[] orders = orderService.findAllOrders(new PriceOrderComparator());
+//        for (Order order : orders) {
+//            orderService.completeOrder(order);
+//        }
     }
 
     private static Book[] initBooks() {

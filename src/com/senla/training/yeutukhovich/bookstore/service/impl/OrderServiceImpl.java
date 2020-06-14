@@ -7,7 +7,6 @@ import com.senla.training.yeutukhovich.bookstore.domain.state.OrderState;
 import com.senla.training.yeutukhovich.bookstore.repository.EntityRepository;
 import com.senla.training.yeutukhovich.bookstore.service.OrderService;
 import com.senla.training.yeutukhovich.bookstore.service.dto.OrderDetails;
-import com.senla.training.yeutukhovich.bookstore.util.comparator.order.PriceOrderComparator;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -16,57 +15,63 @@ import java.util.Date;
 
 public class OrderServiceImpl implements OrderService {
 
+    private static OrderServiceImpl instance;
+
     private EntityRepository<Book> bookRepository;
     private EntityRepository<Order> orderRepository;
     private EntityRepository<Request> requestRepository;
 
-    public OrderServiceImpl(EntityRepository<Book> bookRepository,
-                            EntityRepository<Order> orderRepository,
-                            EntityRepository<Request> requestRepository) {
+    private OrderServiceImpl(EntityRepository<Book> bookRepository,
+                             EntityRepository<Order> orderRepository,
+                             EntityRepository<Request> requestRepository) {
         this.bookRepository = bookRepository;
         this.orderRepository = orderRepository;
         this.requestRepository = requestRepository;
     }
 
+    public static OrderServiceImpl getInstance() {
+        if (instance == null) {
+            instance = new OrderServiceImpl(
+                    EntityRepository.getBookRepositoryInstance(),
+                    EntityRepository.getOrderRepositoryInstance(),
+                    EntityRepository.getRequestRepositoryInstance());
+        }
+        return instance;
+    }
+
     @Override
-    public Order createOrder(Book book, String customerData) {
-        if (book != null) {
-            Book checkedBook = bookRepository.findById(book.getId());
-            if (checkedBook != null) {
-                if (!checkedBook.isAvailable()) {
-                    createRequest(checkedBook, customerData);
-                }
-                Order order = new Order(checkedBook, customerData);
-                orderRepository.add(order);
-                System.out.println("Order {" + checkedBook.getTitle() + "} has been created.");
-                return order;
+    public Order createOrder(Long bookId, String customerData) {
+        Book checkedBook = bookRepository.findById(bookId);
+        if (checkedBook != null) {
+            if (!checkedBook.isAvailable()) {
+                createRequest(checkedBook, customerData);
             }
+            Order order = new Order(checkedBook, customerData);
+            orderRepository.add(order);
+            System.out.println("Order {" + checkedBook.getTitle() + "} has been created.");
+            return order;
         }
         return null;
     }
 
     @Override
-    public void cancelOrder(Order order) {
-        if (order != null) {
-            Order checkedOrder = orderRepository.findById(order.getId());
-            if (checkedOrder != null && checkedOrder.getState() == OrderState.CREATED) {
-                checkedOrder.setState(OrderState.CANCELED);
-                orderRepository.update(checkedOrder);
-                System.out.println("Order {" + checkedOrder.getBook().getTitle() + "} has been canceled.");
-            }
+    public void cancelOrder(Long orderId) {
+        Order checkedOrder = orderRepository.findById(orderId);
+        if (checkedOrder != null && checkedOrder.getState() == OrderState.CREATED) {
+            checkedOrder.setState(OrderState.CANCELED);
+            orderRepository.update(checkedOrder);
+            System.out.println("Order {" + checkedOrder.getBook().getTitle() + "} has been canceled.");
         }
     }
 
     @Override
-    public void completeOrder(Order order) {
-        if (order != null) {
-            Order checkedOrder = orderRepository.findById(order.getId());
-            if (checkedOrder != null && checkedOrder.getBook().isAvailable() && checkedOrder.getState() == OrderState.CREATED) {
-                checkedOrder.setState(OrderState.COMPLETED);
-                checkedOrder.setCompletionDate(new Date());
-                orderRepository.update(checkedOrder);
-                System.out.println("Order {" + checkedOrder.getBook().getTitle() + "} has been completed.");
-            }
+    public void completeOrder(Long orderId) {
+        Order checkedOrder = orderRepository.findById(orderId);
+        if (checkedOrder != null && checkedOrder.getBook().isAvailable() && checkedOrder.getState() == OrderState.CREATED) {
+            checkedOrder.setState(OrderState.COMPLETED);
+            checkedOrder.setCompletionDate(new Date());
+            orderRepository.update(checkedOrder);
+            System.out.println("Order {" + checkedOrder.getBook().getTitle() + "} has been completed.");
         }
     }
 
@@ -79,7 +84,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order[] findCompletedOrdersBetweenDates(Date startDate, Date endDate, Comparator<Order> orderComparator) {
+    public Order[] findCompletedOrdersBetweenDates(Date startDate, Date endDate) {
         Order[] orders = orderRepository.findAll();
         Order[] desiredOrders = new Order[orders.length];
 
@@ -90,14 +95,13 @@ public class OrderServiceImpl implements OrderService {
                 desiredOrders[desiredOrdersNumber++] = order;
             }
         }
-        Arrays.sort(desiredOrders, orderComparator);
         System.out.println("Completed orders between dates has been found.");
         return Arrays.copyOf(desiredOrders, desiredOrdersNumber);
     }
 
     @Override
     public BigDecimal calculateProfitBetweenDates(Date startDate, Date endDate) {
-        Order[] completedOrders = findCompletedOrdersBetweenDates(startDate, endDate, new PriceOrderComparator());
+        Order[] completedOrders = findCompletedOrdersBetweenDates(startDate, endDate);
 
         BigDecimal profit = new BigDecimal(0);
         for (Order order : completedOrders) {
@@ -110,14 +114,15 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public int calculateCompletedOrdersNumberBetweenDates(Date startDate, Date endDate) {
         System.out.println("Completed orders number has been calculated.");
-        return findCompletedOrdersBetweenDates(startDate, endDate, new PriceOrderComparator()).length;
+        return findCompletedOrdersBetweenDates(startDate, endDate).length;
     }
 
     @Override
-    public OrderDetails showOrderDetails(Order order) {
-        Order checkedOrder = orderRepository.findById(order.getId());
-        OrderDetails orderDetails = new OrderDetails();
+    public OrderDetails showOrderDetails(Long orderId) {
+        Order checkedOrder = orderRepository.findById(orderId);
+        OrderDetails orderDetails = null;
         if (checkedOrder != null) {
+            orderDetails = new OrderDetails();
             orderDetails.setCustomerData(checkedOrder.getCustomerData());
             orderDetails.setBookTitle(checkedOrder.getBook().getTitle());
             orderDetails.setPrice(checkedOrder.getCurrentBookPrice());

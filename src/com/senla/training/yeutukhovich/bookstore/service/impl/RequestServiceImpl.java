@@ -10,34 +10,43 @@ import java.util.Comparator;
 
 public class RequestServiceImpl implements RequestService {
 
+    private static RequestServiceImpl instance;
+
     private EntityRepository<Book> bookRepository;
     private EntityRepository<Request> requestRepository;
 
-    public RequestServiceImpl(EntityRepository<Book> bookRepository,
-                              EntityRepository<Request> requestRepository) {
+    private RequestServiceImpl(EntityRepository<Book> bookRepository,
+                               EntityRepository<Request> requestRepository) {
         this.bookRepository = bookRepository;
         this.requestRepository = requestRepository;
     }
 
+    public static RequestServiceImpl getInstance() {
+        if (instance == null) {
+            instance = new RequestServiceImpl(
+                    EntityRepository.getBookRepositoryInstance(),
+                    EntityRepository.getRequestRepositoryInstance()
+            );
+        }
+        return instance;
+    }
+
     @Override
-    public Request createRequest(Book book, String requesterData) {
-        if (book != null) {
-            Book checkedBook = bookRepository.findById(book.getId());
-            if (checkedBook != null && !checkedBook.isAvailable()) {
-                Request request = new Request(checkedBook, requesterData);
-                requestRepository.add(request);
-                System.out.println("Request {" + checkedBook.getTitle() + "} has been created.");
-                return request;
-            }
+    public Request createRequest(Long bookId, String requesterData) {
+        Book checkedBook = bookRepository.findById(bookId);
+        if (checkedBook != null && !checkedBook.isAvailable()) {
+            Request request = new Request(checkedBook, requesterData);
+            requestRepository.add(request);
+            System.out.println("Request {" + checkedBook.getTitle() + "} has been created.");
+            return request;
         }
         return null;
     }
 
     @Override
-    public Request[] findBookRequests(Book book, Comparator<Request> requestComparator) {
+    public Request[] findAllRequests(Comparator<Request> requestComparator) {
         Request[] requests = requestRepository.findAll();
         Arrays.sort(requests, requestComparator);
-        System.out.println("Book requests {" + book.getTitle() + "} has been found.");
-        return requestRepository.findAll();
+        return requests;
     }
 }

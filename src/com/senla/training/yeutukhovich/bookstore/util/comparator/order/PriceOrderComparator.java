@@ -6,6 +6,15 @@ import java.util.Comparator;
 
 public class PriceOrderComparator implements Comparator<Order> {
 
+    private static PriceOrderComparator instance;
+
+    public static PriceOrderComparator getInstance() {
+        if (instance == null) {
+            instance = new PriceOrderComparator();
+        }
+        return instance;
+    }
+
     @Override
     public int compare(Order o1, Order o2) {
         if (o1 == null && o2 == null) {

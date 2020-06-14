@@ -1,16 +1,46 @@
 package com.senla.training.yeutukhovich.bookstore.repository;
 
 import com.senla.training.yeutukhovich.bookstore.domain.AbstractEntity;
+import com.senla.training.yeutukhovich.bookstore.domain.Book;
+import com.senla.training.yeutukhovich.bookstore.domain.Order;
+import com.senla.training.yeutukhovich.bookstore.domain.Request;
+import com.senla.training.yeutukhovich.bookstore.util.initializer.EntityInitializer;
 
 import java.util.Arrays;
 
 public class EntityRepository<T extends AbstractEntity> {
 
+    //TODO maybe Enum singleton??
+    private static EntityRepository<Book> bookRepositoryInstance;
+    private static EntityRepository<Order> orderRepositoryInstance;
+    private static EntityRepository<Request> requestRepositoryInstance;
+
     private static final double ARRAY_EXPANSION_CONSTANT = 1.5;
 
     private T[] entities;
 
-    public EntityRepository(T[] entities) {
+    public static EntityRepository<Book> getBookRepositoryInstance() {
+        if (bookRepositoryInstance == null) {
+            bookRepositoryInstance = new EntityRepository<>(EntityInitializer.getBooks());
+        }
+        return bookRepositoryInstance;
+    }
+
+    public static EntityRepository<Order> getOrderRepositoryInstance() {
+        if (orderRepositoryInstance == null) {
+            orderRepositoryInstance = new EntityRepository<>(EntityInitializer.getOrders());
+        }
+        return orderRepositoryInstance;
+    }
+
+    public static EntityRepository<Request> getRequestRepositoryInstance() {
+        if (requestRepositoryInstance == null) {
+            requestRepositoryInstance = new EntityRepository<>(EntityInitializer.getRequests());
+        }
+        return requestRepositoryInstance;
+    }
+
+    private EntityRepository(T[] entities) {
         this.entities = entities;
     }
 

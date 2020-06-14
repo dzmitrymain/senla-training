@@ -1,7 +1,7 @@
 package com.senla.training.yeutukhovich.bookstore.controller.action.impl.bookaction;
 
 import com.senla.training.yeutukhovich.bookstore.controller.action.Action;
-import com.senla.training.yeutukhovich.bookstore.controller.menu.util.reader.InputReader;
+import com.senla.training.yeutukhovich.bookstore.util.reader.InputReader;
 import com.senla.training.yeutukhovich.bookstore.service.BookService;
 import com.senla.training.yeutukhovich.bookstore.service.impl.BookServiceImpl;
 import com.senla.training.yeutukhovich.bookstore.util.converter.DateConverter;

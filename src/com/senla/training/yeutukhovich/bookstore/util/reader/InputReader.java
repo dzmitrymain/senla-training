@@ -1,4 +1,4 @@
-package com.senla.training.yeutukhovich.bookstore.controller.menu.util.reader;
+package com.senla.training.yeutukhovich.bookstore.util.reader;
 
 import com.senla.training.yeutukhovich.bookstore.util.converter.DateConverter;
 
@@ -11,6 +11,16 @@ import java.util.Date;
 public class InputReader {
 
     private static BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+
+    public static String readInputString() {
+        String string = null;
+        try {
+            string = bufferedReader.readLine();
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
+        return string;
+    }
 
     public static Date readInputDate(SimpleDateFormat simpleDateFormat) {
         Date input = null;

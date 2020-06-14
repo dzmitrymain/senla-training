@@ -1,6 +1,5 @@
 package com.senla.training.yeutukhovich.bookstore.service;
 
-import com.senla.training.yeutukhovich.bookstore.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.domain.Order;
 import com.senla.training.yeutukhovich.bookstore.service.dto.OrderDetails;
 
@@ -10,19 +9,19 @@ import java.util.Date;
 
 public interface OrderService {
 
-    Order createOrder(Book book, String customerData);
+    Order createOrder(Long bookId, String customerData);
 
-    void cancelOrder(Order order);
+    void cancelOrder(Long orderId);
 
-    void completeOrder(Order order);
+    void completeOrder(Long orderId);
 
     Order[] findAllOrders(Comparator<Order> orderComparator);
 
-    Order[] findCompletedOrdersBetweenDates(Date startDate, Date endDate, Comparator<Order> orderComparator);
+    Order[] findCompletedOrdersBetweenDates(Date startDate, Date endDate);
 
     BigDecimal calculateProfitBetweenDates(Date startDate, Date endDate);
 
     int calculateCompletedOrdersNumberBetweenDates(Date startDate, Date endDate);
 
-    OrderDetails showOrderDetails(Order order);
+    OrderDetails showOrderDetails(Long orderId);
 }
