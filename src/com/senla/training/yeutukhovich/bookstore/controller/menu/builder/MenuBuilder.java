@@ -1,7 +1,11 @@
 package com.senla.training.yeutukhovich.bookstore.controller.menu.builder;
 
+import com.senla.training.yeutukhovich.bookstore.controller.action.ActionType;
 import com.senla.training.yeutukhovich.bookstore.controller.action.impl.bookaction.*;
-import com.senla.training.yeutukhovich.bookstore.controller.action.impl.bookaction.showallbooks.*;
+import com.senla.training.yeutukhovich.bookstore.controller.action.impl.bookaction.showallbooks.ShowAllBooksSortByEditionAction;
+import com.senla.training.yeutukhovich.bookstore.controller.action.impl.bookaction.showallbooks.ShowAllBooksSortByPriceAction;
+import com.senla.training.yeutukhovich.bookstore.controller.action.impl.bookaction.showallbooks.ShowAllBooksSortByReplenishmentAction;
+import com.senla.training.yeutukhovich.bookstore.controller.action.impl.bookaction.showallbooks.ShowAllBooksSortByTitleAction;
 import com.senla.training.yeutukhovich.bookstore.controller.action.impl.orderaction.*;
 import com.senla.training.yeutukhovich.bookstore.controller.action.impl.orderaction.showallorders.ShowAllOrdersSortByCompletionDateAction;
 import com.senla.training.yeutukhovich.bookstore.controller.action.impl.orderaction.showallorders.ShowAllOrdersSortByPriceAction;
@@ -12,255 +16,110 @@ import com.senla.training.yeutukhovich.bookstore.controller.action.impl.requesta
 import com.senla.training.yeutukhovich.bookstore.controller.action.impl.requestaction.showallrequests.ShowAllRequestsSortByRequesterDataAction;
 import com.senla.training.yeutukhovich.bookstore.controller.menu.Menu;
 import com.senla.training.yeutukhovich.bookstore.controller.menu.MenuItem;
+import com.senla.training.yeutukhovich.bookstore.util.constant.MenuNameConstant;
+
+import java.util.Collections;
 
 public class MenuBuilder {
 
     private Menu rootMenu;
 
     public void buildMenu() {
+        rootMenu = new Menu(MenuNameConstant.MAIN_MENU);
+        Menu bookMenu = new Menu(MenuNameConstant.BOOK_MENU);
+        Menu orderMenu = new Menu(MenuNameConstant.ORDER_MENU);
+        Menu requestMenu = new Menu(MenuNameConstant.REQUEST_MENU);
 
-        rootMenu = new Menu();
-        rootMenu.setName("Main menu");
+        MenuItem previousRootMenuItem = new MenuItem(MenuNameConstant.BACK_TO_MAIN_MENU, null, rootMenu);
 
-        Menu bookMenu = new Menu();
-        bookMenu.setName("Book menu");
+        Menu showAllBooksMenu = new Menu(MenuNameConstant.SHOW_ALL_BOOKS);
+        Menu showAllOrdersMenu = new Menu(MenuNameConstant.SHOW_ALL_ORDERS);
+        Menu showAllRequestsMenu = new Menu(MenuNameConstant.SHOW_ALL_REQUESTS);
 
-        Menu orderMenu = new Menu();
-        orderMenu.setName("Order menu");
+        MenuItem bookMenuItem = new MenuItem(MenuNameConstant.BOOK_MENU, null, bookMenu);
+        MenuItem orderMenuItem = new MenuItem(MenuNameConstant.ORDER_MENU, null, orderMenu);
+        MenuItem requestMenuItem = new MenuItem(MenuNameConstant.REQUEST_MENU, null, requestMenu);
+        MenuItem exitMenuItem = new MenuItem(MenuNameConstant.EXIT, null, null);
 
-        Menu requestMenu = new Menu();
-        requestMenu.setName("Request menu");
+        Collections.addAll(rootMenu.getMenuItems(), bookMenuItem, orderMenuItem, requestMenuItem, exitMenuItem);
 
-        MenuItem bookMenuItem = new MenuItem();
-        bookMenuItem.setTitle("Book menu");
-        bookMenuItem.setNextMenu(bookMenu);
-        rootMenu.getMenuItems().add(bookMenuItem);
+        MenuItem allBooksSortByTitle = new MenuItem(MenuNameConstant.SORT_BY_TITLE, new ShowAllBooksSortByTitleAction(),
+                showAllBooksMenu);
+        MenuItem allBooksSortByPrice = new MenuItem(MenuNameConstant.SORT_BY_PRICE, new ShowAllBooksSortByPriceAction(),
+                showAllBooksMenu);
+        MenuItem allBooksSortByAvailability = new MenuItem(MenuNameConstant.SORT_BY_AVAILABILITY, ActionType.SHOW_ALL_BOOKS_SORT_BY_AVAILABILITY.getAction(), showAllBooksMenu);
+        MenuItem allBooksSortByEditionDate = new MenuItem(MenuNameConstant.SORT_BY_EDITION_DATE,
+                new ShowAllBooksSortByEditionAction(), showAllBooksMenu);
+        MenuItem allBooksSortByReplenishmentDate = new MenuItem(MenuNameConstant.SORT_BY_REPLENISHMENT_DATE,
+                new ShowAllBooksSortByReplenishmentAction(), showAllBooksMenu);
+        MenuItem previousBookMenuItem = new MenuItem(MenuNameConstant.BACK_TO_BOOK_MENU, null, bookMenu);
 
-        MenuItem orderMenuItem = new MenuItem();
-        orderMenuItem.setTitle("Order menu");
-        orderMenuItem.setNextMenu(orderMenu);
-        rootMenu.getMenuItems().add(orderMenuItem);
+        Collections.addAll(showAllBooksMenu.getMenuItems(), allBooksSortByTitle, allBooksSortByPrice,
+                allBooksSortByAvailability,
+                allBooksSortByEditionDate, allBooksSortByReplenishmentDate, previousBookMenuItem);
 
-        MenuItem requestMenuItem = new MenuItem();
-        requestMenuItem.setTitle("Request menu");
-        requestMenuItem.setNextMenu(requestMenu);
-        rootMenu.getMenuItems().add(requestMenuItem);
+        MenuItem showAllBooksMenuItem = new MenuItem(MenuNameConstant.SHOW_ALL_BOOKS, null, showAllBooksMenu);
+        MenuItem showBookDescriptionItem = new MenuItem(MenuNameConstant.SHOW_BOOK_DESCRIPTION, new ShowBookDescriptionAction(),
+                bookMenu);
+        MenuItem replenishBookItem = new MenuItem(MenuNameConstant.REPLENISH_BOOK, new ReplenishBookAction(), bookMenu);
+        MenuItem writeOffBookItem = new MenuItem(MenuNameConstant.WRITE_OFF_BOOK, new WriteOffBookAction(), bookMenu);
+        MenuItem findStaleBooksMenuItem = new MenuItem(MenuNameConstant.SHOW_STALE_BOOKS, new FindStaleBooksAction(), bookMenu);
+        MenuItem findSoldBooksItem = new MenuItem(MenuNameConstant.SHOW_SOLD_BOOKS_BETWEEN_DATES,
+                new FindSoldBooksBetweenDatesAction(), bookMenu);
+        MenuItem findUnsoldBooksItem = new MenuItem(MenuNameConstant.SHOW_UNSOLD_BOOKS_BETWEEN_DATES,
+                new FindUnsoldBooksBetweenDatesAction(), bookMenu);
 
-        MenuItem exitMenuItem = new MenuItem();
-        exitMenuItem.setTitle("Exit");
-        rootMenu.getMenuItems().add(exitMenuItem);
+        Collections.addAll(bookMenu.getMenuItems(), showAllBooksMenuItem, showBookDescriptionItem, replenishBookItem,
+                writeOffBookItem, findStaleBooksMenuItem, findSoldBooksItem, findUnsoldBooksItem, previousRootMenuItem);
 
+        MenuItem allOrdersByStateMenuItem = new MenuItem(MenuNameConstant.SORT_BY_STATE, new ShowAllOrdersSortByStateAction(),
+                showAllOrdersMenu);
+        MenuItem allOrdersByPriceMenuItem = new MenuItem(MenuNameConstant.SORT_BY_PRICE, new ShowAllOrdersSortByPriceAction(),
+                showAllOrdersMenu);
+        MenuItem allOrdersByCompletionMenuItem = new MenuItem(MenuNameConstant.SORT_BY_COMPLETION_DATE,
+                new ShowAllOrdersSortByCompletionDateAction(), showAllOrdersMenu);
+        MenuItem previousOrderMenuItem = new MenuItem(MenuNameConstant.BACK_TO_ORDER_MENU, null, orderMenu);
 
-        MenuItem previousRootMenuItem = new MenuItem();
-        previousRootMenuItem.setTitle("Back to Main menu");
-        previousRootMenuItem.setNextMenu(rootMenu);
+        Collections.addAll(showAllOrdersMenu.getMenuItems(), allOrdersByStateMenuItem, allOrdersByPriceMenuItem,
+                allOrdersByCompletionMenuItem, previousOrderMenuItem);
 
+        MenuItem showAllOrdersMenuItem = new MenuItem(MenuNameConstant.SHOW_ALL_ORDERS, null, showAllOrdersMenu);
+        MenuItem cancelOrderMenuItem = new MenuItem(MenuNameConstant.CANCEL_ORDER, new CancelOrderAction(), orderMenu);
+        MenuItem createOrderMenuItem = new MenuItem(MenuNameConstant.CREATE_ORDER, new CreateOrderAction(), orderMenu);
+        MenuItem completeOrderMenuItem = new MenuItem(MenuNameConstant.COMPLETE_ORDER, new CompleteOrderAction(), orderMenu);
+        MenuItem showCompletedOrdersNumberMenuItem = new MenuItem(MenuNameConstant.SHOW_COMPLETED_ORDERS_NUMBER_BETWEEN_DATES,
+                new ShowCompletedOrdersNumberBetweenDatesAction(), orderMenu);
+        MenuItem showCompletedOrdersMenuItem = new MenuItem(MenuNameConstant.SHOW_COMPLETED_ORDERS_BETWEEN_DATES,
+                new ShowCompletedOrdersBetweenDatesAction(), orderMenu);
+        MenuItem showOrderDetailsMenuItem = new MenuItem(MenuNameConstant.SHOW_ORDER_DETAILS, new ShowOrderDetailsAction(),
+                orderMenu);
+        MenuItem showProfitBetweenDatesMenuItem = new MenuItem(MenuNameConstant.SHOW_PROFIT_BETWEEN_DATES,
+                new ShowProfitBetweenDatesAction(), orderMenu);
 
-        ////////////////////////////////
-        Menu showAllBooksMenu = new Menu();
-        showAllBooksMenu.setName("Show all books");
+        Collections.addAll(orderMenu.getMenuItems(), showAllOrdersMenuItem, createOrderMenuItem, completeOrderMenuItem,
+                cancelOrderMenuItem, showOrderDetailsMenuItem,
+                showProfitBetweenDatesMenuItem, showCompletedOrdersMenuItem, showCompletedOrdersNumberMenuItem,
+                previousRootMenuItem);
 
-        MenuItem allBooksSortByTitle = new MenuItem();
-        allBooksSortByTitle.setTitle("Sort by title");
-        allBooksSortByTitle.setAction(new ShowAllBooksSortByTitleAction());
-        allBooksSortByTitle.setNextMenu(showAllBooksMenu);
-        showAllBooksMenu.getMenuItems().add(allBooksSortByTitle);
+        MenuItem allRequestsSortByBookTitleMenuItem = new MenuItem(MenuNameConstant.SORT_BY_BOOK_TITLE,
+                new ShowAllRequestsSortByBookTitleAction(), showAllRequestsMenu);
+        MenuItem allRequestsSortByIsActiveMenuItem = new MenuItem(MenuNameConstant.SORT_BY_STATE,
+                new ShowAllRequestsSortByIsActiveAction(), showAllRequestsMenu);
+        MenuItem allRequestsSortByRequesterDataMenuItem = new MenuItem(MenuNameConstant.SORT_BY_REQUESTER_DATA,
+                new ShowAllRequestsSortByRequesterDataAction(), showAllRequestsMenu);
+        MenuItem previousRequestMenuItem = new MenuItem(MenuNameConstant.BACK_TO_REQUEST_MENU, null, requestMenu);
 
-        MenuItem allBooksSortByPrice = new MenuItem();
-        allBooksSortByPrice.setTitle("Sort by price");
-        allBooksSortByPrice.setAction(new ShowAllBooksSortByPriceAction());
-        allBooksSortByPrice.setNextMenu(showAllBooksMenu);
-        showAllBooksMenu.getMenuItems().add(allBooksSortByPrice);
+        Collections.addAll(showAllRequestsMenu.getMenuItems(), allRequestsSortByBookTitleMenuItem,
+                allRequestsSortByIsActiveMenuItem, allRequestsSortByRequesterDataMenuItem, previousRequestMenuItem);
 
-        MenuItem allBooksSortByAvailability = new MenuItem();
-        allBooksSortByAvailability.setTitle("Sort by availability");
-        allBooksSortByAvailability.setAction(new ShowAllBooksSortByAvailabilityAction());
-        allBooksSortByAvailability.setNextMenu(showAllBooksMenu);
-        showAllBooksMenu.getMenuItems().add(allBooksSortByAvailability);
+        MenuItem showAllRequestsMenuItem = new MenuItem(MenuNameConstant.SHOW_ALL_REQUESTS, null, showAllRequestsMenu);
+        MenuItem createRequestMenuItem = new MenuItem(MenuNameConstant.CREATE_REQUEST, new CreateRequestAction(), requestMenu);
 
-        MenuItem allBooksSortByEditionDate = new MenuItem();
-        allBooksSortByEditionDate.setTitle("Sort by edition date");
-        allBooksSortByEditionDate.setAction(new ShowAllBooksSortByEditionAction());
-        allBooksSortByEditionDate.setNextMenu(showAllBooksMenu);
-        showAllBooksMenu.getMenuItems().add(allBooksSortByEditionDate);
-
-        MenuItem allBooksSortByReplenishmentDate = new MenuItem();
-        allBooksSortByReplenishmentDate.setTitle("Sort by replenishment date");
-        allBooksSortByReplenishmentDate.setAction(new ShowAllBooksSortByReplenishmentAction());
-        allBooksSortByReplenishmentDate.setNextMenu(showAllBooksMenu);
-        showAllBooksMenu.getMenuItems().add(allBooksSortByReplenishmentDate);
-
-        MenuItem previousBookMenuItem = new MenuItem();
-        previousBookMenuItem.setTitle("Back to Book menu");
-        previousBookMenuItem.setNextMenu(bookMenu);
-        showAllBooksMenu.getMenuItems().add(previousBookMenuItem);
-        /////////////////////////////////////
-
-        MenuItem showAllBooksMenuItem = new MenuItem();
-        showAllBooksMenuItem.setTitle("Show all books");
-        showAllBooksMenuItem.setNextMenu(showAllBooksMenu);
-
-        MenuItem showBookDescriptionItem = new MenuItem();
-        showBookDescriptionItem.setTitle("Show book description");
-        showBookDescriptionItem.setNextMenu(bookMenu);
-        showBookDescriptionItem.setAction(new ShowBookDescriptionAction());
-
-        MenuItem replenishBookItem = new MenuItem();
-        replenishBookItem.setTitle("Replenish book");
-        replenishBookItem.setNextMenu(bookMenu);
-        replenishBookItem.setAction(new ReplenishBookAction());
-
-        MenuItem writeOffBookItem = new MenuItem();
-        writeOffBookItem.setTitle("Write off book");
-        writeOffBookItem.setNextMenu(bookMenu);
-        writeOffBookItem.setAction(new WriteOffBookAction());
-
-        MenuItem findStaleBooksMenuItem = new MenuItem();
-        findStaleBooksMenuItem.setTitle("Show stale books");
-        findStaleBooksMenuItem.setAction(new FindStaleBooksAction());
-        findStaleBooksMenuItem.setNextMenu(bookMenu);
-
-        MenuItem findSoldBooksItem = new MenuItem();
-        findSoldBooksItem.setTitle("Show sold books between dates");
-        findSoldBooksItem.setAction(new FindSoldBooksBetweenDatesAction());
-        findSoldBooksItem.setNextMenu(bookMenu);
-
-        MenuItem findUnsoldBooksItem = new MenuItem();
-        findUnsoldBooksItem.setTitle("Show unsold books between dates");
-        findUnsoldBooksItem.setAction(new FindUnsoldBooksBetweenDatesAction());
-        findUnsoldBooksItem.setNextMenu(bookMenu);
-
-
-        bookMenu.getMenuItems().add(showAllBooksMenuItem);
-        bookMenu.getMenuItems().add(showBookDescriptionItem);
-        bookMenu.getMenuItems().add(replenishBookItem);
-        bookMenu.getMenuItems().add(writeOffBookItem);
-        bookMenu.getMenuItems().add(findStaleBooksMenuItem);
-        bookMenu.getMenuItems().add(findSoldBooksItem);
-        bookMenu.getMenuItems().add(findUnsoldBooksItem);
-        bookMenu.getMenuItems().add(previousRootMenuItem);
-
-        ///////////////////////////////
-        Menu showAllOrdersMenu = new Menu();
-        showAllOrdersMenu.setName("Show all orders");
-
-        MenuItem allOrdersByStateMenuItem = new MenuItem();
-        allOrdersByStateMenuItem.setTitle("Sort by state");
-        allOrdersByStateMenuItem.setAction(new ShowAllOrdersSortByStateAction());
-        allOrdersByStateMenuItem.setNextMenu(showAllOrdersMenu);
-        showAllOrdersMenu.getMenuItems().add(allOrdersByStateMenuItem);
-
-        MenuItem allOrdersByPriceMenuItem = new MenuItem();
-        allOrdersByPriceMenuItem.setTitle("Sort by price");
-        allOrdersByPriceMenuItem.setAction(new ShowAllOrdersSortByPriceAction());
-        allOrdersByPriceMenuItem.setNextMenu(showAllOrdersMenu);
-        showAllOrdersMenu.getMenuItems().add(allOrdersByPriceMenuItem);
-
-        MenuItem allOrdersByCompletionMenuItem = new MenuItem();
-        allOrdersByCompletionMenuItem.setTitle("Sort by completion date");
-        allOrdersByCompletionMenuItem.setAction(new ShowAllOrdersSortByCompletionDateAction());
-        allOrdersByCompletionMenuItem.setNextMenu(showAllOrdersMenu);
-        showAllOrdersMenu.getMenuItems().add(allOrdersByCompletionMenuItem);
-
-        MenuItem previousOrderMenuItem = new MenuItem();
-        previousOrderMenuItem.setTitle("Back to Order menu");
-        previousOrderMenuItem.setNextMenu(orderMenu);
-        showAllOrdersMenu.getMenuItems().add(previousOrderMenuItem);
-        //////////////////////////////
-
-        MenuItem showAllOrdersMenuItem = new MenuItem();
-        showAllOrdersMenuItem.setTitle("Show all orders");
-        showAllOrdersMenuItem.setNextMenu(showAllOrdersMenu);
-
-        MenuItem cancelOrderMenuItem = new MenuItem();
-        cancelOrderMenuItem.setTitle("Cancel order");
-        cancelOrderMenuItem.setAction(new CancelOrderAction());
-        cancelOrderMenuItem.setNextMenu(orderMenu);
-
-        MenuItem createOrderMenuItem = new MenuItem();
-        createOrderMenuItem.setTitle("Create order");
-        createOrderMenuItem.setAction(new CreateOrderAction());
-        createOrderMenuItem.setNextMenu(orderMenu);
-
-        MenuItem completeOrderMenuItem = new MenuItem();
-        completeOrderMenuItem.setTitle("Complete order");
-        completeOrderMenuItem.setAction(new CompleteOrderAction());
-        completeOrderMenuItem.setNextMenu(orderMenu);
-
-        MenuItem showCompletedOrdersNumberMenuItem = new MenuItem();
-        showCompletedOrdersNumberMenuItem.setTitle("Show completed orders number between dates");
-        showCompletedOrdersNumberMenuItem.setAction(new ShowCompletedOrdersNumberBetweenDatesAction());
-        showCompletedOrdersNumberMenuItem.setNextMenu(orderMenu);
-
-        MenuItem showCompletedOrdersMenuItem = new MenuItem();
-        showCompletedOrdersMenuItem.setTitle("Show completed orders between dates");
-        showCompletedOrdersMenuItem.setAction(new ShowCompletedOrdersBetweenDatesAction());
-        showCompletedOrdersMenuItem.setNextMenu(orderMenu);
-
-        MenuItem showOrderDetailsMenuItem = new MenuItem();
-        showOrderDetailsMenuItem.setTitle("Show order details");
-        showOrderDetailsMenuItem.setAction(new ShowOrderDetailsAction());
-        showOrderDetailsMenuItem.setNextMenu(orderMenu);
-
-        MenuItem showProfitBetweenDatesMenuItem = new MenuItem();
-        showProfitBetweenDatesMenuItem.setTitle("Show profit between dates");
-        showProfitBetweenDatesMenuItem.setAction(new ShowProfitBetweenDatesAction());
-        showProfitBetweenDatesMenuItem.setNextMenu(orderMenu);
-
-        orderMenu.getMenuItems().add(showAllOrdersMenuItem);
-        orderMenu.getMenuItems().add(createOrderMenuItem);
-        orderMenu.getMenuItems().add(completeOrderMenuItem);
-        orderMenu.getMenuItems().add(cancelOrderMenuItem);
-        orderMenu.getMenuItems().add(showOrderDetailsMenuItem);
-        orderMenu.getMenuItems().add(showProfitBetweenDatesMenuItem);
-        orderMenu.getMenuItems().add(showCompletedOrdersMenuItem);
-        orderMenu.getMenuItems().add(showCompletedOrdersNumberMenuItem);
-        orderMenu.getMenuItems().add(previousRootMenuItem);
-
-        ///////////////////////////////
-        Menu showAllRequestsMenu = new Menu();
-        showAllRequestsMenu.setName("Show all requests");
-
-        MenuItem allRequestsSortByBookTitleMenuItem = new MenuItem();
-        allRequestsSortByBookTitleMenuItem.setTitle("Sort by book title");
-        allRequestsSortByBookTitleMenuItem.setAction(new ShowAllRequestsSortByBookTitleAction());
-        allRequestsSortByBookTitleMenuItem.setNextMenu(showAllRequestsMenu);
-        showAllRequestsMenu.getMenuItems().add(allRequestsSortByBookTitleMenuItem);
-
-        MenuItem allRequestsSortByIsActiveMenuItem = new MenuItem();
-        allRequestsSortByIsActiveMenuItem.setTitle("Sort by state");
-        allRequestsSortByIsActiveMenuItem.setAction(new ShowAllRequestsSortByIsActiveAction());
-        allRequestsSortByIsActiveMenuItem.setNextMenu(showAllRequestsMenu);
-        showAllRequestsMenu.getMenuItems().add(allRequestsSortByIsActiveMenuItem);
-
-        MenuItem allRequestsSortByRequesterDataMenuItem = new MenuItem();
-        allRequestsSortByRequesterDataMenuItem.setTitle("Sort by requester data");
-        allRequestsSortByRequesterDataMenuItem.setAction(new ShowAllRequestsSortByRequesterDataAction());
-        allRequestsSortByRequesterDataMenuItem.setNextMenu(showAllRequestsMenu);
-        showAllRequestsMenu.getMenuItems().add(allRequestsSortByRequesterDataMenuItem);
-
-        MenuItem previousRequestMenuItem = new MenuItem();
-        previousRequestMenuItem.setTitle("Back to Request menu");
-        previousRequestMenuItem.setNextMenu(requestMenu);
-        showAllRequestsMenu.getMenuItems().add(previousRequestMenuItem);
-        //////////////////////////////
-
-        MenuItem showAllRequestsMenuItem = new MenuItem();
-        showAllRequestsMenuItem.setTitle("Show all requests");
-        showAllRequestsMenuItem.setNextMenu(showAllRequestsMenu);
-
-        MenuItem createRequestMenuItem = new MenuItem();
-        createRequestMenuItem.setTitle("Create request");
-        createRequestMenuItem.setAction(new CreateRequestAction());
-        createRequestMenuItem.setNextMenu(requestMenu);
-
-        requestMenu.getMenuItems().add(showAllRequestsMenuItem);
-        requestMenu.getMenuItems().add(createRequestMenuItem);
-        requestMenu.getMenuItems().add(previousRootMenuItem);
+        Collections.addAll(requestMenu.getMenuItems(), showAllRequestsMenuItem, createRequestMenuItem,
+                previousRootMenuItem);
     }
 
     public Menu getRootMenu() {
         return rootMenu;
     }
-
 }

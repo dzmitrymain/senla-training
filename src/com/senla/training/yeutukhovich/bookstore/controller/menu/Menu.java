@@ -16,9 +16,8 @@ public class Menu {
 
     }
 
-    public Menu(String name, List<MenuItem> menuItems) {
+    public Menu(String name) {
         this.name = name;
-        this.menuItems = menuItems;
     }
 
     public String getName() {
@@ -36,4 +35,5 @@ public class Menu {
     public void setMenuItems(List<MenuItem> menuItems) {
         this.menuItems = menuItems;
     }
+
 }
