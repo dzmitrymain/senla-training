@@ -19,9 +19,9 @@ public enum ActionType {
     SHOW_ALL_BOOKS_SORT_BY_REPLENISHMENT_DATE(new ShowAllBooksSortByReplenishmentAction()),
     SHOW_ALL_BOOKS_SORT_BY_TITLE(new ShowAllBooksSortByTitleAction()),
 
-    FIND_SOLD_BOOKS_BETWEEN_DATES(new FindSoldBooksBetweenDatesAction()),
-    FIND_STALE_BOOKS(new FindStaleBooksAction()),
-    FIND_UNSOLD_BOOKS_BETWEEN_DATES(new FindUnsoldBooksBetweenDatesAction()),
+    SHOW_SOLD_BOOKS_BETWEEN_DATES(new ShowSoldBooksBetweenDatesAction()),
+    SHOW_STALE_BOOKS(new ShowStaleBooksAction()),
+    SHOW_UNSOLD_BOOKS_BETWEEN_DATES(new ShowUnsoldBooksBetweenDatesAction()),
     REPLENISH_BOOK(new ReplenishBookAction()),
     SHOW_BOOK_DESCRIPTION(new ShowBookDescriptionAction()),
     WRITE_OFF_BOOK(new WriteOffBookAction()),

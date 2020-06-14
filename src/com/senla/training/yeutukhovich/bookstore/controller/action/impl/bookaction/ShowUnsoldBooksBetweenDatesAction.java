@@ -10,7 +10,7 @@ import com.senla.training.yeutukhovich.bookstore.util.reader.InputReader;
 import java.util.Arrays;
 import java.util.Date;
 
-public class FindUnsoldBooksBetweenDatesAction implements Action {
+public class ShowUnsoldBooksBetweenDatesAction implements Action {
 
     @Override
     public void execute() {

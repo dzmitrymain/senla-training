@@ -10,7 +10,7 @@ import com.senla.training.yeutukhovich.bookstore.util.printer.EntityPrinter;
 import java.util.Arrays;
 import java.util.Date;
 
-public class FindSoldBooksBetweenDatesAction implements Action {
+public class ShowSoldBooksBetweenDatesAction implements Action {
 
     @Override
     public void execute() {

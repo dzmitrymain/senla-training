@@ -7,7 +7,7 @@ import com.senla.training.yeutukhovich.bookstore.util.printer.EntityPrinter;
 
 import java.util.Arrays;
 
-public class FindStaleBooksAction implements Action {
+public class ShowStaleBooksAction implements Action {
 
     @Override
     public void execute() {

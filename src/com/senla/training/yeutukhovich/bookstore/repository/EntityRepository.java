@@ -7,6 +7,7 @@ import com.senla.training.yeutukhovich.bookstore.domain.Request;
 import com.senla.training.yeutukhovich.bookstore.util.initializer.EntityInitializer;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class EntityRepository<T extends AbstractEntity> {
 
