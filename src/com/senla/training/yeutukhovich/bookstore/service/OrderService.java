@@ -12,9 +12,9 @@ public interface OrderService {
 
     Order createOrder(Long bookId, String customerData);
 
-    void cancelOrder(Long orderId);
+    boolean cancelOrder(Long orderId);
 
-    void completeOrder(Long orderId);
+    boolean completeOrder(Long orderId);
 
     List<Order> findAllOrders(Comparator<Order> orderComparator);
 

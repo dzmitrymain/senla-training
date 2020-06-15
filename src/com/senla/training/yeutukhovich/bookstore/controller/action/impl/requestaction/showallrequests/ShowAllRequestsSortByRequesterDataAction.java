@@ -4,13 +4,13 @@ import com.senla.training.yeutukhovich.bookstore.controller.action.Action;
 import com.senla.training.yeutukhovich.bookstore.service.RequestService;
 import com.senla.training.yeutukhovich.bookstore.service.impl.RequestServiceImpl;
 import com.senla.training.yeutukhovich.bookstore.util.comparator.request.RequesterDataRequestComparator;
-import com.senla.training.yeutukhovich.bookstore.util.printer.ResponsePrinter;
+import com.senla.training.yeutukhovich.bookstore.util.printer.EntityPrinter;
 
 public class ShowAllRequestsSortByRequesterDataAction implements Action {
 
     @Override
     public void execute() {
         RequestService requestService = RequestServiceImpl.getInstance();
-        ResponsePrinter.printEntities(requestService.findAllRequests(RequesterDataRequestComparator.getInstance()));
+        EntityPrinter.printEntities(requestService.findAllRequests(RequesterDataRequestComparator.getInstance()));
     }
 }

@@ -4,24 +4,25 @@ import com.senla.training.yeutukhovich.bookstore.controller.action.Action;
 import com.senla.training.yeutukhovich.bookstore.service.OrderService;
 import com.senla.training.yeutukhovich.bookstore.service.dto.OrderDetails;
 import com.senla.training.yeutukhovich.bookstore.service.impl.OrderServiceImpl;
+import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 import com.senla.training.yeutukhovich.bookstore.util.reader.InputReader;
 
 public class ShowOrderDetailsAction implements Action {
 
     @Override
     public void execute() {
-
         OrderService orderService = OrderServiceImpl.getInstance();
 
-        System.out.println("Please, enter order id: ");
+        System.out.println(MessageConstant.ENTER_ORDER_ID);
         Long id = InputReader.readInputLong();
 
-        OrderDetails orderDetails = null;
         if (id != null) {
-            orderDetails = orderService.showOrderDetails(id);
-        }
-        if (orderDetails != null) {
-            System.out.println(orderDetails);
+            OrderDetails orderDetails = orderService.showOrderDetails(id);
+            if (orderDetails != null) {
+                System.out.println(orderDetails);
+            } else {
+                System.out.println(MessageConstant.ORDER_DETAILS_WAS_NOT_FOUND);
+            }
         }
     }
 }

@@ -4,7 +4,7 @@ import com.senla.training.yeutukhovich.bookstore.controller.action.Action;
 import com.senla.training.yeutukhovich.bookstore.service.BookService;
 import com.senla.training.yeutukhovich.bookstore.service.impl.BookServiceImpl;
 import com.senla.training.yeutukhovich.bookstore.util.comparator.book.AvailabilityBookComparator;
-import com.senla.training.yeutukhovich.bookstore.util.printer.ResponsePrinter;
+import com.senla.training.yeutukhovich.bookstore.util.printer.EntityPrinter;
 
 public class ShowAllBooksSortByAvailabilityAction implements Action {
 
@@ -12,6 +12,6 @@ public class ShowAllBooksSortByAvailabilityAction implements Action {
     public void execute() {
         BookService bookService = BookServiceImpl.getInstance();
 
-        ResponsePrinter.printEntities(bookService.findAllBooks(AvailabilityBookComparator.getInstance()));
+        EntityPrinter.printEntities(bookService.findAllBooks(AvailabilityBookComparator.getInstance()));
     }
 }

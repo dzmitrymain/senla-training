@@ -9,9 +9,9 @@ import java.util.List;
 
 public interface BookService {
 
-    void replenishBook(Long id);
+    boolean replenishBook(Long id);
 
-    void writeOffBook(Long id);
+    boolean writeOffBook(Long id);
 
     List<Book> findAllBooks(Comparator<Book> bookComparator);
 

@@ -5,6 +5,7 @@ import com.senla.training.yeutukhovich.bookstore.util.generator.IdGenerator;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Objects;
 
 public class Order extends AbstractEntity {
 
@@ -69,28 +70,44 @@ public class Order extends AbstractEntity {
     }
 
     @Override
-    public Order clone() {
-        Order newOrder = (Order) super.clone();
-        newOrder.book = this.book.clone();
-        if (this.creationDate != null) {
-            newOrder.creationDate = new Date(this.creationDate.getTime());
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
         }
-        if (this.completionDate != null) {
-            newOrder.completionDate = new Date(this.completionDate.getTime());
+        if (o == null || getClass() != o.getClass()) {
+            return false;
         }
-        return newOrder;
+        Order order = (Order) o;
+        if (state != order.state) {
+            return false;
+        }
+        if (!Objects.equals(book, order.book)) {
+            return false;
+        }
+        if (!Objects.equals(currentBookPrice, order.currentBookPrice)) {
+            return false;
+        }
+        if (!Objects.equals(creationDate, order.creationDate)) {
+            return false;
+        }
+        return Objects.equals(customerData, order.customerData);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = state != null ? state.hashCode() : 0;
+        result = 31 * result + (book != null ? book.hashCode() : 0);
+        result = 31 * result + (currentBookPrice != null ? currentBookPrice.hashCode() : 0);
+        result = 31 * result + (creationDate != null ? creationDate.hashCode() : 0);
+        result = 31 * result + (customerData != null ? customerData.hashCode() : 0);
+        return result;
     }
 
     @Override
     public String toString() {
-        return "Order{" +
-                "state=" + state +
-                ", book=" + book +
-                ", currentBookPrice=" + currentBookPrice +
-                ", creationDate=" + creationDate +
-                ", completionDate=" + completionDate +
-                ", customerData='" + customerData + '\'' +
-                ", id=" + id +
-                '}';
+        return "Order [id=" + id +
+                ", state=" + state +
+                ", customer data='" + customerData +
+                "', book title='" + book.getTitle() + "']";
     }
 }

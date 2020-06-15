@@ -2,6 +2,8 @@ package com.senla.training.yeutukhovich.bookstore.domain;
 
 import com.senla.training.yeutukhovich.bookstore.util.generator.IdGenerator;
 
+import java.util.Objects;
+
 public class Request extends AbstractEntity {
 
     private Book book;
@@ -36,19 +38,37 @@ public class Request extends AbstractEntity {
     }
 
     @Override
-    public Request clone() {
-        Request newRequest = (Request) super.clone();
-        newRequest.book = this.book.clone();
-        return newRequest;
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Request request = (Request) o;
+        if (!Objects.equals(book, request.book)) {
+            return false;
+        }
+        if (!Objects.equals(isActive, request.isActive)) {
+            return false;
+        }
+        return Objects.equals(requesterData, request.requesterData);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = book != null ? book.hashCode() : 0;
+        result = 31 * result + (isActive != null ? isActive.hashCode() : 0);
+        result = 31 * result + (requesterData != null ? requesterData.hashCode() : 0);
+        return result;
     }
 
     @Override
     public String toString() {
-        return "Request{" +
-                "book=" + book +
-                ", isActive=" + isActive +
-                ", requesterData='" + requesterData + '\'' +
-                ", id=" + id +
-                '}';
+        return "Request [id=" + id +
+                ", book title=" + book.getTitle() +
+                ", is active=" + isActive +
+                ", requester data='" + requesterData +
+                "']";
     }
 }

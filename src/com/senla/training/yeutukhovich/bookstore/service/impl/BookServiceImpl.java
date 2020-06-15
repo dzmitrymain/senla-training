@@ -40,7 +40,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void replenishBook(Long id) {
+    public boolean replenishBook(Long id) {
         Book checkedBook = bookRepository.findById(id);
         if (checkedBook != null && !checkedBook.isAvailable()) {
             checkedBook.setAvailable(true);
@@ -48,28 +48,27 @@ public class BookServiceImpl implements BookService {
             bookRepository.update(checkedBook);
             closeRequests(checkedBook);
             updateOrders(checkedBook);
-            System.out.println("Book: {" + checkedBook.getTitle() +
-                    "} has been replenished. All requests has been closed.");
+            return true;
         }
+        return false;
     }
 
     @Override
-    public void writeOffBook(Long id) {
+    public boolean writeOffBook(Long id) {
         Book checkedBook = bookRepository.findById(id);
         if (checkedBook != null && checkedBook.isAvailable()) {
             checkedBook.setAvailable(false);
             bookRepository.update(checkedBook);
             updateOrders(checkedBook);
-            System.out.println("Book {" + checkedBook.getTitle() + "} has been written off.");
+            return true;
         }
+        return false;
     }
 
     @Override
     public List<Book> findAllBooks(Comparator<Book> bookComparator) {
         List<Book> books = bookRepository.findAll();
-        books=books.stream().sorted(bookComparator).collect(Collectors.toList());
-        System.out.println("All books has been found.");
-        return books;
+        return books.stream().sorted(bookComparator).collect(Collectors.toList());
     }
 
     @Override
@@ -79,10 +78,7 @@ public class BookServiceImpl implements BookService {
         for (Order order : completedOrders) {
             books.add(order.getBook());
         }
-        books = books.stream().distinct().collect(Collectors.toList());
-
-        System.out.println("Sold books between dates has been found.");
-        return books;
+        return books.stream().distinct().collect(Collectors.toList());
     }
 
     @Override
@@ -90,10 +86,7 @@ public class BookServiceImpl implements BookService {
         List<Book> soldBooks = findSoldBooksBetweenDates(startDate, endDate);
         List<Book> books = findAllBooks(new TitleBookComparator());
 
-        books = books.stream().filter(book -> !soldBooks.contains(book)).collect(Collectors.toList());
-
-        System.out.println("Unsold books between dates has been found.");
-        return books;
+        return books.stream().filter(book -> !soldBooks.contains(book)).collect(Collectors.toList());
     }
 
     @Override
@@ -104,22 +97,20 @@ public class BookServiceImpl implements BookService {
         Date staleDate = new Date(calendar.getTimeInMillis());
 
         List<Book> unsoldBooks = findUnsoldBooksBetweenDates(staleDate, currentDate);
-
-        unsoldBooks = unsoldBooks.stream().filter(book -> book.getReplenishmentDate() != null &&
+        return unsoldBooks.stream().filter(book -> book.getReplenishmentDate() != null &&
                 book.getReplenishmentDate().before(staleDate)).collect(Collectors.toList());
-        System.out.println("Stale books has been found.");
-        return unsoldBooks;
     }
 
     @Override
     public BookDescription showBookDescription(Long id) {
         Book checkedBook = bookRepository.findById(id);
-        BookDescription bookDescription = new BookDescription();
+        BookDescription bookDescription = null;
         if (checkedBook != null) {
-            bookDescription.setTitle(checkedBook.toString());
+            bookDescription = new BookDescription();
+            bookDescription.setTitle(checkedBook.getTitle());
             bookDescription.setEditionDate(checkedBook.getEditionDate());
+            bookDescription.setReplenishmentDate(checkedBook.getReplenishmentDate());
         }
-        System.out.println("Book description has been found.");
         return bookDescription;
     }
 
@@ -129,7 +120,6 @@ public class BookServiceImpl implements BookService {
             if (request != null && request.isActive() && request.getBook().getId().equals(book.getId())) {
                 request.setActive(false);
                 requestRepository.update(request);
-                System.out.println("All book's requests {" + book.getTitle() + "} has been closed.");
             }
         }
     }
@@ -146,11 +136,8 @@ public class BookServiceImpl implements BookService {
 
     private List<Order> findCompletedOrdersBetweenDates(Date startDate, Date endDate) {
         List<Order> orders = orderRepository.findAll();
-        List<Order> desiredOrders = orders.stream().filter((order) -> order.getState() == OrderState.COMPLETED &&
+        return orders.stream().filter((order) -> order.getState() == OrderState.COMPLETED &&
                 order.getCompletionDate().after(startDate) &&
                 order.getCompletionDate().before(endDate)).collect(Collectors.toList());
-
-        System.out.println("Completed orders between dates has been found.");
-        return desiredOrders;
     }
 }

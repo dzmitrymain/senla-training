@@ -2,6 +2,7 @@ package com.senla.training.yeutukhovich.bookstore.controller.menu.navigator;
 
 import com.senla.training.yeutukhovich.bookstore.controller.menu.Menu;
 import com.senla.training.yeutukhovich.bookstore.controller.menu.MenuItem;
+import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 
 public class MenuNavigator {
 
@@ -26,15 +27,14 @@ public class MenuNavigator {
     public void printMenu() {
 
         System.out.println();
-        System.out.println("====================");
-        System.out.println("    "+currentMenu.getName());
-        System.out.println("--------------------");
+        System.out.println(MessageConstant.MENU_BORDER);
+        System.out.println("        "+currentMenu.getName());
+        System.out.println(MessageConstant.MENU_ITEM_BORDER);
         int firstMenuIndex = 1;
         for (MenuItem menuItem : currentMenu.getMenuItems()) {
             System.out.println(firstMenuIndex++ + ". " + menuItem.getTitle());
         }
-
-        System.out.println("====================");
+        System.out.println(MessageConstant.MENU_BORDER);
         System.out.println();
     }
 

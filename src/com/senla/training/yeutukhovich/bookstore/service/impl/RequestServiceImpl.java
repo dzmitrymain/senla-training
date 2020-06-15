@@ -38,7 +38,6 @@ public class RequestServiceImpl implements RequestService {
         if (checkedBook != null && !checkedBook.isAvailable()) {
             Request request = new Request(checkedBook, requesterData);
             requestRepository.add(request);
-            System.out.println("Request {" + checkedBook.getTitle() + "} has been created.");
             return request;
         }
         return null;

@@ -49,50 +49,46 @@ public class OrderServiceImpl implements OrderService {
             }
             Order order = new Order(checkedBook, customerData);
             orderRepository.add(order);
-            System.out.println("Order {" + checkedBook.getTitle() + "} has been created.");
             return order;
         }
         return null;
     }
 
     @Override
-    public void cancelOrder(Long orderId) {
+    public boolean cancelOrder(Long orderId) {
         Order checkedOrder = orderRepository.findById(orderId);
         if (checkedOrder != null && checkedOrder.getState() == OrderState.CREATED) {
             checkedOrder.setState(OrderState.CANCELED);
             orderRepository.update(checkedOrder);
-            System.out.println("Order {" + checkedOrder.getBook().getTitle() + "} has been canceled.");
+            return true;
         }
+        return false;
     }
 
     @Override
-    public void completeOrder(Long orderId) {
+    public boolean completeOrder(Long orderId) {
         Order checkedOrder = orderRepository.findById(orderId);
         if (checkedOrder != null && checkedOrder.getBook().isAvailable() && checkedOrder.getState() == OrderState.CREATED) {
             checkedOrder.setState(OrderState.COMPLETED);
             checkedOrder.setCompletionDate(new Date());
             orderRepository.update(checkedOrder);
-            System.out.println("Order {" + checkedOrder.getBook().getTitle() + "} has been completed.");
+            return true;
         }
+        return false;
     }
 
     @Override
     public List<Order> findAllOrders(Comparator<Order> orderComparator) {
         List<Order> orders = orderRepository.findAll();
-        orders = orders.stream().sorted(orderComparator).collect(Collectors.toList());
-        System.out.println("All orders has been found.");
-        return orders;
+        return orders.stream().sorted(orderComparator).collect(Collectors.toList());
     }
 
     @Override
     public List<Order> findCompletedOrdersBetweenDates(Date startDate, Date endDate) {
         List<Order> orders = orderRepository.findAll();
-        List<Order> desiredOrders = orders.stream().filter((order) -> order.getState() == OrderState.COMPLETED &&
+        return orders.stream().filter((order) -> order.getState() == OrderState.COMPLETED &&
                 order.getCompletionDate().after(startDate) &&
                 order.getCompletionDate().before(endDate)).collect(Collectors.toList());
-
-        System.out.println("Completed orders between dates has been found.");
-        return desiredOrders;
     }
 
     @Override
@@ -102,13 +98,11 @@ public class OrderServiceImpl implements OrderService {
         for (Order order : completedOrders) {
             profit = profit.add(order.getCurrentBookPrice());
         }
-        System.out.println("Profit between dates has been calculated.");
         return profit;
     }
 
     @Override
     public int calculateCompletedOrdersNumberBetweenDates(Date startDate, Date endDate) {
-        System.out.println("Completed orders number has been calculated.");
         return findCompletedOrdersBetweenDates(startDate, endDate).size();
     }
 
@@ -123,11 +117,8 @@ public class OrderServiceImpl implements OrderService {
             orderDetails.setPrice(checkedOrder.getCurrentBookPrice());
             orderDetails.setState(checkedOrder.getState());
             orderDetails.setCreationDate(checkedOrder.getCreationDate());
-            if (checkedOrder.getState() == OrderState.COMPLETED) {
-                orderDetails.setCompletionDate(checkedOrder.getCompletionDate());
-            }
+            orderDetails.setCompletionDate(checkedOrder.getCompletionDate());
         }
-        System.out.println("Order details has been found.");
         return orderDetails;
     }
 
@@ -136,7 +127,6 @@ public class OrderServiceImpl implements OrderService {
         if (checkedBook != null && !checkedBook.isAvailable()) {
             Request request = new Request(checkedBook, requesterData);
             requestRepository.add(request);
-            System.out.println("Request {" + checkedBook.getTitle() + "} has been created.");
         }
     }
 }

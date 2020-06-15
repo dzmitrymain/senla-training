@@ -1,13 +1,13 @@
 package com.senla.training.yeutukhovich.bookstore.controller.action.impl.bookaction;
 
 import com.senla.training.yeutukhovich.bookstore.controller.action.Action;
+import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 import com.senla.training.yeutukhovich.bookstore.util.reader.InputReader;
 import com.senla.training.yeutukhovich.bookstore.service.BookService;
 import com.senla.training.yeutukhovich.bookstore.service.impl.BookServiceImpl;
 import com.senla.training.yeutukhovich.bookstore.util.converter.DateConverter;
-import com.senla.training.yeutukhovich.bookstore.util.printer.ResponsePrinter;
+import com.senla.training.yeutukhovich.bookstore.util.printer.EntityPrinter;
 
-import java.util.Arrays;
 import java.util.Date;
 
 public class ShowSoldBooksBetweenDatesAction implements Action {
@@ -16,14 +16,14 @@ public class ShowSoldBooksBetweenDatesAction implements Action {
     public void execute() {
         BookService bookService = BookServiceImpl.getInstance();
 
-        System.out.println("Please enter an earliest date bound in format \"yyyy-MM-dd\": ");
+        System.out.println(MessageConstant.EARLIEST_DATE_BOUND_YYYY_MM_DD);
         Date firstDate = InputReader.readInputDate(DateConverter.DAY_DATE_FORMAT);
 
-        System.out.println("Please enter a latest date bound in format \"yyyy-MM-dd\": ");
+        System.out.println(MessageConstant.LATEST_DATE_BOUND_YYYY_MM_DD);
         Date secondDate = InputReader.readInputDate(DateConverter.DAY_DATE_FORMAT);
 
         if (firstDate != null && secondDate != null) {
-           ResponsePrinter.printEntities(Arrays.asList(bookService.findSoldBooksBetweenDates(firstDate, secondDate)));
+           EntityPrinter.printEntities(bookService.findSoldBooksBetweenDates(firstDate, secondDate));
         }
     }
 }

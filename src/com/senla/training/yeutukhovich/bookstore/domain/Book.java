@@ -64,18 +64,6 @@ public class Book extends AbstractEntity {
     }
 
     @Override
-    public Book clone() {
-        Book newBook = (Book) super.clone();
-        if (this.editionDate != null) {
-            newBook.editionDate = new Date(this.editionDate.getTime());
-        }
-        if (this.replenishmentDate != null) {
-            newBook.replenishmentDate = new Date(this.replenishmentDate.getTime());
-        }
-        return newBook;
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -107,13 +95,9 @@ public class Book extends AbstractEntity {
 
     @Override
     public String toString() {
-        return "Book{" +
-                "title='" + title + '\'' +
-                ", isAvailable=" + isAvailable +
-                ", editionDate=" + editionDate +
-                ", replenishmentDate=" + replenishmentDate +
-                ", price=" + price +
-                ", id=" + id +
-                '}';
+        return "Book [id=" + id +
+                ", title='" + title +
+                "', is available=" + isAvailable +
+                ", price=" + price + "]";
     }
 }

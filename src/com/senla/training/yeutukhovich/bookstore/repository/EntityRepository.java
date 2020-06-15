@@ -11,7 +11,9 @@ import java.util.ListIterator;
 
 public class EntityRepository<T extends AbstractEntity> {
 
-    //TODO maybe Enum singleton??
+    //TODO: maybe Enum singleton??
+
+    //TODO: make repository safe
     private static EntityRepository<Book> bookRepositoryInstance;
     private static EntityRepository<Order> orderRepositoryInstance;
     private static EntityRepository<Request> requestRepositoryInstance;
