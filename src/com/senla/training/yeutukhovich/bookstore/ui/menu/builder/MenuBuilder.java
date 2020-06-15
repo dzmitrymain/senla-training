@@ -1,8 +1,8 @@
-package com.senla.training.yeutukhovich.bookstore.controller.menu.builder;
+package com.senla.training.yeutukhovich.bookstore.ui.menu.builder;
 
 import com.senla.training.yeutukhovich.bookstore.controller.action.ActionType;
-import com.senla.training.yeutukhovich.bookstore.controller.menu.Menu;
-import com.senla.training.yeutukhovich.bookstore.controller.menu.MenuItem;
+import com.senla.training.yeutukhovich.bookstore.ui.menu.Menu;
+import com.senla.training.yeutukhovich.bookstore.ui.menu.MenuItem;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MenuNameConstant;
 
 import java.util.Collections;

@@ -11,7 +11,6 @@ public class ShowAllBooksSortByAvailabilityAction implements Action {
     @Override
     public void execute() {
         BookService bookService = BookServiceImpl.getInstance();
-
         EntityPrinter.printEntities(bookService.findAllBooks(AvailabilityBookComparator.getInstance()));
     }
 }

@@ -17,7 +17,7 @@ public class MessageConstant {
 
     public static final String ENTER_ORDER_ID = "Please, enter order id: ";
     public static final String ORDER_HAS_BEEN_CREATED = "Order has been created.";
-    public static final String ORDER_HAS_NOT_BEEN_CREATED = "Order has not been created. Check entered order id.";
+    public static final String ORDER_HAS_NOT_BEEN_CREATED = "Order has not been created. Check entered book id.";
     public static final String ORDER_HAS_BEEN_CANCELED = "Order has been canceled.";
     public static final String ORDER_HAS_NOT_BEEN_CANCELED = "Order has not been canceled. Check entered order id.";
     public static final String ORDER_HAS_BEEN_COMPLETED = "Order has been completed.";
@@ -33,4 +33,6 @@ public class MessageConstant {
 
     public static final String EARLIEST_DATE_BOUND_YYYY_MM_DD = "Please enter an earliest date bound in format \"yyyy-MM-dd\": ";
     public static final String LATEST_DATE_BOUND_YYYY_MM_DD = "Please enter a latest date bound in format \"yyyy-MM-dd\": ";
+
+    public static final String ENTER_CORRECT_NUMBER = "Please, enter the correct number.";
 }

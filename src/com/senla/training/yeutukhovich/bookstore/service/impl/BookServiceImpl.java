@@ -21,22 +21,17 @@ public class BookServiceImpl implements BookService {
     private EntityRepository<Order> orderRepository;
     private EntityRepository<Request> requestRepository;
 
-    public static BookServiceImpl getInstance() {
-        if (instance == null) {
-            instance = new BookServiceImpl(
-                    EntityRepository.getBookRepositoryInstance(),
-                    EntityRepository.getOrderRepositoryInstance(),
-                    EntityRepository.getRequestRepositoryInstance());
-        }
-        return instance;
+    private BookServiceImpl() {
+        this.bookRepository = EntityRepository.getBookRepositoryInstance();
+        this.orderRepository = EntityRepository.getOrderRepositoryInstance();
+        this.requestRepository = EntityRepository.getRequestRepositoryInstance();
     }
 
-    private BookServiceImpl(EntityRepository<Book> bookRepository,
-                            EntityRepository<Order> orderRepository,
-                            EntityRepository<Request> requestRepository) {
-        this.bookRepository = bookRepository;
-        this.orderRepository = orderRepository;
-        this.requestRepository = requestRepository;
+    public static BookServiceImpl getInstance() {
+        if (instance == null) {
+            instance = new BookServiceImpl();
+        }
+        return instance;
     }
 
     @Override
@@ -127,7 +122,8 @@ public class BookServiceImpl implements BookService {
     private void updateOrders(Book book) {
         List<Order> orders = orderRepository.findAll();
         for (Order order : orders) {
-            if (order != null && order.getState() == OrderState.CREATED && order.getBook().getId().equals(book.getId())) {
+            if (order != null && order.getState() == OrderState.CREATED &&
+                    order.getBook().getId().equals(book.getId())) {
                 order.setBook(book);
                 orderRepository.update(order);
             }

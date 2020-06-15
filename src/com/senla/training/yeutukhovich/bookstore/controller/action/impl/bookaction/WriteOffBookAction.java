@@ -22,6 +22,5 @@ public class WriteOffBookAction implements Action {
                 System.out.println(MessageConstant.BOOK_HAS_NOT_BEEN_WRITTEN_OFF);
             }
         }
-
     }
 }

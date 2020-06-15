@@ -21,12 +21,12 @@ public class CreateOrderAction implements Action {
 
         if (id != null && customerData != null) {
             Order order = orderService.createOrder(id, customerData);
-            if(order!=null){
+            if (order != null) {
                 System.out.println(MessageConstant.ORDER_HAS_BEEN_CREATED);
-                if(order.getBook()!=null && !order.getBook().isAvailable()){
+                if (order.getBook() != null && !order.getBook().isAvailable()) {
                     System.out.println(MessageConstant.REQUEST_HAS_BEEN_CREATED);
                 }
-            }else{
+            } else {
                 System.out.println(MessageConstant.ORDER_HAS_NOT_BEEN_CREATED);
             }
         }

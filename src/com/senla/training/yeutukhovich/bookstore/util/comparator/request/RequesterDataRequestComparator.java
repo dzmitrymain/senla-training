@@ -1,7 +1,6 @@
 package com.senla.training.yeutukhovich.bookstore.util.comparator.request;
 
 import com.senla.training.yeutukhovich.bookstore.domain.Request;
-import com.senla.training.yeutukhovich.bookstore.util.comparator.order.StateOrderComparator;
 
 import java.util.Comparator;
 

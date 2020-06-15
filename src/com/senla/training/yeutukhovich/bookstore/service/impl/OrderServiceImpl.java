@@ -22,20 +22,15 @@ public class OrderServiceImpl implements OrderService {
     private EntityRepository<Order> orderRepository;
     private EntityRepository<Request> requestRepository;
 
-    private OrderServiceImpl(EntityRepository<Book> bookRepository,
-                             EntityRepository<Order> orderRepository,
-                             EntityRepository<Request> requestRepository) {
-        this.bookRepository = bookRepository;
-        this.orderRepository = orderRepository;
-        this.requestRepository = requestRepository;
+    private OrderServiceImpl() {
+        this.bookRepository = EntityRepository.getBookRepositoryInstance();
+        this.orderRepository = EntityRepository.getOrderRepositoryInstance();
+        this.requestRepository = EntityRepository.getRequestRepositoryInstance();
     }
 
     public static OrderServiceImpl getInstance() {
         if (instance == null) {
-            instance = new OrderServiceImpl(
-                    EntityRepository.getBookRepositoryInstance(),
-                    EntityRepository.getOrderRepositoryInstance(),
-                    EntityRepository.getRequestRepositoryInstance());
+            instance = new OrderServiceImpl();
         }
         return instance;
     }
@@ -68,7 +63,8 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public boolean completeOrder(Long orderId) {
         Order checkedOrder = orderRepository.findById(orderId);
-        if (checkedOrder != null && checkedOrder.getBook().isAvailable() && checkedOrder.getState() == OrderState.CREATED) {
+        if (checkedOrder != null && checkedOrder.getBook().isAvailable() &&
+                checkedOrder.getState() == OrderState.CREATED) {
             checkedOrder.setState(OrderState.COMPLETED);
             checkedOrder.setCompletionDate(new Date());
             orderRepository.update(checkedOrder);

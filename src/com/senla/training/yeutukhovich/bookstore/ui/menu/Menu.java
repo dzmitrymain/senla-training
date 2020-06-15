@@ -1,4 +1,4 @@
-package com.senla.training.yeutukhovich.bookstore.controller.menu;
+package com.senla.training.yeutukhovich.bookstore.ui.menu;
 
 import java.util.ArrayList;
 import java.util.List;

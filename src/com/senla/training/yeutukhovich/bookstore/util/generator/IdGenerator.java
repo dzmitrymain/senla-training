@@ -15,15 +15,15 @@ public class IdGenerator {
         return instance;
     }
 
-    public long getNextBookIdNumber(){
+    public long getNextBookIdNumber() {
         return ++bookIdNumber;
     }
 
-    public long getNextOrderIdNumber(){
+    public long getNextOrderIdNumber() {
         return ++orderIdNumber;
     }
 
-    public long getNextRequestIdNumber(){
+    public long getNextRequestIdNumber() {
         return ++requestIdNumber;
     }
 }

@@ -16,18 +16,14 @@ public class RequestServiceImpl implements RequestService {
     private EntityRepository<Book> bookRepository;
     private EntityRepository<Request> requestRepository;
 
-    private RequestServiceImpl(EntityRepository<Book> bookRepository,
-                               EntityRepository<Request> requestRepository) {
-        this.bookRepository = bookRepository;
-        this.requestRepository = requestRepository;
+    private RequestServiceImpl() {
+        this.bookRepository = EntityRepository.getBookRepositoryInstance();
+        this.requestRepository = EntityRepository.getRequestRepositoryInstance();
     }
 
     public static RequestServiceImpl getInstance() {
         if (instance == null) {
-            instance = new RequestServiceImpl(
-                    EntityRepository.getBookRepositoryInstance(),
-                    EntityRepository.getRequestRepositoryInstance()
-            );
+            instance = new RequestServiceImpl();
         }
         return instance;
     }

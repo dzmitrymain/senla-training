@@ -1,4 +1,4 @@
-package com.senla.training.yeutukhovich.bookstore.controller.menu;
+package com.senla.training.yeutukhovich.bookstore.ui.menu;
 
 import com.senla.training.yeutukhovich.bookstore.controller.action.Action;
 
@@ -8,7 +8,7 @@ public class MenuItem {
     private Action action;
     private Menu nextMenu;
 
-    public MenuItem(){
+    public MenuItem() {
 
     }
 
@@ -42,7 +42,7 @@ public class MenuItem {
         this.nextMenu = nextMenu;
     }
 
-    public void doAction(){
+    public void doAction() {
         action.execute();
     }
 }
