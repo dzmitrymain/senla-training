@@ -1,6 +1,6 @@
 package com.senla.training.yeutukhovich.bookstore.ui.menu.builder;
 
-import com.senla.training.yeutukhovich.bookstore.controller.action.ActionType;
+import com.senla.training.yeutukhovich.bookstore.ui.action.ActionType;
 import com.senla.training.yeutukhovich.bookstore.ui.menu.Menu;
 import com.senla.training.yeutukhovich.bookstore.ui.menu.MenuItem;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MenuNameConstant;
@@ -9,7 +9,20 @@ import java.util.Collections;
 
 public class MenuBuilder {
 
+    private static MenuBuilder instance;
+
     private Menu rootMenu;
+
+    private MenuBuilder() {
+
+    }
+
+    public static MenuBuilder getInstance() {
+        if (instance == null) {
+            instance = new MenuBuilder();
+        }
+        return instance;
+    }
 
     public void buildMenu() {
         rootMenu = new Menu(MenuNameConstant.MAIN_MENU);

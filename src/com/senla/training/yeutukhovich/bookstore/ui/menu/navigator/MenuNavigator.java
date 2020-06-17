@@ -6,14 +6,19 @@ import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 
 public class MenuNavigator {
 
+    private static MenuNavigator instance;
+
     private Menu currentMenu;
 
-    public MenuNavigator() {
+    private MenuNavigator() {
 
     }
 
-    public MenuNavigator(Menu currentMenu) {
-        this.currentMenu = currentMenu;
+    public static MenuNavigator getInstance() {
+        if (instance == null) {
+            instance = new MenuNavigator();
+        }
+        return instance;
     }
 
     public Menu getCurrentMenu() {
@@ -38,16 +43,22 @@ public class MenuNavigator {
     }
 
     public void navigate(Integer index) {
-        MenuItem selectedMenuItem = currentMenu.getMenuItems().get(--index);
+        if (index != null && (index > 0 &&
+                index <= currentMenu.getMenuItems().size())) {
 
-        if (selectedMenuItem.getAction() != null) {
-            selectedMenuItem.doAction();
-        }
+            MenuItem selectedMenuItem = currentMenu.getMenuItems().get(--index);
 
-        if (selectedMenuItem.getNextMenu() != null) {
-            currentMenu = selectedMenuItem.getNextMenu();
+            if (selectedMenuItem.getAction() != null) {
+                selectedMenuItem.doAction();
+            }
+
+            if (selectedMenuItem.getNextMenu() != null) {
+                currentMenu = selectedMenuItem.getNextMenu();
+            } else {
+                currentMenu = null;
+            }
         } else {
-            currentMenu = null;
+            System.err.println(MessageConstant.ENTER_CORRECT_NUMBER);
         }
     }
 }

@@ -1,6 +1,6 @@
 package com.senla.training.yeutukhovich.bookstore.ui.menu;
 
-import com.senla.training.yeutukhovich.bookstore.controller.action.Action;
+import com.senla.training.yeutukhovich.bookstore.ui.action.Action;
 
 public class MenuItem {
 
