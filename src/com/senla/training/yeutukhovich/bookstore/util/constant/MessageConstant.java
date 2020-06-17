@@ -1,5 +1,7 @@
 package com.senla.training.yeutukhovich.bookstore.util.constant;
 
+// попробуй enum
+// очень хорошо, что вынес сообщения в константы
 public class MessageConstant {
 
     public static final String MENU_BORDER = "========================================";

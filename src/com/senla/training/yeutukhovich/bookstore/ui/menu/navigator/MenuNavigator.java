@@ -4,6 +4,7 @@ import com.senla.training.yeutukhovich.bookstore.ui.menu.Menu;
 import com.senla.training.yeutukhovich.bookstore.ui.menu.MenuItem;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 
+// может быть синглтон?
 public class MenuNavigator {
 
     private Menu currentMenu;
@@ -12,6 +13,7 @@ public class MenuNavigator {
 
     }
 
+    // конструктор не используется
     public MenuNavigator(Menu currentMenu) {
         this.currentMenu = currentMenu;
     }
@@ -38,12 +40,16 @@ public class MenuNavigator {
     }
 
     public void navigate(Integer index) {
+        // неплохо бы добавить проверку, чтобы не вывалиться за пределы коллекции
+        // может проверка есть в другом методе? я еще не смотрел, но лучше проверять прямо тут
         MenuItem selectedMenuItem = currentMenu.getMenuItems().get(--index);
 
         if (selectedMenuItem.getAction() != null) {
             selectedMenuItem.doAction();
         }
 
+        // все это можно объединить в одну строку (NPE не будет):
+        // currentMenu = selectedMenuItem.getNextMenu();
         if (selectedMenuItem.getNextMenu() != null) {
             currentMenu = selectedMenuItem.getNextMenu();
         } else {

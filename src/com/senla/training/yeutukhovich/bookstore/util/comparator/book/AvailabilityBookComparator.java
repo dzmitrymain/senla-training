@@ -4,6 +4,10 @@ import com.senla.training.yeutukhovich.bookstore.domain.Book;
 
 import java.util.Comparator;
 
+// можно было не делать синглтоном
+// для хранения компараторов круто подходит enum (для каждого типа модели свой енам)
+// а вообще можно было попробовать лямбды, ссылку на статью я кидал в чат, там как раз на примере
+// компараторов разбирали
 public class AvailabilityBookComparator implements Comparator<Book> {
 
     private static AvailabilityBookComparator instance;
@@ -24,6 +28,8 @@ public class AvailabilityBookComparator implements Comparator<Book> {
         } else if (o2 == null) {
             return -1;
         } else {
+            // как вариант
+            // return o2.isAvailable().compareTo(o1.isAvailable())
             return Boolean.compare(o2.isAvailable(), o1.isAvailable());
         }
     }

@@ -6,6 +6,12 @@ import java.util.List;
 
 public class EntityPrinter {
 
+    // не использовать сырые типы, использовать дженерики (обязательно!)
+    // если дженерик тип заранее не известен, можно написать
+    // List<?> - это называется вайлкард, что равносильно
+    // List<Object> (но так не пишут)
+    // кроме того, все твои энтити расширяют класс AbstractEntity - можно использовать его
+    // в качестве дженерик типа
     public static void printEntities(List entities) {
 
         if (!entities.isEmpty()) {

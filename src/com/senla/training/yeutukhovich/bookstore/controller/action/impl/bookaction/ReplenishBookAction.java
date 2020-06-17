@@ -6,6 +6,8 @@ import com.senla.training.yeutukhovich.bookstore.service.impl.BookServiceImpl;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 import com.senla.training.yeutukhovich.bookstore.util.reader.InputReader;
 
+// экшены вызывают не сервисы, а контроллеры бекенда
+// напоминаю, что в ДЗ 5 можно использовать лямбды
 public class ReplenishBookAction implements Action {
 
     @Override

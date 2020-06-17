@@ -15,6 +15,13 @@ public class EntityInitializer {
     private static ArrayList<Order> orders;
     private static ArrayList<Request> requests;
 
+    // в качестве входящих и исходящих параметров в методах, а также типов переменных
+    // (локальных или переменных класса) ВСЕГДА надо использовать тип интерфейса, если
+    // он полностью покрывает твои потребности
+    // в частности, ArrayList реализует интерфейс List
+    // изменив тип на List, ты ничего не потеряешь, но зато приобретешь гибкость - можешь работать
+    // с любой реализацией интерфейса List (их много)
+    // привыкай, это пригодится тебе в будущем
     public static ArrayList<Book> getBooks() {
         if (books == null) {
             books = new ArrayList<>();

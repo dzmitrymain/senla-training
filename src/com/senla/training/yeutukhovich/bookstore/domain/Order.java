@@ -69,6 +69,8 @@ public class Order extends AbstractEntity {
         this.customerData = customerData;
     }
 
+    // для работы иквалз и хэшкод обычно хватает поля id и какого-то еще одного уникального поля
+    // если кроме id уникальных нет, то хватит и id
     @Override
     public boolean equals(Object o) {
         if (this == o) {

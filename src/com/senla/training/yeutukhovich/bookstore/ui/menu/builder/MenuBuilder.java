@@ -7,10 +7,15 @@ import com.senla.training.yeutukhovich.bookstore.util.constant.MenuNameConstant;
 
 import java.util.Collections;
 
+// может быть синглтон?
 public class MenuBuilder {
 
     private Menu rootMenu;
 
+    // если на диаграмме один метод у этого класса, это не значит, что у него не может быть
+    // приватных методов)))
+    // такие жирные методы сложно сопровождать и читать
+    // сделай разбивку, заодно потренируешься рефакторить
     public void buildMenu() {
         rootMenu = new Menu(MenuNameConstant.MAIN_MENU);
         Menu bookMenu = new Menu(MenuNameConstant.BOOK_MENU);

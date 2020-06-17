@@ -1,5 +1,6 @@
 package com.senla.training.yeutukhovich.bookstore.util.constant;
 
+// для хранения констант гайды обычно рекомендуют (и у вас в задании об этом было написано) enum
 public class MenuNameConstant {
 
     public static final String MAIN_MENU = "Main menu";

@@ -1,3 +1,8 @@
+// честно говоря, я не любитель пакетов impl - вижу постоянно это в учебных статьях, но никогда
+// не видел на проектах
+// потому что интерфейсы не так интересны, как реализации
+// лучше или держать интерфейс и реализацию рядышком
+// или для интерфейсов сделать отдельный пакет api
 package com.senla.training.yeutukhovich.bookstore.service.impl;
 
 import com.senla.training.yeutukhovich.bookstore.domain.Book;
@@ -78,6 +83,12 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<Book> findUnsoldBooksBetweenDates(Date startDate, Date endDate) {
+        // метод не очень оптимален
+        // вообще переиспользование - это хорошо
+        // но если разобраться, у тебя в этом метода 2 стрима и 1 фор, а внутри
+        // одного из стримов еще перебор книг
+        // все можно сделать в 1 стрим с перебором книг внутри стрима
+        // в этом классе есть еще несколько таких методов
         List<Book> soldBooks = findSoldBooksBetweenDates(startDate, endDate);
         List<Book> books = findAllBooks(new TitleBookComparator());
 
@@ -132,8 +143,11 @@ public class BookServiceImpl implements BookService {
 
     private List<Order> findCompletedOrdersBetweenDates(Date startDate, Date endDate) {
         List<Order> orders = orderRepository.findAll();
-        return orders.stream().filter((order) -> order.getState() == OrderState.COMPLETED &&
-                order.getCompletionDate().after(startDate) &&
-                order.getCompletionDate().before(endDate)).collect(Collectors.toList());
+        // стримы записывают в столбик - так легче читать (я отформатировал код как надо):
+        return orders.stream()
+                .filter(order -> order.getState() == OrderState.COMPLETED &&
+                        order.getCompletionDate().after(startDate) &&
+                        order.getCompletionDate().before(endDate))
+                .collect(Collectors.toList());
     }
 }

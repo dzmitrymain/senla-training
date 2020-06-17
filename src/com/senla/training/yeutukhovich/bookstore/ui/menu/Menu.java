@@ -8,6 +8,8 @@ public class Menu {
     private String name;
     private List<MenuItem> menuItems;
 
+    // для этого есть конструктор
+    // еще можно проинициализировать прямо в поле
     {
         menuItems = new ArrayList<>();
     }

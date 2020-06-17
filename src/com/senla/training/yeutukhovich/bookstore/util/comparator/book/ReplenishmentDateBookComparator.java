@@ -23,6 +23,8 @@ public class ReplenishmentDateBookComparator implements Comparator<Book> {
             return 1;
         } else if (o2 == null) {
             return -1;
+        // если в теле ифа есть return, то else можно не писать - это уменьшит вложенность
+        // и улучшит читаемость
         } else {
             if (o1.getReplenishmentDate() == null && o2.getReplenishmentDate() == null) {
                 return 0;

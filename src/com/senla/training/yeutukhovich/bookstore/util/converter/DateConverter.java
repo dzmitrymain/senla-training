@@ -19,6 +19,8 @@ public class DateConverter {
         return date;
     }
 
+    // как мне кажется, в утилитах стоит добавлять проверку входных параметров на нал во избежание неправильного
+    // ипользования другими разработчиками
     public static String formatDate(Date date, SimpleDateFormat dateFormat) {
         return dateFormat.format(date);
     }

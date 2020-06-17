@@ -9,6 +9,8 @@ import com.senla.training.yeutukhovich.bookstore.util.initializer.EntityInitiali
 import java.util.List;
 import java.util.ListIterator;
 
+// молодец, что поработал с дженериками
+// но репозиторий должен быть отдельно для каждой модели
 public class EntityRepository<T extends AbstractEntity> {
 
     private static EntityRepository<Book> bookRepositoryInstance;
@@ -57,6 +59,7 @@ public class EntityRepository<T extends AbstractEntity> {
         return null;
     }
 
+    // обычно параметры именуют без упомниания абстрактности - entity достаточно
     public void update(T abstractEntity) {
         if (abstractEntity != null) {
             ListIterator<T> listIterator = entities.listIterator();
