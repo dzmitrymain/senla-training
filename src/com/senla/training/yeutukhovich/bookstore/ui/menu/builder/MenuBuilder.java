@@ -24,17 +24,19 @@ public class MenuBuilder {
         return instance;
     }
 
+    public Menu getRootMenu() {
+        return rootMenu;
+    }
+
+
     public void buildMenu() {
         rootMenu = new Menu(MenuNameConstant.MAIN_MENU.getMenuName());
-        Menu bookMenu = new Menu(MenuNameConstant.BOOK_MENU.getMenuName());
-        Menu orderMenu = new Menu(MenuNameConstant.ORDER_MENU.getMenuName());
-        Menu requestMenu = new Menu(MenuNameConstant.REQUEST_MENU.getMenuName());
+        MenuItem previousRootMenuItem = new MenuItem(MenuNameConstant.BACK_TO_MAIN_MENU.getMenuName(), null,
+                rootMenu);
 
-        MenuItem previousRootMenuItem = new MenuItem(MenuNameConstant.BACK_TO_MAIN_MENU.getMenuName(), null, rootMenu);
-
-        Menu showAllBooksMenu = new Menu(MenuNameConstant.SHOW_ALL_BOOKS.getMenuName());
-        Menu showAllOrdersMenu = new Menu(MenuNameConstant.SHOW_ALL_ORDERS.getMenuName());
-        Menu showAllRequestsMenu = new Menu(MenuNameConstant.SHOW_ALL_REQUESTS.getMenuName());
+        Menu bookMenu = initBookMenu(previousRootMenuItem);
+        Menu orderMenu = initOrderMenu(previousRootMenuItem);
+        Menu requestMenu = initRequestMenu(previousRootMenuItem);
 
         MenuItem bookMenuItem = new MenuItem(MenuNameConstant.BOOK_MENU.getMenuName(), null, bookMenu);
         MenuItem orderMenuItem = new MenuItem(MenuNameConstant.ORDER_MENU.getMenuName(), null, orderMenu);
@@ -42,24 +44,15 @@ public class MenuBuilder {
         MenuItem exitMenuItem = new MenuItem(MenuNameConstant.EXIT.getMenuName(), null, null);
 
         Collections.addAll(rootMenu.getMenuItems(), bookMenuItem, orderMenuItem, requestMenuItem, exitMenuItem);
+    }
 
-        MenuItem allBooksSortByTitle = new MenuItem(MenuNameConstant.SORT_BY_TITLE.getMenuName(),
-                ActionType.SHOW_ALL_BOOKS_SORT_BY_TITLE.getAction(), showAllBooksMenu);
-        MenuItem allBooksSortByPrice = new MenuItem(MenuNameConstant.SORT_BY_PRICE.getMenuName(),
-                ActionType.SHOW_ALL_BOOKS_SORT_BY_PRICE.getAction(), showAllBooksMenu);
-        MenuItem allBooksSortByAvailability = new MenuItem(MenuNameConstant.SORT_BY_AVAILABILITY.getMenuName(),
-                ActionType.SHOW_ALL_BOOKS_SORT_BY_AVAILABILITY.getAction(), showAllBooksMenu);
-        MenuItem allBooksSortByEditionDate = new MenuItem(MenuNameConstant.SORT_BY_EDITION_DATE.getMenuName(),
-                ActionType.SHOW_ALL_BOOKS_SORT_BY_EDITION_DATE.getAction(), showAllBooksMenu);
-        MenuItem allBooksSortByReplenishmentDate = new MenuItem(MenuNameConstant.SORT_BY_REPLENISHMENT_DATE.getMenuName(),
-                ActionType.SHOW_ALL_BOOKS_SORT_BY_REPLENISHMENT_DATE.getAction(), showAllBooksMenu);
-        MenuItem previousBookMenuItem = new MenuItem(MenuNameConstant.BACK_TO_BOOK_MENU.getMenuName(), null, bookMenu);
+    private Menu initBookMenu(MenuItem previousRootMenuItem) {
+        Menu bookMenu = new Menu(MenuNameConstant.BOOK_MENU.getMenuName());
 
-        Collections.addAll(showAllBooksMenu.getMenuItems(), allBooksSortByTitle, allBooksSortByPrice,
-                allBooksSortByAvailability, allBooksSortByEditionDate, allBooksSortByReplenishmentDate,
-                previousBookMenuItem);
+        Menu showAllBooksMenu = initShowAllBooksMenu(bookMenu);
 
-        MenuItem showAllBooksMenuItem = new MenuItem(MenuNameConstant.SHOW_ALL_BOOKS.getMenuName(), null, showAllBooksMenu);
+        MenuItem showAllBooksMenuItem = new MenuItem(MenuNameConstant.SHOW_ALL_BOOKS.getMenuName(), null,
+                showAllBooksMenu);
         MenuItem showBookDescriptionItem = new MenuItem(MenuNameConstant.SHOW_BOOK_DESCRIPTION.getMenuName(),
                 ActionType.SHOW_BOOK_DESCRIPTION.getAction(), bookMenu);
         MenuItem replenishBookItem = new MenuItem(MenuNameConstant.REPLENISH_BOOK.getMenuName(),
@@ -77,28 +70,52 @@ public class MenuBuilder {
                 replenishBookItem, writeOffBookItem, findStaleBooksMenuItem, findSoldBooksItem,
                 findUnsoldBooksItem, previousRootMenuItem);
 
-        MenuItem allOrdersByStateMenuItem = new MenuItem(MenuNameConstant.SORT_BY_STATE.getMenuName(),
-                ActionType.SHOW_ALL_ORDERS_SORT_BY_STATE.getAction(), showAllOrdersMenu);
-        MenuItem allOrdersByPriceMenuItem = new MenuItem(MenuNameConstant.SORT_BY_PRICE.getMenuName(),
-                ActionType.SHOW_ALL_ORDERS_SORT_BY_PRICE.getAction(), showAllOrdersMenu);
-        MenuItem allOrdersByCompletionMenuItem = new MenuItem(MenuNameConstant.SORT_BY_COMPLETION_DATE.getMenuName(),
-                ActionType.SHOW_ALL_ORDERS_SORT_BY_COMPLETION_DATE.getAction(), showAllOrdersMenu);
-        MenuItem previousOrderMenuItem = new MenuItem(MenuNameConstant.BACK_TO_ORDER_MENU.getMenuName(), null, orderMenu);
+        return bookMenu;
+    }
 
-        Collections.addAll(showAllOrdersMenu.getMenuItems(), allOrdersByStateMenuItem, allOrdersByPriceMenuItem,
-                allOrdersByCompletionMenuItem, previousOrderMenuItem);
+    private Menu initShowAllBooksMenu(Menu previousBookMenu) {
+        Menu showAllBooksMenu = new Menu(MenuNameConstant.SHOW_ALL_BOOKS.getMenuName());
 
-        MenuItem showAllOrdersMenuItem = new MenuItem(MenuNameConstant.SHOW_ALL_ORDERS.getMenuName(), null, showAllOrdersMenu);
-        MenuItem cancelOrderMenuItem = new MenuItem(MenuNameConstant.CANCEL_ORDER.getMenuName(), ActionType.CANCEL_ORDER.getAction(),
+        MenuItem allBooksSortByTitle = new MenuItem(MenuNameConstant.SORT_BY_TITLE.getMenuName(),
+                ActionType.SHOW_ALL_BOOKS_SORT_BY_TITLE.getAction(), showAllBooksMenu);
+        MenuItem allBooksSortByPrice = new MenuItem(MenuNameConstant.SORT_BY_PRICE.getMenuName(),
+                ActionType.SHOW_ALL_BOOKS_SORT_BY_PRICE.getAction(), showAllBooksMenu);
+        MenuItem allBooksSortByAvailability = new MenuItem(MenuNameConstant.SORT_BY_AVAILABILITY.getMenuName(),
+                ActionType.SHOW_ALL_BOOKS_SORT_BY_AVAILABILITY.getAction(), showAllBooksMenu);
+        MenuItem allBooksSortByEditionDate = new MenuItem(MenuNameConstant.SORT_BY_EDITION_DATE.getMenuName(),
+                ActionType.SHOW_ALL_BOOKS_SORT_BY_EDITION_DATE.getAction(), showAllBooksMenu);
+        MenuItem allBooksSortByReplenishmentDate = new MenuItem(MenuNameConstant.SORT_BY_REPLENISHMENT_DATE.getMenuName(),
+                ActionType.SHOW_ALL_BOOKS_SORT_BY_REPLENISHMENT_DATE.getAction(), showAllBooksMenu);
+
+        MenuItem previousBookMenuItem = new MenuItem(MenuNameConstant.BACK_TO_BOOK_MENU.getMenuName(), null,
+                previousBookMenu);
+
+        Collections.addAll(showAllBooksMenu.getMenuItems(), allBooksSortByTitle, allBooksSortByPrice,
+                allBooksSortByAvailability, allBooksSortByEditionDate, allBooksSortByReplenishmentDate,
+                previousBookMenuItem);
+        return showAllBooksMenu;
+    }
+
+    private Menu initOrderMenu(MenuItem previousRootMenuItem) {
+        Menu orderMenu = new Menu(MenuNameConstant.ORDER_MENU.getMenuName());
+        Menu showAllOrdersMenu = initShowAllOrdersMenu(orderMenu);
+
+        MenuItem showAllOrdersMenuItem = new MenuItem(MenuNameConstant.SHOW_ALL_ORDERS.getMenuName(), null,
+                showAllOrdersMenu);
+        MenuItem cancelOrderMenuItem = new MenuItem(MenuNameConstant.CANCEL_ORDER.getMenuName(),
+                ActionType.CANCEL_ORDER.getAction(),
                 orderMenu);
-        MenuItem createOrderMenuItem = new MenuItem(MenuNameConstant.CREATE_ORDER.getMenuName(), ActionType.CREATE_ORDER.getAction(),
+        MenuItem createOrderMenuItem = new MenuItem(MenuNameConstant.CREATE_ORDER.getMenuName(),
+                ActionType.CREATE_ORDER.getAction(),
                 orderMenu);
         MenuItem completeOrderMenuItem = new MenuItem(MenuNameConstant.COMPLETE_ORDER.getMenuName(),
                 ActionType.COMPLETE_ORDER.getAction(), orderMenu);
-        MenuItem showCompletedOrdersNumberMenuItem = new MenuItem(MenuNameConstant.SHOW_COMPLETED_ORDERS_NUMBER_BETWEEN_DATES.getMenuName(),
-                ActionType.SHOW_COMPLETED_ORDERS_NUMBER_BETWEEN_DATES.getAction(), orderMenu);
-        MenuItem showCompletedOrdersMenuItem = new MenuItem(MenuNameConstant.SHOW_COMPLETED_ORDERS_BETWEEN_DATES.getMenuName(),
-                ActionType.SHOW_COMPLETED_ORDERS_BETWEEN_DATES.getAction(), orderMenu);
+        MenuItem showCompletedOrdersNumberMenuItem =
+                new MenuItem(MenuNameConstant.SHOW_COMPLETED_ORDERS_NUMBER_BETWEEN_DATES.getMenuName(),
+                        ActionType.SHOW_COMPLETED_ORDERS_NUMBER_BETWEEN_DATES.getAction(), orderMenu);
+        MenuItem showCompletedOrdersMenuItem =
+                new MenuItem(MenuNameConstant.SHOW_COMPLETED_ORDERS_BETWEEN_DATES.getMenuName(),
+                        ActionType.SHOW_COMPLETED_ORDERS_BETWEEN_DATES.getAction(), orderMenu);
         MenuItem showOrderDetailsMenuItem = new MenuItem(MenuNameConstant.SHOW_ORDER_DETAILS.getMenuName(),
                 ActionType.SHOW_ORDER_DETAILS.getAction(), orderMenu);
         MenuItem showProfitBetweenDatesMenuItem = new MenuItem(MenuNameConstant.SHOW_PROFIT_BETWEEN_DATES.getMenuName(),
@@ -107,26 +124,54 @@ public class MenuBuilder {
         Collections.addAll(orderMenu.getMenuItems(), showAllOrdersMenuItem, createOrderMenuItem, completeOrderMenuItem,
                 cancelOrderMenuItem, showOrderDetailsMenuItem, showProfitBetweenDatesMenuItem,
                 showCompletedOrdersMenuItem, showCompletedOrdersNumberMenuItem, previousRootMenuItem);
+        return orderMenu;
+    }
+
+    private Menu initShowAllOrdersMenu(Menu previousOrderMenu) {
+        Menu showAllOrdersMenu = new Menu(MenuNameConstant.SHOW_ALL_ORDERS.getMenuName());
+
+        MenuItem allOrdersByStateMenuItem = new MenuItem(MenuNameConstant.SORT_BY_STATE.getMenuName(),
+                ActionType.SHOW_ALL_ORDERS_SORT_BY_STATE.getAction(), showAllOrdersMenu);
+        MenuItem allOrdersByPriceMenuItem = new MenuItem(MenuNameConstant.SORT_BY_PRICE.getMenuName(),
+                ActionType.SHOW_ALL_ORDERS_SORT_BY_PRICE.getAction(), showAllOrdersMenu);
+        MenuItem allOrdersByCompletionMenuItem = new MenuItem(MenuNameConstant.SORT_BY_COMPLETION_DATE.getMenuName(),
+                ActionType.SHOW_ALL_ORDERS_SORT_BY_COMPLETION_DATE.getAction(), showAllOrdersMenu);
+        MenuItem previousOrderMenuItem = new MenuItem(MenuNameConstant.BACK_TO_ORDER_MENU.getMenuName(),
+                null, previousOrderMenu);
+
+        Collections.addAll(showAllOrdersMenu.getMenuItems(), allOrdersByStateMenuItem, allOrdersByPriceMenuItem,
+                allOrdersByCompletionMenuItem, previousOrderMenuItem);
+        return showAllOrdersMenu;
+    }
+
+    private Menu initRequestMenu(MenuItem previousRootMenuItem) {
+        Menu requestMenu = new Menu(MenuNameConstant.REQUEST_MENU.getMenuName());
+        Menu showAllRequestsMenu = initShowAllRequestsMenu(requestMenu);
+
+        MenuItem showAllRequestsMenuItem = new MenuItem(MenuNameConstant.SHOW_ALL_REQUESTS.getMenuName(),
+                null, showAllRequestsMenu);
+        MenuItem createRequestMenuItem = new MenuItem(MenuNameConstant.CREATE_REQUEST.getMenuName(),
+                ActionType.CREATE_REQUEST.getAction(), requestMenu);
+        Collections.addAll(requestMenu.getMenuItems(), showAllRequestsMenuItem, createRequestMenuItem,
+                previousRootMenuItem);
+        return requestMenu;
+    }
+
+    private Menu initShowAllRequestsMenu(Menu previousRequestMenu) {
+        Menu showAllRequestsMenu = new Menu(MenuNameConstant.SHOW_ALL_REQUESTS.getMenuName());
 
         MenuItem allRequestsSortByBookTitleMenuItem = new MenuItem(MenuNameConstant.SORT_BY_BOOK_TITLE.getMenuName(),
                 ActionType.SHOW_ALL_REQUESTS_SORT_BY_BOOK_TITLE.getAction(), showAllRequestsMenu);
         MenuItem allRequestsSortByIsActiveMenuItem = new MenuItem(MenuNameConstant.SORT_BY_STATE.getMenuName(),
                 ActionType.SHOW_ALL_REQUESTS_SORT_BY_IS_ACTIVE.getAction(), showAllRequestsMenu);
-        MenuItem allRequestsSortByRequesterDataMenuItem = new MenuItem(MenuNameConstant.SORT_BY_REQUESTER_DATA.getMenuName(),
-                ActionType.SHOW_ALL_REQUESTS_SORT_BY_REQUESTER_DATA.getAction(), showAllRequestsMenu);
-        MenuItem previousRequestMenuItem = new MenuItem(MenuNameConstant.BACK_TO_REQUEST_MENU.getMenuName(), null, requestMenu);
+        MenuItem allRequestsSortByRequesterDataMenuItem =
+                new MenuItem(MenuNameConstant.SORT_BY_REQUESTER_DATA.getMenuName(),
+                        ActionType.SHOW_ALL_REQUESTS_SORT_BY_REQUESTER_DATA.getAction(), showAllRequestsMenu);
+        MenuItem previousRequestMenuItem = new MenuItem(MenuNameConstant.BACK_TO_REQUEST_MENU.getMenuName(),
+                null, previousRequestMenu);
 
         Collections.addAll(showAllRequestsMenu.getMenuItems(), allRequestsSortByBookTitleMenuItem,
                 allRequestsSortByIsActiveMenuItem, allRequestsSortByRequesterDataMenuItem, previousRequestMenuItem);
-
-        MenuItem showAllRequestsMenuItem = new MenuItem(MenuNameConstant.SHOW_ALL_REQUESTS.getMenuName(), null, showAllRequestsMenu);
-        MenuItem createRequestMenuItem = new MenuItem(MenuNameConstant.CREATE_REQUEST.getMenuName(),
-                ActionType.CREATE_REQUEST.getAction(), requestMenu);
-
-        Collections.addAll(requestMenu.getMenuItems(), showAllRequestsMenuItem, createRequestMenuItem, previousRootMenuItem);
-    }
-
-    public Menu getRootMenu() {
-        return rootMenu;
+        return showAllRequestsMenu;
     }
 }

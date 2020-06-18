@@ -6,6 +6,8 @@ import java.util.Comparator;
 
 public class AvailabilityBookComparator implements Comparator<Book> {
 
+    //TODO: lambda?
+
     private static AvailabilityBookComparator instance;
 
     public static AvailabilityBookComparator getInstance() {

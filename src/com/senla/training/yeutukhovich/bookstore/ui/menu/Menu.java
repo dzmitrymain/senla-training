@@ -6,11 +6,7 @@ import java.util.List;
 public class Menu {
 
     private String name;
-    private List<MenuItem> menuItems;
-
-    {
-        menuItems = new ArrayList<>();
-    }
+    private List<MenuItem> menuItems = new ArrayList<>();
 
     public Menu() {
 
