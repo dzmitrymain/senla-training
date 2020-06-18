@@ -2,8 +2,8 @@ package com.senla.training.yeutukhovich.bookstore.ui.action.requestaction;
 
 import com.senla.training.yeutukhovich.bookstore.ui.action.Action;
 import com.senla.training.yeutukhovich.bookstore.domain.Request;
-import com.senla.training.yeutukhovich.bookstore.service.RequestService;
-import com.senla.training.yeutukhovich.bookstore.service.impl.RequestServiceImpl;
+import com.senla.training.yeutukhovich.bookstore.service.requestservice.RequestService;
+import com.senla.training.yeutukhovich.bookstore.service.requestservice.RequestServiceImpl;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 import com.senla.training.yeutukhovich.bookstore.util.reader.InputReader;
 

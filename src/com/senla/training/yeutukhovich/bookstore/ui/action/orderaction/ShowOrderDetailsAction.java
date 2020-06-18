@@ -1,9 +1,9 @@
 package com.senla.training.yeutukhovich.bookstore.ui.action.orderaction;
 
 import com.senla.training.yeutukhovich.bookstore.ui.action.Action;
-import com.senla.training.yeutukhovich.bookstore.service.OrderService;
+import com.senla.training.yeutukhovich.bookstore.service.orderservice.OrderService;
 import com.senla.training.yeutukhovich.bookstore.service.dto.OrderDetails;
-import com.senla.training.yeutukhovich.bookstore.service.impl.OrderServiceImpl;
+import com.senla.training.yeutukhovich.bookstore.service.orderservice.OrderServiceImpl;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 import com.senla.training.yeutukhovich.bookstore.util.reader.InputReader;
 

@@ -1,9 +1,8 @@
-package com.senla.training.yeutukhovich.bookstore.service.impl;
+package com.senla.training.yeutukhovich.bookstore.service.requestservice;
 
 import com.senla.training.yeutukhovich.bookstore.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.domain.Request;
 import com.senla.training.yeutukhovich.bookstore.repository.EntityRepository;
-import com.senla.training.yeutukhovich.bookstore.service.RequestService;
 
 import java.util.Comparator;
 import java.util.List;

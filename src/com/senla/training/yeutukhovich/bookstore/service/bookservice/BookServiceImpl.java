@@ -1,11 +1,10 @@
-package com.senla.training.yeutukhovich.bookstore.service.impl;
+package com.senla.training.yeutukhovich.bookstore.service.bookservice;
 
 import com.senla.training.yeutukhovich.bookstore.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.domain.Order;
 import com.senla.training.yeutukhovich.bookstore.domain.Request;
 import com.senla.training.yeutukhovich.bookstore.domain.state.OrderState;
 import com.senla.training.yeutukhovich.bookstore.repository.EntityRepository;
-import com.senla.training.yeutukhovich.bookstore.service.BookService;
 import com.senla.training.yeutukhovich.bookstore.service.dto.BookDescription;
 import com.senla.training.yeutukhovich.bookstore.util.comparator.book.TitleBookComparator;
 

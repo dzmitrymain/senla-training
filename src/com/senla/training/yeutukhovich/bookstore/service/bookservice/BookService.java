@@ -1,4 +1,4 @@
-package com.senla.training.yeutukhovich.bookstore.service;
+package com.senla.training.yeutukhovich.bookstore.service.bookservice;
 
 import com.senla.training.yeutukhovich.bookstore.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.service.dto.BookDescription;

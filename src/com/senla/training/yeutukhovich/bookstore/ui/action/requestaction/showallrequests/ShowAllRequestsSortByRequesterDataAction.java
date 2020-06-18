@@ -1,8 +1,8 @@
 package com.senla.training.yeutukhovich.bookstore.ui.action.requestaction.showallrequests;
 
 import com.senla.training.yeutukhovich.bookstore.ui.action.Action;
-import com.senla.training.yeutukhovich.bookstore.service.RequestService;
-import com.senla.training.yeutukhovich.bookstore.service.impl.RequestServiceImpl;
+import com.senla.training.yeutukhovich.bookstore.service.requestservice.RequestService;
+import com.senla.training.yeutukhovich.bookstore.service.requestservice.RequestServiceImpl;
 import com.senla.training.yeutukhovich.bookstore.util.comparator.request.RequesterDataRequestComparator;
 import com.senla.training.yeutukhovich.bookstore.util.printer.EntityPrinter;
 
