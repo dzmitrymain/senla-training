@@ -1,19 +1,18 @@
 package com.senla.training.yeutukhovich.bookstore.util.printer;
 
+import com.senla.training.yeutukhovich.bookstore.domain.AbstractEntity;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 
 import java.util.List;
 
 public class EntityPrinter {
 
-    public static void printEntities(List entities) {
+    public static <T extends AbstractEntity> void printEntities(List<T> entities) {
 
         if (!entities.isEmpty()) {
             System.out.println(MessageConstant.DATA_WAS_FOUND);
             System.out.println();
-            for (Object entity : entities) {
-                System.out.println(entity.toString());
-            }
+            entities.forEach(System.out::println);
         } else {
             System.out.println(MessageConstant.NO_DATA_WAS_FOUND);
         }
