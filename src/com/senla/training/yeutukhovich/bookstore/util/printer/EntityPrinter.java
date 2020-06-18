@@ -9,7 +9,7 @@ public class EntityPrinter {
 
     public static <T extends AbstractEntity> void printEntities(List<T> entities) {
 
-        if (!entities.isEmpty()) {
+        if (entities != null && !entities.isEmpty()) {
             System.out.println(MessageConstant.DATA_WAS_FOUND);
             System.out.println();
             entities.forEach(System.out::println);

@@ -9,17 +9,21 @@ public class DateConverter {
     public static final SimpleDateFormat DAY_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
     public static Date parseDate(String dateString, SimpleDateFormat dateFormat) {
-
         Date date = null;
-        try {
-            date = dateFormat.parse(dateString);
-        } catch (java.text.ParseException e) {
-            System.err.println(e.getMessage());
+        if (dateString != null && dateFormat != null) {
+            try {
+                date = dateFormat.parse(dateString);
+            } catch (java.text.ParseException e) {
+                System.err.println(e.getMessage());
+            }
         }
         return date;
     }
 
     public static String formatDate(Date date, SimpleDateFormat dateFormat) {
-        return dateFormat.format(date);
+        if (date != null && dateFormat != null) {
+            return dateFormat.format(date);
+        }
+        return "";
     }
 }
