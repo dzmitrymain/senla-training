@@ -12,14 +12,14 @@ public class WriteOffBookAction implements Action {
     public void execute() {
         BookService bookService = BookServiceImpl.getInstance();
 
-        System.out.println(MessageConstant.ENTER_BOOK_ID);
+        System.out.println(MessageConstant.ENTER_BOOK_ID.getMessage());
         Long id = InputReader.readInputLong();
 
         if (id != null) {
             if (bookService.writeOffBook(id)) {
-                System.out.println(MessageConstant.BOOK_HAS_BEEN_WRITTEN_OFF);
+                System.out.println(MessageConstant.BOOK_HAS_BEEN_WRITTEN_OFF.getMessage());
             } else {
-                System.out.println(MessageConstant.BOOK_HAS_NOT_BEEN_WRITTEN_OFF);
+                System.out.println(MessageConstant.BOOK_HAS_NOT_BEEN_WRITTEN_OFF.getMessage());
             }
         }
     }

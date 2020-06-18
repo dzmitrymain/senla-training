@@ -1,45 +1,55 @@
 package com.senla.training.yeutukhovich.bookstore.util.constant;
 
-public class MenuNameConstant {
+public enum MenuNameConstant {
 
-    public static final String MAIN_MENU = "Main menu";
-    public static final String BOOK_MENU = "Book menu";
-    public static final String ORDER_MENU = "Order menu";
-    public static final String REQUEST_MENU = "Request menu";
-    public static final String EXIT = "Exit";
+    MAIN_MENU("Main menu"),
+    BOOK_MENU("Book menu"),
+    ORDER_MENU("Order menu"),
+    REQUEST_MENU("Request menu"),
+    EXIT("Exit"),
 
-    public static final String BACK_TO_MAIN_MENU = "Back to Main menu";
-    public static final String BACK_TO_BOOK_MENU = "Back to Book menu";
-    public static final String BACK_TO_ORDER_MENU = "Back to Order menu";
-    public static final String BACK_TO_REQUEST_MENU = "Back to Request menu";
+    BACK_TO_MAIN_MENU("Back to Main menu"),
+    BACK_TO_BOOK_MENU("Back to Book menu"),
+    BACK_TO_ORDER_MENU("Back to Order menu"),
+    BACK_TO_REQUEST_MENU("Back to Request menu"),
 
-    public static final String SHOW_ALL_BOOKS = "Show all books";
-    public static final String SHOW_ALL_ORDERS = "Show all orders";
-    public static final String SHOW_ALL_REQUESTS = "Show all requests";
+    SHOW_ALL_BOOKS("Show all books"),
+    SHOW_ALL_ORDERS("Show all orders"),
+    SHOW_ALL_REQUESTS("Show all requests"),
 
-    public static final String SORT_BY_TITLE = "Sort by title";
-    public static final String SORT_BY_BOOK_TITLE = "Sort by book title";
-    public static final String SORT_BY_STATE = "Sort by state";
-    public static final String SORT_BY_PRICE = "Sort by price";
-    public static final String SORT_BY_AVAILABILITY = "Sort by availability";
-    public static final String SORT_BY_EDITION_DATE = "Sort by edition date";
-    public static final String SORT_BY_REPLENISHMENT_DATE = "Sort by replenishment date";
-    public static final String SORT_BY_COMPLETION_DATE = "Sort by completion date";
-    public static final String SORT_BY_REQUESTER_DATA = "Sort by requester data";
+    SORT_BY_TITLE("Sort by title"),
+    SORT_BY_BOOK_TITLE("Sort by book title"),
+    SORT_BY_STATE("Sort by state"),
+    SORT_BY_PRICE("Sort by price"),
+    SORT_BY_AVAILABILITY("Sort by availability"),
+    SORT_BY_EDITION_DATE("Sort by edition date"),
+    SORT_BY_REPLENISHMENT_DATE("Sort by replenishment date"),
+    SORT_BY_COMPLETION_DATE("Sort by completion date"),
+    SORT_BY_REQUESTER_DATA("Sort by requester data"),
 
-    public static final String SHOW_BOOK_DESCRIPTION = "Show book description";
-    public static final String REPLENISH_BOOK = "Replenish book";
-    public static final String WRITE_OFF_BOOK = "Write off book";
-    public static final String SHOW_STALE_BOOKS = "Show stale books";
-    public static final String SHOW_SOLD_BOOKS_BETWEEN_DATES = "Show sold books between dates";
-    public static final String SHOW_UNSOLD_BOOKS_BETWEEN_DATES = "Show unsold books between dates";
+    SHOW_BOOK_DESCRIPTION("Show book description"),
+    REPLENISH_BOOK("Replenish book"),
+    WRITE_OFF_BOOK("Write off book"),
+    SHOW_STALE_BOOKS("Show stale books"),
+    SHOW_SOLD_BOOKS_BETWEEN_DATES("Show sold books between dates"),
+    SHOW_UNSOLD_BOOKS_BETWEEN_DATES("Show unsold books between dates"),
 
-    public static final String CANCEL_ORDER = "Cancel order";
-    public static final String COMPLETE_ORDER = "Complete order";
-    public static final String CREATE_ORDER = "Create order";
-    public static final String SHOW_COMPLETED_ORDERS_NUMBER_BETWEEN_DATES = "Show completed orders number between dates";
-    public static final String SHOW_COMPLETED_ORDERS_BETWEEN_DATES = "Show completed orders between dates";
-    public static final String SHOW_ORDER_DETAILS = "Show order details";
-    public static final String SHOW_PROFIT_BETWEEN_DATES = "Show profit between dates";
-    public static final String CREATE_REQUEST = "Create request";
+    CANCEL_ORDER("Cancel order"),
+    COMPLETE_ORDER("Complete order"),
+    CREATE_ORDER("Create order"),
+    SHOW_COMPLETED_ORDERS_NUMBER_BETWEEN_DATES("Show completed orders number between dates"),
+    SHOW_COMPLETED_ORDERS_BETWEEN_DATES("Show completed orders between dates"),
+    SHOW_ORDER_DETAILS("Show order details"),
+    SHOW_PROFIT_BETWEEN_DATES("Show profit between dates"),
+    CREATE_REQUEST("Create request");
+
+    private String menuName;
+
+    MenuNameConstant(String menuName) {
+        this.menuName = menuName;
+    }
+
+    public String getMenuName() {
+        return menuName;
+    }
 }

@@ -31,14 +31,14 @@ public class MenuNavigator {
 
     public void printMenu() {
         System.out.println();
-        System.out.println(MessageConstant.MENU_BORDER);
+        System.out.println(MessageConstant.MENU_BORDER.getMessage());
         System.out.println("        " + currentMenu.getName());
-        System.out.println(MessageConstant.MENU_ITEM_BORDER);
+        System.out.println(MessageConstant.MENU_ITEM_BORDER.getMessage());
         int firstMenuIndex = 1;
         for (MenuItem menuItem : currentMenu.getMenuItems()) {
             System.out.println(firstMenuIndex++ + ". " + menuItem.getTitle());
         }
-        System.out.println(MessageConstant.MENU_BORDER);
+        System.out.println(MessageConstant.MENU_BORDER.getMessage());
         System.out.println();
     }
 
@@ -58,7 +58,7 @@ public class MenuNavigator {
                 currentMenu = null;
             }
         } else {
-            System.err.println(MessageConstant.ENTER_CORRECT_NUMBER);
+            System.err.println(MessageConstant.ENTER_CORRECT_NUMBER.getMessage());
         }
     }
 }

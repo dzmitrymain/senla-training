@@ -13,7 +13,7 @@ public class ShowOrderDetailsAction implements Action {
     public void execute() {
         OrderService orderService = OrderServiceImpl.getInstance();
 
-        System.out.println(MessageConstant.ENTER_ORDER_ID);
+        System.out.println(MessageConstant.ENTER_ORDER_ID.getMessage());
         Long id = InputReader.readInputLong();
 
         if (id != null) {
@@ -21,7 +21,7 @@ public class ShowOrderDetailsAction implements Action {
             if (orderDetails != null) {
                 System.out.println(orderDetails);
             } else {
-                System.out.println(MessageConstant.ORDER_DETAILS_WAS_NOT_FOUND);
+                System.out.println(MessageConstant.ORDER_DETAILS_WAS_NOT_FOUND.getMessage());
             }
         }
     }

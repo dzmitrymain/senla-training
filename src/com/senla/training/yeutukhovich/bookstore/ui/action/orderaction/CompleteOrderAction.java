@@ -12,14 +12,14 @@ public class CompleteOrderAction implements Action {
     public void execute() {
         OrderService orderService = OrderServiceImpl.getInstance();
 
-        System.out.println(MessageConstant.ENTER_ORDER_ID);
+        System.out.println(MessageConstant.ENTER_ORDER_ID.getMessage());
         Long orderId = InputReader.readInputLong();
 
         if (orderId != null) {
             if (orderService.completeOrder(orderId)) {
-                System.out.println(MessageConstant.ORDER_HAS_BEEN_COMPLETED);
+                System.out.println(MessageConstant.ORDER_HAS_BEEN_COMPLETED.getMessage());
             } else {
-                System.out.println(MessageConstant.ORDER_HAS_NOT_BEEN_COMPLETED);
+                System.out.println(MessageConstant.ORDER_HAS_NOT_BEEN_COMPLETED.getMessage());
             }
         }
     }

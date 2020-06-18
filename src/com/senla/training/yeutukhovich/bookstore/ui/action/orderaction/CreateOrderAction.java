@@ -13,21 +13,21 @@ public class CreateOrderAction implements Action {
     public void execute() {
         OrderService orderService = OrderServiceImpl.getInstance();
 
-        System.out.println(MessageConstant.ENTER_BOOK_ID);
+        System.out.println(MessageConstant.ENTER_BOOK_ID.getMessage());
         Long id = InputReader.readInputLong();
 
-        System.out.println(MessageConstant.ENTER_CUSTOMER_DATA);
+        System.out.println(MessageConstant.ENTER_CUSTOMER_DATA.getMessage());
         String customerData = InputReader.readInputString();
 
         if (id != null && customerData != null) {
             Order order = orderService.createOrder(id, customerData);
             if (order != null) {
-                System.out.println(MessageConstant.ORDER_HAS_BEEN_CREATED);
+                System.out.println(MessageConstant.ORDER_HAS_BEEN_CREATED.getMessage());
                 if (order.getBook() != null && !order.getBook().isAvailable()) {
-                    System.out.println(MessageConstant.REQUEST_HAS_BEEN_CREATED);
+                    System.out.println(MessageConstant.REQUEST_HAS_BEEN_CREATED.getMessage());
                 }
             } else {
-                System.out.println(MessageConstant.ORDER_HAS_NOT_BEEN_CREATED);
+                System.out.println(MessageConstant.ORDER_HAS_NOT_BEEN_CREATED.getMessage());
             }
         }
     }

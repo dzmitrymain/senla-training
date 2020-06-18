@@ -15,14 +15,14 @@ public class ShowProfitBetweenDatesAction implements Action {
     public void execute() {
         OrderService orderService = OrderServiceImpl.getInstance();
 
-        System.out.println(MessageConstant.EARLIEST_DATE_BOUND_YYYY_MM_DD);
+        System.out.println(MessageConstant.EARLIEST_DATE_BOUND_YYYY_MM_DD.getMessage());
         Date firstDate = InputReader.readInputDate(DateConverter.DAY_DATE_FORMAT);
 
-        System.out.println(MessageConstant.LATEST_DATE_BOUND_YYYY_MM_DD);
+        System.out.println(MessageConstant.LATEST_DATE_BOUND_YYYY_MM_DD.getMessage());
         Date secondDate = InputReader.readInputDate(DateConverter.DAY_DATE_FORMAT);
 
         if (firstDate != null && secondDate != null) {
-            System.out.println(MessageConstant.PROFIT + orderService.calculateProfitBetweenDates(firstDate, secondDate));
+            System.out.println(MessageConstant.PROFIT.getMessage() + orderService.calculateProfitBetweenDates(firstDate, secondDate));
         }
     }
 }

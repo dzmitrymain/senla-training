@@ -13,18 +13,18 @@ public class CreateRequestAction implements Action {
     public void execute() {
         RequestService requestService = RequestServiceImpl.getInstance();
 
-        System.out.println(MessageConstant.ENTER_BOOK_ID);
+        System.out.println(MessageConstant.ENTER_BOOK_ID.getMessage());
         Long bookId = InputReader.readInputLong();
 
-        System.out.println(MessageConstant.ENTER_REQUESTER_DATA);
+        System.out.println(MessageConstant.ENTER_REQUESTER_DATA.getMessage());
         String requesterData = InputReader.readInputString();
 
         if (bookId != null && requesterData != null) {
             Request request = requestService.createRequest(bookId, requesterData);
             if (request != null) {
-                System.out.println(MessageConstant.REQUEST_HAS_BEEN_CREATED);
+                System.out.println(MessageConstant.REQUEST_HAS_BEEN_CREATED.getMessage());
             } else {
-                System.out.println(MessageConstant.REQUEST_HAS_NOT_BEEN_CREATED);
+                System.out.println(MessageConstant.REQUEST_HAS_NOT_BEEN_CREATED.getMessage());
             }
         }
     }
