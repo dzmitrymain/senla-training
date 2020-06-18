@@ -8,14 +8,15 @@ import com.senla.training.yeutukhovich.bookstore.util.converter.DateConverter;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class EntityInitializer {
 
-    private static ArrayList<Book> books;
-    private static ArrayList<Order> orders;
-    private static ArrayList<Request> requests;
+    private static List<Book> books;
+    private static List<Order> orders;
+    private static List<Request> requests;
 
-    public static ArrayList<Book> getBooks() {
+    public static List<Book> getBooks() {
         if (books == null) {
             books = new ArrayList<>();
             books.add(new Book("Jonathan Livingston Seagull", true, DateConverter.parseDate("1970", DateConverter.YEAR_DATE_FORMAT), new Date(), BigDecimal.valueOf(25.90)));
@@ -27,14 +28,14 @@ public class EntityInitializer {
         return books;
     }
 
-    public static ArrayList<Order> getOrders() {
+    public static List<Order> getOrders() {
         if (orders == null) {
             orders = new ArrayList<>();
         }
         return orders;
     }
 
-    public static ArrayList<Request> getRequests() {
+    public static List<Request> getRequests() {
         if (requests == null) {
             requests = new ArrayList<>();
         }
