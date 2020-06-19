@@ -2,7 +2,9 @@ package com.senla.training.yeutukhovich.bookstore.service.requestservice;
 
 import com.senla.training.yeutukhovich.bookstore.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.domain.Request;
-import com.senla.training.yeutukhovich.bookstore.repository.EntityRepository;
+import com.senla.training.yeutukhovich.bookstore.repository.BookRepository;
+import com.senla.training.yeutukhovich.bookstore.repository.IRepository;
+import com.senla.training.yeutukhovich.bookstore.repository.RequestRepository;
 
 import java.util.Comparator;
 import java.util.List;
@@ -12,12 +14,12 @@ public class RequestServiceImpl implements RequestService {
 
     private static RequestServiceImpl instance;
 
-    private EntityRepository<Book> bookRepository;
-    private EntityRepository<Request> requestRepository;
+    private IRepository<Book> bookRepository;
+    private IRepository<Request> requestRepository;
 
     private RequestServiceImpl() {
-        this.bookRepository = EntityRepository.getBookRepositoryInstance();
-        this.requestRepository = EntityRepository.getRequestRepositoryInstance();
+        this.bookRepository = BookRepository.getInstance();
+        this.requestRepository = RequestRepository.getInstance();
     }
 
     public static RequestServiceImpl getInstance() {

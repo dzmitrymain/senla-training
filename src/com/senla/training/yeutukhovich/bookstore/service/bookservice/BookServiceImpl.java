@@ -4,7 +4,10 @@ import com.senla.training.yeutukhovich.bookstore.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.domain.Order;
 import com.senla.training.yeutukhovich.bookstore.domain.Request;
 import com.senla.training.yeutukhovich.bookstore.domain.state.OrderState;
-import com.senla.training.yeutukhovich.bookstore.repository.EntityRepository;
+import com.senla.training.yeutukhovich.bookstore.repository.BookRepository;
+import com.senla.training.yeutukhovich.bookstore.repository.IRepository;
+import com.senla.training.yeutukhovich.bookstore.repository.OrderRepository;
+import com.senla.training.yeutukhovich.bookstore.repository.RequestRepository;
 import com.senla.training.yeutukhovich.bookstore.service.dto.BookDescription;
 import com.senla.training.yeutukhovich.bookstore.util.comparator.book.TitleBookComparator;
 
@@ -19,14 +22,14 @@ public class BookServiceImpl implements BookService {
     private static BookServiceImpl instance;
     private static final int STALE_MONTH_NUMBER = 6;
 
-    private EntityRepository<Book> bookRepository;
-    private EntityRepository<Order> orderRepository;
-    private EntityRepository<Request> requestRepository;
+    private IRepository<Book> bookRepository;
+    private IRepository<Order> orderRepository;
+    private IRepository<Request> requestRepository;
 
     private BookServiceImpl() {
-        this.bookRepository = EntityRepository.getBookRepositoryInstance();
-        this.orderRepository = EntityRepository.getOrderRepositoryInstance();
-        this.requestRepository = EntityRepository.getRequestRepositoryInstance();
+        this.bookRepository = BookRepository.getInstance();
+        this.orderRepository = OrderRepository.getInstance();
+        this.requestRepository = RequestRepository.getInstance();
     }
 
     public static BookServiceImpl getInstance() {
