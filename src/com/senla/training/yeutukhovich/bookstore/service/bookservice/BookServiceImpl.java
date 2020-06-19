@@ -8,7 +8,10 @@ import com.senla.training.yeutukhovich.bookstore.repository.EntityRepository;
 import com.senla.training.yeutukhovich.bookstore.service.dto.BookDescription;
 import com.senla.training.yeutukhovich.bookstore.util.comparator.book.TitleBookComparator;
 
-import java.util.*;
+import java.util.Calendar;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class BookServiceImpl implements BookService {
@@ -62,25 +65,31 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<Book> findAllBooks(Comparator<Book> bookComparator) {
         List<Book> books = bookRepository.findAll();
-        return books.stream().sorted(bookComparator).collect(Collectors.toList());
+        return books.stream()
+                .sorted(bookComparator)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<Book> findSoldBooksBetweenDates(Date startDate, Date endDate) {
-        List<Order> completedOrders = findCompletedOrdersBetweenDates(startDate, endDate);
-        List<Book> books = new ArrayList<>();
-        for (Order order : completedOrders) {
-            books.add(order.getBook());
-        }
-        return books.stream().distinct().collect(Collectors.toList());
+        List<Order> orders = orderRepository.findAll();
+
+        return orders.stream()
+                .filter((order) -> order.getState() == OrderState.COMPLETED
+                        && order.getCompletionDate().after(startDate)
+                        && order.getCompletionDate().before(endDate))
+                .map(Order::getBook)
+                .distinct()
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<Book> findUnsoldBooksBetweenDates(Date startDate, Date endDate) {
         List<Book> soldBooks = findSoldBooksBetweenDates(startDate, endDate);
-        List<Book> books = findAllBooks(new TitleBookComparator());
-
-        return books.stream().filter(book -> !soldBooks.contains(book)).collect(Collectors.toList());
+        List<Book> books = findAllBooks(TitleBookComparator.getInstance());
+        return books.stream()
+                .filter(book -> !soldBooks.contains(book))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -91,8 +100,9 @@ public class BookServiceImpl implements BookService {
         Date staleDate = new Date(calendar.getTimeInMillis());
 
         List<Book> unsoldBooks = findUnsoldBooksBetweenDates(staleDate, currentDate);
-        return unsoldBooks.stream().filter(book -> book.getReplenishmentDate() != null &&
-                book.getReplenishmentDate().before(staleDate)).collect(Collectors.toList());
+        return unsoldBooks.stream()
+                .filter(book -> book.getReplenishmentDate() != null && book.getReplenishmentDate().before(staleDate))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -127,12 +137,5 @@ public class BookServiceImpl implements BookService {
                 orderRepository.update(order);
             }
         }
-    }
-
-    private List<Order> findCompletedOrdersBetweenDates(Date startDate, Date endDate) {
-        List<Order> orders = orderRepository.findAll();
-        return orders.stream().filter((order) -> order.getState() == OrderState.COMPLETED &&
-                order.getCompletionDate().after(startDate) &&
-                order.getCompletionDate().before(endDate)).collect(Collectors.toList());
     }
 }

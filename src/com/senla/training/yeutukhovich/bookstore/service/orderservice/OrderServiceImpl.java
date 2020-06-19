@@ -75,15 +75,19 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<Order> findAllOrders(Comparator<Order> orderComparator) {
         List<Order> orders = orderRepository.findAll();
-        return orders.stream().sorted(orderComparator).collect(Collectors.toList());
+        return orders.stream()
+                .sorted(orderComparator)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<Order> findCompletedOrdersBetweenDates(Date startDate, Date endDate) {
         List<Order> orders = orderRepository.findAll();
-        return orders.stream().filter((order) -> order.getState() == OrderState.COMPLETED &&
-                order.getCompletionDate().after(startDate) &&
-                order.getCompletionDate().before(endDate)).collect(Collectors.toList());
+        return orders.stream()
+                .filter((order) -> order.getState() == OrderState.COMPLETED &&
+                        order.getCompletionDate().after(startDate) &&
+                        order.getCompletionDate().before(endDate))
+                .collect(Collectors.toList());
     }
 
     @Override

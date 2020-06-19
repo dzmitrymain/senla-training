@@ -41,6 +41,8 @@ public class RequestServiceImpl implements RequestService {
     @Override
     public List<Request> findAllRequests(Comparator<Request> requestComparator) {
         List<Request> requests = requestRepository.findAll();
-        return requests.stream().sorted(requestComparator).collect(Collectors.toList());
+        return requests.stream()
+                .sorted(requestComparator)
+                .collect(Collectors.toList());
     }
 }
