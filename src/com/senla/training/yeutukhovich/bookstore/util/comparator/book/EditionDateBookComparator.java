@@ -6,15 +6,6 @@ import java.util.Comparator;
 
 public class EditionDateBookComparator implements Comparator<Book> {
 
-    private static EditionDateBookComparator instance;
-
-    public static EditionDateBookComparator getInstance() {
-        if (instance == null) {
-            instance = new EditionDateBookComparator();
-        }
-        return instance;
-    }
-
     @Override
     public int compare(Book o1, Book o2) {
         if (o1 == null && o2 == null) {

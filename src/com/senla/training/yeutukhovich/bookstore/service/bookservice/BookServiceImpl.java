@@ -9,7 +9,7 @@ import com.senla.training.yeutukhovich.bookstore.repository.IRepository;
 import com.senla.training.yeutukhovich.bookstore.repository.OrderRepository;
 import com.senla.training.yeutukhovich.bookstore.repository.RequestRepository;
 import com.senla.training.yeutukhovich.bookstore.service.dto.BookDescription;
-import com.senla.training.yeutukhovich.bookstore.util.comparator.book.TitleBookComparator;
+import com.senla.training.yeutukhovich.bookstore.util.comparator.BookComparator;
 
 import java.util.Calendar;
 import java.util.Comparator;
@@ -89,7 +89,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<Book> findUnsoldBooksBetweenDates(Date startDate, Date endDate) {
         List<Book> soldBooks = findSoldBooksBetweenDates(startDate, endDate);
-        List<Book> books = findAllBooks(TitleBookComparator.getInstance());
+        List<Book> books = findAllBooks(BookComparator.TITLE.getComparator());
         return books.stream()
                 .filter(book -> !soldBooks.contains(book))
                 .collect(Collectors.toList());

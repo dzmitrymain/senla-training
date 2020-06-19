@@ -6,15 +6,6 @@ import java.util.Comparator;
 
 public class CompletionDateOrderComparator implements Comparator<Order> {
 
-    private static CompletionDateOrderComparator instance;
-
-    public static CompletionDateOrderComparator getInstance() {
-        if (instance == null) {
-            instance = new CompletionDateOrderComparator();
-        }
-        return instance;
-    }
-
     @Override
     public int compare(Order o1, Order o2) {
         if (o1 == null && o2 == null) {

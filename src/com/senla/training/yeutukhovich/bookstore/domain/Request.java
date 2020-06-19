@@ -2,8 +2,6 @@ package com.senla.training.yeutukhovich.bookstore.domain;
 
 import com.senla.training.yeutukhovich.bookstore.util.generator.IdGenerator;
 
-import java.util.Objects;
-
 public class Request extends AbstractEntity {
 
     private Book book;
@@ -35,32 +33,6 @@ public class Request extends AbstractEntity {
 
     public void setRequesterData(String requesterData) {
         this.requesterData = requesterData;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Request request = (Request) o;
-        if (!Objects.equals(book, request.book)) {
-            return false;
-        }
-        if (!Objects.equals(isActive, request.isActive)) {
-            return false;
-        }
-        return Objects.equals(requesterData, request.requesterData);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = book != null ? book.hashCode() : 0;
-        result = 31 * result + (isActive != null ? isActive.hashCode() : 0);
-        result = 31 * result + (requesterData != null ? requesterData.hashCode() : 0);
-        return result;
     }
 
     @Override

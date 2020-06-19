@@ -6,15 +6,6 @@ import java.util.Comparator;
 
 public class RequesterDataRequestComparator implements Comparator<Request> {
 
-    private static RequesterDataRequestComparator instance;
-
-    public static RequesterDataRequestComparator getInstance() {
-        if (instance == null) {
-            instance = new RequesterDataRequestComparator();
-        }
-        return instance;
-    }
-
     @Override
     public int compare(Request o1, Request o2) {
         if (o1 == null && o2 == null) {

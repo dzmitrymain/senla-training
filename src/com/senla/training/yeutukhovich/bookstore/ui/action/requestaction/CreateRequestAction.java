@@ -1,9 +1,8 @@
 package com.senla.training.yeutukhovich.bookstore.ui.action.requestaction;
 
-import com.senla.training.yeutukhovich.bookstore.ui.action.Action;
+import com.senla.training.yeutukhovich.bookstore.controller.RequestController;
 import com.senla.training.yeutukhovich.bookstore.domain.Request;
-import com.senla.training.yeutukhovich.bookstore.service.requestservice.RequestService;
-import com.senla.training.yeutukhovich.bookstore.service.requestservice.RequestServiceImpl;
+import com.senla.training.yeutukhovich.bookstore.ui.action.Action;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 import com.senla.training.yeutukhovich.bookstore.util.reader.InputReader;
 
@@ -11,7 +10,7 @@ public class CreateRequestAction implements Action {
 
     @Override
     public void execute() {
-        RequestService requestService = RequestServiceImpl.getInstance();
+        RequestController requestController = RequestController.getInstance();
 
         System.out.println(MessageConstant.ENTER_BOOK_ID.getMessage());
         Long bookId = InputReader.readInputLong();
@@ -20,7 +19,7 @@ public class CreateRequestAction implements Action {
         String requesterData = InputReader.readInputString();
 
         if (bookId != null && requesterData != null) {
-            Request request = requestService.createRequest(bookId, requesterData);
+            Request request = requestController.createRequest(bookId, requesterData);
             if (request != null) {
                 System.out.println(MessageConstant.REQUEST_HAS_BEEN_CREATED.getMessage());
             } else {

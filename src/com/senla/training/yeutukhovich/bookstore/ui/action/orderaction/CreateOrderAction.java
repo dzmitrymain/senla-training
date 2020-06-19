@@ -1,9 +1,8 @@
 package com.senla.training.yeutukhovich.bookstore.ui.action.orderaction;
 
-import com.senla.training.yeutukhovich.bookstore.ui.action.Action;
+import com.senla.training.yeutukhovich.bookstore.controller.OrderController;
 import com.senla.training.yeutukhovich.bookstore.domain.Order;
-import com.senla.training.yeutukhovich.bookstore.service.orderservice.OrderService;
-import com.senla.training.yeutukhovich.bookstore.service.orderservice.OrderServiceImpl;
+import com.senla.training.yeutukhovich.bookstore.ui.action.Action;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 import com.senla.training.yeutukhovich.bookstore.util.reader.InputReader;
 
@@ -11,7 +10,7 @@ public class CreateOrderAction implements Action {
 
     @Override
     public void execute() {
-        OrderService orderService = OrderServiceImpl.getInstance();
+        OrderController orderController = OrderController.getInstance();
 
         System.out.println(MessageConstant.ENTER_BOOK_ID.getMessage());
         Long id = InputReader.readInputLong();
@@ -20,7 +19,7 @@ public class CreateOrderAction implements Action {
         String customerData = InputReader.readInputString();
 
         if (id != null && customerData != null) {
-            Order order = orderService.createOrder(id, customerData);
+            Order order = orderController.createOrder(id, customerData);
             if (order != null) {
                 System.out.println(MessageConstant.ORDER_HAS_BEEN_CREATED.getMessage());
                 if (order.getBook() != null && !order.getBook().isAvailable()) {

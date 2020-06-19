@@ -5,7 +5,6 @@ import com.senla.training.yeutukhovich.bookstore.util.generator.IdGenerator;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.Objects;
 
 public class Order extends AbstractEntity {
 
@@ -67,40 +66,6 @@ public class Order extends AbstractEntity {
 
     public void setCustomerData(String customerData) {
         this.customerData = customerData;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Order order = (Order) o;
-        if (state != order.state) {
-            return false;
-        }
-        if (!Objects.equals(book, order.book)) {
-            return false;
-        }
-        if (!Objects.equals(currentBookPrice, order.currentBookPrice)) {
-            return false;
-        }
-        if (!Objects.equals(creationDate, order.creationDate)) {
-            return false;
-        }
-        return Objects.equals(customerData, order.customerData);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = state != null ? state.hashCode() : 0;
-        result = 31 * result + (book != null ? book.hashCode() : 0);
-        result = 31 * result + (currentBookPrice != null ? currentBookPrice.hashCode() : 0);
-        result = 31 * result + (creationDate != null ? creationDate.hashCode() : 0);
-        result = 31 * result + (customerData != null ? customerData.hashCode() : 0);
-        return result;
     }
 
     @Override

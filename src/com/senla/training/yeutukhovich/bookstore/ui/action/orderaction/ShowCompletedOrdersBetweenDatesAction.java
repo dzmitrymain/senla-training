@@ -1,8 +1,7 @@
 package com.senla.training.yeutukhovich.bookstore.ui.action.orderaction;
 
+import com.senla.training.yeutukhovich.bookstore.controller.OrderController;
 import com.senla.training.yeutukhovich.bookstore.ui.action.Action;
-import com.senla.training.yeutukhovich.bookstore.service.orderservice.OrderService;
-import com.senla.training.yeutukhovich.bookstore.service.orderservice.OrderServiceImpl;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 import com.senla.training.yeutukhovich.bookstore.util.converter.DateConverter;
 import com.senla.training.yeutukhovich.bookstore.util.printer.EntityPrinter;
@@ -14,7 +13,7 @@ public class ShowCompletedOrdersBetweenDatesAction implements Action {
 
     @Override
     public void execute() {
-        OrderService orderService = OrderServiceImpl.getInstance();
+        OrderController orderController = OrderController.getInstance();
 
         System.out.println(MessageConstant.EARLIEST_DATE_BOUND_YYYY_MM_DD.getMessage());
         Date firstDate = InputReader.readInputDate(DateConverter.DAY_DATE_FORMAT);
@@ -23,7 +22,7 @@ public class ShowCompletedOrdersBetweenDatesAction implements Action {
         Date secondDate = InputReader.readInputDate(DateConverter.DAY_DATE_FORMAT);
 
         if (firstDate != null && secondDate != null) {
-            EntityPrinter.printEntities(orderService.findCompletedOrdersBetweenDates(firstDate, secondDate));
+            EntityPrinter.printEntities(orderController.findCompletedOrdersBetweenDates(firstDate, secondDate));
         }
     }
 }

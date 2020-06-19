@@ -6,15 +6,6 @@ import java.util.Comparator;
 
 public class BookIdRequestComparator implements Comparator<Request> {
 
-    private static BookIdRequestComparator instance;
-
-    public static BookIdRequestComparator getInstance() {
-        if (instance == null) {
-            instance = new BookIdRequestComparator();
-        }
-        return instance;
-    }
-
     @Override
     public int compare(Request o1, Request o2) {
         if (o1 == null && o2 == null) {

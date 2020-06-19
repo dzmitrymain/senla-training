@@ -6,15 +6,6 @@ import java.util.Comparator;
 
 public class IsActiveRequestComparator implements Comparator<Request> {
 
-    private static IsActiveRequestComparator instance;
-
-    public static IsActiveRequestComparator getInstance() {
-        if (instance == null) {
-            instance = new IsActiveRequestComparator();
-        }
-        return instance;
-    }
-
     @Override
     public int compare(Request o1, Request o2) {
         if (o1 == null && o2 == null) {

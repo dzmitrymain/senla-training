@@ -1,8 +1,7 @@
 package com.senla.training.yeutukhovich.bookstore.ui.action.bookaction;
 
-import com.senla.training.yeutukhovich.bookstore.service.bookservice.BookService;
+import com.senla.training.yeutukhovich.bookstore.controller.BookController;
 import com.senla.training.yeutukhovich.bookstore.service.dto.BookDescription;
-import com.senla.training.yeutukhovich.bookstore.service.bookservice.BookServiceImpl;
 import com.senla.training.yeutukhovich.bookstore.ui.action.Action;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 import com.senla.training.yeutukhovich.bookstore.util.reader.InputReader;
@@ -12,13 +11,13 @@ public class ShowBookDescriptionAction implements Action {
     @Override
     public void execute() {
 
-        BookService bookService = BookServiceImpl.getInstance();
+        BookController bookController = BookController.getInstance();
 
         System.out.println(MessageConstant.ENTER_BOOK_ID.getMessage());
         Long id = InputReader.readInputLong();
 
         if (id != null) {
-            BookDescription bookDescription = bookService.showBookDescription(id);
+            BookDescription bookDescription = bookController.showBookDescription(id);
             if (bookDescription != null) {
                 System.out.println(bookDescription);
             } else {

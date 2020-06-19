@@ -4,7 +4,6 @@ import com.senla.training.yeutukhovich.bookstore.util.generator.IdGenerator;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.Objects;
 
 public class Book extends AbstractEntity {
 
@@ -61,36 +60,6 @@ public class Book extends AbstractEntity {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Book book = (Book) o;
-        if (!Objects.equals(title, book.title)) {
-            return false;
-        }
-        if (!Objects.equals(editionDate, book.editionDate)) {
-            return false;
-        }
-        if (!Objects.equals(replenishmentDate, book.replenishmentDate)) {
-            return false;
-        }
-        return Objects.equals(price, book.price);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = title != null ? title.hashCode() : 0;
-        result = 31 * result + (editionDate != null ? editionDate.hashCode() : 0);
-        result = 31 * result + (replenishmentDate != null ? replenishmentDate.hashCode() : 0);
-        result = 31 * result + (price != null ? price.hashCode() : 0);
-        return result;
     }
 
     @Override
