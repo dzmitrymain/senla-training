@@ -1,15 +1,15 @@
 package com.senla.training.yeutukhovich.bookstore.domain;
 
+import com.senla.training.yeutukhovich.bookstore.util.generator.IdGenerator;
+
 public class Request extends AbstractEntity {
 
-    private static int requestIdNumber;
-
     private Book book;
-    private boolean isActive;
+    private Boolean isActive;
     private String requesterData;
 
     public Request(Book book, String requesterData) {
-        super(++requestIdNumber);
+        super(IdGenerator.getInstance().getNextRequestIdNumber());
         this.requesterData = requesterData;
         this.book = book;
         isActive = true;
@@ -19,11 +19,11 @@ public class Request extends AbstractEntity {
         return book;
     }
 
-    public boolean isActive() {
+    public Boolean isActive() {
         return isActive;
     }
 
-    public void setActive(boolean active) {
+    public void setActive(Boolean active) {
         isActive = active;
     }
 
@@ -36,19 +36,11 @@ public class Request extends AbstractEntity {
     }
 
     @Override
-    public Request clone() {
-        Request newRequest = (Request) super.clone();
-        newRequest.book = this.book.clone();
-        return newRequest;
-    }
-
-    @Override
     public String toString() {
-        return "Request{" +
-                "book=" + book +
-                ", isActive=" + isActive +
-                ", requesterData='" + requesterData + '\'' +
-                ", id=" + id +
-                '}';
+        return "Request [id=" + id +
+                ", book title=" + book.getTitle() +
+                ", is active=" + isActive +
+                ", requester data='" + requesterData +
+                "']";
     }
 }

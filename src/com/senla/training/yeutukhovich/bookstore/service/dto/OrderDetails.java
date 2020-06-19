@@ -1,6 +1,7 @@
 package com.senla.training.yeutukhovich.bookstore.service.dto;
 
 import com.senla.training.yeutukhovich.bookstore.domain.state.OrderState;
+import com.senla.training.yeutukhovich.bookstore.util.converter.DateConverter;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -9,8 +10,8 @@ public class OrderDetails {
 
     private String customerData;
     private String bookTitle;
-    private BigDecimal price;
     private OrderState state;
+    private BigDecimal price;
     private Date creationDate;
     private Date completionDate;
 
@@ -77,13 +78,18 @@ public class OrderDetails {
 
     @Override
     public String toString() {
-        return "OrderDetails{" +
-                "customerData='" + customerData + '\'' +
-                ", bookTitle='" + bookTitle + '\'' +
+        StringBuilder completionDateToString = new StringBuilder();
+        if (completionDate != null) {
+            completionDateToString.append(", completion date=");
+            completionDateToString.append(DateConverter.formatDate(completionDate, DateConverter.DAY_DATE_FORMAT));
+        }
+        return "Order details [" +
+                "customer data='" + customerData +
+                ", book title='" + bookTitle + '\'' +
                 ", price='" + price + '\'' +
                 ", state=" + state +
-                ", creationDate=" + creationDate +
-                ", completionDate=" + completionDate +
-                '}';
+                ", creation date=" + DateConverter.formatDate(creationDate, DateConverter.DAY_DATE_FORMAT) +
+                completionDateToString.toString() +
+                ']';
     }
 }

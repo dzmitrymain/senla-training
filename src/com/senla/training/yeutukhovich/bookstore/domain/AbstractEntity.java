@@ -1,23 +1,35 @@
 package com.senla.training.yeutukhovich.bookstore.domain;
 
-public abstract class AbstractEntity implements Cloneable {
+import java.util.Objects;
 
-    protected final int id;
+public abstract class AbstractEntity {
 
-    protected AbstractEntity(int id) {
+    protected final Long id;
+
+    protected AbstractEntity(Long id) {
         this.id = id;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
     @Override
-    public AbstractEntity clone() {
-        try {
-            return (AbstractEntity) super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new InternalError(e.getMessage());
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
         }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        AbstractEntity that = (AbstractEntity) o;
+
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
     }
 }

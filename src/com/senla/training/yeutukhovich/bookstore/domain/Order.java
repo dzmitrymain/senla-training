@@ -1,13 +1,12 @@
 package com.senla.training.yeutukhovich.bookstore.domain;
 
 import com.senla.training.yeutukhovich.bookstore.domain.state.OrderState;
+import com.senla.training.yeutukhovich.bookstore.util.generator.IdGenerator;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
 public class Order extends AbstractEntity {
-
-    private static int orderIdNumber;
 
     private OrderState state;
     private Book book;
@@ -17,7 +16,7 @@ public class Order extends AbstractEntity {
     private String customerData;
 
     public Order(Book book, String customerData) {
-        super(++orderIdNumber);
+        super(IdGenerator.getInstance().getNextOrderIdNumber());
         state = OrderState.CREATED;
         this.book = book;
         currentBookPrice = book.getPrice();
@@ -30,9 +29,6 @@ public class Order extends AbstractEntity {
     }
 
     public void setState(OrderState state) {
-        if (state == OrderState.COMPLETED) {
-            completionDate = new Date();
-        }
         this.state = state;
     }
 
@@ -60,6 +56,10 @@ public class Order extends AbstractEntity {
         return completionDate;
     }
 
+    public void setCompletionDate(Date completionDate) {
+        this.completionDate = completionDate;
+    }
+
     public String getCustomerData() {
         return customerData;
     }
@@ -69,28 +69,10 @@ public class Order extends AbstractEntity {
     }
 
     @Override
-    public Order clone() {
-        Order newOrder = (Order) super.clone();
-        newOrder.book = this.book.clone();
-        if (this.creationDate != null) {
-            newOrder.creationDate = new Date(this.creationDate.getTime());
-        }
-        if (this.completionDate != null) {
-            newOrder.completionDate = new Date(this.completionDate.getTime());
-        }
-        return newOrder;
-    }
-
-    @Override
     public String toString() {
-        return "Order{" +
-                "state=" + state +
-                ", book=" + book +
-                ", currentBookPrice=" + currentBookPrice +
-                ", creationDate=" + creationDate +
-                ", completionDate=" + completionDate +
-                ", customerData='" + customerData + '\'' +
-                ", id=" + id +
-                '}';
+        return "Order [id=" + id +
+                ", state=" + state +
+                ", customer data='" + customerData +
+                "', book title='" + book.getTitle() + "']";
     }
 }
