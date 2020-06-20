@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 public class BookServiceImpl implements BookService {
 
-    private static BookServiceImpl instance;
+    private static BookService instance;
     private static final int STALE_MONTH_NUMBER = 6;
 
     private IRepository<Book> bookRepository;
@@ -32,7 +32,7 @@ public class BookServiceImpl implements BookService {
         this.requestRepository = RequestRepository.getInstance();
     }
 
-    public static BookServiceImpl getInstance() {
+    public static BookService getInstance() {
         if (instance == null) {
             instance = new BookServiceImpl();
         }

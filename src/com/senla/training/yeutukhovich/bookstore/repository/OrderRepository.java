@@ -7,7 +7,7 @@ import java.util.List;
 
 public class OrderRepository implements IRepository<Order> {
 
-    private static OrderRepository instance;
+    private static IRepository<Order> instance;
 
     private List<Order> orders;
 
@@ -15,7 +15,7 @@ public class OrderRepository implements IRepository<Order> {
         this.orders = orders;
     }
 
-    public static OrderRepository getInstance() {
+    public static IRepository<Order> getInstance() {
         if (instance == null) {
             instance = new OrderRepository(EntityInitializer.getOrders());
         }

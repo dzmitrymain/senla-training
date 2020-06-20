@@ -7,7 +7,7 @@ import com.senla.training.yeutukhovich.bookstore.service.requestservice.RequestS
 import java.util.Comparator;
 import java.util.List;
 
-public class RequestController implements IRequestController {
+public class RequestController {
 
     private static RequestController instance;
 
@@ -24,12 +24,12 @@ public class RequestController implements IRequestController {
         return instance;
     }
 
-    @Override
+
     public Request createRequest(Long bookId, String requesterData) {
         return requestService.createRequest(bookId, requesterData);
     }
 
-    @Override
+
     public List<Request> findAllRequests(Comparator<Request> requestComparator) {
         return requestService.findAllRequests(requestComparator);
     }

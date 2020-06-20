@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 public class OrderServiceImpl implements OrderService {
 
-    private static OrderServiceImpl instance;
+    private static OrderService instance;
 
     private IRepository<Book> bookRepository;
     private IRepository<Order> orderRepository;
@@ -30,7 +30,7 @@ public class OrderServiceImpl implements OrderService {
         this.requestRepository = RequestRepository.getInstance();
     }
 
-    public static OrderServiceImpl getInstance() {
+    public static OrderService getInstance() {
         if (instance == null) {
             instance = new OrderServiceImpl();
         }

@@ -9,7 +9,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-public class BookController implements IBookController {
+public class BookController {
 
     private static BookController instance;
 
@@ -27,37 +27,36 @@ public class BookController implements IBookController {
     }
 
 
-    @Override
     public boolean replenishBook(Long id) {
         return bookService.replenishBook(id);
     }
 
-    @Override
+
     public boolean writeOffBook(Long id) {
         return bookService.writeOffBook(id);
     }
 
-    @Override
+
     public List<Book> findAllBooks(Comparator<Book> bookComparator) {
         return bookService.findAllBooks(bookComparator);
     }
 
-    @Override
+
     public List<Book> findSoldBooksBetweenDates(Date startDate, Date endDate) {
         return bookService.findSoldBooksBetweenDates(startDate, endDate);
     }
 
-    @Override
+
     public List<Book> findUnsoldBooksBetweenDates(Date startDate, Date endDate) {
         return bookService.findUnsoldBooksBetweenDates(startDate, endDate);
     }
 
-    @Override
+
     public List<Book> findStaleBooks() {
         return bookService.findStaleBooks();
     }
 
-    @Override
+
     public BookDescription showBookDescription(Long id) {
         return bookService.showBookDescription(id);
     }
