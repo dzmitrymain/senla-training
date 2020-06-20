@@ -19,6 +19,10 @@ public class Request extends AbstractEntity {
         return book;
     }
 
+    public void setBook(Book book) {
+        this.book = book;
+    }
+
     public Boolean isActive() {
         return isActive;
     }

@@ -13,6 +13,10 @@ public class Book extends AbstractEntity {
     private Date replenishmentDate;
     private BigDecimal price;
 
+    public Book(Long id) {
+        super(id);
+    }
+
     public Book(String title, Boolean isAvailable, Date editionDate, Date replenishmentDate, BigDecimal price) {
         super(IdGenerator.getInstance().getNextBookIdNumber());
         this.title = title;

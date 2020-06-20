@@ -134,7 +134,7 @@ public class BookServiceImpl implements BookService {
     private void updateOrders(Book book) {
         List<Order> orders = orderRepository.findAll();
         for (Order order : orders) {
-            if (order != null && order.getState() == OrderState.CREATED &&
+            if (order.getState() == OrderState.CREATED &&
                     order.getBook().getId().equals(book.getId())) {
                 order.setBook(book);
                 orderRepository.update(order);
