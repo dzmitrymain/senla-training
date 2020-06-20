@@ -4,6 +4,7 @@ import com.senla.training.yeutukhovich.bookstore.domain.Book;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class EntityCvsConverter {
@@ -37,9 +38,18 @@ public class EntityCvsConverter {
                 try {
                     Book book = new Book(Long.valueOf(stringObjects[0]));
                     book.setTitle(stringObjects[1]);
-                    book.setAvailable(Boolean.valueOf(stringObjects[2]));
-                    book.setEditionDate(DateConverter.parseDate(stringObjects[3], DateConverter.STANDARD_DATE_FORMAT));
-                    if (!stringObjects[4].equals("null")) {
+                    if ("true".equals(stringObjects[2]) || "false".equals(stringObjects[2])) {
+                        book.setAvailable(Boolean.valueOf((stringObjects[2])));
+                    } else {
+                        throw new IllegalArgumentException("Unparseable boolean: \"" + stringObjects[2] + "\"");
+                    }
+                    Date editionDate = DateConverter.parseDate(stringObjects[3], DateConverter.STANDARD_DATE_FORMAT);
+                    if (editionDate == null) {
+                        throw new IllegalArgumentException("Edition date can't be null");
+                    } else {
+                        book.setEditionDate(editionDate);
+                    }
+                    if (!"null".equals(stringObjects[4])) {
                         book.setReplenishmentDate(DateConverter.parseDate(stringObjects[4]
                                 , DateConverter.STANDARD_DATE_FORMAT));
                     }

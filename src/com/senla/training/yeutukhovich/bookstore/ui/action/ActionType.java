@@ -25,6 +25,7 @@ public enum ActionType {
     REPLENISH_BOOK(new ReplenishBookAction()),
     SHOW_BOOK_DESCRIPTION(new ShowBookDescriptionAction()),
     WRITE_OFF_BOOK(new WriteOffBookAction()),
+    IMPORT_BOOKS(new ImportBooksAction()),
 
     SHOW_ALL_ORDERS_SORT_BY_COMPLETION_DATE(new ShowAllOrdersSortByCompletionDateAction()),
     SHOW_ALL_ORDERS_SORT_BY_PRICE(new ShowAllOrdersSortByPriceAction()),

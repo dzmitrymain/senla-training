@@ -9,5 +9,5 @@ public interface EntityExchanger<T extends AbstractEntity> {
 
     void exportEntities(List<T> entity, String fileName);
 
-    List<T> importEntities(String fileName);
+    int importEntities(String fileName);
 }

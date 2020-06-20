@@ -65,10 +65,12 @@ public class MenuBuilder {
                 ActionType.SHOW_SOLD_BOOKS_BETWEEN_DATES.getAction(), bookMenu);
         MenuItem findUnsoldBooksItem = new MenuItem(MenuNameConstant.SHOW_UNSOLD_BOOKS_BETWEEN_DATES.getMenuName(),
                 ActionType.SHOW_UNSOLD_BOOKS_BETWEEN_DATES.getAction(), bookMenu);
+        MenuItem importBooksMenuItem = new MenuItem(MenuNameConstant.IMPORT_BOOKS.getMenuName(),
+                ActionType.IMPORT_BOOKS.getAction(), bookMenu);
 
         Collections.addAll(bookMenu.getMenuItems(), showAllBooksMenuItem, showBookDescriptionItem,
                 replenishBookItem, writeOffBookItem, findStaleBooksMenuItem, findSoldBooksItem,
-                findUnsoldBooksItem, previousRootMenuItem);
+                findUnsoldBooksItem, importBooksMenuItem, previousRootMenuItem);
 
         return bookMenu;
     }

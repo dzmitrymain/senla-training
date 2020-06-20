@@ -33,6 +33,7 @@ public enum MenuNameConstant {
     SHOW_STALE_BOOKS("Show stale books"),
     SHOW_SOLD_BOOKS_BETWEEN_DATES("Show sold books between dates"),
     SHOW_UNSOLD_BOOKS_BETWEEN_DATES("Show unsold books between dates"),
+    IMPORT_BOOKS("Import books"),
 
     CANCEL_ORDER("Cancel order"),
     COMPLETE_ORDER("Complete order"),

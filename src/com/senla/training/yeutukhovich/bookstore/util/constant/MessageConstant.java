@@ -34,6 +34,8 @@ public enum MessageConstant {
     EARLIEST_DATE_BOUND_YYYY_MM_DD("Please enter an earliest date bound in format \"yyyy-MM-dd\": "),
     LATEST_DATE_BOUND_YYYY_MM_DD("Please enter a latest date bound in format \"yyyy-MM-dd\": "),
 
+    IMPORTED_ENTITIES("Imported entities number: "),
+    ENTER_FILE_NAME("Please, enter file name: "),
     ENTER_CORRECT_NUMBER("Please, enter the correct number.");
 
     private String message;

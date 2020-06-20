@@ -1,6 +1,8 @@
 package com.senla.training.yeutukhovich.bookstore.controller;
 
 import com.senla.training.yeutukhovich.bookstore.domain.Book;
+import com.senla.training.yeutukhovich.bookstore.entityexchanger.EntityExchanger;
+import com.senla.training.yeutukhovich.bookstore.entityexchanger.cvs.BookCvsExchanger;
 import com.senla.training.yeutukhovich.bookstore.service.bookservice.BookService;
 import com.senla.training.yeutukhovich.bookstore.service.bookservice.BookServiceImpl;
 import com.senla.training.yeutukhovich.bookstore.service.dto.BookDescription;
@@ -59,5 +61,15 @@ public class BookController {
 
     public BookDescription showBookDescription(Long id) {
         return bookService.showBookDescription(id);
+    }
+
+    public int importBooks(String fileName) {
+        EntityExchanger<Book> bookExchanger = BookCvsExchanger.getInstance();
+        return bookExchanger.importEntities(fileName);
+    }
+
+    public void exportBooks(List<Book> books, String fileName) {
+        EntityExchanger<Book> bookExchanger = BookCvsExchanger.getInstance();
+        bookExchanger.exportEntities(books, fileName);
     }
 }

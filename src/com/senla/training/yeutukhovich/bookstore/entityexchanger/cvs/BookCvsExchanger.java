@@ -43,7 +43,8 @@ public class BookCvsExchanger extends AbstractCvsExchanger implements EntityExch
     }
 
     @Override
-    public List<Book> importEntities(String fileName) {
+    public int importEntities(String fileName) {
+        int importedBooksNumber = 0;
         List<String> dataStrings = FileDataReader.readData(buildPath(fileName));
 
         List<Book> repoBooks = bookRepository.findAll();
@@ -57,8 +58,9 @@ public class BookCvsExchanger extends AbstractCvsExchanger implements EntityExch
             } else {
                 bookRepository.add(importedBook);
             }
+            importedBooksNumber++;
         }
-        return null;
+        return importedBooksNumber;
     }
 
     private void updateOrders(Book book) {
