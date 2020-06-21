@@ -84,6 +84,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public Order findById(Long orderId) {
+        return orderRepository.findById(orderId);
+    }
+
+    @Override
     public List<Order> findCompletedOrdersBetweenDates(Date startDate, Date endDate) {
         List<Order> orders = orderRepository.findAll();
         return orders.stream()

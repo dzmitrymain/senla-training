@@ -1,4 +1,4 @@
-package com.senla.training.yeutukhovich.bookstore.ui.action.bookaction.showallbooks;
+package com.senla.training.yeutukhovich.bookstore.ui.action.bookaction;
 
 import com.senla.training.yeutukhovich.bookstore.controller.BookController;
 import com.senla.training.yeutukhovich.bookstore.domain.Book;

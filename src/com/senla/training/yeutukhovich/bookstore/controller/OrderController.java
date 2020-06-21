@@ -1,6 +1,8 @@
 package com.senla.training.yeutukhovich.bookstore.controller;
 
 import com.senla.training.yeutukhovich.bookstore.domain.Order;
+import com.senla.training.yeutukhovich.bookstore.entityexchanger.EntityExchanger;
+import com.senla.training.yeutukhovich.bookstore.entityexchanger.cvsexchanger.OrderCvsExchanger;
 import com.senla.training.yeutukhovich.bookstore.service.dto.OrderDetails;
 import com.senla.training.yeutukhovich.bookstore.service.orderservice.OrderService;
 import com.senla.training.yeutukhovich.bookstore.service.orderservice.OrderServiceImpl;
@@ -47,6 +49,10 @@ public class OrderController {
         return orderService.findAllOrders(orderComparator);
     }
 
+    public Order findById(Long orderId) {
+        return orderService.findById(orderId);
+    }
+
 
     public List<Order> findCompletedOrdersBetweenDates(Date startDate, Date endDate) {
         return orderService.findCompletedOrdersBetweenDates(startDate, endDate);
@@ -65,5 +71,15 @@ public class OrderController {
 
     public OrderDetails showOrderDetails(Long orderId) {
         return orderService.showOrderDetails(orderId);
+    }
+
+    public int importOrders(String fileName) {
+        EntityExchanger<Order> orderExchanger = OrderCvsExchanger.getInstance();
+        return orderExchanger.importEntities(fileName);
+    }
+
+    public void exportOrders(List<Order> orders, String fileName) {
+        EntityExchanger<Order> orderExchanger = OrderCvsExchanger.getInstance();
+        orderExchanger.exportEntities(orders, fileName);
     }
 }

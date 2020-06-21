@@ -2,7 +2,7 @@ package com.senla.training.yeutukhovich.bookstore.controller;
 
 import com.senla.training.yeutukhovich.bookstore.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.entityexchanger.EntityExchanger;
-import com.senla.training.yeutukhovich.bookstore.entityexchanger.cvs.BookCvsExchanger;
+import com.senla.training.yeutukhovich.bookstore.entityexchanger.cvsexchanger.BookCvsExchanger;
 import com.senla.training.yeutukhovich.bookstore.service.bookservice.BookService;
 import com.senla.training.yeutukhovich.bookstore.service.bookservice.BookServiceImpl;
 import com.senla.training.yeutukhovich.bookstore.service.dto.BookDescription;

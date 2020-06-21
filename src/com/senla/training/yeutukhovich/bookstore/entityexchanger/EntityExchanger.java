@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface EntityExchanger<T extends AbstractEntity> {
 
-    void exportEntities(List<T> entity, String fileName);
+    void exportEntities(List<T> entities, String fileName);
 
     int importEntities(String fileName);
 }

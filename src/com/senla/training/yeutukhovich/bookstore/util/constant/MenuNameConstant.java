@@ -45,6 +45,10 @@ public enum MenuNameConstant {
     SHOW_COMPLETED_ORDERS_BETWEEN_DATES("Show completed orders between dates"),
     SHOW_ORDER_DETAILS("Show order details"),
     SHOW_PROFIT_BETWEEN_DATES("Show profit between dates"),
+    IMPORT_ORDERS("Import orders"),
+    EXPORT_ORDERS("Export orders"),
+    EXPORT_ORDER_BY_ID("Export order by id"),
+    EXPORT_ALL_ORDERS("Export all orders"),
     CREATE_REQUEST("Create request");
 
     private String menuName;

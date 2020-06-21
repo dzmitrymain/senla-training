@@ -40,6 +40,9 @@ public enum ActionType {
     SHOW_COMPLETED_ORDERS_NUMBER_BETWEEN_DATES(new ShowCompletedOrdersNumberBetweenDatesAction()),
     SHOW_ORDER_DETAILS(new ShowOrderDetailsAction()),
     SHOW_PROFIT_BETWEEN_DATES(new ShowProfitBetweenDatesAction()),
+    IMPORT_ORDERS(new ImportOrdersAction()),
+    EXPORT_ORDER(new ExportOrderAction()),
+    EXPORT_ALL_ORDERS(new ExportAllOrdersAction()),
 
     SHOW_ALL_REQUESTS_SORT_BY_BOOK_TITLE(new ShowAllRequestsSortByBookTitleAction()),
     SHOW_ALL_REQUESTS_SORT_BY_IS_ACTIVE(new ShowAllRequestsSortByIsActiveAction()),

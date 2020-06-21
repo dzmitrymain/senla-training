@@ -117,6 +117,7 @@ public class MenuBuilder {
     private Menu initOrderMenu(MenuItem previousRootMenuItem) {
         Menu orderMenu = new Menu(MenuNameConstant.ORDER_MENU.getMenuName());
         Menu showAllOrdersMenu = initShowAllOrdersMenu(orderMenu);
+        Menu exportOrdersMenu = initExportOrdersMenu(orderMenu);
 
         MenuItem showAllOrdersMenuItem = new MenuItem(MenuNameConstant.SHOW_ALL_ORDERS.getMenuName(), null,
                 showAllOrdersMenu);
@@ -138,11 +139,26 @@ public class MenuBuilder {
                 ActionType.SHOW_ORDER_DETAILS.getAction(), orderMenu);
         MenuItem showProfitBetweenDatesMenuItem = new MenuItem(MenuNameConstant.SHOW_PROFIT_BETWEEN_DATES.getMenuName(),
                 ActionType.SHOW_PROFIT_BETWEEN_DATES.getAction(), orderMenu);
+        MenuItem importOrdersMenuItem = new MenuItem(MenuNameConstant.IMPORT_ORDERS.getMenuName(), ActionType.IMPORT_ORDERS.getAction(), orderMenu);
+        MenuItem exportOrdersMenuItem = new MenuItem(MenuNameConstant.EXPORT_ORDERS.getMenuName(), null, exportOrdersMenu);
 
         Collections.addAll(orderMenu.getMenuItems(), showAllOrdersMenuItem, createOrderMenuItem, completeOrderMenuItem,
                 cancelOrderMenuItem, showOrderDetailsMenuItem, showProfitBetweenDatesMenuItem,
-                showCompletedOrdersMenuItem, showCompletedOrdersNumberMenuItem, previousRootMenuItem);
+                showCompletedOrdersMenuItem, showCompletedOrdersNumberMenuItem, importOrdersMenuItem, exportOrdersMenuItem, previousRootMenuItem);
         return orderMenu;
+    }
+
+    private Menu initExportOrdersMenu(Menu previousOrderMenu) {
+        Menu exportOrdersMenu = new Menu(MenuNameConstant.EXPORT_ORDERS.getMenuName());
+
+        MenuItem exportOrderMenuItem = new MenuItem(MenuNameConstant.EXPORT_ORDER_BY_ID.getMenuName(), ActionType.EXPORT_ORDER.getAction(), exportOrdersMenu);
+        MenuItem exportAllOrdersMenuItem = new MenuItem(MenuNameConstant.EXPORT_ALL_ORDERS.getMenuName(), ActionType.EXPORT_ALL_ORDERS.getAction(), exportOrdersMenu);
+
+        MenuItem previousOrderMenuItem = new MenuItem(MenuNameConstant.BACK_TO_ORDER_MENU.getMenuName(),
+                null, previousOrderMenu);
+
+        Collections.addAll(exportOrdersMenu.getMenuItems(), exportOrderMenuItem, exportAllOrdersMenuItem, previousOrderMenuItem);
+        return exportOrdersMenu;
     }
 
     private Menu initShowAllOrdersMenu(Menu previousOrderMenu) {
