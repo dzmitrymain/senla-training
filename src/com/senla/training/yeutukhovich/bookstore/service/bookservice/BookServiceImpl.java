@@ -73,6 +73,10 @@ public class BookServiceImpl implements BookService {
                 .collect(Collectors.toList());
     }
 
+    public Book findById(Long id){
+        return bookRepository.findById(id);
+    }
+
     @Override
     public List<Book> findSoldBooksBetweenDates(Date startDate, Date endDate) {
         List<Order> orders = orderRepository.findAll();

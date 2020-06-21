@@ -26,6 +26,8 @@ public enum ActionType {
     SHOW_BOOK_DESCRIPTION(new ShowBookDescriptionAction()),
     WRITE_OFF_BOOK(new WriteOffBookAction()),
     IMPORT_BOOKS(new ImportBooksAction()),
+    EXPORT_BOOK(new ExportBookAction()),
+    EXPORT_ALL_BOOKS(new ExportAllBooksAction()),
 
     SHOW_ALL_ORDERS_SORT_BY_COMPLETION_DATE(new ShowAllOrdersSortByCompletionDateAction()),
     SHOW_ALL_ORDERS_SORT_BY_PRICE(new ShowAllOrdersSortByPriceAction()),

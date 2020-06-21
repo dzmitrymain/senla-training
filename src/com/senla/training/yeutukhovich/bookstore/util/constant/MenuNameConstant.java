@@ -34,6 +34,9 @@ public enum MenuNameConstant {
     SHOW_SOLD_BOOKS_BETWEEN_DATES("Show sold books between dates"),
     SHOW_UNSOLD_BOOKS_BETWEEN_DATES("Show unsold books between dates"),
     IMPORT_BOOKS("Import books"),
+    EXPORT_BOOKS("Export books"),
+    EXPORT_BOOK_BY_ID("Export book by id"),
+    EXPORT_ALL_BOOKS("Export all books"),
 
     CANCEL_ORDER("Cancel order"),
     COMPLETE_ORDER("Complete order"),

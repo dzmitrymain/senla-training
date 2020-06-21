@@ -35,6 +35,9 @@ public enum MessageConstant {
     LATEST_DATE_BOUND_YYYY_MM_DD("Please enter a latest date bound in format \"yyyy-MM-dd\": "),
 
     IMPORTED_ENTITIES("Imported entities number: "),
+    EXPORTED_ENTITIES("Exported entities number: "),
+    ENTITY_EXPORTED("Entity has been exported."),
+    ENTITY_NOT_EXPORTED("Entity has not been exported"),
     ENTER_FILE_NAME("Please, enter file name: "),
     ENTER_CORRECT_NUMBER("Please, enter the correct number.");
 

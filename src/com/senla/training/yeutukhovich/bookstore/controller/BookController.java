@@ -43,6 +43,10 @@ public class BookController {
         return bookService.findAllBooks(bookComparator);
     }
 
+    public Book findById(Long id) {
+        return bookService.findById(id);
+    }
+
 
     public List<Book> findSoldBooksBetweenDates(Date startDate, Date endDate) {
         return bookService.findSoldBooksBetweenDates(startDate, endDate);

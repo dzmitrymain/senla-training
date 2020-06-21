@@ -7,6 +7,7 @@ import java.util.Comparator;
 
 public enum BookComparator {
 
+    ID(new IdBookComparator()),
     AVAILABILITY(new AvailabilityBookComparator()),
     EDITION_DATE(new EditionDateBookComparator()),
     PRICE(new PriceBookComparator()),

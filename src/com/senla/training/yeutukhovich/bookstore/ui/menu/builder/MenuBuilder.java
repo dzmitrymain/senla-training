@@ -50,6 +50,7 @@ public class MenuBuilder {
         Menu bookMenu = new Menu(MenuNameConstant.BOOK_MENU.getMenuName());
 
         Menu showAllBooksMenu = initShowAllBooksMenu(bookMenu);
+        Menu bookExportMenu = initBookExportMenu(bookMenu);
 
         MenuItem showAllBooksMenuItem = new MenuItem(MenuNameConstant.SHOW_ALL_BOOKS.getMenuName(), null,
                 showAllBooksMenu);
@@ -67,12 +68,27 @@ public class MenuBuilder {
                 ActionType.SHOW_UNSOLD_BOOKS_BETWEEN_DATES.getAction(), bookMenu);
         MenuItem importBooksMenuItem = new MenuItem(MenuNameConstant.IMPORT_BOOKS.getMenuName(),
                 ActionType.IMPORT_BOOKS.getAction(), bookMenu);
+        MenuItem bookExportMenuItem = new MenuItem(MenuNameConstant.EXPORT_BOOKS.getMenuName(), null, bookExportMenu);
+
 
         Collections.addAll(bookMenu.getMenuItems(), showAllBooksMenuItem, showBookDescriptionItem,
                 replenishBookItem, writeOffBookItem, findStaleBooksMenuItem, findSoldBooksItem,
-                findUnsoldBooksItem, importBooksMenuItem, previousRootMenuItem);
+                findUnsoldBooksItem, importBooksMenuItem, bookExportMenuItem, previousRootMenuItem);
 
         return bookMenu;
+    }
+
+    private Menu initBookExportMenu(Menu previousBookMenu) {
+        Menu bookExportMenu = new Menu(MenuNameConstant.EXPORT_BOOKS.getMenuName());
+
+        MenuItem exportBookMenuItem = new MenuItem(MenuNameConstant.EXPORT_BOOK_BY_ID.getMenuName(), ActionType.EXPORT_BOOK.getAction(), bookExportMenu);
+        MenuItem exportAllBooksMenuItem = new MenuItem(MenuNameConstant.EXPORT_ALL_BOOKS.getMenuName(), ActionType.EXPORT_ALL_BOOKS.getAction(), bookExportMenu);
+
+        MenuItem previousBookMenuItem = new MenuItem(MenuNameConstant.BACK_TO_BOOK_MENU.getMenuName(), null,
+                previousBookMenu);
+
+        Collections.addAll(bookExportMenu.getMenuItems(), exportBookMenuItem, exportAllBooksMenuItem, previousBookMenuItem);
+        return bookExportMenu;
     }
 
     private Menu initShowAllBooksMenu(Menu previousBookMenu) {
