@@ -1,4 +1,4 @@
-package com.senla.training.yeutukhovich.bookstore.entityexchanger;
+package com.senla.training.yeutukhovich.bookstore.entityexchanger.cvsexchanger;
 
 import com.senla.training.yeutukhovich.bookstore.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.domain.Order;
