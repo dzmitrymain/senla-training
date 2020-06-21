@@ -49,6 +49,11 @@ public enum MenuNameConstant {
     EXPORT_ORDERS("Export orders"),
     EXPORT_ORDER_BY_ID("Export order by id"),
     EXPORT_ALL_ORDERS("Export all orders"),
+
+    IMPORT_REQUESTS("Import requests"),
+    EXPORT_REQUESTS("Export requests"),
+    EXPORT_REQUEST_BY_ID("Export request by id"),
+    EXPORT_ALL_REQUESTS("Export all requests"),
     CREATE_REQUEST("Create request");
 
     private String menuName;

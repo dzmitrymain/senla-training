@@ -6,7 +6,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 
 public class InputReader {
@@ -25,10 +24,12 @@ public class InputReader {
 
     public static Date readInputDate(SimpleDateFormat simpleDateFormat) {
         Date input = null;
-        try {
-            input = DateConverter.parseDate(bufferedReader.readLine(), simpleDateFormat);
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
+        if (simpleDateFormat != null) {
+            try {
+                input = DateConverter.parseDate(bufferedReader.readLine(), simpleDateFormat);
+            } catch (IOException e) {
+                System.err.println(e.getMessage());
+            }
         }
         return input;
     }

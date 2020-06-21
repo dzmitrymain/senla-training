@@ -5,11 +5,6 @@ import com.senla.training.yeutukhovich.bookstore.domain.Order;
 import com.senla.training.yeutukhovich.bookstore.domain.Request;
 import com.senla.training.yeutukhovich.bookstore.entityexchanger.AbstractCvsExchanger;
 import com.senla.training.yeutukhovich.bookstore.entityexchanger.EntityExchanger;
-import com.senla.training.yeutukhovich.bookstore.entityexchanger.cvsconverter.EntityCvsConverter;
-import com.senla.training.yeutukhovich.bookstore.repository.BookRepository;
-import com.senla.training.yeutukhovich.bookstore.repository.IRepository;
-import com.senla.training.yeutukhovich.bookstore.repository.OrderRepository;
-import com.senla.training.yeutukhovich.bookstore.repository.RequestRepository;
 import com.senla.training.yeutukhovich.bookstore.util.reader.FileDataReader;
 import com.senla.training.yeutukhovich.bookstore.util.writer.FileDataWriter;
 
@@ -18,10 +13,6 @@ import java.util.List;
 public class BookCvsExchanger extends AbstractCvsExchanger implements EntityExchanger<Book> {
 
     private static EntityExchanger<Book> instance;
-
-    private IRepository<Book> bookRepository = BookRepository.getInstance();
-    private IRepository<Order> orderRepository = OrderRepository.getInstance();
-    private IRepository<Request> requestRepository = RequestRepository.getInstance();
 
     private BookCvsExchanger() {
 
@@ -36,7 +27,7 @@ public class BookCvsExchanger extends AbstractCvsExchanger implements EntityExch
 
     @Override
     public void exportEntities(List<Book> entities, String fileName) {
-        List<String> bookStrings = EntityCvsConverter.getInstance().convertBooks(entities);
+        List<String> bookStrings = entityCvsConverter.convertBooks(entities);
         if (!bookStrings.isEmpty()) {
             FileDataWriter.writeData(buildPath(fileName), bookStrings);
         }
@@ -48,7 +39,7 @@ public class BookCvsExchanger extends AbstractCvsExchanger implements EntityExch
         List<String> dataStrings = FileDataReader.readData(buildPath(fileName));
 
         List<Book> repoBooks = bookRepository.findAll();
-        List<Book> importedBooks = EntityCvsConverter.getInstance().parseBooks(dataStrings);
+        List<Book> importedBooks = entityCvsConverter.parseBooks(dataStrings);
 
         for (Book importedBook : importedBooks) {
             if (repoBooks.contains(importedBook)) {

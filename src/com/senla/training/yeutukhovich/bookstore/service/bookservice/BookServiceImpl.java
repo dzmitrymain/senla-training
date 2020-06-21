@@ -73,7 +73,7 @@ public class BookServiceImpl implements BookService {
                 .collect(Collectors.toList());
     }
 
-    public Book findById(Long id){
+    public Book findById(Long id) {
         return bookRepository.findById(id);
     }
 

@@ -1,6 +1,8 @@
 package com.senla.training.yeutukhovich.bookstore.controller;
 
 import com.senla.training.yeutukhovich.bookstore.domain.Request;
+import com.senla.training.yeutukhovich.bookstore.entityexchanger.EntityExchanger;
+import com.senla.training.yeutukhovich.bookstore.entityexchanger.cvsexchanger.RequestCvsExchanger;
 import com.senla.training.yeutukhovich.bookstore.service.requestservice.RequestService;
 import com.senla.training.yeutukhovich.bookstore.service.requestservice.RequestServiceImpl;
 
@@ -32,5 +34,19 @@ public class RequestController {
 
     public List<Request> findAllRequests(Comparator<Request> requestComparator) {
         return requestService.findAllRequests(requestComparator);
+    }
+
+    public Request findById(Long requestId) {
+        return requestService.findById(requestId);
+    }
+
+    public int importRequests(String fileName) {
+        EntityExchanger<Request> requestExchanger = RequestCvsExchanger.getInstance();
+        return requestExchanger.importEntities(fileName);
+    }
+
+    public void exportRequests(List<Request> requests, String fileName) {
+        EntityExchanger<Request> requestExchanger = RequestCvsExchanger.getInstance();
+        requestExchanger.exportEntities(requests, fileName);
     }
 }

@@ -7,6 +7,9 @@ import com.senla.training.yeutukhovich.bookstore.ui.action.orderaction.showallor
 import com.senla.training.yeutukhovich.bookstore.ui.action.orderaction.showallorders.ShowAllOrdersSortByPriceAction;
 import com.senla.training.yeutukhovich.bookstore.ui.action.orderaction.showallorders.ShowAllOrdersSortByStateAction;
 import com.senla.training.yeutukhovich.bookstore.ui.action.requestaction.CreateRequestAction;
+import com.senla.training.yeutukhovich.bookstore.ui.action.requestaction.ExportAllRequestsAction;
+import com.senla.training.yeutukhovich.bookstore.ui.action.requestaction.ExportRequestAction;
+import com.senla.training.yeutukhovich.bookstore.ui.action.requestaction.ImportRequestsAction;
 import com.senla.training.yeutukhovich.bookstore.ui.action.requestaction.showallrequests.ShowAllRequestsSortByBookTitleAction;
 import com.senla.training.yeutukhovich.bookstore.ui.action.requestaction.showallrequests.ShowAllRequestsSortByIsActiveAction;
 import com.senla.training.yeutukhovich.bookstore.ui.action.requestaction.showallrequests.ShowAllRequestsSortByRequesterDataAction;
@@ -48,6 +51,9 @@ public enum ActionType {
     SHOW_ALL_REQUESTS_SORT_BY_IS_ACTIVE(new ShowAllRequestsSortByIsActiveAction()),
     SHOW_ALL_REQUESTS_SORT_BY_REQUESTER_DATA(new ShowAllRequestsSortByRequesterDataAction()),
 
+    IMPORT_REQUESTS(new ImportRequestsAction()),
+    EXPORT_REQUEST(new ExportRequestAction()),
+    EXPORT_ALL_REQUESTS(new ExportAllRequestsAction()),
     CREATE_REQUEST(new CreateRequestAction());
 
     private Action action;

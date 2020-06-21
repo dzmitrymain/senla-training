@@ -11,10 +11,12 @@ public class FileDataReader {
 
     public static List<String> readData(String path) {
         List<String> data = new ArrayList<>();
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(path))) {
-            data = bufferedReader.lines().collect(Collectors.toList());
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
+        if (path != null) {
+            try (BufferedReader bufferedReader = new BufferedReader(new FileReader(path))) {
+                data = bufferedReader.lines().collect(Collectors.toList());
+            } catch (IOException e) {
+                System.err.println(e.getMessage());
+            }
         }
         return data;
     }

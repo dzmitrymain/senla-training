@@ -47,4 +47,9 @@ public class RequestServiceImpl implements RequestService {
                 .sorted(requestComparator)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public Request findById(Long requestId) {
+        return requestRepository.findById(requestId);
+    }
 }

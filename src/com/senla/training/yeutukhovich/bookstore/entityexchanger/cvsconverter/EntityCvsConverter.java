@@ -2,6 +2,7 @@ package com.senla.training.yeutukhovich.bookstore.entityexchanger.cvsconverter;
 
 import com.senla.training.yeutukhovich.bookstore.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.domain.Order;
+import com.senla.training.yeutukhovich.bookstore.domain.Request;
 import com.senla.training.yeutukhovich.bookstore.domain.state.OrderState;
 import com.senla.training.yeutukhovich.bookstore.repository.BookRepository;
 import com.senla.training.yeutukhovich.bookstore.repository.IRepository;
@@ -83,6 +84,27 @@ public class EntityCvsConverter {
         return books;
     }
 
+    public List<String> convertOrders(List<Order> orders) {
+        List<String> orderStrings = new ArrayList<>();
+        for (Order order : orders) {
+            String orderString = order.getId() +
+                    DELIMITER +
+                    order.getBook().getId() +
+                    DELIMITER +
+                    order.getState() +
+                    DELIMITER +
+                    order.getCurrentBookPrice() +
+                    DELIMITER +
+                    order.getCreationDate() +
+                    DELIMITER +
+                    order.getCompletionDate() +
+                    DELIMITER +
+                    order.getCustomerData();
+            orderStrings.add(orderString);
+        }
+        return orderStrings;
+    }
+
     public List<Order> parseOrders(List<String> orderStrings) {
         List<Order> orders = new ArrayList<>();
         for (String string : orderStrings) {
@@ -117,24 +139,46 @@ public class EntityCvsConverter {
         return orders;
     }
 
-    public List<String> convertOrders(List<Order> orders) {
-        List<String> orderStrings = new ArrayList<>();
-        for (Order order : orders) {
-            String orderString = order.getId() +
+    public List<String> convertRequests(List<Request> requests) {
+        List<String> requestStrings = new ArrayList<>();
+        for (Request request : requests) {
+            String requestString = request.getId() +
                     DELIMITER +
-                    order.getBook().getId() +
+                    request.getBook().getId() +
                     DELIMITER +
-                    order.getState() +
+                    request.isActive() +
                     DELIMITER +
-                    order.getCurrentBookPrice() +
-                    DELIMITER +
-                    order.getCreationDate() +
-                    DELIMITER +
-                    order.getCompletionDate() +
-                    DELIMITER +
-                    order.getCustomerData();
-            orderStrings.add(orderString);
+                    request.getRequesterData();
+            requestStrings.add(requestString);
         }
-        return orderStrings;
+        return requestStrings;
+    }
+
+    public List<Request> parseRequests(List<String> requestStrings) {
+        List<Request> requests = new ArrayList<>();
+
+        for (String requestString : requestStrings) {
+            String[] stringObjects = requestString.split(DELIMITER);
+            if (stringObjects.length == 4) {
+                try {
+                    Request request = new Request(Long.valueOf(stringObjects[0]));
+                    Book book = bookRepository.findById(Long.valueOf(stringObjects[1]));
+                    if (book == null) {
+                        throw new IllegalArgumentException("Book can't be null.");
+                    }
+                    request.setBook(book);
+                    if ("true".equals(stringObjects[2]) || "false".equals(stringObjects[2])) {
+                        request.setActive(Boolean.valueOf((stringObjects[2])));
+                    } else {
+                        throw new IllegalArgumentException("Unparseable boolean: \"" + stringObjects[2] + "\"");
+                    }
+                    request.setRequesterData(stringObjects[3]);
+                    requests.add(request);
+                } catch (IllegalArgumentException e) {
+                    System.err.println(e.getMessage());
+                }
+            }
+        }
+        return requests;
     }
 }
