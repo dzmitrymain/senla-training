@@ -52,7 +52,8 @@ public class BookController {
         return bookService.findSoldBooksBetweenDates(startDate, endDate);
     }
 
-
+    // нежелательно отдавать модели на фронт, лушче придумать формат общения фронт-бэк
+    // самый простой вариант - строка
     public List<Book> findUnsoldBooksBetweenDates(Date startDate, Date endDate) {
         return bookService.findUnsoldBooksBetweenDates(startDate, endDate);
     }

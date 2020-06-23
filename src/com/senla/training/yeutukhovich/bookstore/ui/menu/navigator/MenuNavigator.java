@@ -32,6 +32,7 @@ public class MenuNavigator {
     public void printMenu() {
         System.out.println();
         System.out.println(MessageConstant.MENU_BORDER.getMessage());
+        // если выносишь литералы в константы, выноси все
         System.out.println("        " + currentMenu.getName());
         System.out.println(MessageConstant.MENU_ITEM_BORDER.getMessage());
         int firstMenuIndex = 1;

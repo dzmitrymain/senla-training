@@ -92,6 +92,7 @@ public class OrderServiceImpl implements OrderService {
     public List<Order> findCompletedOrdersBetweenDates(Date startDate, Date endDate) {
         List<Order> orders = orderRepository.findAll();
         return orders.stream()
+                // если параметр один, круглые скобки обычно не ставят
                 .filter((order) -> order.getState() == OrderState.COMPLETED &&
                         order.getCompletionDate().after(startDate) &&
                         order.getCompletionDate().before(endDate))
@@ -116,6 +117,15 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDetails showOrderDetails(Long orderId) {
         Order checkedOrder = orderRepository.findById(orderId);
+
+        // так читается лучше:
+        /*if (checkedOrder == null) {
+            return null;
+        }
+
+        ...
+        */
+
         OrderDetails orderDetails = null;
         if (checkedOrder != null) {
             orderDetails = new OrderDetails();

@@ -1,3 +1,5 @@
+// пакет bookservice лежит в пакете service, по пути понятно, что это сервис, так что можно сократить
+// bookservice до ...bookstore.service.book
 package com.senla.training.yeutukhovich.bookstore.service.bookservice;
 
 import com.senla.training.yeutukhovich.bookstore.domain.Book;
@@ -90,12 +92,29 @@ public class BookServiceImpl implements BookService {
                 .collect(Collectors.toList());
     }
 
+    // попробую упросить метод, как я тебе обещал
+    // шаг первый - тащим содержимое методов, которые вызываем отсюда, в этот метод (копипаста)
+    // шаг второй - смотрим, как можно оптимизировать все вызовы
+    // у меня получилось 2 стрима с перебором внутри одного из них
+    // если книге добавить обратную связ на заказы (поле лист заказов в книге), то
+    // можно будет еще оптимизировать (но тогда много чего переделывать придется)
+    // короч, оптимизация и переиспользование - это хорошо, но всего должно быть в меру
     @Override
     public List<Book> findUnsoldBooksBetweenDates(Date startDate, Date endDate) {
-        List<Book> soldBooks = findSoldBooksBetweenDates(startDate, endDate);
-        List<Book> books = findAllBooks(BookComparator.TITLE.getComparator());
-        return books.stream()
+        List<Order> orders = orderRepository.findAll();
+
+        List<Book> soldBooks = orders.stream()
+                .filter(order -> order.getState() == OrderState.COMPLETED
+                        && order.getCompletionDate().after(startDate)
+                        && order.getCompletionDate().before(endDate))
+                .map(Order::getBook)
+                .distinct()
+                .collect(Collectors.toList());
+
+        return bookRepository.findAll()
+                .stream()
                 .filter(book -> !soldBooks.contains(book))
+                .sorted(BookComparator.TITLE.getComparator())
                 .collect(Collectors.toList());
     }
 

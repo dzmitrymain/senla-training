@@ -9,6 +9,20 @@ public class EntityPrinter {
 
     public static <T extends AbstractEntity> void printEntities(List<T> entities) {
 
+        // если поменять местами тела у ифа и елса, из условия пропадут унарные операторы, и читать станет легче
+        // а если добавить ретурн в иф, то елс вообще можно будет не писать:
+
+        /*if (entities == null || entities.isEmpty()) {
+            System.out.println(MessageConstant.NO_DATA_WAS_FOUND.getMessage());
+            return;
+        }
+
+        System.out.println(MessageConstant.DATA_WAS_FOUND.getMessage());
+        System.out.println();
+        entities.forEach(System.out::println);*/
+
+        // так немного легче читать
+
         if (entities != null && !entities.isEmpty()) {
             System.out.println(MessageConstant.DATA_WAS_FOUND.getMessage());
             System.out.println();
@@ -17,4 +31,5 @@ public class EntityPrinter {
             System.out.println(MessageConstant.NO_DATA_WAS_FOUND.getMessage());
         }
     }
+
 }

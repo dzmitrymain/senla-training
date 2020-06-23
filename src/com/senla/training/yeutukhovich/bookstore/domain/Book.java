@@ -18,6 +18,7 @@ public class Book extends AbstractEntity {
     }
 
     public Book(String title, Boolean isAvailable, Date editionDate, Date replenishmentDate, BigDecimal price) {
+        // не рекомендуется генерировать айдишку отсюда, лучше сделать это в репозитории или на худой конец в сервисе
         super(IdGenerator.getInstance().getNextBookIdNumber());
         this.title = title;
         this.setAvailable(isAvailable);

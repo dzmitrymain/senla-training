@@ -10,6 +10,8 @@ public class BookIdRequestComparator implements Comparator<Request> {
     public int compare(Request o1, Request o2) {
         if (o1 == null && o2 == null) {
             return 0;
+        // если есть ретурн, можно не делать else if() - достаточно просто if()
+        // это уменьшит вложенность и улучшит читаемость
         } else if (o1 == null) {
             return 1;
         } else if (o2 == null) {

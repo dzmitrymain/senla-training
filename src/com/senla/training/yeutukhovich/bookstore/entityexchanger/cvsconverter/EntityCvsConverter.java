@@ -157,6 +157,7 @@ public class EntityCvsConverter {
     public List<Request> parseRequests(List<String> requestStrings) {
         List<Request> requests = new ArrayList<>();
 
+        // можно еще разбить на методы, например, вынести в другой метод часть с трай-кетчем
         for (String requestString : requestStrings) {
             String[] stringObjects = requestString.split(DELIMITER);
             if (stringObjects.length == 4) {
@@ -167,6 +168,12 @@ public class EntityCvsConverter {
                         throw new IllegalArgumentException("Book can't be null.");
                     }
                     request.setBook(book);
+                    // если "true".equals(stringObjects[2]) - то это уже тру, можно не делать
+                    // Boolean.valueOf((stringObjects[2]))
+                    // ты мог бы вынести это в свою утилиту или приватный метод и переиспользовать:
+                    // если (тру иквалс стринг) {ретурн тру}
+                    // если (фолм иквалс стринг) {реутрн фолс}
+                    // сроу экзепшн
                     if ("true".equals(stringObjects[2]) || "false".equals(stringObjects[2])) {
                         request.setActive(Boolean.valueOf((stringObjects[2])));
                     } else {

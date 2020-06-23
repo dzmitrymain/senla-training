@@ -16,6 +16,7 @@ public class DateConverter {
         if (dateString != null && dateFormat != null) {
             try {
                 date = dateFormat.parse(dateString);
+            // почему полное имя класса?
             } catch (java.text.ParseException e) {
                 System.err.println(e.getMessage());
             }
