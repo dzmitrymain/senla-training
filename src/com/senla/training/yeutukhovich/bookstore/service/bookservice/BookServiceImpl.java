@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 public class BookServiceImpl implements BookService {
 
-    private static BookServiceImpl instance;
+    private static BookService instance;
     private static final int STALE_MONTH_NUMBER = 6;
 
     private IRepository<Book> bookRepository;
@@ -32,7 +32,7 @@ public class BookServiceImpl implements BookService {
         this.requestRepository = RequestRepository.getInstance();
     }
 
-    public static BookServiceImpl getInstance() {
+    public static BookService getInstance() {
         if (instance == null) {
             instance = new BookServiceImpl();
         }
@@ -71,6 +71,10 @@ public class BookServiceImpl implements BookService {
         return books.stream()
                 .sorted(bookComparator)
                 .collect(Collectors.toList());
+    }
+
+    public Book findById(Long id) {
+        return bookRepository.findById(id);
     }
 
     @Override
@@ -134,7 +138,7 @@ public class BookServiceImpl implements BookService {
     private void updateOrders(Book book) {
         List<Order> orders = orderRepository.findAll();
         for (Order order : orders) {
-            if (order != null && order.getState() == OrderState.CREATED &&
+            if (order.getState() == OrderState.CREATED &&
                     order.getBook().getId().equals(book.getId())) {
                 order.setBook(book);
                 orderRepository.update(order);

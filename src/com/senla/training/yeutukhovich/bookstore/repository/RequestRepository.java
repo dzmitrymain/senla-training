@@ -7,7 +7,7 @@ import java.util.List;
 
 public class RequestRepository implements IRepository<Request> {
 
-    private static RequestRepository instance;
+    private static IRepository<Request> instance;
 
     private List<Request> requests;
 
@@ -15,7 +15,7 @@ public class RequestRepository implements IRepository<Request> {
         this.requests = requests;
     }
 
-    public static RequestRepository getInstance() {
+    public static IRepository<Request> getInstance() {
         if (instance == null) {
             instance = new RequestRepository(EntityInitializer.getRequests());
         }

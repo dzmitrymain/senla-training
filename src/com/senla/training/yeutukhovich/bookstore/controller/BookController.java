@@ -1,6 +1,8 @@
 package com.senla.training.yeutukhovich.bookstore.controller;
 
 import com.senla.training.yeutukhovich.bookstore.domain.Book;
+import com.senla.training.yeutukhovich.bookstore.entityexchanger.EntityExchanger;
+import com.senla.training.yeutukhovich.bookstore.entityexchanger.cvsexchanger.BookCvsExchanger;
 import com.senla.training.yeutukhovich.bookstore.service.bookservice.BookService;
 import com.senla.training.yeutukhovich.bookstore.service.bookservice.BookServiceImpl;
 import com.senla.training.yeutukhovich.bookstore.service.dto.BookDescription;
@@ -9,7 +11,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-public class BookController implements IBookController {
+public class BookController {
 
     private static BookController instance;
 
@@ -27,38 +29,51 @@ public class BookController implements IBookController {
     }
 
 
-    @Override
     public boolean replenishBook(Long id) {
         return bookService.replenishBook(id);
     }
 
-    @Override
+
     public boolean writeOffBook(Long id) {
         return bookService.writeOffBook(id);
     }
 
-    @Override
+
     public List<Book> findAllBooks(Comparator<Book> bookComparator) {
         return bookService.findAllBooks(bookComparator);
     }
 
-    @Override
+    public Book findById(Long id) {
+        return bookService.findById(id);
+    }
+
+
     public List<Book> findSoldBooksBetweenDates(Date startDate, Date endDate) {
         return bookService.findSoldBooksBetweenDates(startDate, endDate);
     }
 
-    @Override
+
     public List<Book> findUnsoldBooksBetweenDates(Date startDate, Date endDate) {
         return bookService.findUnsoldBooksBetweenDates(startDate, endDate);
     }
 
-    @Override
+
     public List<Book> findStaleBooks() {
         return bookService.findStaleBooks();
     }
 
-    @Override
+
     public BookDescription showBookDescription(Long id) {
         return bookService.showBookDescription(id);
+    }
+
+    public int importBooks(String fileName) {
+        EntityExchanger<Book> bookExchanger = BookCvsExchanger.getInstance();
+        return bookExchanger.importEntities(fileName);
+    }
+
+    public void exportBooks(List<Book> books, String fileName) {
+        EntityExchanger<Book> bookExchanger = BookCvsExchanger.getInstance();
+        bookExchanger.exportEntities(books, fileName);
     }
 }

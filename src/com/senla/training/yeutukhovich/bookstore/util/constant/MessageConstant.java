@@ -27,6 +27,7 @@ public enum MessageConstant {
     ORDER_DETAILS_WAS_NOT_FOUND("Order details was not found. Check entered order id."),
     PROFIT("Profit: "),
 
+    ENTER_REQUEST_ID("Please, enter request id: "),
     REQUEST_HAS_BEEN_CREATED("Book request has been created."),
     ENTER_REQUESTER_DATA("Please, enter requester data: "),
     REQUEST_HAS_NOT_BEEN_CREATED("Book request has not been created. Check entered book id."),
@@ -34,6 +35,11 @@ public enum MessageConstant {
     EARLIEST_DATE_BOUND_YYYY_MM_DD("Please enter an earliest date bound in format \"yyyy-MM-dd\": "),
     LATEST_DATE_BOUND_YYYY_MM_DD("Please enter a latest date bound in format \"yyyy-MM-dd\": "),
 
+    IMPORTED_ENTITIES("Imported entities number: "),
+    EXPORTED_ENTITIES("Exported entities number: "),
+    ENTITY_EXPORTED("Entity has been exported."),
+    ENTITY_NOT_EXPORTED("Entity has not been exported"),
+    ENTER_FILE_NAME("Please, enter file name: "),
     ENTER_CORRECT_NUMBER("Please, enter the correct number.");
 
     private String message;

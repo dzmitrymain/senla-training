@@ -8,6 +8,10 @@ public class Request extends AbstractEntity {
     private Boolean isActive;
     private String requesterData;
 
+    public Request(Long id) {
+        super(id);
+    }
+
     public Request(Book book, String requesterData) {
         super(IdGenerator.getInstance().getNextRequestIdNumber());
         this.requesterData = requesterData;
@@ -17,6 +21,10 @@ public class Request extends AbstractEntity {
 
     public Book getBook() {
         return book;
+    }
+
+    public void setBook(Book book) {
+        this.book = book;
     }
 
     public Boolean isActive() {

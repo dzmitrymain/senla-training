@@ -15,6 +15,10 @@ public class Order extends AbstractEntity {
     private Date completionDate;
     private String customerData;
 
+    public Order(Long id) {
+        super(id);
+    }
+
     public Order(Book book, String customerData) {
         super(IdGenerator.getInstance().getNextOrderIdNumber());
         state = OrderState.CREATED;
@@ -50,6 +54,10 @@ public class Order extends AbstractEntity {
 
     public Date getCreationDate() {
         return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
     }
 
     public Date getCompletionDate() {

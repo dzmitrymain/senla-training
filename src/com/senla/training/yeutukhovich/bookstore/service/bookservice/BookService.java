@@ -15,6 +15,8 @@ public interface BookService {
 
     List<Book> findAllBooks(Comparator<Book> bookComparator);
 
+    Book findById(Long id);
+
     List<Book> findSoldBooksBetweenDates(Date startDate, Date endDate);
 
     List<Book> findUnsoldBooksBetweenDates(Date startDate, Date endDate);

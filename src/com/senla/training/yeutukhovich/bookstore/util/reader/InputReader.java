@@ -24,10 +24,12 @@ public class InputReader {
 
     public static Date readInputDate(SimpleDateFormat simpleDateFormat) {
         Date input = null;
-        try {
-            input = DateConverter.parseDate(bufferedReader.readLine(), simpleDateFormat);
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
+        if (simpleDateFormat != null) {
+            try {
+                input = DateConverter.parseDate(bufferedReader.readLine(), simpleDateFormat);
+            } catch (IOException e) {
+                System.err.println(e.getMessage());
+            }
         }
         return input;
     }

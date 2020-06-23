@@ -10,4 +10,6 @@ public interface RequestService {
     Request createRequest(Long bookId, String requesterData);
 
     List<Request> findAllRequests(Comparator<Request> requestComparator);
+
+    Request findById(Long requestId);
 }

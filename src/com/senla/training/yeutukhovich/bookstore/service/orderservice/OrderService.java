@@ -18,6 +18,8 @@ public interface OrderService {
 
     List<Order> findAllOrders(Comparator<Order> orderComparator);
 
+    Order findById(Long orderId);
+
     List<Order> findCompletedOrdersBetweenDates(Date startDate, Date endDate);
 
     BigDecimal calculateProfitBetweenDates(Date startDate, Date endDate);

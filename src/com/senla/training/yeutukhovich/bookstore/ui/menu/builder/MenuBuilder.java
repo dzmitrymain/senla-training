@@ -50,6 +50,7 @@ public class MenuBuilder {
         Menu bookMenu = new Menu(MenuNameConstant.BOOK_MENU.getMenuName());
 
         Menu showAllBooksMenu = initShowAllBooksMenu(bookMenu);
+        Menu bookExportMenu = initBookExportMenu(bookMenu);
 
         MenuItem showAllBooksMenuItem = new MenuItem(MenuNameConstant.SHOW_ALL_BOOKS.getMenuName(), null,
                 showAllBooksMenu);
@@ -65,12 +66,32 @@ public class MenuBuilder {
                 ActionType.SHOW_SOLD_BOOKS_BETWEEN_DATES.getAction(), bookMenu);
         MenuItem findUnsoldBooksItem = new MenuItem(MenuNameConstant.SHOW_UNSOLD_BOOKS_BETWEEN_DATES.getMenuName(),
                 ActionType.SHOW_UNSOLD_BOOKS_BETWEEN_DATES.getAction(), bookMenu);
+        MenuItem importBooksMenuItem = new MenuItem(MenuNameConstant.IMPORT_BOOKS.getMenuName(),
+                ActionType.IMPORT_BOOKS.getAction(), bookMenu);
+        MenuItem bookExportMenuItem = new MenuItem(MenuNameConstant.EXPORT_BOOKS.getMenuName(), null, bookExportMenu);
+
 
         Collections.addAll(bookMenu.getMenuItems(), showAllBooksMenuItem, showBookDescriptionItem,
                 replenishBookItem, writeOffBookItem, findStaleBooksMenuItem, findSoldBooksItem,
-                findUnsoldBooksItem, previousRootMenuItem);
+                findUnsoldBooksItem, importBooksMenuItem, bookExportMenuItem, previousRootMenuItem);
 
         return bookMenu;
+    }
+
+    private Menu initBookExportMenu(Menu previousBookMenu) {
+        Menu bookExportMenu = new Menu(MenuNameConstant.EXPORT_BOOKS.getMenuName());
+
+        MenuItem exportBookMenuItem = new MenuItem(MenuNameConstant.EXPORT_BOOK_BY_ID.getMenuName(),
+                ActionType.EXPORT_BOOK.getAction(), bookExportMenu);
+        MenuItem exportAllBooksMenuItem = new MenuItem(MenuNameConstant.EXPORT_ALL_BOOKS.getMenuName(),
+                ActionType.EXPORT_ALL_BOOKS.getAction(), bookExportMenu);
+
+        MenuItem previousBookMenuItem = new MenuItem(MenuNameConstant.BACK_TO_BOOK_MENU.getMenuName(), null,
+                previousBookMenu);
+
+        Collections.addAll(bookExportMenu.getMenuItems(), exportBookMenuItem, exportAllBooksMenuItem,
+                previousBookMenuItem);
+        return bookExportMenu;
     }
 
     private Menu initShowAllBooksMenu(Menu previousBookMenu) {
@@ -99,6 +120,7 @@ public class MenuBuilder {
     private Menu initOrderMenu(MenuItem previousRootMenuItem) {
         Menu orderMenu = new Menu(MenuNameConstant.ORDER_MENU.getMenuName());
         Menu showAllOrdersMenu = initShowAllOrdersMenu(orderMenu);
+        Menu exportOrdersMenu = initExportOrdersMenu(orderMenu);
 
         MenuItem showAllOrdersMenuItem = new MenuItem(MenuNameConstant.SHOW_ALL_ORDERS.getMenuName(), null,
                 showAllOrdersMenu);
@@ -120,11 +142,32 @@ public class MenuBuilder {
                 ActionType.SHOW_ORDER_DETAILS.getAction(), orderMenu);
         MenuItem showProfitBetweenDatesMenuItem = new MenuItem(MenuNameConstant.SHOW_PROFIT_BETWEEN_DATES.getMenuName(),
                 ActionType.SHOW_PROFIT_BETWEEN_DATES.getAction(), orderMenu);
+        MenuItem importOrdersMenuItem = new MenuItem(MenuNameConstant.IMPORT_ORDERS.getMenuName(),
+                ActionType.IMPORT_ORDERS.getAction(), orderMenu);
+        MenuItem exportOrdersMenuItem = new MenuItem(MenuNameConstant.EXPORT_ORDERS.getMenuName(),
+                null, exportOrdersMenu);
 
         Collections.addAll(orderMenu.getMenuItems(), showAllOrdersMenuItem, createOrderMenuItem, completeOrderMenuItem,
                 cancelOrderMenuItem, showOrderDetailsMenuItem, showProfitBetweenDatesMenuItem,
-                showCompletedOrdersMenuItem, showCompletedOrdersNumberMenuItem, previousRootMenuItem);
+                showCompletedOrdersMenuItem, showCompletedOrdersNumberMenuItem, importOrdersMenuItem,
+                exportOrdersMenuItem, previousRootMenuItem);
         return orderMenu;
+    }
+
+    private Menu initExportOrdersMenu(Menu previousOrderMenu) {
+        Menu exportOrdersMenu = new Menu(MenuNameConstant.EXPORT_ORDERS.getMenuName());
+
+        MenuItem exportOrderMenuItem = new MenuItem(MenuNameConstant.EXPORT_ORDER_BY_ID.getMenuName(),
+                ActionType.EXPORT_ORDER.getAction(), exportOrdersMenu);
+        MenuItem exportAllOrdersMenuItem = new MenuItem(MenuNameConstant.EXPORT_ALL_ORDERS.getMenuName(),
+                ActionType.EXPORT_ALL_ORDERS.getAction(), exportOrdersMenu);
+
+        MenuItem previousOrderMenuItem = new MenuItem(MenuNameConstant.BACK_TO_ORDER_MENU.getMenuName(),
+                null, previousOrderMenu);
+
+        Collections.addAll(exportOrdersMenu.getMenuItems(), exportOrderMenuItem, exportAllOrdersMenuItem,
+                previousOrderMenuItem);
+        return exportOrdersMenu;
     }
 
     private Menu initShowAllOrdersMenu(Menu previousOrderMenu) {
@@ -147,14 +190,37 @@ public class MenuBuilder {
     private Menu initRequestMenu(MenuItem previousRootMenuItem) {
         Menu requestMenu = new Menu(MenuNameConstant.REQUEST_MENU.getMenuName());
         Menu showAllRequestsMenu = initShowAllRequestsMenu(requestMenu);
+        Menu exportRequestMenu = initExportRequestMenu(requestMenu);
 
         MenuItem showAllRequestsMenuItem = new MenuItem(MenuNameConstant.SHOW_ALL_REQUESTS.getMenuName(),
                 null, showAllRequestsMenu);
         MenuItem createRequestMenuItem = new MenuItem(MenuNameConstant.CREATE_REQUEST.getMenuName(),
                 ActionType.CREATE_REQUEST.getAction(), requestMenu);
+        MenuItem importRequestsMenuItem = new MenuItem(MenuNameConstant.IMPORT_REQUESTS.getMenuName(),
+                ActionType.IMPORT_REQUESTS.getAction(), requestMenu);
+        MenuItem exportRequestsMenuItem = new MenuItem(MenuNameConstant.EXPORT_REQUESTS.getMenuName(),
+                null, exportRequestMenu);
+
         Collections.addAll(requestMenu.getMenuItems(), showAllRequestsMenuItem, createRequestMenuItem,
+                importRequestsMenuItem, exportRequestsMenuItem,
                 previousRootMenuItem);
         return requestMenu;
+    }
+
+    private Menu initExportRequestMenu(Menu previousRequestMenu) {
+        Menu exportRequestMenu = new Menu(MenuNameConstant.EXPORT_REQUESTS.getMenuName());
+
+        MenuItem exportRequestMenuItem = new MenuItem(MenuNameConstant.EXPORT_REQUEST_BY_ID.getMenuName(),
+                ActionType.EXPORT_REQUEST.getAction(), exportRequestMenu);
+        MenuItem exportAllRequestsMenuItem = new MenuItem(MenuNameConstant.EXPORT_ALL_REQUESTS.getMenuName(),
+                ActionType.EXPORT_ALL_REQUESTS.getAction(), exportRequestMenu);
+
+        MenuItem previousRequestMenuItem = new MenuItem(MenuNameConstant.BACK_TO_REQUEST_MENU.getMenuName(),
+                null, previousRequestMenu);
+
+        Collections.addAll(exportRequestMenu.getMenuItems(), exportRequestMenuItem, exportAllRequestsMenuItem,
+                previousRequestMenuItem);
+        return exportRequestMenu;
     }
 
     private Menu initShowAllRequestsMenu(Menu previousRequestMenu) {

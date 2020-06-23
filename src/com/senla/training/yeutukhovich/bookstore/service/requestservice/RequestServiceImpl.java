@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 public class RequestServiceImpl implements RequestService {
 
-    private static RequestServiceImpl instance;
+    private static RequestService instance;
 
     private IRepository<Book> bookRepository;
     private IRepository<Request> requestRepository;
@@ -22,7 +22,7 @@ public class RequestServiceImpl implements RequestService {
         this.requestRepository = RequestRepository.getInstance();
     }
 
-    public static RequestServiceImpl getInstance() {
+    public static RequestService getInstance() {
         if (instance == null) {
             instance = new RequestServiceImpl();
         }
@@ -46,5 +46,10 @@ public class RequestServiceImpl implements RequestService {
         return requests.stream()
                 .sorted(requestComparator)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Request findById(Long requestId) {
+        return requestRepository.findById(requestId);
     }
 }

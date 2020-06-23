@@ -33,6 +33,10 @@ public enum MenuNameConstant {
     SHOW_STALE_BOOKS("Show stale books"),
     SHOW_SOLD_BOOKS_BETWEEN_DATES("Show sold books between dates"),
     SHOW_UNSOLD_BOOKS_BETWEEN_DATES("Show unsold books between dates"),
+    IMPORT_BOOKS("Import books"),
+    EXPORT_BOOKS("Export books"),
+    EXPORT_BOOK_BY_ID("Export book by id"),
+    EXPORT_ALL_BOOKS("Export all books"),
 
     CANCEL_ORDER("Cancel order"),
     COMPLETE_ORDER("Complete order"),
@@ -41,6 +45,15 @@ public enum MenuNameConstant {
     SHOW_COMPLETED_ORDERS_BETWEEN_DATES("Show completed orders between dates"),
     SHOW_ORDER_DETAILS("Show order details"),
     SHOW_PROFIT_BETWEEN_DATES("Show profit between dates"),
+    IMPORT_ORDERS("Import orders"),
+    EXPORT_ORDERS("Export orders"),
+    EXPORT_ORDER_BY_ID("Export order by id"),
+    EXPORT_ALL_ORDERS("Export all orders"),
+
+    IMPORT_REQUESTS("Import requests"),
+    EXPORT_REQUESTS("Export requests"),
+    EXPORT_REQUEST_BY_ID("Export request by id"),
+    EXPORT_ALL_REQUESTS("Export all requests"),
     CREATE_REQUEST("Create request");
 
     private String menuName;

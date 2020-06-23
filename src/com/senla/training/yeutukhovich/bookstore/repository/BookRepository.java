@@ -7,7 +7,7 @@ import java.util.List;
 
 public class BookRepository implements IRepository<Book> {
 
-    private static BookRepository instance;
+    private static IRepository<Book> instance;
 
     private List<Book> books;
 
@@ -15,7 +15,7 @@ public class BookRepository implements IRepository<Book> {
         this.books = books;
     }
 
-    public static BookRepository getInstance() {
+    public static IRepository<Book> getInstance() {
         if (instance == null) {
             instance = new BookRepository(EntityInitializer.getBooks());
         }

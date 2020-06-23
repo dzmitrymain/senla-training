@@ -7,6 +7,9 @@ import com.senla.training.yeutukhovich.bookstore.ui.action.orderaction.showallor
 import com.senla.training.yeutukhovich.bookstore.ui.action.orderaction.showallorders.ShowAllOrdersSortByPriceAction;
 import com.senla.training.yeutukhovich.bookstore.ui.action.orderaction.showallorders.ShowAllOrdersSortByStateAction;
 import com.senla.training.yeutukhovich.bookstore.ui.action.requestaction.CreateRequestAction;
+import com.senla.training.yeutukhovich.bookstore.ui.action.requestaction.ExportAllRequestsAction;
+import com.senla.training.yeutukhovich.bookstore.ui.action.requestaction.ExportRequestAction;
+import com.senla.training.yeutukhovich.bookstore.ui.action.requestaction.ImportRequestsAction;
 import com.senla.training.yeutukhovich.bookstore.ui.action.requestaction.showallrequests.ShowAllRequestsSortByBookTitleAction;
 import com.senla.training.yeutukhovich.bookstore.ui.action.requestaction.showallrequests.ShowAllRequestsSortByIsActiveAction;
 import com.senla.training.yeutukhovich.bookstore.ui.action.requestaction.showallrequests.ShowAllRequestsSortByRequesterDataAction;
@@ -25,6 +28,9 @@ public enum ActionType {
     REPLENISH_BOOK(new ReplenishBookAction()),
     SHOW_BOOK_DESCRIPTION(new ShowBookDescriptionAction()),
     WRITE_OFF_BOOK(new WriteOffBookAction()),
+    IMPORT_BOOKS(new ImportBooksAction()),
+    EXPORT_BOOK(new ExportBookAction()),
+    EXPORT_ALL_BOOKS(new ExportAllBooksAction()),
 
     SHOW_ALL_ORDERS_SORT_BY_COMPLETION_DATE(new ShowAllOrdersSortByCompletionDateAction()),
     SHOW_ALL_ORDERS_SORT_BY_PRICE(new ShowAllOrdersSortByPriceAction()),
@@ -37,11 +43,17 @@ public enum ActionType {
     SHOW_COMPLETED_ORDERS_NUMBER_BETWEEN_DATES(new ShowCompletedOrdersNumberBetweenDatesAction()),
     SHOW_ORDER_DETAILS(new ShowOrderDetailsAction()),
     SHOW_PROFIT_BETWEEN_DATES(new ShowProfitBetweenDatesAction()),
+    IMPORT_ORDERS(new ImportOrdersAction()),
+    EXPORT_ORDER(new ExportOrderAction()),
+    EXPORT_ALL_ORDERS(new ExportAllOrdersAction()),
 
     SHOW_ALL_REQUESTS_SORT_BY_BOOK_TITLE(new ShowAllRequestsSortByBookTitleAction()),
     SHOW_ALL_REQUESTS_SORT_BY_IS_ACTIVE(new ShowAllRequestsSortByIsActiveAction()),
     SHOW_ALL_REQUESTS_SORT_BY_REQUESTER_DATA(new ShowAllRequestsSortByRequesterDataAction()),
 
+    IMPORT_REQUESTS(new ImportRequestsAction()),
+    EXPORT_REQUEST(new ExportRequestAction()),
+    EXPORT_ALL_REQUESTS(new ExportAllRequestsAction()),
     CREATE_REQUEST(new CreateRequestAction());
 
     private Action action;
