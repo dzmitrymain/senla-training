@@ -1,13 +1,9 @@
 package com.senla.training.yeutukhovich.bookstore.controller;
 
-import com.senla.training.yeutukhovich.bookstore.domain.Book;
-import com.senla.training.yeutukhovich.bookstore.entityexchanger.EntityExchanger;
-import com.senla.training.yeutukhovich.bookstore.entityexchanger.cvsexchanger.BookCvsExchanger;
-import com.senla.training.yeutukhovich.bookstore.service.bookservice.BookService;
-import com.senla.training.yeutukhovich.bookstore.service.bookservice.BookServiceImpl;
+import com.senla.training.yeutukhovich.bookstore.service.book.BookService;
+import com.senla.training.yeutukhovich.bookstore.service.book.BookServiceImpl;
 import com.senla.training.yeutukhovich.bookstore.service.dto.BookDescription;
 
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -28,52 +24,61 @@ public class BookController {
         return instance;
     }
 
-
     public boolean replenishBook(Long id) {
         return bookService.replenishBook(id);
     }
-
 
     public boolean writeOffBook(Long id) {
         return bookService.writeOffBook(id);
     }
 
-
-    public List<Book> findAllBooks(Comparator<Book> bookComparator) {
-        return bookService.findAllBooks(bookComparator);
+    public List<String> findSortedAllBooksByAvailability() {
+        return bookService.findSortedAllBooksByAvailability();
     }
 
-    public Book findById(Long id) {
-        return bookService.findById(id);
+    public List<String> findSortedAllBooksByEditionDate() {
+        return bookService.findSortedAllBooksByEditionDate();
+    }
+
+    public List<String> findSortedAllBooksByPrice() {
+        return bookService.findSortedBooksByPrice();
+    }
+
+    public List<String> findSortedAllBooksByReplenishmentDate() {
+        return bookService.findSortedAllBooksByReplenishmentDate();
+    }
+
+    public List<String> findSortedAllBooksByTitle() {
+        return bookService.findSortedAllBooksByTitle();
     }
 
 
-    public List<Book> findSoldBooksBetweenDates(Date startDate, Date endDate) {
+    public List<String> findSoldBooksBetweenDates(Date startDate, Date endDate) {
         return bookService.findSoldBooksBetweenDates(startDate, endDate);
     }
 
 
-    public List<Book> findUnsoldBooksBetweenDates(Date startDate, Date endDate) {
+    public List<String> findUnsoldBooksBetweenDates(Date startDate, Date endDate) {
         return bookService.findUnsoldBooksBetweenDates(startDate, endDate);
     }
 
-
-    public List<Book> findStaleBooks() {
+    public List<String> findStaleBooks() {
         return bookService.findStaleBooks();
     }
-
 
     public BookDescription showBookDescription(Long id) {
         return bookService.showBookDescription(id);
     }
 
     public int importBooks(String fileName) {
-        EntityExchanger<Book> bookExchanger = BookCvsExchanger.getInstance();
-        return bookExchanger.importEntities(fileName);
+        return bookService.importBooks(fileName);
     }
 
-    public void exportBooks(List<Book> books, String fileName) {
-        EntityExchanger<Book> bookExchanger = BookCvsExchanger.getInstance();
-        bookExchanger.exportEntities(books, fileName);
+    public int exportAllBooks(String fileName) {
+        return bookService.exportAllBooks(fileName);
+    }
+
+    public boolean exportBook(Long bookId, String fileName) {
+        return bookService.exportBook(bookId, fileName);
     }
 }

@@ -1,12 +1,8 @@
 package com.senla.training.yeutukhovich.bookstore.controller;
 
-import com.senla.training.yeutukhovich.bookstore.domain.Request;
-import com.senla.training.yeutukhovich.bookstore.entityexchanger.EntityExchanger;
-import com.senla.training.yeutukhovich.bookstore.entityexchanger.cvsexchanger.RequestCvsExchanger;
-import com.senla.training.yeutukhovich.bookstore.service.requestservice.RequestService;
-import com.senla.training.yeutukhovich.bookstore.service.requestservice.RequestServiceImpl;
+import com.senla.training.yeutukhovich.bookstore.service.request.RequestService;
+import com.senla.training.yeutukhovich.bookstore.service.request.RequestServiceImpl;
 
-import java.util.Comparator;
 import java.util.List;
 
 public class RequestController {
@@ -26,27 +22,31 @@ public class RequestController {
         return instance;
     }
 
-
-    public Request createRequest(Long bookId, String requesterData) {
+    public Long createRequest(Long bookId, String requesterData) {
         return requestService.createRequest(bookId, requesterData);
     }
 
-
-    public List<Request> findAllRequests(Comparator<Request> requestComparator) {
-        return requestService.findAllRequests(requestComparator);
+    public List<String> findSortedAllRequestsByBookTitle() {
+        return requestService.findSortedAllRequestsByBookTitle();
     }
 
-    public Request findById(Long requestId) {
-        return requestService.findById(requestId);
+    public List<String> findSortedAllRequestsByIsActive() {
+        return requestService.findSortedAllRequestsByIsActive();
+    }
+
+    public List<String> findSortedAllRequestsByRequesterData() {
+        return requestService.findSortedAllRequestsByRequesterData();
+    }
+
+    public int exportAllRequests(String fileName) {
+        return requestService.exportAllRequests(fileName);
+    }
+
+    public boolean exportRequest(Long requestId, String fileName) {
+        return requestService.exportRequest(requestId, fileName);
     }
 
     public int importRequests(String fileName) {
-        EntityExchanger<Request> requestExchanger = RequestCvsExchanger.getInstance();
-        return requestExchanger.importEntities(fileName);
-    }
-
-    public void exportRequests(List<Request> requests, String fileName) {
-        EntityExchanger<Request> requestExchanger = RequestCvsExchanger.getInstance();
-        requestExchanger.exportEntities(requests, fileName);
+        return requestService.importRequests(fileName);
     }
 }

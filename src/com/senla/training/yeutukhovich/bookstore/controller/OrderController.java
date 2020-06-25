@@ -1,14 +1,11 @@
 package com.senla.training.yeutukhovich.bookstore.controller;
 
-import com.senla.training.yeutukhovich.bookstore.domain.Order;
-import com.senla.training.yeutukhovich.bookstore.entityexchanger.EntityExchanger;
-import com.senla.training.yeutukhovich.bookstore.entityexchanger.cvsexchanger.OrderCvsExchanger;
+import com.senla.training.yeutukhovich.bookstore.service.dto.CreationOrderResult;
 import com.senla.training.yeutukhovich.bookstore.service.dto.OrderDetails;
-import com.senla.training.yeutukhovich.bookstore.service.orderservice.OrderService;
-import com.senla.training.yeutukhovich.bookstore.service.orderservice.OrderServiceImpl;
+import com.senla.training.yeutukhovich.bookstore.service.order.OrderService;
+import com.senla.training.yeutukhovich.bookstore.service.order.OrderServiceImpl;
 
 import java.math.BigDecimal;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -29,57 +26,55 @@ public class OrderController {
         return instance;
     }
 
-
-    public Order createOrder(Long bookId, String customerData) {
+    public CreationOrderResult createOrder(Long bookId, String customerData) {
         return orderService.createOrder(bookId, customerData);
     }
-
 
     public boolean cancelOrder(Long orderId) {
         return orderService.cancelOrder(orderId);
     }
 
-
     public boolean completeOrder(Long orderId) {
         return orderService.completeOrder(orderId);
     }
 
-
-    public List<Order> findAllOrders(Comparator<Order> orderComparator) {
-        return orderService.findAllOrders(orderComparator);
+    public List<String> findSortedAllOrdersByCompletionDate() {
+        return orderService.findSortedAllOrdersByCompletionDate();
     }
 
-    public Order findById(Long orderId) {
-        return orderService.findById(orderId);
+    public List<String> findSortedAllOrdersByPrice() {
+        return orderService.findSortedAllOrdersByPrice();
     }
 
+    public List<String> findSortedAllOrdersByState() {
+        return orderService.findSortedAllOrdersByState();
+    }
 
-    public List<Order> findCompletedOrdersBetweenDates(Date startDate, Date endDate) {
+    public List<String> findCompletedOrdersBetweenDates(Date startDate, Date endDate) {
         return orderService.findCompletedOrdersBetweenDates(startDate, endDate);
     }
-
 
     public BigDecimal calculateProfitBetweenDates(Date startDate, Date endDate) {
         return orderService.calculateProfitBetweenDates(startDate, endDate);
     }
 
-
     public int calculateCompletedOrdersNumberBetweenDates(Date startDate, Date endDate) {
         return orderService.calculateCompletedOrdersNumberBetweenDates(startDate, endDate);
     }
-
 
     public OrderDetails showOrderDetails(Long orderId) {
         return orderService.showOrderDetails(orderId);
     }
 
     public int importOrders(String fileName) {
-        EntityExchanger<Order> orderExchanger = OrderCvsExchanger.getInstance();
-        return orderExchanger.importEntities(fileName);
+        return orderService.importOrders(fileName);
     }
 
-    public void exportOrders(List<Order> orders, String fileName) {
-        EntityExchanger<Order> orderExchanger = OrderCvsExchanger.getInstance();
-        orderExchanger.exportEntities(orders, fileName);
+    public int exportAllOrders(String fileName) {
+        return orderService.exportAllOrders(fileName);
+    }
+
+    public boolean exportOrder(Long orderId, String fileName) {
+        return orderService.exportOrder(orderId, fileName);
     }
 }
