@@ -6,9 +6,9 @@ import com.senla.training.yeutukhovich.bookstore.util.generator.IdGenerator;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RequestRepository implements IRepository<Request> {
+public class RequestRepository implements IRequestRepository {
 
-    private static IRepository<Request> instance;
+    private static IRequestRepository instance;
 
     private List<Request> requests = new ArrayList<>();
 
@@ -16,7 +16,7 @@ public class RequestRepository implements IRepository<Request> {
 
     }
 
-    public static IRepository<Request> getInstance() {
+    public static IRequestRepository getInstance() {
         if (instance == null) {
             instance = new RequestRepository();
         }

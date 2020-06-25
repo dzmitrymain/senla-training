@@ -6,9 +6,9 @@ import com.senla.training.yeutukhovich.bookstore.util.generator.IdGenerator;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrderRepository implements IRepository<Order> {
+public class OrderRepository implements IOrderRepository {
 
-    private static IRepository<Order> instance;
+    private static IOrderRepository instance;
 
     private List<Order> orders = new ArrayList<>();
 
@@ -16,7 +16,7 @@ public class OrderRepository implements IRepository<Order> {
 
     }
 
-    public static IRepository<Order> getInstance() {
+    public static IOrderRepository getInstance() {
         if (instance == null) {
             instance = new OrderRepository();
         }

@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class BookRepository implements IRepository<Book> {
+public class BookRepository implements IBookRepository {
 
-    private static IRepository<Book> instance;
+    private static IBookRepository instance;
 
     private List<Book> books = new ArrayList<>();
 
@@ -19,7 +19,7 @@ public class BookRepository implements IRepository<Book> {
 
     }
 
-    public static IRepository<Book> getInstance() {
+    public static IBookRepository getInstance() {
         if (instance == null) {
             instance = new BookRepository();
             BooksInitializer.initBooks();

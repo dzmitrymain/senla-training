@@ -4,7 +4,8 @@ import com.senla.training.yeutukhovich.bookstore.converter.EntityCvsConverter;
 import com.senla.training.yeutukhovich.bookstore.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.domain.Request;
 import com.senla.training.yeutukhovich.bookstore.repository.BookRepository;
-import com.senla.training.yeutukhovich.bookstore.repository.IRepository;
+import com.senla.training.yeutukhovich.bookstore.repository.IBookRepository;
+import com.senla.training.yeutukhovich.bookstore.repository.IRequestRepository;
 import com.senla.training.yeutukhovich.bookstore.repository.RequestRepository;
 import com.senla.training.yeutukhovich.bookstore.util.constant.PathConstant;
 import com.senla.training.yeutukhovich.bookstore.util.reader.FileDataReader;
@@ -19,8 +20,8 @@ public class RequestServiceImpl implements RequestService {
 
     private static RequestService instance;
 
-    private IRepository<Book> bookRepository;
-    private IRepository<Request> requestRepository;
+    private IBookRepository bookRepository;
+    private IRequestRepository requestRepository;
 
     private RequestServiceImpl() {
         this.bookRepository = BookRepository.getInstance();

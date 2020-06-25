@@ -5,10 +5,7 @@ import com.senla.training.yeutukhovich.bookstore.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.domain.Order;
 import com.senla.training.yeutukhovich.bookstore.domain.Request;
 import com.senla.training.yeutukhovich.bookstore.domain.state.OrderState;
-import com.senla.training.yeutukhovich.bookstore.repository.BookRepository;
-import com.senla.training.yeutukhovich.bookstore.repository.IRepository;
-import com.senla.training.yeutukhovich.bookstore.repository.OrderRepository;
-import com.senla.training.yeutukhovich.bookstore.repository.RequestRepository;
+import com.senla.training.yeutukhovich.bookstore.repository.*;
 import com.senla.training.yeutukhovich.bookstore.service.dto.CreationOrderResult;
 import com.senla.training.yeutukhovich.bookstore.service.dto.OrderDetails;
 import com.senla.training.yeutukhovich.bookstore.util.constant.PathConstant;
@@ -26,9 +23,9 @@ public class OrderServiceImpl implements OrderService {
 
     private static OrderService instance;
 
-    private IRepository<Book> bookRepository;
-    private IRepository<Order> orderRepository;
-    private IRepository<Request> requestRepository;
+    private IBookRepository bookRepository;
+    private IOrderRepository orderRepository;
+    private IRequestRepository requestRepository;
 
     private OrderServiceImpl() {
         this.bookRepository = BookRepository.getInstance();

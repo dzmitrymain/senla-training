@@ -5,7 +5,7 @@ import com.senla.training.yeutukhovich.bookstore.domain.Order;
 import com.senla.training.yeutukhovich.bookstore.domain.Request;
 import com.senla.training.yeutukhovich.bookstore.domain.state.OrderState;
 import com.senla.training.yeutukhovich.bookstore.repository.BookRepository;
-import com.senla.training.yeutukhovich.bookstore.repository.IRepository;
+import com.senla.training.yeutukhovich.bookstore.repository.IBookRepository;
 import com.senla.training.yeutukhovich.bookstore.util.converter.DateConverter;
 
 import java.math.BigDecimal;
@@ -18,7 +18,7 @@ public class EntityCvsConverter {
     private static EntityCvsConverter instance;
     private static final String DELIMITER = ";";
 
-    private IRepository<Book> bookRepository = BookRepository.getInstance();
+    private IBookRepository bookRepository = BookRepository.getInstance();
 
     private EntityCvsConverter() {
 
