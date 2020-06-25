@@ -16,7 +16,7 @@ import java.util.List;
 public class EntityCvsConverter {
 
     private static EntityCvsConverter instance;
-    private static final String DELIMITER = ",";
+    private static final String DELIMITER = ";";
 
     private IRepository<Book> bookRepository = BookRepository.getInstance();
 
