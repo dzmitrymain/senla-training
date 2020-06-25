@@ -1,7 +1,5 @@
 package com.senla.training.yeutukhovich.bookstore.domain;
 
-import com.senla.training.yeutukhovich.bookstore.util.generator.IdGenerator;
-
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -13,12 +11,11 @@ public class Book extends AbstractEntity {
     private Date replenishmentDate;
     private BigDecimal price;
 
-    public Book(Long id) {
-        super(id);
+    public Book() {
+
     }
 
     public Book(String title, Boolean isAvailable, Date editionDate, Date replenishmentDate, BigDecimal price) {
-        super(IdGenerator.getInstance().getNextBookIdNumber());
         this.title = title;
         this.setAvailable(isAvailable);
         this.replenishmentDate = replenishmentDate;

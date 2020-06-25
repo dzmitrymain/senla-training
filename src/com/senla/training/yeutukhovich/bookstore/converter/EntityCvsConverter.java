@@ -57,7 +57,8 @@ public class EntityCvsConverter {
             String[] stringObjects = string.split(DELIMITER);
             if (stringObjects.length == 6) {
                 try {
-                    Book book = new Book(Long.valueOf(stringObjects[0]));
+                    Book book = new Book();
+                    book.setId(Long.valueOf(stringObjects[0]));
                     book.setTitle(stringObjects[1]);
                     if ("true".equals(stringObjects[2]) || "false".equals(stringObjects[2])) {
                         book.setAvailable(Boolean.valueOf((stringObjects[2])));
@@ -111,7 +112,8 @@ public class EntityCvsConverter {
             String[] stringObjects = string.split(DELIMITER);
             if (stringObjects.length == 7) {
                 try {
-                    Order order = new Order(Long.valueOf(stringObjects[0]));
+                    Order order = new Order();
+                    order.setId(Long.valueOf(stringObjects[0]));
                     Book book = bookRepository.findById(Long.valueOf(stringObjects[1]));
                     if (book == null) {
                         throw new IllegalArgumentException("Book can't be null.");
@@ -161,7 +163,8 @@ public class EntityCvsConverter {
             String[] stringObjects = requestString.split(DELIMITER);
             if (stringObjects.length == 4) {
                 try {
-                    Request request = new Request(Long.valueOf(stringObjects[0]));
+                    Request request = new Request();
+                    request.setId(Long.valueOf(stringObjects[0]));
                     Book book = bookRepository.findById(Long.valueOf(stringObjects[1]));
                     if (book == null) {
                         throw new IllegalArgumentException("Book can't be null.");

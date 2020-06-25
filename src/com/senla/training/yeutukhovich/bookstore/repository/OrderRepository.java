@@ -1,23 +1,24 @@
 package com.senla.training.yeutukhovich.bookstore.repository;
 
 import com.senla.training.yeutukhovich.bookstore.domain.Order;
-import com.senla.training.yeutukhovich.bookstore.util.initializer.EntityInitializer;
+import com.senla.training.yeutukhovich.bookstore.util.generator.IdGenerator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class OrderRepository implements IRepository<Order> {
 
     private static IRepository<Order> instance;
 
-    private List<Order> orders;
+    private List<Order> orders = new ArrayList<>();
 
-    private OrderRepository(List<Order> orders) {
-        this.orders = orders;
+    private OrderRepository() {
+
     }
 
     public static IRepository<Order> getInstance() {
         if (instance == null) {
-            instance = new OrderRepository(EntityInitializer.getOrders());
+            instance = new OrderRepository();
         }
         return instance;
     }
@@ -42,6 +43,7 @@ public class OrderRepository implements IRepository<Order> {
     @Override
     public void add(Order entity) {
         if (entity != null && !orders.contains(entity)) {
+            entity.setId(IdGenerator.getInstance().getNextOrderIdNumber());
             orders.add(entity);
         }
     }

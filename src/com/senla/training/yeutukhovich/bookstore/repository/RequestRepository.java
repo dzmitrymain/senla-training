@@ -1,23 +1,24 @@
 package com.senla.training.yeutukhovich.bookstore.repository;
 
 import com.senla.training.yeutukhovich.bookstore.domain.Request;
-import com.senla.training.yeutukhovich.bookstore.util.initializer.EntityInitializer;
+import com.senla.training.yeutukhovich.bookstore.util.generator.IdGenerator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RequestRepository implements IRepository<Request> {
 
     private static IRepository<Request> instance;
 
-    private List<Request> requests;
+    private List<Request> requests = new ArrayList<>();
 
-    private RequestRepository(List<Request> requests) {
-        this.requests = requests;
+    private RequestRepository() {
+
     }
 
     public static IRepository<Request> getInstance() {
         if (instance == null) {
-            instance = new RequestRepository(EntityInitializer.getRequests());
+            instance = new RequestRepository();
         }
         return instance;
     }
@@ -43,6 +44,7 @@ public class RequestRepository implements IRepository<Request> {
     @Override
     public void add(Request entity) {
         if (entity != null && !requests.contains(entity)) {
+            entity.setId(IdGenerator.getInstance().getNextRequestIdNumber());
             requests.add(entity);
         }
     }
