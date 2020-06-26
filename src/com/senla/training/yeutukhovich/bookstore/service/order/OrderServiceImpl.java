@@ -120,7 +120,7 @@ public class OrderServiceImpl implements OrderService {
     public List<String> findCompletedOrdersBetweenDates(Date startDate, Date endDate) {
         List<Order> orders = orderRepository.findAll();
         return orders.stream()
-                .filter((order) -> order.getState() == OrderState.COMPLETED &&
+                .filter(order -> order.getState() == OrderState.COMPLETED &&
                         order.getCompletionDate().after(startDate) &&
                         order.getCompletionDate().before(endDate))
                 .map(Order::toString)
@@ -131,7 +131,7 @@ public class OrderServiceImpl implements OrderService {
     public BigDecimal calculateProfitBetweenDates(Date startDate, Date endDate) {
         List<Order> orders = orderRepository.findAll();
         List<Order> completedOrders = orders.stream()
-                .filter((order) -> order.getState() == OrderState.COMPLETED &&
+                .filter(order -> order.getState() == OrderState.COMPLETED &&
                         order.getCompletionDate().after(startDate) &&
                         order.getCompletionDate().before(endDate))
                 .collect(Collectors.toList());

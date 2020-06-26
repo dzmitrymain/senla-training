@@ -122,7 +122,7 @@ public class BookServiceImpl implements BookService {
         List<Order> orders = orderRepository.findAll();
 
         return orders.stream()
-                .filter((order) -> order.getState() == OrderState.COMPLETED
+                .filter(order -> order.getState() == OrderState.COMPLETED
                         && order.getCompletionDate().after(startDate)
                         && order.getCompletionDate().before(endDate))
                 .map(order -> order.getBook().toString())

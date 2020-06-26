@@ -55,31 +55,9 @@ public class EntityCvsConverter {
         List<Book> books = new ArrayList<>();
         for (String string : bookStrings) {
             String[] stringObjects = string.split(DELIMITER);
-            if (stringObjects.length == 6) {
-                try {
-                    Book book = new Book();
-                    book.setId(Long.valueOf(stringObjects[0]));
-                    book.setTitle(stringObjects[1]);
-                    if ("true".equals(stringObjects[2]) || "false".equals(stringObjects[2])) {
-                        book.setAvailable(Boolean.valueOf((stringObjects[2])));
-                    } else {
-                        throw new IllegalArgumentException("Unparseable boolean: \"" + stringObjects[2] + "\"");
-                    }
-                    Date editionDate = DateConverter.parseDate(stringObjects[3], DateConverter.STANDARD_DATE_FORMAT);
-                    if (editionDate == null) {
-                        throw new IllegalArgumentException("Edition date can't be null");
-                    } else {
-                        book.setEditionDate(editionDate);
-                    }
-                    if (!"null".equals(stringObjects[4])) {
-                        book.setReplenishmentDate(DateConverter.parseDate(stringObjects[4]
-                                , DateConverter.STANDARD_DATE_FORMAT));
-                    }
-                    book.setPrice(BigDecimal.valueOf(Double.parseDouble(stringObjects[5])));
-                    books.add(book);
-                } catch (IllegalArgumentException e) {
-                    System.err.println(e.getMessage());
-                }
+            Book book = buildBook(stringObjects);
+            if (book != null) {
+                books.add(book);
             }
         }
         return books;
@@ -110,32 +88,9 @@ public class EntityCvsConverter {
         List<Order> orders = new ArrayList<>();
         for (String string : orderStrings) {
             String[] stringObjects = string.split(DELIMITER);
-            if (stringObjects.length == 7) {
-                try {
-                    Order order = new Order();
-                    order.setId(Long.valueOf(stringObjects[0]));
-                    Book book = bookRepository.findById(Long.valueOf(stringObjects[1]));
-                    if (book == null) {
-                        throw new IllegalArgumentException("Book can't be null.");
-                    }
-                    order.setBook(book);
-                    order.setState(OrderState.valueOf(stringObjects[2]));
-                    order.setCurrentBookPrice(BigDecimal.valueOf(Double.parseDouble(stringObjects[3])));
-                    Date creationDate = DateConverter.parseDate(stringObjects[4], DateConverter.STANDARD_DATE_FORMAT);
-                    if (creationDate == null) {
-                        throw new IllegalArgumentException("Creation date can't be null");
-                    } else {
-                        order.setCreationDate(creationDate);
-                    }
-                    if (!"null".equals(stringObjects[5])) {
-                        order.setCompletionDate(DateConverter.parseDate(stringObjects[5]
-                                , DateConverter.STANDARD_DATE_FORMAT));
-                    }
-                    order.setCustomerData(stringObjects[6]);
-                    orders.add(order);
-                } catch (IllegalArgumentException e) {
-                    System.err.println(e.getMessage());
-                }
+            Order order = buildOrder(stringObjects);
+            if (order != null) {
+                orders.add(order);
             }
         }
         return orders;
@@ -161,27 +116,99 @@ public class EntityCvsConverter {
 
         for (String requestString : requestStrings) {
             String[] stringObjects = requestString.split(DELIMITER);
-            if (stringObjects.length == 4) {
-                try {
-                    Request request = new Request();
-                    request.setId(Long.valueOf(stringObjects[0]));
-                    Book book = bookRepository.findById(Long.valueOf(stringObjects[1]));
-                    if (book == null) {
-                        throw new IllegalArgumentException("Book can't be null.");
-                    }
-                    request.setBook(book);
-                    if ("true".equals(stringObjects[2]) || "false".equals(stringObjects[2])) {
-                        request.setActive(Boolean.valueOf((stringObjects[2])));
-                    } else {
-                        throw new IllegalArgumentException("Unparseable boolean: \"" + stringObjects[2] + "\"");
-                    }
-                    request.setRequesterData(stringObjects[3]);
-                    requests.add(request);
-                } catch (IllegalArgumentException e) {
-                    System.err.println(e.getMessage());
-                }
+            Request request = buildRequest(stringObjects);
+            if (request != null) {
+                requests.add(request);
             }
         }
         return requests;
+    }
+
+    private boolean parseBoolean(String string) {
+        if ("true".equals(string)) {
+            return true;
+        }
+        if ("false".equals(string)) {
+            return false;
+        }
+        throw new IllegalArgumentException("Unparseable boolean: \"" + string + "\"");
+    }
+
+    private Book buildBook(String[] strings) {
+        Book book = null;
+        if (strings.length == 6) {
+            try {
+                book = new Book();
+                book.setId(Long.valueOf(strings[0]));
+                book.setTitle(strings[1]);
+                book.setAvailable(parseBoolean(strings[2]));
+                Date editionDate = DateConverter.parseDate(strings[3], DateConverter.STANDARD_DATE_FORMAT);
+                if (editionDate == null) {
+                    throw new IllegalArgumentException("Edition date can't be null");
+                } else {
+                    book.setEditionDate(editionDate);
+                }
+                if (!"null".equals(strings[4])) {
+                    book.setReplenishmentDate(DateConverter.parseDate(strings[4]
+                            , DateConverter.STANDARD_DATE_FORMAT));
+                }
+                book.setPrice(BigDecimal.valueOf(Double.parseDouble(strings[5])));
+            } catch (IllegalArgumentException e) {
+                System.err.println(e.getMessage());
+            }
+        }
+        return book;
+    }
+
+    private Order buildOrder(String[] strings) {
+        Order order = null;
+        if (strings.length == 7) {
+            order = new Order();
+            try {
+                order = new Order();
+                order.setId(Long.valueOf(strings[0]));
+                Book book = bookRepository.findById(Long.valueOf(strings[1]));
+                if (book == null) {
+                    throw new IllegalArgumentException("Book can't be null.");
+                }
+                order.setBook(book);
+                order.setState(OrderState.valueOf(strings[2]));
+                order.setCurrentBookPrice(BigDecimal.valueOf(Double.parseDouble(strings[3])));
+                Date creationDate = DateConverter.parseDate(strings[4], DateConverter.STANDARD_DATE_FORMAT);
+                if (creationDate == null) {
+                    throw new IllegalArgumentException("Creation date can't be null");
+                } else {
+                    order.setCreationDate(creationDate);
+                }
+                if (!"null".equals(strings[5])) {
+                    order.setCompletionDate(DateConverter.parseDate(strings[5]
+                            , DateConverter.STANDARD_DATE_FORMAT));
+                }
+                order.setCustomerData(strings[6]);
+            } catch (IllegalArgumentException e) {
+                System.err.println(e.getMessage());
+            }
+        }
+        return order;
+    }
+
+    private Request buildRequest(String[] strings) {
+        Request request = null;
+        if (strings.length == 4) {
+            try {
+                request = new Request();
+                request.setId(Long.valueOf(strings[0]));
+                Book book = bookRepository.findById(Long.valueOf(strings[1]));
+                if (book == null) {
+                    throw new IllegalArgumentException("Book can't be null.");
+                }
+                request.setBook(book);
+                request.setActive(parseBoolean(strings[2]));
+                request.setRequesterData(strings[3]);
+            } catch (IllegalArgumentException e) {
+                System.err.println(e.getMessage());
+            }
+        }
+        return request;
     }
 }
