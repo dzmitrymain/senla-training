@@ -85,13 +85,14 @@ public class OrderServiceImpl implements OrderService {
                 .sorted(Comparator.nullsLast((o1, o2) -> {
                     if (o1.getCompletionDate() == null && o2.getCompletionDate() == null) {
                         return 0;
-                    } else if (o1.getCompletionDate() == null) {
-                        return 1;
-                    } else if (o2.getCompletionDate() == null) {
-                        return -1;
-                    } else {
-                        return o2.getCompletionDate().compareTo(o1.getCompletionDate());
                     }
+                    if (o1.getCompletionDate() == null) {
+                        return 1;
+                    }
+                    if (o2.getCompletionDate() == null) {
+                        return -1;
+                    }
+                    return o2.getCompletionDate().compareTo(o1.getCompletionDate());
                 }))
                 .filter(Objects::nonNull)
                 .map(Order::toString)

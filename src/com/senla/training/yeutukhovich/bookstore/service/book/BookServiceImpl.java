@@ -95,13 +95,14 @@ public class BookServiceImpl implements BookService {
                         (o1, o2) -> {
                             if (o1.getReplenishmentDate() == null && o2.getReplenishmentDate() == null) {
                                 return 0;
-                            } else if (o1.getReplenishmentDate() == null) {
-                                return 1;
-                            } else if (o2.getReplenishmentDate() == null) {
-                                return -1;
-                            } else {
-                                return o1.getReplenishmentDate().compareTo(o2.getReplenishmentDate());
                             }
+                            if (o1.getReplenishmentDate() == null) {
+                                return 1;
+                            }
+                            if (o2.getReplenishmentDate() == null) {
+                                return -1;
+                            }
+                            return o1.getReplenishmentDate().compareTo(o2.getReplenishmentDate());
                         }))
                 .filter(Objects::nonNull)
                 .map(Book::toString)
