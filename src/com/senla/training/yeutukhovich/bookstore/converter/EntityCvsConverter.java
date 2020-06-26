@@ -6,6 +6,7 @@ import com.senla.training.yeutukhovich.bookstore.domain.Request;
 import com.senla.training.yeutukhovich.bookstore.domain.state.OrderState;
 import com.senla.training.yeutukhovich.bookstore.repository.BookRepository;
 import com.senla.training.yeutukhovich.bookstore.repository.IBookRepository;
+import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 import com.senla.training.yeutukhovich.bookstore.util.converter.DateConverter;
 
 import java.math.BigDecimal;
@@ -131,7 +132,8 @@ public class EntityCvsConverter {
         if ("false".equals(string)) {
             return false;
         }
-        throw new IllegalArgumentException("Unparseable boolean: \"" + string + "\"");
+        throw new IllegalArgumentException(String.format(MessageConstant.STRING_FORMAT_UNPARSEABLE_BOOLEAN.getMessage(),
+                string));
     }
 
     private Book buildBook(String[] strings) {
@@ -144,7 +146,7 @@ public class EntityCvsConverter {
                 book.setAvailable(parseBoolean(strings[2]));
                 Date editionDate = DateConverter.parseDate(strings[3], DateConverter.STANDARD_DATE_FORMAT);
                 if (editionDate == null) {
-                    throw new IllegalArgumentException("Edition date can't be null");
+                    throw new IllegalArgumentException(MessageConstant.EDITION_NOT_NULL.getMessage());
                 } else {
                     book.setEditionDate(editionDate);
                 }
@@ -169,14 +171,14 @@ public class EntityCvsConverter {
                 order.setId(Long.valueOf(strings[0]));
                 Book book = bookRepository.findById(Long.valueOf(strings[1]));
                 if (book == null) {
-                    throw new IllegalArgumentException("Book can't be null.");
+                    throw new IllegalArgumentException(MessageConstant.BOOK_NOT_NULL.getMessage());
                 }
                 order.setBook(book);
                 order.setState(OrderState.valueOf(strings[2]));
                 order.setCurrentBookPrice(BigDecimal.valueOf(Double.parseDouble(strings[3])));
                 Date creationDate = DateConverter.parseDate(strings[4], DateConverter.STANDARD_DATE_FORMAT);
                 if (creationDate == null) {
-                    throw new IllegalArgumentException("Creation date can't be null");
+                    throw new IllegalArgumentException(MessageConstant.CREATION_NOT_NULL.getMessage());
                 } else {
                     order.setCreationDate(creationDate);
                 }
@@ -200,7 +202,7 @@ public class EntityCvsConverter {
                 request.setId(Long.valueOf(strings[0]));
                 Book book = bookRepository.findById(Long.valueOf(strings[1]));
                 if (book == null) {
-                    throw new IllegalArgumentException("Book can't be null.");
+                    throw new IllegalArgumentException(MessageConstant.BOOK_NOT_NULL.getMessage());
                 }
                 request.setBook(book);
                 request.setActive(parseBoolean(strings[2]));

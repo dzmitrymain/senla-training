@@ -4,6 +4,14 @@ public enum MessageConstant {
 
     MENU_BORDER("========================================"),
     MENU_ITEM_BORDER("----------------------------------------"),
+    MENU_NAME_INDENT("        "),
+    MENU_ITEM_INDEX_DELIMITER(". "),
+
+    STRING_FORMAT_UNPARSEABLE_BOOLEAN("Unparseable boolean: \"%s\""),
+
+    EDITION_NOT_NULL("Edition date can't be null"),
+    BOOK_NOT_NULL("Book can't be null."),
+    CREATION_NOT_NULL("Creation date can't be null"),
 
     DATA_WAS_FOUND("Data was found: "),
     NO_DATA_WAS_FOUND("No data was found."),

@@ -32,11 +32,12 @@ public class MenuNavigator {
     public void printMenu() {
         System.out.println();
         System.out.println(MessageConstant.MENU_BORDER.getMessage());
-        System.out.println("        " + currentMenu.getName());
+        System.out.println(MessageConstant.MENU_NAME_INDENT.getMessage() + currentMenu.getName());
         System.out.println(MessageConstant.MENU_ITEM_BORDER.getMessage());
         int firstMenuIndex = 1;
         for (MenuItem menuItem : currentMenu.getMenuItems()) {
-            System.out.println(firstMenuIndex++ + ". " + menuItem.getTitle());
+            System.out.println(firstMenuIndex++ + MessageConstant.MENU_ITEM_INDEX_DELIMITER.getMessage()
+                    + menuItem.getTitle());
         }
         System.out.println(MessageConstant.MENU_BORDER.getMessage());
         System.out.println();

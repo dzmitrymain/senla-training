@@ -176,13 +176,15 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookDescription showBookDescription(Long id) {
         Book checkedBook = bookRepository.findById(id);
-        BookDescription bookDescription = null;
-        if (checkedBook != null) {
-            bookDescription = new BookDescription();
-            bookDescription.setTitle(checkedBook.getTitle());
-            bookDescription.setEditionDate(checkedBook.getEditionDate());
-            bookDescription.setReplenishmentDate(checkedBook.getReplenishmentDate());
+
+        if (checkedBook == null) {
+            return null;
         }
+
+        BookDescription bookDescription = new BookDescription();
+        bookDescription.setTitle(checkedBook.getTitle());
+        bookDescription.setEditionDate(checkedBook.getEditionDate());
+        bookDescription.setReplenishmentDate(checkedBook.getReplenishmentDate());
         return bookDescription;
     }
 

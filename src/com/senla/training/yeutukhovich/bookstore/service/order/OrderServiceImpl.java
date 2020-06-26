@@ -150,16 +150,16 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDetails showOrderDetails(Long orderId) {
         Order checkedOrder = orderRepository.findById(orderId);
-        OrderDetails orderDetails = null;
-        if (checkedOrder != null) {
-            orderDetails = new OrderDetails();
-            orderDetails.setCustomerData(checkedOrder.getCustomerData());
-            orderDetails.setBookTitle(checkedOrder.getBook().getTitle());
-            orderDetails.setPrice(checkedOrder.getCurrentBookPrice());
-            orderDetails.setState(checkedOrder.getState());
-            orderDetails.setCreationDate(checkedOrder.getCreationDate());
-            orderDetails.setCompletionDate(checkedOrder.getCompletionDate());
+        if (checkedOrder == null) {
+            return null;
         }
+        OrderDetails orderDetails = new OrderDetails();
+        orderDetails.setCustomerData(checkedOrder.getCustomerData());
+        orderDetails.setBookTitle(checkedOrder.getBook().getTitle());
+        orderDetails.setPrice(checkedOrder.getCurrentBookPrice());
+        orderDetails.setState(checkedOrder.getState());
+        orderDetails.setCreationDate(checkedOrder.getCreationDate());
+        orderDetails.setCompletionDate(checkedOrder.getCompletionDate());
         return orderDetails;
     }
 
