@@ -1,5 +1,6 @@
 package com.senla.training.yeutukhovich.bookstore.service.book;
 
+import com.senla.training.yeutukhovich.bookstore.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.service.dto.BookDescription;
 
 import java.util.Date;
@@ -11,21 +12,21 @@ public interface BookService {
 
     boolean writeOffBook(Long id);
 
-    List<String> findSortedAllBooksByAvailability();
+    List<Book> findSortedAllBooksByAvailability();
 
-    List<String> findSortedAllBooksByEditionDate();
+    List<Book> findSortedAllBooksByEditionDate();
 
-    List<String> findSortedBooksByPrice();
+    List<Book> findSortedBooksByPrice();
 
-    List<String> findSortedAllBooksByReplenishmentDate();
+    List<Book> findSortedAllBooksByReplenishmentDate();
 
-    List<String> findSortedAllBooksByTitle();
+    List<Book> findSortedAllBooksByTitle();
 
-    List<String> findSoldBooksBetweenDates(Date startDate, Date endDate);
+    List<Book> findSoldBooksBetweenDates(Date startDate, Date endDate);
 
-    List<String> findUnsoldBooksBetweenDates(Date startDate, Date endDate);
+    List<Book> findUnsoldBooksBetweenDates(Date startDate, Date endDate);
 
-    List<String> findStaleBooks();
+    List<Book> findStaleBooks();
 
     BookDescription showBookDescription(Long id);
 

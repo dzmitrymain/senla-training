@@ -1,16 +1,18 @@
 package com.senla.training.yeutukhovich.bookstore.service.request;
 
+import com.senla.training.yeutukhovich.bookstore.domain.Request;
+
 import java.util.List;
 
 public interface RequestService {
 
     Long createRequest(Long bookId, String requesterData);
 
-    List<String> findSortedAllRequestsByBookTitle();
+    List<Request> findSortedAllRequestsByBookTitle();
 
-    List<String> findSortedAllRequestsByIsActive();
+    List<Request> findSortedAllRequestsByIsActive();
 
-    List<String> findSortedAllRequestsByRequesterData();
+    List<Request> findSortedAllRequestsByRequesterData();
 
     int exportAllRequests(String fileName);
 

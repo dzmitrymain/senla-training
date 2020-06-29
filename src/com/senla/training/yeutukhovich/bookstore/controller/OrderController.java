@@ -1,5 +1,6 @@
 package com.senla.training.yeutukhovich.bookstore.controller;
 
+import com.senla.training.yeutukhovich.bookstore.domain.Order;
 import com.senla.training.yeutukhovich.bookstore.service.dto.CreationOrderResult;
 import com.senla.training.yeutukhovich.bookstore.service.dto.OrderDetails;
 import com.senla.training.yeutukhovich.bookstore.service.order.OrderService;
@@ -8,6 +9,7 @@ import com.senla.training.yeutukhovich.bookstore.service.order.OrderServiceImpl;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class OrderController {
 
@@ -39,19 +41,27 @@ public class OrderController {
     }
 
     public List<String> findSortedAllOrdersByCompletionDate() {
-        return orderService.findSortedAllOrdersByCompletionDate();
+        return orderService.findSortedAllOrdersByCompletionDate().stream()
+                .map(Order::toString)
+                .collect(Collectors.toList());
     }
 
     public List<String> findSortedAllOrdersByPrice() {
-        return orderService.findSortedAllOrdersByPrice();
+        return orderService.findSortedAllOrdersByPrice().stream()
+                .map(Order::toString)
+                .collect(Collectors.toList());
     }
 
     public List<String> findSortedAllOrdersByState() {
-        return orderService.findSortedAllOrdersByState();
+        return orderService.findSortedAllOrdersByState().stream()
+                .map(Order::toString)
+                .collect(Collectors.toList());
     }
 
     public List<String> findCompletedOrdersBetweenDates(Date startDate, Date endDate) {
-        return orderService.findCompletedOrdersBetweenDates(startDate, endDate);
+        return orderService.findCompletedOrdersBetweenDates(startDate, endDate).stream()
+                .map(Order::toString)
+                .collect(Collectors.toList());
     }
 
     public BigDecimal calculateProfitBetweenDates(Date startDate, Date endDate) {

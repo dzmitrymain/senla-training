@@ -80,7 +80,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<String> findSortedAllOrdersByCompletionDate() {
+    public List<Order> findSortedAllOrdersByCompletionDate() {
         return findAllOrders().stream()
                 .sorted(Comparator.nullsLast((o1, o2) -> {
                     if (o1.getCompletionDate() == null && o2.getCompletionDate() == null) {
@@ -95,36 +95,32 @@ public class OrderServiceImpl implements OrderService {
                     return o2.getCompletionDate().compareTo(o1.getCompletionDate());
                 }))
                 .filter(Objects::nonNull)
-                .map(Order::toString)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<String> findSortedAllOrdersByPrice() {
+    public List<Order> findSortedAllOrdersByPrice() {
         return findAllOrders().stream()
                 .sorted(Comparator.nullsLast((o1, o2) -> o1.getCurrentBookPrice().compareTo(o2.getCurrentBookPrice())))
                 .filter(Objects::nonNull)
-                .map(Order::toString)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<String> findSortedAllOrdersByState() {
+    public List<Order> findSortedAllOrdersByState() {
         return findAllOrders().stream()
                 .sorted(Comparator.nullsLast((o1, o2) -> o1.getState().compareTo(o2.getState())))
                 .filter(Objects::nonNull)
-                .map(Order::toString)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<String> findCompletedOrdersBetweenDates(Date startDate, Date endDate) {
+    public List<Order> findCompletedOrdersBetweenDates(Date startDate, Date endDate) {
         List<Order> orders = orderRepository.findAll();
         return orders.stream()
                 .filter(order -> order.getState() == OrderState.COMPLETED &&
                         order.getCompletionDate().after(startDate) &&
                         order.getCompletionDate().before(endDate))
-                .map(Order::toString)
                 .collect(Collectors.toList());
     }
 

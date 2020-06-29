@@ -1,5 +1,6 @@
 package com.senla.training.yeutukhovich.bookstore.service.order;
 
+import com.senla.training.yeutukhovich.bookstore.domain.Order;
 import com.senla.training.yeutukhovich.bookstore.service.dto.CreationOrderResult;
 import com.senla.training.yeutukhovich.bookstore.service.dto.OrderDetails;
 
@@ -15,13 +16,13 @@ public interface OrderService {
 
     boolean completeOrder(Long orderId);
 
-    List<String> findSortedAllOrdersByCompletionDate();
+    List<Order> findSortedAllOrdersByCompletionDate();
 
-    List<String> findSortedAllOrdersByPrice();
+    List<Order> findSortedAllOrdersByPrice();
 
-    List<String> findSortedAllOrdersByState();
+    List<Order> findSortedAllOrdersByState();
 
-    List<String> findCompletedOrdersBetweenDates(Date startDate, Date endDate);
+    List<Order> findCompletedOrdersBetweenDates(Date startDate, Date endDate);
 
     BigDecimal calculateProfitBetweenDates(Date startDate, Date endDate);
 

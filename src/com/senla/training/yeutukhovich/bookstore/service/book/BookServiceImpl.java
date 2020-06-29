@@ -62,34 +62,31 @@ public class BookServiceImpl implements BookService {
         return false;
     }
 
-    public List<String> findSortedAllBooksByAvailability() {
+    public List<Book> findSortedAllBooksByAvailability() {
         return findAllBooks().stream()
                 .sorted(Comparator.nullsLast(
                         (o1, o2) -> o2.isAvailable().compareTo(o1.isAvailable())))
                 .filter(Objects::nonNull)
-                .map(Book::toString)
                 .collect(Collectors.toList());
     }
 
-    public List<String> findSortedAllBooksByEditionDate() {
+    public List<Book> findSortedAllBooksByEditionDate() {
         return findAllBooks().stream()
                 .sorted(Comparator.nullsLast(
                         (o1, o2) -> o1.getEditionDate().compareTo(o2.getEditionDate())))
                 .filter(Objects::nonNull)
-                .map(Book::toString)
                 .collect(Collectors.toList());
     }
 
-    public List<String> findSortedBooksByPrice() {
+    public List<Book> findSortedBooksByPrice() {
         return findAllBooks().stream()
                 .sorted(Comparator.nullsLast(
                         (o1, o2) -> o1.getPrice().compareTo(o2.getPrice())))
                 .filter(Objects::nonNull)
-                .map(Book::toString)
                 .collect(Collectors.toList());
     }
 
-    public List<String> findSortedAllBooksByReplenishmentDate() {
+    public List<Book> findSortedAllBooksByReplenishmentDate() {
         return findAllBooks().stream()
                 .sorted(Comparator.nullsLast(
                         (o1, o2) -> {
@@ -105,34 +102,32 @@ public class BookServiceImpl implements BookService {
                             return o1.getReplenishmentDate().compareTo(o2.getReplenishmentDate());
                         }))
                 .filter(Objects::nonNull)
-                .map(Book::toString)
                 .collect(Collectors.toList());
     }
 
-    public List<String> findSortedAllBooksByTitle() {
+    public List<Book> findSortedAllBooksByTitle() {
         return findAllBooks().stream()
                 .sorted(Comparator.nullsLast(
                         (o1, o2) -> o1.getTitle().compareTo(o2.getTitle())))
                 .filter(Objects::nonNull)
-                .map(Book::toString)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<String> findSoldBooksBetweenDates(Date startDate, Date endDate) {
+    public List<Book> findSoldBooksBetweenDates(Date startDate, Date endDate) {
         List<Order> orders = orderRepository.findAll();
 
         return orders.stream()
                 .filter(order -> order.getState() == OrderState.COMPLETED
                         && order.getCompletionDate().after(startDate)
                         && order.getCompletionDate().before(endDate))
-                .map(order -> order.getBook().toString())
+                .map(Order::getBook)
                 .distinct()
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<String> findUnsoldBooksBetweenDates(Date startDate, Date endDate) {
+    public List<Book> findUnsoldBooksBetweenDates(Date startDate, Date endDate) {
         List<Order> orders = orderRepository.findAll();
 
         List<Book> soldBooks = orders.stream()
@@ -146,12 +141,11 @@ public class BookServiceImpl implements BookService {
         return bookRepository.findAll()
                 .stream()
                 .filter(book -> !soldBooks.contains(book))
-                .map(Book::toString)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<String> findStaleBooks() {
+    public List<Book> findStaleBooks() {
         List<Order> orders = orderRepository.findAll();
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MONTH, -STALE_MONTH_NUMBER);
@@ -170,7 +164,6 @@ public class BookServiceImpl implements BookService {
                 .stream()
                 .filter(book -> !soldBooks.contains(book) && book.getReplenishmentDate() != null
                         && book.getReplenishmentDate().before(staleDate))
-                .map(Book::toString)
                 .collect(Collectors.toList());
     }
 

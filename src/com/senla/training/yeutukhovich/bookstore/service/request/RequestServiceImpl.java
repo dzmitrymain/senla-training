@@ -48,32 +48,29 @@ public class RequestServiceImpl implements RequestService {
 
 
     @Override
-    public List<String> findSortedAllRequestsByBookTitle() {
+    public List<Request> findSortedAllRequestsByBookTitle() {
         return findAllRequests().stream()
                 .sorted(Comparator.nullsLast(
                         (o1, o2) -> o1.getBook().getTitle().compareTo(o2.getBook().getTitle())))
                 .filter(Objects::nonNull)
-                .map(Request::toString)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<String> findSortedAllRequestsByIsActive() {
+    public List<Request> findSortedAllRequestsByIsActive() {
         return findAllRequests().stream()
                 .sorted(Comparator.nullsLast(
                         (o1, o2) -> o2.isActive().compareTo(o1.isActive())))
                 .filter(Objects::nonNull)
-                .map(Request::toString)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<String> findSortedAllRequestsByRequesterData() {
+    public List<Request> findSortedAllRequestsByRequesterData() {
         return findAllRequests().stream()
                 .sorted(Comparator.nullsLast(
                         (o1, o2) -> o1.getRequesterData().compareTo(o2.getRequesterData())))
                 .filter(Objects::nonNull)
-                .map(Request::toString)
                 .collect(Collectors.toList());
     }
 

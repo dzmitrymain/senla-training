@@ -1,9 +1,11 @@
 package com.senla.training.yeutukhovich.bookstore.controller;
 
+import com.senla.training.yeutukhovich.bookstore.domain.Request;
 import com.senla.training.yeutukhovich.bookstore.service.request.RequestService;
 import com.senla.training.yeutukhovich.bookstore.service.request.RequestServiceImpl;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class RequestController {
 
@@ -27,15 +29,21 @@ public class RequestController {
     }
 
     public List<String> findSortedAllRequestsByBookTitle() {
-        return requestService.findSortedAllRequestsByBookTitle();
+        return requestService.findSortedAllRequestsByBookTitle().stream()
+                .map(Request::toString)
+                .collect(Collectors.toList());
     }
 
     public List<String> findSortedAllRequestsByIsActive() {
-        return requestService.findSortedAllRequestsByIsActive();
+        return requestService.findSortedAllRequestsByIsActive().stream()
+                .map(Request::toString)
+                .collect(Collectors.toList());
     }
 
     public List<String> findSortedAllRequestsByRequesterData() {
-        return requestService.findSortedAllRequestsByRequesterData();
+        return requestService.findSortedAllRequestsByRequesterData().stream()
+                .map(Request::toString)
+                .collect(Collectors.toList());
     }
 
     public int exportAllRequests(String fileName) {
