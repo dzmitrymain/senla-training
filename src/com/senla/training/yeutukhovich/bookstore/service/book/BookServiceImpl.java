@@ -5,8 +5,10 @@ import com.senla.training.yeutukhovich.bookstore.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.domain.Order;
 import com.senla.training.yeutukhovich.bookstore.domain.Request;
 import com.senla.training.yeutukhovich.bookstore.domain.state.OrderState;
+import com.senla.training.yeutukhovich.bookstore.exception.BookstoreInternalException;
 import com.senla.training.yeutukhovich.bookstore.repository.*;
 import com.senla.training.yeutukhovich.bookstore.service.dto.BookDescription;
+import com.senla.training.yeutukhovich.bookstore.util.configuration.ConfigurationData;
 import com.senla.training.yeutukhovich.bookstore.util.constant.PathConstant;
 import com.senla.training.yeutukhovich.bookstore.util.reader.FileDataReader;
 import com.senla.training.yeutukhovich.bookstore.util.writer.FileDataWriter;
@@ -17,16 +19,13 @@ import java.util.stream.Collectors;
 public class BookServiceImpl implements BookService {
 
     private static BookService instance;
-    private static final int STALE_MONTH_NUMBER = 6;
 
-    private IBookRepository bookRepository;
-    private IOrderRepository orderRepository;
-    private IRequestRepository requestRepository;
+    private IBookRepository bookRepository = BookRepository.getInstance();
+    private IOrderRepository orderRepository = OrderRepository.getInstance();
+    private IRequestRepository requestRepository = RequestRepository.getInstance();
 
     private BookServiceImpl() {
-        this.bookRepository = BookRepository.getInstance();
-        this.orderRepository = OrderRepository.getInstance();
-        this.requestRepository = RequestRepository.getInstance();
+
     }
 
     public static BookService getInstance() {
@@ -38,13 +37,22 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public boolean replenishBook(Long id) {
+        Boolean requestAutoClose;
+        try {
+            requestAutoClose = Boolean.valueOf(ConfigurationData.getValue(ConfigurationData.REQUEST_AUTO_CLOSE));
+        } catch (IllegalArgumentException e) {
+            throw new BookstoreInternalException(e.getMessage());
+        }
+
         Book checkedBook = bookRepository.findById(id);
         if (checkedBook != null && !checkedBook.isAvailable()) {
             checkedBook.setAvailable(true);
             checkedBook.setReplenishmentDate(new Date());
             bookRepository.update(checkedBook);
-            closeRequests(checkedBook);
             updateOrders(checkedBook);
+            if (requestAutoClose) {
+                closeRequests(checkedBook);
+            }
             return true;
         }
         return false;
@@ -146,9 +154,15 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<Book> findStaleBooks() {
+        byte staleMonthNumber;
+        try {
+            staleMonthNumber = Byte.parseByte(ConfigurationData.getValue(ConfigurationData.STALE_MONTH_NUMBER));
+        } catch (NumberFormatException e) {
+            throw new BookstoreInternalException(e.getMessage());
+        }
         List<Order> orders = orderRepository.findAll();
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MONTH, -STALE_MONTH_NUMBER);
+        calendar.add(Calendar.MONTH, -staleMonthNumber);
         Date currentDate = new Date();
         Date staleDate = new Date(calendar.getTimeInMillis());
 
