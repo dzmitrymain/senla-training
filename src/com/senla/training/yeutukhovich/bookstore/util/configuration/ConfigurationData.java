@@ -9,7 +9,6 @@ public class ConfigurationData {
     public static final String STALE_MONTH_NUMBER = "stale_month_number";
     public static final String REQUEST_AUTO_CLOSE = "request_auto_close";
 
-
     private static final String CONFIGURATION_PROPERTIES = "configuration.properties";
 
     private static final Properties PROPERTIES;

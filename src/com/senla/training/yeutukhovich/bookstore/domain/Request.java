@@ -2,6 +2,8 @@ package com.senla.training.yeutukhovich.bookstore.domain;
 
 public class Request extends AbstractEntity {
 
+    private static final long serialVersionUID = 2837429729065366794L;
+
     private Book book;
     private Boolean isActive;
     private String requesterData;

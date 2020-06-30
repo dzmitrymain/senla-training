@@ -7,6 +7,8 @@ import java.util.Date;
 
 public class Order extends AbstractEntity {
 
+    private static final long serialVersionUID = -4318812287587185959L;
+
     private OrderState state;
     private Book book;
     private BigDecimal currentBookPrice;

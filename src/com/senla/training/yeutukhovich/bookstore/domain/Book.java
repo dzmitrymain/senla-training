@@ -5,6 +5,8 @@ import java.util.Date;
 
 public class Book extends AbstractEntity {
 
+    private static final long serialVersionUID = -5485469789503724920L;
+
     private String title;
     private Boolean isAvailable;
     private Date editionDate;

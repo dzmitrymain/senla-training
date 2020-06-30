@@ -1,8 +1,9 @@
 package com.senla.training.yeutukhovich.bookstore.domain;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public abstract class AbstractEntity {
+public abstract class AbstractEntity implements Serializable {
 
     protected Long id;
 
