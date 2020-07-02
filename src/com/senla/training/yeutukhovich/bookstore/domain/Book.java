@@ -17,6 +17,10 @@ public class Book extends AbstractEntity {
 
     }
 
+    public Book(Long id) {
+        this.id = id;
+    }
+
     public Book(String title, Boolean isAvailable, Date editionDate, Date replenishmentDate, BigDecimal price) {
         this.title = title;
         this.setAvailable(isAvailable);

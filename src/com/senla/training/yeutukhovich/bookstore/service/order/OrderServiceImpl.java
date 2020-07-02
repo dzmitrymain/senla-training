@@ -8,6 +8,7 @@ import com.senla.training.yeutukhovich.bookstore.domain.state.OrderState;
 import com.senla.training.yeutukhovich.bookstore.repository.*;
 import com.senla.training.yeutukhovich.bookstore.service.dto.CreationOrderResult;
 import com.senla.training.yeutukhovich.bookstore.service.dto.OrderDetails;
+import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 import com.senla.training.yeutukhovich.bookstore.util.constant.PathConstant;
 import com.senla.training.yeutukhovich.bookstore.util.reader.FileDataReader;
 import com.senla.training.yeutukhovich.bookstore.util.writer.FileDataWriter;
@@ -198,6 +199,12 @@ public class OrderServiceImpl implements OrderService {
             List<Order> importedOrders = EntityCvsConverter.getInstance().parseOrders(orderStrings);
 
             for (Order importedOrder : importedOrders) {
+                Book dependentBook = bookRepository.findById(importedOrder.getBook().getId());
+                if (dependentBook == null) {
+                    System.err.println(MessageConstant.BOOK_NOT_NULL.getMessage());
+                    continue;
+                }
+                importedOrder.setBook(dependentBook);
                 if (repoOrders.contains(importedOrder)) {
                     orderRepository.update(importedOrder);
                 } else {

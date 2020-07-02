@@ -10,7 +10,7 @@ public enum MessageConstant {
     STRING_FORMAT_UNPARSEABLE_BOOLEAN("Unparseable boolean: \"%s\""),
 
     EDITION_NOT_NULL("Edition date can't be null"),
-    BOOK_NOT_NULL("Book can't be null."),
+    BOOK_NOT_NULL("Book not exist."),
     CREATION_NOT_NULL("Creation date can't be null"),
 
     NO_DATA_WAS_FOUND("No data was found."),

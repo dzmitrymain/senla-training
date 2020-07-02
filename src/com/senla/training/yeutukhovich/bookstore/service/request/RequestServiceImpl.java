@@ -7,6 +7,7 @@ import com.senla.training.yeutukhovich.bookstore.repository.BookRepository;
 import com.senla.training.yeutukhovich.bookstore.repository.IBookRepository;
 import com.senla.training.yeutukhovich.bookstore.repository.IRequestRepository;
 import com.senla.training.yeutukhovich.bookstore.repository.RequestRepository;
+import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 import com.senla.training.yeutukhovich.bookstore.util.constant.PathConstant;
 import com.senla.training.yeutukhovich.bookstore.util.reader.FileDataReader;
 import com.senla.training.yeutukhovich.bookstore.util.writer.FileDataWriter;
@@ -113,6 +114,12 @@ public class RequestServiceImpl implements RequestService {
             List<Request> importedRequests = EntityCvsConverter.getInstance().parseRequests(requestsStrings);
 
             for (Request importedRequest : importedRequests) {
+                Book dependentBook = bookRepository.findById(importedRequest.getBook().getId());
+                if (dependentBook == null) {
+                    System.err.println(MessageConstant.BOOK_NOT_NULL.getMessage());
+                    continue;
+                }
+                importedRequest.setBook(dependentBook);
                 if (repoRequests.contains(importedRequest)) {
                     requestRepository.update(importedRequest);
                 } else {

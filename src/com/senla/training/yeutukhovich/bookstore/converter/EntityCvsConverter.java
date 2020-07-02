@@ -4,8 +4,6 @@ import com.senla.training.yeutukhovich.bookstore.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.domain.Order;
 import com.senla.training.yeutukhovich.bookstore.domain.Request;
 import com.senla.training.yeutukhovich.bookstore.domain.state.OrderState;
-import com.senla.training.yeutukhovich.bookstore.repository.BookRepository;
-import com.senla.training.yeutukhovich.bookstore.repository.IBookRepository;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 import com.senla.training.yeutukhovich.bookstore.util.converter.DateConverter;
 
@@ -18,8 +16,6 @@ public class EntityCvsConverter {
 
     private static EntityCvsConverter instance;
     private static final String DELIMITER = ";";
-
-    private IBookRepository bookRepository = BookRepository.getInstance();
 
     private EntityCvsConverter() {
 
@@ -169,11 +165,7 @@ public class EntityCvsConverter {
             try {
                 order = new Order();
                 order.setId(Long.valueOf(strings[0]));
-                Book book = bookRepository.findById(Long.valueOf(strings[1]));
-                if (book == null) {
-                    throw new IllegalArgumentException(MessageConstant.BOOK_NOT_NULL.getMessage());
-                }
-                order.setBook(book);
+                order.setBook(new Book(Long.valueOf(strings[1])));
                 order.setState(OrderState.valueOf(strings[2]));
                 order.setCurrentBookPrice(BigDecimal.valueOf(Double.parseDouble(strings[3])));
                 Date creationDate = DateConverter.parseDate(strings[4], DateConverter.STANDARD_DATE_FORMAT);
@@ -200,11 +192,7 @@ public class EntityCvsConverter {
             try {
                 request = new Request();
                 request.setId(Long.valueOf(strings[0]));
-                Book book = bookRepository.findById(Long.valueOf(strings[1]));
-                if (book == null) {
-                    throw new IllegalArgumentException(MessageConstant.BOOK_NOT_NULL.getMessage());
-                }
-                request.setBook(book);
+                request.setBook(new Book(Long.valueOf(strings[1])));
                 request.setActive(parseBoolean(strings[2]));
                 request.setRequesterData(strings[3]);
             } catch (IllegalArgumentException e) {
