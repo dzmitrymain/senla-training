@@ -165,7 +165,7 @@ public class OrderServiceImpl implements OrderService {
         int exportedOrdersNumber = 0;
         if (fileName != null) {
             String path = PathConstant.DIRECTORY_PATH.getPathConstant()
-                    + fileName + PathConstant.FORMAT_TYPE.getPathConstant();
+                    + fileName + PathConstant.CVS_FORMAT_TYPE.getPathConstant();
             List<String> orderStrings = EntityCvsConverter.getInstance().convertOrders(orderRepository.findAll());
             exportedOrdersNumber = FileDataWriter.writeData(path, orderStrings);
         }
@@ -176,7 +176,7 @@ public class OrderServiceImpl implements OrderService {
     public boolean exportOrder(Long id, String fileName) {
         if (id != null && fileName != null) {
             String path = PathConstant.DIRECTORY_PATH.getPathConstant()
-                    + fileName + PathConstant.FORMAT_TYPE.getPathConstant();
+                    + fileName + PathConstant.CVS_FORMAT_TYPE.getPathConstant();
             Order order = orderRepository.findById(id);
             if (order != null) {
                 List<String> orderStrings = EntityCvsConverter.getInstance().convertOrders(List.of(order));
@@ -191,7 +191,7 @@ public class OrderServiceImpl implements OrderService {
         int importedOrdersNumber = 0;
         if (fileName != null) {
             String path = PathConstant.DIRECTORY_PATH.getPathConstant()
-                    + fileName + PathConstant.FORMAT_TYPE.getPathConstant();
+                    + fileName + PathConstant.CVS_FORMAT_TYPE.getPathConstant();
             List<String> orderStrings = FileDataReader.readData(path);
 
             List<Order> repoOrders = orderRepository.findAll();

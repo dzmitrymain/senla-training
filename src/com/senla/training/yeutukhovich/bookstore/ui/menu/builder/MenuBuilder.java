@@ -8,10 +8,10 @@ import com.senla.training.yeutukhovich.bookstore.service.dto.CreationOrderResult
 import com.senla.training.yeutukhovich.bookstore.service.dto.OrderDetails;
 import com.senla.training.yeutukhovich.bookstore.ui.menu.Menu;
 import com.senla.training.yeutukhovich.bookstore.ui.menu.MenuItem;
+import com.senla.training.yeutukhovich.bookstore.ui.util.printer.UiConsolePrinter;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MenuNameConstant;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 import com.senla.training.yeutukhovich.bookstore.util.converter.DateConverter;
-import com.senla.training.yeutukhovich.bookstore.util.printer.EntityPrinter;
 import com.senla.training.yeutukhovich.bookstore.util.reader.InputReader;
 
 import java.util.Collections;
@@ -69,54 +69,37 @@ public class MenuBuilder {
                     System.out.println(MessageConstant.ENTER_BOOK_ID.getMessage());
                     Long id = InputReader.readInputLong();
 
-                    if (id != null) {
-                        BookDescription bookDescription = BookController.getInstance().showBookDescription(id);
-                        if (bookDescription != null) {
-                            System.out.println(bookDescription);
-                        } else {
-                            System.out.println(MessageConstant.BOOK_DESCRIPTION_WAS_NOT_FOUND.getMessage());
-                        }
+                    BookDescription bookDescription = BookController.getInstance().showBookDescription(id);
+                    if (bookDescription != null) {
+                        System.out.println(bookDescription);
+                    } else {
+                        System.out.println(MessageConstant.BOOK_DESCRIPTION_WAS_NOT_FOUND.getMessage());
                     }
                 }, bookMenu);
         MenuItem replenishBookItem = new MenuItem(MenuNameConstant.REPLENISH_BOOK.getMenuName(),
                 () -> {
                     System.out.println(MessageConstant.ENTER_BOOK_ID.getMessage());
                     Long id = InputReader.readInputLong();
-
-                    if (id != null) {
-                        if (BookController.getInstance().replenishBook(id)) {
-                            System.out.println(MessageConstant.BOOK_HAS_BEEN_REPLENISHED.getMessage());
-                        } else {
-                            System.out.println(MessageConstant.BOOK_HAS_NOT_BEEN_REPLENISHED.getMessage());
-                        }
-                    }
+                    UiConsolePrinter.printMessage(BookController.getInstance().replenishBook(id));
                 }, bookMenu);
         MenuItem writeOffBookItem = new MenuItem(MenuNameConstant.WRITE_OFF_BOOK.getMenuName(),
                 () -> {
                     System.out.println(MessageConstant.ENTER_BOOK_ID.getMessage());
                     Long id = InputReader.readInputLong();
-
-                    if (id != null) {
-                        if (BookController.getInstance().writeOffBook(id)) {
-                            System.out.println(MessageConstant.BOOK_HAS_BEEN_WRITTEN_OFF.getMessage());
-                        } else {
-                            System.out.println(MessageConstant.BOOK_HAS_NOT_BEEN_WRITTEN_OFF.getMessage());
-                        }
-                    }
+                    UiConsolePrinter.printMessage(BookController.getInstance().writeOffBook(id));
                 }, bookMenu);
         MenuItem findStaleBooksMenuItem = new MenuItem(MenuNameConstant.SHOW_STALE_BOOKS.getMenuName(),
-                () -> EntityPrinter.printEntities(BookController.getInstance().findStaleBooks())
+                () -> UiConsolePrinter.printMessage(BookController.getInstance().findStaleBooks())
                 , bookMenu);
         MenuItem findSoldBooksItem = new MenuItem(MenuNameConstant.SHOW_SOLD_BOOKS_BETWEEN_DATES.getMenuName(),
                 () -> {
                     System.out.println(MessageConstant.EARLIEST_DATE_BOUND_YYYY_MM_DD.getMessage());
                     Date firstDate = InputReader.readInputDate(DateConverter.DAY_DATE_FORMAT);
-
                     System.out.println(MessageConstant.LATEST_DATE_BOUND_YYYY_MM_DD.getMessage());
                     Date secondDate = InputReader.readInputDate(DateConverter.DAY_DATE_FORMAT);
 
                     if (firstDate != null && secondDate != null) {
-                        EntityPrinter.printEntities(BookController.getInstance().findSoldBooksBetweenDates(firstDate,
+                        UiConsolePrinter.printMessage(BookController.getInstance().findSoldBooksBetweenDates(firstDate,
                                 secondDate));
                     }
                 }, bookMenu);
@@ -124,13 +107,11 @@ public class MenuBuilder {
                 () -> {
                     System.out.println(MessageConstant.EARLIEST_DATE_BOUND_YYYY_MM_DD.getMessage());
                     Date firstDate = InputReader.readInputDate(DateConverter.DAY_DATE_FORMAT);
-
-
                     System.out.println(MessageConstant.LATEST_DATE_BOUND_YYYY_MM_DD.getMessage());
                     Date secondDate = InputReader.readInputDate(DateConverter.DAY_DATE_FORMAT);
 
                     if (firstDate != null && secondDate != null) {
-                        EntityPrinter.printEntities(BookController.getInstance().findUnsoldBooksBetweenDates(firstDate,
+                        UiConsolePrinter.printMessage(BookController.getInstance().findUnsoldBooksBetweenDates(firstDate,
                                 secondDate));
                     }
                 }, bookMenu);
@@ -199,19 +180,19 @@ public class MenuBuilder {
         Menu showAllBooksMenu = new Menu(MenuNameConstant.SHOW_ALL_BOOKS.getMenuName());
 
         MenuItem allBooksSortByTitle = new MenuItem(MenuNameConstant.SORT_BY_TITLE.getMenuName(),
-                () -> EntityPrinter.printEntities(BookController.getInstance().findSortedAllBooksByTitle()),
+                () -> UiConsolePrinter.printMessage(BookController.getInstance().findSortedAllBooksByTitle()),
                 showAllBooksMenu);
         MenuItem allBooksSortByPrice = new MenuItem(MenuNameConstant.SORT_BY_PRICE.getMenuName(),
-                () -> EntityPrinter.printEntities(BookController.getInstance().findSortedAllBooksByPrice()),
+                () -> UiConsolePrinter.printMessage(BookController.getInstance().findSortedAllBooksByPrice()),
                 showAllBooksMenu);
         MenuItem allBooksSortByAvailability = new MenuItem(MenuNameConstant.SORT_BY_AVAILABILITY.getMenuName(),
-                () -> EntityPrinter.printEntities(BookController.getInstance().findSortedAllBooksByAvailability()),
+                () -> UiConsolePrinter.printMessage(BookController.getInstance().findSortedAllBooksByAvailability()),
                 showAllBooksMenu);
         MenuItem allBooksSortByEditionDate = new MenuItem(MenuNameConstant.SORT_BY_EDITION_DATE.getMenuName(),
-                () -> EntityPrinter.printEntities(BookController.getInstance().findSortedAllBooksByEditionDate()),
+                () -> UiConsolePrinter.printMessage(BookController.getInstance().findSortedAllBooksByEditionDate()),
                 showAllBooksMenu);
         MenuItem allBooksSortByReplenishmentDate = new MenuItem(MenuNameConstant.SORT_BY_REPLENISHMENT_DATE.getMenuName(),
-                () -> EntityPrinter.printEntities(BookController.getInstance().findSortedAllBooksByReplenishmentDate()),
+                () -> UiConsolePrinter.printMessage(BookController.getInstance().findSortedAllBooksByReplenishmentDate()),
                 showAllBooksMenu);
 
         MenuItem previousBookMenuItem = new MenuItem(MenuNameConstant.BACK_TO_BOOK_MENU.getMenuName(), null,
@@ -304,7 +285,7 @@ public class MenuBuilder {
                             Date secondDate = InputReader.readInputDate(DateConverter.DAY_DATE_FORMAT);
 
                             if (firstDate != null && secondDate != null) {
-                                EntityPrinter.printEntities(OrderController.getInstance()
+                                UiConsolePrinter.printMessage(OrderController.getInstance()
                                         .findCompletedOrdersBetweenDates(firstDate, secondDate));
                             }
                         }, orderMenu);
@@ -400,13 +381,13 @@ public class MenuBuilder {
         Menu showAllOrdersMenu = new Menu(MenuNameConstant.SHOW_ALL_ORDERS.getMenuName());
 
         MenuItem allOrdersByStateMenuItem = new MenuItem(MenuNameConstant.SORT_BY_STATE.getMenuName(),
-                () -> EntityPrinter.printEntities(OrderController.getInstance().findSortedAllOrdersByState()),
+                () -> UiConsolePrinter.printMessage(OrderController.getInstance().findSortedAllOrdersByState()),
                 showAllOrdersMenu);
         MenuItem allOrdersByPriceMenuItem = new MenuItem(MenuNameConstant.SORT_BY_PRICE.getMenuName(),
-                () -> EntityPrinter.printEntities(OrderController.getInstance().findSortedAllOrdersByPrice()),
+                () -> UiConsolePrinter.printMessage(OrderController.getInstance().findSortedAllOrdersByPrice()),
                 showAllOrdersMenu);
         MenuItem allOrdersByCompletionMenuItem = new MenuItem(MenuNameConstant.SORT_BY_COMPLETION_DATE.getMenuName(),
-                () -> EntityPrinter.printEntities(OrderController.getInstance().findSortedAllOrdersByCompletionDate()),
+                () -> UiConsolePrinter.printMessage(OrderController.getInstance().findSortedAllOrdersByCompletionDate()),
                 showAllOrdersMenu);
         MenuItem previousOrderMenuItem = new MenuItem(MenuNameConstant.BACK_TO_ORDER_MENU.getMenuName(),
                 null, previousOrderMenu);
@@ -503,14 +484,14 @@ public class MenuBuilder {
         Menu showAllRequestsMenu = new Menu(MenuNameConstant.SHOW_ALL_REQUESTS.getMenuName());
 
         MenuItem allRequestsSortByBookTitleMenuItem = new MenuItem(MenuNameConstant.SORT_BY_BOOK_TITLE.getMenuName(),
-                () -> EntityPrinter.printEntities(RequestController.getInstance().findSortedAllRequestsByBookTitle())
+                () -> UiConsolePrinter.printMessage(RequestController.getInstance().findSortedAllRequestsByBookTitle())
                 , showAllRequestsMenu);
         MenuItem allRequestsSortByIsActiveMenuItem = new MenuItem(MenuNameConstant.SORT_BY_STATE.getMenuName(),
-                () -> EntityPrinter.printEntities(RequestController.getInstance().findSortedAllRequestsByIsActive())
+                () -> UiConsolePrinter.printMessage(RequestController.getInstance().findSortedAllRequestsByIsActive())
                 , showAllRequestsMenu);
         MenuItem allRequestsSortByRequesterDataMenuItem =
                 new MenuItem(MenuNameConstant.SORT_BY_REQUESTER_DATA.getMenuName(),
-                        () -> EntityPrinter.printEntities(RequestController.getInstance()
+                        () -> UiConsolePrinter.printMessage(RequestController.getInstance()
                                 .findSortedAllRequestsByRequesterData())
                         , showAllRequestsMenu);
         MenuItem previousRequestMenuItem = new MenuItem(MenuNameConstant.BACK_TO_REQUEST_MENU.getMenuName(),

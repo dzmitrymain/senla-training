@@ -13,11 +13,10 @@ public enum MessageConstant {
     BOOK_NOT_NULL("Book can't be null."),
     CREATION_NOT_NULL("Creation date can't be null"),
 
-    DATA_WAS_FOUND("Data was found: "),
     NO_DATA_WAS_FOUND("No data was found."),
 
     ENTER_BOOK_ID("Please, enter book id: "),
-    BOOK_HAS_BEEN_REPLENISHED("Book has been replenished. All requests has been closed."),
+    BOOK_HAS_BEEN_REPLENISHED("Book has been replenished."),
     BOOK_HAS_NOT_BEEN_REPLENISHED("Book has not been replenished. Check entered book id."),
     BOOK_HAS_BEEN_WRITTEN_OFF("Book has been written off."),
     BOOK_HAS_NOT_BEEN_WRITTEN_OFF("Book has not been written off. Check entered book id."),

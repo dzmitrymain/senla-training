@@ -53,13 +53,14 @@ public class BookstoreSerializer {
         } catch (IOException | ClassNotFoundException e) {
             System.err.println(e.getMessage());
         }
-
-        if (serializedDataObject != null) {
-            refillRepositories(serializedDataObject);
-        }
+        refillRepositories(serializedDataObject);
     }
 
     private void refillRepositories(SerializedDataObject serializedDataObject) {
+        if (serializedDataObject == null) {
+            refillBookRepository(EntityInitializer.initBooks());
+            return;
+        }
         if (serializedDataObject.getBooks() != null && !serializedDataObject.getBooks().isEmpty()) {
             refillBookRepository(serializedDataObject.getBooks());
         } else {

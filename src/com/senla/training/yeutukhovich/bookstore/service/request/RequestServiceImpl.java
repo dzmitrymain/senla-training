@@ -79,7 +79,7 @@ public class RequestServiceImpl implements RequestService {
         int exportedRequestsNumber = 0;
         if (fileName != null) {
             String path = PathConstant.DIRECTORY_PATH.getPathConstant()
-                    + fileName + PathConstant.FORMAT_TYPE.getPathConstant();
+                    + fileName + PathConstant.CVS_FORMAT_TYPE.getPathConstant();
             List<String> requestStrings = EntityCvsConverter.getInstance().convertRequests(requestRepository.findAll());
             exportedRequestsNumber = FileDataWriter.writeData(path, requestStrings);
 
@@ -91,7 +91,7 @@ public class RequestServiceImpl implements RequestService {
     public boolean exportRequest(Long requestId, String fileName) {
         if (requestId != null && fileName != null) {
             String path = PathConstant.DIRECTORY_PATH.getPathConstant()
-                    + fileName + PathConstant.FORMAT_TYPE.getPathConstant();
+                    + fileName + PathConstant.CVS_FORMAT_TYPE.getPathConstant();
             Request request = requestRepository.findById(requestId);
             if (request != null) {
                 List<String> requestStrings = EntityCvsConverter.getInstance().convertRequests(List.of(request));
@@ -106,7 +106,7 @@ public class RequestServiceImpl implements RequestService {
         int importedRequestsNumber = 0;
         if (fileName != null) {
             String path = PathConstant.DIRECTORY_PATH.getPathConstant()
-                    + fileName + PathConstant.FORMAT_TYPE.getPathConstant();
+                    + fileName + PathConstant.CVS_FORMAT_TYPE.getPathConstant();
             List<String> requestsStrings = FileDataReader.readData(path);
 
             List<Request> repoRequests = requestRepository.findAll();

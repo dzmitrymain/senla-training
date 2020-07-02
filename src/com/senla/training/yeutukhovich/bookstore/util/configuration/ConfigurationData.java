@@ -9,6 +9,10 @@ public class ConfigurationData {
     public static final String STALE_MONTH_NUMBER = "stale_month_number";
     public static final String REQUEST_AUTO_CLOSE = "request_auto_close";
 
+    public static final String SERIALIZED_DATA_PATH = "serialized_data_path";
+    public static final String CVS_DIRECTORY_PATH = "cvs_directory_path";
+    public static final String CVS_FORMAT_TYPE = "cvs_format_type";
+
     private static final String CONFIGURATION_PROPERTIES = "configuration.properties";
 
     private static final Properties PROPERTIES;
@@ -21,6 +25,10 @@ public class ConfigurationData {
 
         PROPERTIES = new Properties(DEFAULT_PROPERTIES);
         loadStream();
+    }
+
+    private ConfigurationData() {
+
     }
 
     public static String getValue(String key) {

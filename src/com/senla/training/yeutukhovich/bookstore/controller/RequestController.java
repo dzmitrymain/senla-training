@@ -11,6 +11,8 @@ public class RequestController {
 
     private static RequestController instance;
 
+    private static final String REQUEST_DELIMITER="\n";
+
     private RequestService requestService;
 
     private RequestController(RequestService requestService) {
@@ -28,22 +30,22 @@ public class RequestController {
         return requestService.createRequest(bookId, requesterData);
     }
 
-    public List<String> findSortedAllRequestsByBookTitle() {
+    public String findSortedAllRequestsByBookTitle() {
         return requestService.findSortedAllRequestsByBookTitle().stream()
                 .map(Request::toString)
-                .collect(Collectors.toList());
+                .collect(Collectors.joining(REQUEST_DELIMITER));
     }
 
-    public List<String> findSortedAllRequestsByIsActive() {
+    public String findSortedAllRequestsByIsActive() {
         return requestService.findSortedAllRequestsByIsActive().stream()
                 .map(Request::toString)
-                .collect(Collectors.toList());
+                .collect(Collectors.joining(REQUEST_DELIMITER));
     }
 
-    public List<String> findSortedAllRequestsByRequesterData() {
+    public String findSortedAllRequestsByRequesterData() {
         return requestService.findSortedAllRequestsByRequesterData().stream()
                 .map(Request::toString)
-                .collect(Collectors.toList());
+                .collect(Collectors.joining(REQUEST_DELIMITER));
     }
 
     public int exportAllRequests(String fileName) {

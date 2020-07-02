@@ -5,7 +5,6 @@ import com.senla.training.yeutukhovich.bookstore.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.domain.Order;
 import com.senla.training.yeutukhovich.bookstore.domain.Request;
 import com.senla.training.yeutukhovich.bookstore.domain.state.OrderState;
-import com.senla.training.yeutukhovich.bookstore.exception.BookstoreInternalException;
 import com.senla.training.yeutukhovich.bookstore.repository.*;
 import com.senla.training.yeutukhovich.bookstore.service.dto.BookDescription;
 import com.senla.training.yeutukhovich.bookstore.util.configuration.ConfigurationData;
@@ -17,6 +16,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class BookServiceImpl implements BookService {
+
+    private static final Boolean REQUEST_AUTO_CLOSE = Boolean.valueOf(
+            ConfigurationData.getValue(ConfigurationData.REQUEST_AUTO_CLOSE));
+    private static final byte STALE_MONTH_NUMBER = Byte.parseByte(
+            ConfigurationData.getValue(ConfigurationData.STALE_MONTH_NUMBER));
 
     private static BookService instance;
 
@@ -37,22 +41,17 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public boolean replenishBook(Long id) {
-        Boolean requestAutoClose;
-        try {
-            requestAutoClose = Boolean.valueOf(ConfigurationData.getValue(ConfigurationData.REQUEST_AUTO_CLOSE));
-        } catch (IllegalArgumentException e) {
-            throw new BookstoreInternalException(e.getMessage());
-        }
+
 
         Book checkedBook = bookRepository.findById(id);
         if (checkedBook != null && !checkedBook.isAvailable()) {
             checkedBook.setAvailable(true);
             checkedBook.setReplenishmentDate(new Date());
             bookRepository.update(checkedBook);
-            updateOrders(checkedBook);
-            if (requestAutoClose) {
+            if (REQUEST_AUTO_CLOSE) {
                 closeRequests(checkedBook);
             }
+            updateOrders(checkedBook);
             return true;
         }
         return false;
@@ -154,15 +153,10 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<Book> findStaleBooks() {
-        byte staleMonthNumber;
-        try {
-            staleMonthNumber = Byte.parseByte(ConfigurationData.getValue(ConfigurationData.STALE_MONTH_NUMBER));
-        } catch (NumberFormatException e) {
-            throw new BookstoreInternalException(e.getMessage());
-        }
+
         List<Order> orders = orderRepository.findAll();
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MONTH, -staleMonthNumber);
+        calendar.add(Calendar.MONTH, -STALE_MONTH_NUMBER);
         Date currentDate = new Date();
         Date staleDate = new Date(calendar.getTimeInMillis());
 
@@ -201,7 +195,7 @@ public class BookServiceImpl implements BookService {
         int exportedBooksNumber = 0;
         if (fileName != null) {
             String path = PathConstant.DIRECTORY_PATH.getPathConstant()
-                    + fileName + PathConstant.FORMAT_TYPE.getPathConstant();
+                    + fileName + PathConstant.CVS_FORMAT_TYPE.getPathConstant();
             List<String> bookStrings = EntityCvsConverter.getInstance().convertBooks(bookRepository.findAll());
             exportedBooksNumber = FileDataWriter.writeData(path, bookStrings);
 
@@ -213,7 +207,7 @@ public class BookServiceImpl implements BookService {
     public boolean exportBook(Long bookId, String fileName) {
         if (bookId != null && fileName != null) {
             String path = PathConstant.DIRECTORY_PATH.getPathConstant()
-                    + fileName + PathConstant.FORMAT_TYPE.getPathConstant();
+                    + fileName + PathConstant.CVS_FORMAT_TYPE.getPathConstant();
             Book book = bookRepository.findById(bookId);
             if (book != null) {
                 List<String> bookStrings = EntityCvsConverter.getInstance().convertBooks(List.of(book));
@@ -228,7 +222,7 @@ public class BookServiceImpl implements BookService {
         int importedBooksNumber = 0;
         if (fileName != null) {
             String path = PathConstant.DIRECTORY_PATH.getPathConstant()
-                    + fileName + PathConstant.FORMAT_TYPE.getPathConstant();
+                    + fileName + PathConstant.CVS_FORMAT_TYPE.getPathConstant();
             List<String> dataStrings = FileDataReader.readData(path);
 
             List<Book> repoBooks = bookRepository.findAll();

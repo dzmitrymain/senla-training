@@ -4,14 +4,15 @@ import com.senla.training.yeutukhovich.bookstore.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.service.book.BookService;
 import com.senla.training.yeutukhovich.bookstore.service.book.BookServiceImpl;
 import com.senla.training.yeutukhovich.bookstore.service.dto.BookDescription;
+import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 
 import java.util.Date;
-import java.util.List;
 import java.util.stream.Collectors;
 
 public class BookController {
 
     private static BookController instance;
+    private static final String BOOKS_DELIMITER = "\n";
 
     private BookService bookService;
 
@@ -26,62 +27,69 @@ public class BookController {
         return instance;
     }
 
-    public boolean replenishBook(Long id) {
-        return bookService.replenishBook(id);
+    public String replenishBook(Long id) {
+        if (bookService.replenishBook(id)) {
+            return MessageConstant.BOOK_HAS_BEEN_REPLENISHED.getMessage();
+        }
+        return MessageConstant.BOOK_HAS_NOT_BEEN_REPLENISHED.getMessage();
     }
 
-    public boolean writeOffBook(Long id) {
-        return bookService.writeOffBook(id);
+    public String writeOffBook(Long id) {
+        if (bookService.writeOffBook(id)) {
+            return MessageConstant.BOOK_HAS_BEEN_WRITTEN_OFF.getMessage();
+        }
+        return MessageConstant.BOOK_HAS_NOT_BEEN_WRITTEN_OFF.getMessage();
     }
 
-    public List<String> findSortedAllBooksByAvailability() {
+    public String findSortedAllBooksByAvailability() {
+
         return bookService.findSortedAllBooksByAvailability().stream()
                 .map(Book::toString)
-                .collect(Collectors.toList());
+                .collect(Collectors.joining(BOOKS_DELIMITER));
     }
 
-    public List<String> findSortedAllBooksByEditionDate() {
+    public String findSortedAllBooksByEditionDate() {
         return bookService.findSortedAllBooksByEditionDate().stream()
                 .map(Book::toString)
-                .collect(Collectors.toList());
+                .collect(Collectors.joining(BOOKS_DELIMITER));
     }
 
-    public List<String> findSortedAllBooksByPrice() {
+    public String findSortedAllBooksByPrice() {
         return bookService.findSortedBooksByPrice().stream()
                 .map(Book::toString)
-                .collect(Collectors.toList());
+                .collect(Collectors.joining(BOOKS_DELIMITER));
     }
 
-    public List<String> findSortedAllBooksByReplenishmentDate() {
+    public String findSortedAllBooksByReplenishmentDate() {
         return bookService.findSortedAllBooksByReplenishmentDate().stream()
                 .map(Book::toString)
-                .collect(Collectors.toList());
+                .collect(Collectors.joining(BOOKS_DELIMITER));
     }
 
-    public List<String> findSortedAllBooksByTitle() {
+    public String findSortedAllBooksByTitle() {
         return bookService.findSortedAllBooksByTitle().stream()
                 .map(Book::toString)
-                .collect(Collectors.toList());
+                .collect(Collectors.joining(BOOKS_DELIMITER));
     }
 
 
-    public List<String> findSoldBooksBetweenDates(Date startDate, Date endDate) {
+    public String findSoldBooksBetweenDates(Date startDate, Date endDate) {
         return bookService.findSoldBooksBetweenDates(startDate, endDate).stream()
                 .map(Book::toString)
-                .collect(Collectors.toList());
+                .collect(Collectors.joining(BOOKS_DELIMITER));
     }
 
 
-    public List<String> findUnsoldBooksBetweenDates(Date startDate, Date endDate) {
+    public String findUnsoldBooksBetweenDates(Date startDate, Date endDate) {
         return bookService.findUnsoldBooksBetweenDates(startDate, endDate).stream()
                 .map(Book::toString)
-                .collect(Collectors.toList());
+                .collect(Collectors.joining(BOOKS_DELIMITER));
     }
 
-    public List<String> findStaleBooks() {
+    public String findStaleBooks() {
         return bookService.findStaleBooks().stream()
                 .map(Book::toString)
-                .collect(Collectors.toList());
+                .collect(Collectors.joining(BOOKS_DELIMITER));
     }
 
     public BookDescription showBookDescription(Long id) {

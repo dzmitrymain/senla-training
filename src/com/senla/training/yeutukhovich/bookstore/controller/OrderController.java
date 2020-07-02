@@ -15,6 +15,8 @@ public class OrderController {
 
     private static OrderController instance;
 
+    private static final String ORDER_DELIMITER="\n";
+
     private OrderService orderService;
 
     private OrderController(OrderService orderService) {
@@ -40,28 +42,28 @@ public class OrderController {
         return orderService.completeOrder(orderId);
     }
 
-    public List<String> findSortedAllOrdersByCompletionDate() {
+    public String findSortedAllOrdersByCompletionDate() {
         return orderService.findSortedAllOrdersByCompletionDate().stream()
                 .map(Order::toString)
-                .collect(Collectors.toList());
+                .collect(Collectors.joining(ORDER_DELIMITER));
     }
 
-    public List<String> findSortedAllOrdersByPrice() {
+    public String findSortedAllOrdersByPrice() {
         return orderService.findSortedAllOrdersByPrice().stream()
                 .map(Order::toString)
-                .collect(Collectors.toList());
+                .collect(Collectors.joining(ORDER_DELIMITER));
     }
 
-    public List<String> findSortedAllOrdersByState() {
+    public String findSortedAllOrdersByState() {
         return orderService.findSortedAllOrdersByState().stream()
                 .map(Order::toString)
-                .collect(Collectors.toList());
+                .collect(Collectors.joining(ORDER_DELIMITER));
     }
 
-    public List<String> findCompletedOrdersBetweenDates(Date startDate, Date endDate) {
+    public String findCompletedOrdersBetweenDates(Date startDate, Date endDate) {
         return orderService.findCompletedOrdersBetweenDates(startDate, endDate).stream()
                 .map(Order::toString)
-                .collect(Collectors.toList());
+                .collect(Collectors.joining(ORDER_DELIMITER));
     }
 
     public BigDecimal calculateProfitBetweenDates(Date startDate, Date endDate) {
