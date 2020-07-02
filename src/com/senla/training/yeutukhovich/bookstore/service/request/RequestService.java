@@ -19,4 +19,8 @@ public interface RequestService {
     boolean exportRequest(Long requestId, String fileName);
 
     int importRequests(String fileName);
+
+    void serializeRequests();
+
+    void deserializeRequests();
 }

@@ -107,4 +107,12 @@ public class BookController {
     public boolean exportBook(Long bookId, String fileName) {
         return bookService.exportBook(bookId, fileName);
     }
+
+    public void serializeBooks() {
+        bookService.serializeBooks();
+    }
+
+    public void deserializeBooks() {
+        bookService.deserializeBooks();
+    }
 }

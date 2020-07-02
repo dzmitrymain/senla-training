@@ -4,14 +4,13 @@ import com.senla.training.yeutukhovich.bookstore.domain.Request;
 import com.senla.training.yeutukhovich.bookstore.service.request.RequestService;
 import com.senla.training.yeutukhovich.bookstore.service.request.RequestServiceImpl;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 public class RequestController {
 
     private static RequestController instance;
 
-    private static final String REQUEST_DELIMITER="\n";
+    private static final String REQUEST_DELIMITER = "\n";
 
     private RequestService requestService;
 
@@ -58,5 +57,13 @@ public class RequestController {
 
     public int importRequests(String fileName) {
         return requestService.importRequests(fileName);
+    }
+
+    public void serializeRequests() {
+        requestService.serializeRequests();
+    }
+
+    public void deserializeRequests() {
+        requestService.deserializeRequests();
     }
 }

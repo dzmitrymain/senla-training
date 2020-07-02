@@ -8,14 +8,13 @@ import com.senla.training.yeutukhovich.bookstore.service.order.OrderServiceImpl;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 import java.util.stream.Collectors;
 
 public class OrderController {
 
     private static OrderController instance;
 
-    private static final String ORDER_DELIMITER="\n";
+    private static final String ORDER_DELIMITER = "\n";
 
     private OrderService orderService;
 
@@ -88,5 +87,13 @@ public class OrderController {
 
     public boolean exportOrder(Long orderId, String fileName) {
         return orderService.exportOrder(orderId, fileName);
+    }
+
+    public void serializeOrders() {
+        orderService.serializeOrders();
+    }
+
+    public void deserializeOrders() {
+        orderService.deserializeOrders();
     }
 }

@@ -6,6 +6,7 @@ import com.senla.training.yeutukhovich.bookstore.domain.Order;
 import com.senla.training.yeutukhovich.bookstore.domain.Request;
 import com.senla.training.yeutukhovich.bookstore.domain.state.OrderState;
 import com.senla.training.yeutukhovich.bookstore.repository.*;
+import com.senla.training.yeutukhovich.bookstore.serializer.BookstoreSerializer;
 import com.senla.training.yeutukhovich.bookstore.service.dto.CreationOrderResult;
 import com.senla.training.yeutukhovich.bookstore.service.dto.OrderDetails;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
@@ -214,6 +215,20 @@ public class OrderServiceImpl implements OrderService {
             }
         }
         return importedOrdersNumber;
+    }
+
+    public void serializeOrders() {
+        List<Order> orders = orderRepository.findAll();
+        BookstoreSerializer.getInstance().serializeBookstore(orders,
+                PathConstant.SERIALIZED_ORDERS_PATH.getPathConstant());
+    }
+
+    public void deserializeOrders() {
+        List<Order> orders = BookstoreSerializer.getInstance()
+                .deserializeBookstore(PathConstant.SERIALIZED_ORDERS_PATH.getPathConstant());
+        if (orders != null) {
+            orders.forEach(order -> orderRepository.add(order));
+        }
     }
 
     private List<Order> findAllOrders() {

@@ -4,7 +4,9 @@ import com.senla.training.yeutukhovich.bookstore.util.configuration.Configuratio
 
 public enum PathConstant {
 
-    SERIALIZED_DATA_PATH(ConfigurationData.getValue(ConfigurationData.SERIALIZED_DATA_PATH)),
+    SERIALIZED_BOOKS_PATH(ConfigurationData.getValue(ConfigurationData.SERIALIZED_BOOKS)),
+    SERIALIZED_ORDERS_PATH(ConfigurationData.getValue(ConfigurationData.SERIALIZED_ORDERS)),
+    SERIALIZED_REQUESTS_PATH(ConfigurationData.getValue(ConfigurationData.SERIALIZED_REQUESTS)),
     DIRECTORY_PATH(ConfigurationData.getValue(ConfigurationData.CVS_DIRECTORY_PATH)),
     CVS_FORMAT_TYPE(ConfigurationData.getValue(ConfigurationData.CVS_FORMAT_TYPE));
 

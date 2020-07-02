@@ -7,6 +7,7 @@ import com.senla.training.yeutukhovich.bookstore.repository.BookRepository;
 import com.senla.training.yeutukhovich.bookstore.repository.IBookRepository;
 import com.senla.training.yeutukhovich.bookstore.repository.IRequestRepository;
 import com.senla.training.yeutukhovich.bookstore.repository.RequestRepository;
+import com.senla.training.yeutukhovich.bookstore.serializer.BookstoreSerializer;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 import com.senla.training.yeutukhovich.bookstore.util.constant.PathConstant;
 import com.senla.training.yeutukhovich.bookstore.util.reader.FileDataReader;
@@ -129,6 +130,20 @@ public class RequestServiceImpl implements RequestService {
             }
         }
         return importedRequestsNumber;
+    }
+
+    public void serializeRequests() {
+        List<Request> requests = requestRepository.findAll();
+        BookstoreSerializer.getInstance().serializeBookstore(requests,
+                PathConstant.SERIALIZED_REQUESTS_PATH.getPathConstant());
+    }
+
+    public void deserializeRequests() {
+        List<Request> requests = BookstoreSerializer.getInstance()
+                .deserializeBookstore(PathConstant.SERIALIZED_REQUESTS_PATH.getPathConstant());
+        if (requests != null) {
+            requests.forEach(request -> requestRepository.add(request));
+        }
     }
 
     private List<Request> findAllRequests() {

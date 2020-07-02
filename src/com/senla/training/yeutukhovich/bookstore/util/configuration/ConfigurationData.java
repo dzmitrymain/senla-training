@@ -10,6 +10,9 @@ public class ConfigurationData {
     public static final String REQUEST_AUTO_CLOSE = "request_auto_close";
 
     public static final String SERIALIZED_DATA_PATH = "serialized_data_path";
+    public static final String SERIALIZED_BOOKS = "serialized_books_path";
+    public static final String SERIALIZED_ORDERS = "serialized_orders_path";
+    public static final String SERIALIZED_REQUESTS = "serialized_requests_path";
     public static final String CVS_DIRECTORY_PATH = "cvs_directory_path";
     public static final String CVS_FORMAT_TYPE = "cvs_format_type";
 

@@ -6,9 +6,11 @@ import com.senla.training.yeutukhovich.bookstore.domain.Order;
 import com.senla.training.yeutukhovich.bookstore.domain.Request;
 import com.senla.training.yeutukhovich.bookstore.domain.state.OrderState;
 import com.senla.training.yeutukhovich.bookstore.repository.*;
+import com.senla.training.yeutukhovich.bookstore.serializer.BookstoreSerializer;
 import com.senla.training.yeutukhovich.bookstore.service.dto.BookDescription;
 import com.senla.training.yeutukhovich.bookstore.util.configuration.ConfigurationData;
 import com.senla.training.yeutukhovich.bookstore.util.constant.PathConstant;
+import com.senla.training.yeutukhovich.bookstore.util.initializer.EntityInitializer;
 import com.senla.training.yeutukhovich.bookstore.util.reader.FileDataReader;
 import com.senla.training.yeutukhovich.bookstore.util.writer.FileDataWriter;
 
@@ -240,6 +242,21 @@ public class BookServiceImpl implements BookService {
             }
         }
         return importedBooksNumber;
+    }
+
+    public void serializeBooks() {
+        List<Book> books = bookRepository.findAll();
+        BookstoreSerializer.getInstance().serializeBookstore(books,
+                PathConstant.SERIALIZED_BOOKS_PATH.getPathConstant());
+    }
+
+    public void deserializeBooks() {
+        List<Book> books = BookstoreSerializer.getInstance()
+                .deserializeBookstore(PathConstant.SERIALIZED_BOOKS_PATH.getPathConstant());
+        if (books == null) {
+            books = EntityInitializer.initBooks();
+        }
+        books.forEach(book -> bookRepository.add(book));
     }
 
     private List<Book> findAllBooks() {

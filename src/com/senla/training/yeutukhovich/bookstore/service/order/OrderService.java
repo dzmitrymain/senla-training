@@ -35,4 +35,8 @@ public interface OrderService {
     boolean exportOrder(Long id, String fileName);
 
     int importOrders(String fileName);
+
+    void serializeOrders();
+
+    void deserializeOrders();
 }
