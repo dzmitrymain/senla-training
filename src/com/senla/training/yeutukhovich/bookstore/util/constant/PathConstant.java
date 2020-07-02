@@ -8,7 +8,7 @@ public enum PathConstant {
     SERIALIZED_ORDERS_PATH(ConfigurationData.getValue(ConfigurationData.SERIALIZED_ORDERS)),
     SERIALIZED_REQUESTS_PATH(ConfigurationData.getValue(ConfigurationData.SERIALIZED_REQUESTS)),
     DIRECTORY_PATH(ConfigurationData.getValue(ConfigurationData.CVS_DIRECTORY_PATH)),
-    CVS_FORMAT_TYPE(ConfigurationData.getValue(ConfigurationData.CVS_FORMAT_TYPE));
+    CVS_FORMAT_TYPE(".cvs");
 
     private String pathConstant;
 
