@@ -1,5 +1,6 @@
 package com.senla.training.yeutukhovich.bookstore.util.converter;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -16,7 +17,7 @@ public class DateConverter {
         if (dateString != null && dateFormat != null) {
             try {
                 date = dateFormat.parse(dateString);
-            } catch (java.text.ParseException e) {
+            } catch (ParseException e) {
                 System.err.println(e.getMessage());
             }
         }

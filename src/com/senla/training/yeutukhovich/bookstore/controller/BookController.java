@@ -1,19 +1,18 @@
 package com.senla.training.yeutukhovich.bookstore.controller;
 
 import com.senla.training.yeutukhovich.bookstore.domain.Book;
-import com.senla.training.yeutukhovich.bookstore.entityexchanger.EntityExchanger;
-import com.senla.training.yeutukhovich.bookstore.entityexchanger.cvsexchanger.BookCvsExchanger;
-import com.senla.training.yeutukhovich.bookstore.service.bookservice.BookService;
-import com.senla.training.yeutukhovich.bookstore.service.bookservice.BookServiceImpl;
+import com.senla.training.yeutukhovich.bookstore.service.book.BookService;
+import com.senla.training.yeutukhovich.bookstore.service.book.BookServiceImpl;
 import com.senla.training.yeutukhovich.bookstore.service.dto.BookDescription;
+import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 
-import java.util.Comparator;
 import java.util.Date;
-import java.util.List;
+import java.util.stream.Collectors;
 
 public class BookController {
 
     private static BookController instance;
+    private static final String BOOKS_DELIMITER = "\n";
 
     private BookService bookService;
 
@@ -28,52 +27,92 @@ public class BookController {
         return instance;
     }
 
+    public String replenishBook(Long id) {
+        if (bookService.replenishBook(id)) {
+            return MessageConstant.BOOK_HAS_BEEN_REPLENISHED.getMessage();
+        }
+        return MessageConstant.BOOK_HAS_NOT_BEEN_REPLENISHED.getMessage();
+    }
 
-    public boolean replenishBook(Long id) {
-        return bookService.replenishBook(id);
+    public String writeOffBook(Long id) {
+        if (bookService.writeOffBook(id)) {
+            return MessageConstant.BOOK_HAS_BEEN_WRITTEN_OFF.getMessage();
+        }
+        return MessageConstant.BOOK_HAS_NOT_BEEN_WRITTEN_OFF.getMessage();
+    }
+
+    public String findSortedAllBooksByAvailability() {
+
+        return bookService.findSortedAllBooksByAvailability().stream()
+                .map(Book::toString)
+                .collect(Collectors.joining(BOOKS_DELIMITER));
+    }
+
+    public String findSortedAllBooksByEditionDate() {
+        return bookService.findSortedAllBooksByEditionDate().stream()
+                .map(Book::toString)
+                .collect(Collectors.joining(BOOKS_DELIMITER));
+    }
+
+    public String findSortedAllBooksByPrice() {
+        return bookService.findSortedBooksByPrice().stream()
+                .map(Book::toString)
+                .collect(Collectors.joining(BOOKS_DELIMITER));
+    }
+
+    public String findSortedAllBooksByReplenishmentDate() {
+        return bookService.findSortedAllBooksByReplenishmentDate().stream()
+                .map(Book::toString)
+                .collect(Collectors.joining(BOOKS_DELIMITER));
+    }
+
+    public String findSortedAllBooksByTitle() {
+        return bookService.findSortedAllBooksByTitle().stream()
+                .map(Book::toString)
+                .collect(Collectors.joining(BOOKS_DELIMITER));
     }
 
 
-    public boolean writeOffBook(Long id) {
-        return bookService.writeOffBook(id);
+    public String findSoldBooksBetweenDates(Date startDate, Date endDate) {
+        return bookService.findSoldBooksBetweenDates(startDate, endDate).stream()
+                .map(Book::toString)
+                .collect(Collectors.joining(BOOKS_DELIMITER));
     }
 
 
-    public List<Book> findAllBooks(Comparator<Book> bookComparator) {
-        return bookService.findAllBooks(bookComparator);
+    public String findUnsoldBooksBetweenDates(Date startDate, Date endDate) {
+        return bookService.findUnsoldBooksBetweenDates(startDate, endDate).stream()
+                .map(Book::toString)
+                .collect(Collectors.joining(BOOKS_DELIMITER));
     }
 
-    public Book findById(Long id) {
-        return bookService.findById(id);
+    public String findStaleBooks() {
+        return bookService.findStaleBooks().stream()
+                .map(Book::toString)
+                .collect(Collectors.joining(BOOKS_DELIMITER));
     }
-
-
-    public List<Book> findSoldBooksBetweenDates(Date startDate, Date endDate) {
-        return bookService.findSoldBooksBetweenDates(startDate, endDate);
-    }
-
-
-    public List<Book> findUnsoldBooksBetweenDates(Date startDate, Date endDate) {
-        return bookService.findUnsoldBooksBetweenDates(startDate, endDate);
-    }
-
-
-    public List<Book> findStaleBooks() {
-        return bookService.findStaleBooks();
-    }
-
 
     public BookDescription showBookDescription(Long id) {
         return bookService.showBookDescription(id);
     }
 
     public int importBooks(String fileName) {
-        EntityExchanger<Book> bookExchanger = BookCvsExchanger.getInstance();
-        return bookExchanger.importEntities(fileName);
+        return bookService.importBooks(fileName);
     }
 
-    public void exportBooks(List<Book> books, String fileName) {
-        EntityExchanger<Book> bookExchanger = BookCvsExchanger.getInstance();
-        bookExchanger.exportEntities(books, fileName);
+    public int exportAllBooks(String fileName) {
+        return bookService.exportAllBooks(fileName);
+    }
+
+    public boolean exportBook(Long bookId, String fileName) {
+        return bookService.exportBook(bookId, fileName);
+    }
+
+    public void serializeBooks() {
+        bookService.serializeBooks();
+    }
+
+    public void deserializeBooks() {
+        bookService.deserializeBooks();
     }
 }

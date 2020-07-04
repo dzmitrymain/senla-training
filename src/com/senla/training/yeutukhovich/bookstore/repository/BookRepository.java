@@ -1,23 +1,24 @@
 package com.senla.training.yeutukhovich.bookstore.repository;
 
 import com.senla.training.yeutukhovich.bookstore.domain.Book;
-import com.senla.training.yeutukhovich.bookstore.util.initializer.EntityInitializer;
+import com.senla.training.yeutukhovich.bookstore.util.generator.IdGenerator;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class BookRepository implements IRepository<Book> {
+public class BookRepository implements IBookRepository {
 
-    private static IRepository<Book> instance;
+    private static IBookRepository instance;
 
-    private List<Book> books;
+    private List<Book> books = new ArrayList<>();
 
-    private BookRepository(List<Book> books) {
-        this.books = books;
+    private BookRepository() {
+
     }
 
-    public static IRepository<Book> getInstance() {
+    public static IBookRepository getInstance() {
         if (instance == null) {
-            instance = new BookRepository(EntityInitializer.getBooks());
+            instance = new BookRepository();
         }
         return instance;
     }
@@ -42,6 +43,7 @@ public class BookRepository implements IRepository<Book> {
     @Override
     public void add(Book entity) {
         if (entity != null && !books.contains(entity)) {
+            entity.setId(IdGenerator.getInstance().getNextBookIdNumber());
             books.add(entity);
         }
     }
@@ -56,3 +58,5 @@ public class BookRepository implements IRepository<Book> {
         }
     }
 }
+
+

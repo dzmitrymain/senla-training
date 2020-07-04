@@ -15,19 +15,6 @@ public class OrderDetails {
     private Date creationDate;
     private Date completionDate;
 
-    public OrderDetails() {
-
-    }
-
-    public OrderDetails(String customerData, String bookTitle, BigDecimal price, OrderState state, Date creationDate, Date completionDate) {
-        this.customerData = customerData;
-        this.bookTitle = bookTitle;
-        this.price = price;
-        this.state = state;
-        this.creationDate = creationDate;
-        this.completionDate = completionDate;
-    }
-
     public String getCustomerData() {
         return customerData;
     }

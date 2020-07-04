@@ -11,16 +11,6 @@ public class BookDescription {
     private Date editionDate;
     private Date replenishmentDate;
 
-    public BookDescription() {
-
-    }
-
-    public BookDescription(String title, Date editionDate, Date replenishmentDate) {
-        this.title = title;
-        this.editionDate = editionDate;
-        this.replenishmentDate = replenishmentDate;
-    }
-
     public String getTitle() {
         return title;
     }
@@ -49,13 +39,13 @@ public class BookDescription {
     public String toString() {
         StringBuilder replenishmentDateToString = new StringBuilder();
         if (replenishmentDate != null) {
-            replenishmentDateToString.append(", replenishmentDate=");
+            replenishmentDateToString.append(", replenishment date=");
             replenishmentDateToString.append(DateConverter.formatDate(replenishmentDate, DateConverter.DAY_DATE_FORMAT));
         }
 
         return "Book description [" +
                 "title='" + title +
-                "', editionDate=" + DateConverter.formatDate(editionDate, DateConverter.YEAR_DATE_FORMAT) +
+                "', edition date=" + DateConverter.formatDate(editionDate, DateConverter.YEAR_DATE_FORMAT) +
                 replenishmentDateToString.toString() + ']';
     }
 }

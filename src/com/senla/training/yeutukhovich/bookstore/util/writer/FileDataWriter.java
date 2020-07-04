@@ -8,13 +8,16 @@ import java.util.List;
 
 public class FileDataWriter {
 
-    public static void writeData(String path, List<String> data) {
+    public static int writeData(String path, List<String> data) {
+
+        int wroteLines = 0;
 
         if (path != null && data != null) {
             try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(path))) {
                 Iterator<String> iterator = data.iterator();
                 while (iterator.hasNext()) {
                     bufferedWriter.write(iterator.next());
+                    wroteLines++;
                     if (iterator.hasNext()) {
                         bufferedWriter.newLine();
                     }
@@ -23,5 +26,6 @@ public class FileDataWriter {
                 System.err.println(e.getMessage());
             }
         }
+        return wroteLines;
     }
 }

@@ -1,19 +1,18 @@
 package com.senla.training.yeutukhovich.bookstore.domain;
 
-import com.senla.training.yeutukhovich.bookstore.util.generator.IdGenerator;
-
 public class Request extends AbstractEntity {
+
+    private static final long serialVersionUID = 2837429729065366794L;
 
     private Book book;
     private Boolean isActive;
     private String requesterData;
 
-    public Request(Long id) {
-        super(id);
+    public Request() {
+
     }
 
     public Request(Book book, String requesterData) {
-        super(IdGenerator.getInstance().getNextRequestIdNumber());
         this.requesterData = requesterData;
         this.book = book;
         isActive = true;

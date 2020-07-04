@@ -4,12 +4,19 @@ public enum MessageConstant {
 
     MENU_BORDER("========================================"),
     MENU_ITEM_BORDER("----------------------------------------"),
+    MENU_NAME_INDENT("        "),
+    MENU_ITEM_INDEX_DELIMITER(". "),
 
-    DATA_WAS_FOUND("Data was found: "),
+    STRING_FORMAT_UNPARSEABLE_BOOLEAN("Unparseable boolean: \"%s\""),
+
+    EDITION_NOT_NULL("Edition date can't be null"),
+    BOOK_NOT_NULL("Book not exist."),
+    CREATION_NOT_NULL("Creation date can't be null"),
+
     NO_DATA_WAS_FOUND("No data was found."),
 
     ENTER_BOOK_ID("Please, enter book id: "),
-    BOOK_HAS_BEEN_REPLENISHED("Book has been replenished. All requests has been closed."),
+    BOOK_HAS_BEEN_REPLENISHED("Book has been replenished."),
     BOOK_HAS_NOT_BEEN_REPLENISHED("Book has not been replenished. Check entered book id."),
     BOOK_HAS_BEEN_WRITTEN_OFF("Book has been written off."),
     BOOK_HAS_NOT_BEEN_WRITTEN_OFF("Book has not been written off. Check entered book id."),
