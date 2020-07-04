@@ -13,6 +13,21 @@ public class DateConverter {
 
 
     public static Date parseDate(String dateString, SimpleDateFormat dateFormat) {
+        // старайся избегать лишней вложенности где это возможно:
+        /*
+        if (dateString == null || dateFormat == null) {
+            return null;
+        }
+
+        try {
+            return dateFormat.parse(dateString);
+        } catch (ParseException e) {
+            System.err.println(e.getMessage());
+            return null;
+        }
+        */
+        // линейный последовательный код проще читается, его проще модифицировать
+
         Date date = null;
         if (dateString != null && dateFormat != null) {
             try {

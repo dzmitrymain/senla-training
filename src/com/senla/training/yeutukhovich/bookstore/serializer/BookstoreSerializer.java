@@ -26,15 +26,24 @@ public class BookstoreSerializer {
                 new FileOutputStream(path))) {
             out.writeObject(entities);
         } catch (IOException e) {
+            // никакой печати на беке, все что не должен видеть пользователь, скоро
+            // уйдет в логирование
+            // все что должен видеть пользователь - передаем в кастомных экзепшнах, смотри
+            // пример в моих видео
             System.err.println(e.getMessage());
         }
     }
 
+    // отличное использование дженериков, все ок, но!
+    // есть вариант проще и без анчекед каста - написать класс сущности, которая тоже Serializable
+    // и которая содержит в себе все три коллекции для сериализации
+    // все кладется в один файл, одним действием, никаких анчекед кастов не нужно
     public <T extends AbstractEntity> List<T> deserializeBookstore(String path) {
         List<T> entities = null;
 
         try (ObjectInputStream in = new ObjectInputStream(
                 new FileInputStream(path))) {
+            // анчекед каст, про него раскажу на созвоне (или избегать, или глушить аннотацией)
             entities = (List<T>) in.readObject();
         } catch (IOException | ClassNotFoundException e) {
             System.err.println(e.getMessage());

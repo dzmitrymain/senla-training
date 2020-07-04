@@ -4,6 +4,7 @@ import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 
 public class UiConsolePrinter {
 
+    // форматируй код (или настрой кодстайл) - обычно пустая строка не ставится после открывающей метод скобки
     public static void printMessage(String message) {
 
         if (message.isEmpty()) {

@@ -10,9 +10,20 @@ import java.util.Date;
 
 public class InputReader {
 
+    // может быть final - тогда это константа (имя в верхнем регистре)
     private static BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
 
     public static String readInputString() {
+        // как вариант (чуть компактней, без лишних переменных и более линейно)
+        /*
+        try {
+            return bufferedReader.readLine();
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+            return null;
+        }
+         */
+
         String string = null;
         try {
             string = bufferedReader.readLine();

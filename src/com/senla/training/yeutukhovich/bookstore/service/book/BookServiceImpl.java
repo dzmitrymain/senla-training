@@ -19,6 +19,9 @@ import java.util.stream.Collectors;
 
 public class BookServiceImpl implements BookService {
 
+    // странная чехарда с типами констант - примитивы вперемешку со ссылочными
+    // это не ошибка, но есть смысл сделать что-то одно
+    // примитивы отлично подходят на роль настроек
     private static final Boolean REQUEST_AUTO_CLOSE = Boolean.valueOf(
             ConfigurationData.getValue(ConfigurationData.REQUEST_AUTO_CLOSE));
     private static final byte STALE_MONTH_NUMBER = Byte.parseByte(
@@ -41,6 +44,7 @@ public class BookServiceImpl implements BookService {
         return instance;
     }
 
+    // форматируй код, лишние пустые строки не нужны
     @Override
     public boolean replenishBook(Long id) {
 
@@ -205,6 +209,12 @@ public class BookServiceImpl implements BookService {
         return exportedBooksNumber;
     }
 
+    // попробуй обойтись без булен и стринг (стринг - сообщение для пользователя) в вовзращаемых
+    // значениях в методах сервиса
+    // только Листы моделей, модели, сумма денег (если есть такое по заданию) и void
+    // int как количество строк, которые распарсил, в принципе тоже норм (хотя возможно лучше Integer, но на твое
+    // усмотрение)
+    // налы если не найдено и исключения с сообщением если фейл
     @Override
     public boolean exportBook(Long bookId, String fileName) {
         if (bookId != null && fileName != null) {

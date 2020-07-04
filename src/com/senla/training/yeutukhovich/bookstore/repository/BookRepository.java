@@ -6,6 +6,10 @@ import com.senla.training.yeutukhovich.bookstore.util.generator.IdGenerator;
 import java.util.ArrayList;
 import java.util.List;
 
+// нужно придти к какому-то единому наименованию
+// или IRepository - Repository
+// или Repository - RepositoryImpl
+// во всем проекте
 public class BookRepository implements IBookRepository {
 
     private static IBookRepository instance;
@@ -30,6 +34,7 @@ public class BookRepository implements IBookRepository {
 
     @Override
     public Book findById(Long id) {
+        // тренируй стримы и опшнал
         if (id != null) {
             for (Book book : books) {
                 if (book.getId().equals(id)) {

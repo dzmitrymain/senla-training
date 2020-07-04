@@ -134,6 +134,8 @@ public class EntityCvsConverter {
 
     private Book buildBook(String[] strings) {
         Book book = null;
+        // избегать лишней вложенности и инициализации переменных налом, где это возможно
+        // сначала все валидации с ретурном нал при неуспехе, потом рабочий код
         if (strings.length == 6) {
             try {
                 book = new Book();

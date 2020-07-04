@@ -117,6 +117,9 @@ public class RequestServiceImpl implements RequestService {
             for (Request importedRequest : importedRequests) {
                 Book dependentBook = bookRepository.findById(importedRequest.getBook().getId());
                 if (dependentBook == null) {
+                    // начинаем чистить бэкенд от sout - скоро будет логирование
+                    // если нужно показать пользователю что-то на экране - передай через контроллер
+                    // если не надо - убирай, потом добавишь в логи
                     System.err.println(MessageConstant.BOOK_NOT_NULL.getMessage());
                     continue;
                 }

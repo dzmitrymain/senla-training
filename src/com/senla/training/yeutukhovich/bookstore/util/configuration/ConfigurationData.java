@@ -36,6 +36,10 @@ public class ConfigurationData {
         if (key == null || key.isEmpty()) {
             return "";
         }
+        // альтернатива дефолтным пропертям - перегруженный метод getProperty(key, defaultValue)
+        // позволяет также сделать загрузку пропертей "на горячую" - без перезагрузки приложения
+        // немного замедляет программу
+        // (не ошибка, твоя реализация тоже норм)
         return PROPERTIES.getProperty(key);
 
     }
