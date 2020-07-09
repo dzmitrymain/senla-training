@@ -1,28 +1,22 @@
 package com.senla.training.yeutukhovich.bookstore.controller;
 
+import com.senla.training.yeutukhovich.bookstore.util.injector.Autowired;
 import com.senla.training.yeutukhovich.bookstore.domain.Request;
 import com.senla.training.yeutukhovich.bookstore.service.request.RequestService;
-import com.senla.training.yeutukhovich.bookstore.service.request.RequestServiceImpl;
+import com.senla.training.yeutukhovich.bookstore.util.injector.Singleton;
 
 import java.util.stream.Collectors;
 
+@Singleton
 public class RequestController {
-
-    private static RequestController instance;
 
     private static final String REQUEST_DELIMITER = "\n";
 
+    @Autowired
     private RequestService requestService;
 
-    private RequestController(RequestService requestService) {
-        this.requestService = requestService;
-    }
+    private RequestController(){
 
-    public static RequestController getInstance() {
-        if (instance == null) {
-            instance = new RequestController(RequestServiceImpl.getInstance());
-        }
-        return instance;
     }
 
     public Long createRequest(Long bookId, String requesterData) {
@@ -57,13 +51,5 @@ public class RequestController {
 
     public int importRequests(String fileName) {
         return requestService.importRequests(fileName);
-    }
-
-    public void serializeRequests() {
-        requestService.serializeRequests();
-    }
-
-    public void deserializeRequests() {
-        requestService.deserializeRequests();
     }
 }

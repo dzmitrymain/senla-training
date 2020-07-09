@@ -5,52 +5,59 @@ import com.senla.training.yeutukhovich.bookstore.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.domain.Order;
 import com.senla.training.yeutukhovich.bookstore.domain.Request;
 import com.senla.training.yeutukhovich.bookstore.domain.state.OrderState;
-import com.senla.training.yeutukhovich.bookstore.repository.*;
+import com.senla.training.yeutukhovich.bookstore.repository.IBookRepository;
+import com.senla.training.yeutukhovich.bookstore.repository.IOrderRepository;
+import com.senla.training.yeutukhovich.bookstore.repository.IRequestRepository;
 import com.senla.training.yeutukhovich.bookstore.serializer.BookstoreSerializer;
 import com.senla.training.yeutukhovich.bookstore.service.dto.BookDescription;
-import com.senla.training.yeutukhovich.bookstore.util.configuration.ConfigurationData;
-import com.senla.training.yeutukhovich.bookstore.util.constant.PathConstant;
-import com.senla.training.yeutukhovich.bookstore.util.initializer.EntityInitializer;
+import com.senla.training.yeutukhovich.bookstore.util.constant.ApplicationConstant;
+import com.senla.training.yeutukhovich.bookstore.util.constant.PropertyKeyConstant;
+import com.senla.training.yeutukhovich.bookstore.util.injector.Autowired;
+import com.senla.training.yeutukhovich.bookstore.util.injector.Singleton;
+import com.senla.training.yeutukhovich.bookstore.util.injector.config.ConfigInjector;
+import com.senla.training.yeutukhovich.bookstore.util.injector.config.ConfigProperty;
 import com.senla.training.yeutukhovich.bookstore.util.reader.FileDataReader;
 import com.senla.training.yeutukhovich.bookstore.util.writer.FileDataWriter;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Singleton
 public class BookServiceImpl implements BookService {
 
-    private static final Boolean REQUEST_AUTO_CLOSE = Boolean.valueOf(
-            ConfigurationData.getValue(ConfigurationData.REQUEST_AUTO_CLOSE));
-    private static final byte STALE_MONTH_NUMBER = Byte.parseByte(
-            ConfigurationData.getValue(ConfigurationData.STALE_MONTH_NUMBER));
+    @ConfigProperty(type = ConfigProperty.Type.BOOLEAN)
+    private Boolean requestAutoCloseEnabled;
+    @ConfigProperty(type = ConfigProperty.Type.BYTE)
+    private Byte staleMonthNumber;
 
-    private static BookService instance;
+    @ConfigProperty(propertyName = PropertyKeyConstant.CVS_DIRECTORY_KEY)
+    private String cvsDirectoryPath;
 
-    private IBookRepository bookRepository = BookRepository.getInstance();
-    private IOrderRepository orderRepository = OrderRepository.getInstance();
-    private IRequestRepository requestRepository = RequestRepository.getInstance();
+    @Autowired
+    private IBookRepository bookRepository;
+    @Autowired
+    private IOrderRepository orderRepository;
+    @Autowired
+    private IRequestRepository requestRepository;
+
+    @Autowired
+    private BookstoreSerializer bookstoreSerializer;
+    @Autowired
+    private EntityCvsConverter entityCvsConverter;
 
     private BookServiceImpl() {
 
     }
 
-    public static BookService getInstance() {
-        if (instance == null) {
-            instance = new BookServiceImpl();
-        }
-        return instance;
-    }
-
     @Override
     public boolean replenishBook(Long id) {
-
-
+        ConfigInjector.injectConfig(this);
         Book checkedBook = bookRepository.findById(id);
         if (checkedBook != null && !checkedBook.isAvailable()) {
             checkedBook.setAvailable(true);
             checkedBook.setReplenishmentDate(new Date());
             bookRepository.update(checkedBook);
-            if (REQUEST_AUTO_CLOSE) {
+            if (requestAutoCloseEnabled) {
                 closeRequests(checkedBook);
             }
             updateOrders(checkedBook);
@@ -125,7 +132,6 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<Book> findSoldBooksBetweenDates(Date startDate, Date endDate) {
         List<Order> orders = orderRepository.findAll();
-
         return orders.stream()
                 .filter(order -> order.getState() == OrderState.COMPLETED
                         && order.getCompletionDate().after(startDate)
@@ -138,7 +144,6 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<Book> findUnsoldBooksBetweenDates(Date startDate, Date endDate) {
         List<Order> orders = orderRepository.findAll();
-
         List<Book> soldBooks = orders.stream()
                 .filter(order -> order.getState() == OrderState.COMPLETED
                         && order.getCompletionDate().after(startDate)
@@ -146,7 +151,6 @@ public class BookServiceImpl implements BookService {
                 .map(Order::getBook)
                 .distinct()
                 .collect(Collectors.toList());
-
         return bookRepository.findAll()
                 .stream()
                 .filter(book -> !soldBooks.contains(book))
@@ -155,10 +159,12 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<Book> findStaleBooks() {
-
+        //TODO:Delete
+        ConfigInjector.injectConfig(this);
+        System.out.println(staleMonthNumber);
         List<Order> orders = orderRepository.findAll();
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MONTH, -STALE_MONTH_NUMBER);
+        calendar.add(Calendar.MONTH, -staleMonthNumber);
         Date currentDate = new Date();
         Date staleDate = new Date(calendar.getTimeInMillis());
 
@@ -169,7 +175,6 @@ public class BookServiceImpl implements BookService {
                 .map(Order::getBook)
                 .distinct()
                 .collect(Collectors.toList());
-
         return bookRepository.findAll()
                 .stream()
                 .filter(book -> !soldBooks.contains(book) && book.getReplenishmentDate() != null
@@ -180,11 +185,9 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookDescription showBookDescription(Long id) {
         Book checkedBook = bookRepository.findById(id);
-
         if (checkedBook == null) {
             return null;
         }
-
         BookDescription bookDescription = new BookDescription();
         bookDescription.setTitle(checkedBook.getTitle());
         bookDescription.setEditionDate(checkedBook.getEditionDate());
@@ -194,11 +197,12 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public int exportAllBooks(String fileName) {
+        ConfigInjector.injectConfig(this);
         int exportedBooksNumber = 0;
         if (fileName != null) {
-            String path = PathConstant.DIRECTORY_PATH.getPathConstant()
-                    + fileName + PathConstant.CVS_FORMAT_TYPE.getPathConstant();
-            List<String> bookStrings = EntityCvsConverter.getInstance().convertBooks(bookRepository.findAll());
+            String path = cvsDirectoryPath
+                    + fileName + ApplicationConstant.CVS_FORMAT_TYPE.getConstant();
+            List<String> bookStrings = entityCvsConverter.convertBooks(bookRepository.findAll());
             exportedBooksNumber = FileDataWriter.writeData(path, bookStrings);
 
         }
@@ -207,12 +211,13 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public boolean exportBook(Long bookId, String fileName) {
+        ConfigInjector.injectConfig(this);
         if (bookId != null && fileName != null) {
-            String path = PathConstant.DIRECTORY_PATH.getPathConstant()
-                    + fileName + PathConstant.CVS_FORMAT_TYPE.getPathConstant();
+            String path = cvsDirectoryPath
+                    + fileName + ApplicationConstant.CVS_FORMAT_TYPE.getConstant();
             Book book = bookRepository.findById(bookId);
             if (book != null) {
-                List<String> bookStrings = EntityCvsConverter.getInstance().convertBooks(List.of(book));
+                List<String> bookStrings = entityCvsConverter.convertBooks(List.of(book));
                 return FileDataWriter.writeData(path, bookStrings) != 0;
             }
         }
@@ -221,14 +226,15 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public int importBooks(String fileName) {
+        ConfigInjector.injectConfig(this);
         int importedBooksNumber = 0;
         if (fileName != null) {
-            String path = PathConstant.DIRECTORY_PATH.getPathConstant()
-                    + fileName + PathConstant.CVS_FORMAT_TYPE.getPathConstant();
+            String path = cvsDirectoryPath
+                    + fileName + ApplicationConstant.CVS_FORMAT_TYPE.getConstant();
             List<String> dataStrings = FileDataReader.readData(path);
 
             List<Book> repoBooks = bookRepository.findAll();
-            List<Book> importedBooks = EntityCvsConverter.getInstance().parseBooks(dataStrings);
+            List<Book> importedBooks = entityCvsConverter.parseBooks(dataStrings);
 
             for (Book importedBook : importedBooks) {
                 if (repoBooks.contains(importedBook)) {
@@ -242,21 +248,6 @@ public class BookServiceImpl implements BookService {
             }
         }
         return importedBooksNumber;
-    }
-
-    public void serializeBooks() {
-        List<Book> books = bookRepository.findAll();
-        BookstoreSerializer.getInstance().serializeBookstore(books,
-                PathConstant.SERIALIZED_BOOKS_PATH.getPathConstant());
-    }
-
-    public void deserializeBooks() {
-        List<Book> books = BookstoreSerializer.getInstance()
-                .deserializeBookstore(PathConstant.SERIALIZED_BOOKS_PATH.getPathConstant());
-        if (books == null) {
-            books = EntityInitializer.initBooks();
-        }
-        books.forEach(book -> bookRepository.add(book));
     }
 
     private List<Book> findAllBooks() {

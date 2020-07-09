@@ -1,36 +1,25 @@
 package com.senla.training.yeutukhovich.bookstore.runner;
 
-
-import com.senla.training.yeutukhovich.bookstore.controller.BookController;
-import com.senla.training.yeutukhovich.bookstore.controller.OrderController;
-import com.senla.training.yeutukhovich.bookstore.controller.RequestController;
+import com.senla.training.yeutukhovich.bookstore.controller.SerializationController;
 import com.senla.training.yeutukhovich.bookstore.ui.controller.MenuController;
-import com.senla.training.yeutukhovich.bookstore.ui.menu.builder.MenuBuilder;
-import com.senla.training.yeutukhovich.bookstore.ui.menu.navigator.MenuNavigator;
+import com.senla.training.yeutukhovich.bookstore.util.injector.Container;
 
 public class MainApplication {
 
     public static void main(String[] args) {
         loadData();
 
-        MenuController menuController = MenuController.getInstance();
-        menuController.setMenuBuilder(MenuBuilder.getInstance());
-        menuController.setMenuNavigator(MenuNavigator.getInstance());
+        MenuController menuController = Container.getImplementation(MenuController.class);
         menuController.run();
 
         saveData();
     }
 
     private static void loadData() {
-        BookController.getInstance().deserializeBooks();
-        OrderController.getInstance().deserializeOrders();
-        RequestController.getInstance().deserializeRequests();
+        Container.getImplementation(SerializationController.class).deserializeBookstore();
     }
 
     private static void saveData() {
-        BookController.getInstance().serializeBooks();
-        OrderController.getInstance().serializeOrders();
-        RequestController.getInstance().serializeRequests();
+        Container.getImplementation(SerializationController.class).serializeBookstore();
     }
-
 }

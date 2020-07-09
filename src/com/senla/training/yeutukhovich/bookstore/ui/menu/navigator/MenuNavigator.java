@@ -3,22 +3,15 @@ package com.senla.training.yeutukhovich.bookstore.ui.menu.navigator;
 import com.senla.training.yeutukhovich.bookstore.ui.menu.Menu;
 import com.senla.training.yeutukhovich.bookstore.ui.menu.MenuItem;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
+import com.senla.training.yeutukhovich.bookstore.util.injector.Singleton;
 
+@Singleton
 public class MenuNavigator {
-
-    private static MenuNavigator instance;
 
     private Menu currentMenu;
 
     private MenuNavigator() {
 
-    }
-
-    public static MenuNavigator getInstance() {
-        if (instance == null) {
-            instance = new MenuNavigator();
-        }
-        return instance;
     }
 
     public Menu getCurrentMenu() {

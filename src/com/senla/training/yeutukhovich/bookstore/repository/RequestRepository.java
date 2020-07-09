@@ -2,27 +2,19 @@ package com.senla.training.yeutukhovich.bookstore.repository;
 
 import com.senla.training.yeutukhovich.bookstore.domain.Request;
 import com.senla.training.yeutukhovich.bookstore.util.generator.IdGenerator;
+import com.senla.training.yeutukhovich.bookstore.util.injector.Singleton;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Singleton
 public class RequestRepository implements IRequestRepository {
-
-    private static IRequestRepository instance;
 
     private List<Request> requests = new ArrayList<>();
 
     private RequestRepository() {
 
     }
-
-    public static IRequestRepository getInstance() {
-        if (instance == null) {
-            instance = new RequestRepository();
-        }
-        return instance;
-    }
-
 
     @Override
     public List<Request> findAll() {

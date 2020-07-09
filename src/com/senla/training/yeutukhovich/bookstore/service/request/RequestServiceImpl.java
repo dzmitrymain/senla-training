@@ -3,13 +3,16 @@ package com.senla.training.yeutukhovich.bookstore.service.request;
 import com.senla.training.yeutukhovich.bookstore.converter.EntityCvsConverter;
 import com.senla.training.yeutukhovich.bookstore.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.domain.Request;
-import com.senla.training.yeutukhovich.bookstore.repository.BookRepository;
 import com.senla.training.yeutukhovich.bookstore.repository.IBookRepository;
 import com.senla.training.yeutukhovich.bookstore.repository.IRequestRepository;
-import com.senla.training.yeutukhovich.bookstore.repository.RequestRepository;
 import com.senla.training.yeutukhovich.bookstore.serializer.BookstoreSerializer;
+import com.senla.training.yeutukhovich.bookstore.util.constant.ApplicationConstant;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
-import com.senla.training.yeutukhovich.bookstore.util.constant.PathConstant;
+import com.senla.training.yeutukhovich.bookstore.util.constant.PropertyKeyConstant;
+import com.senla.training.yeutukhovich.bookstore.util.injector.Autowired;
+import com.senla.training.yeutukhovich.bookstore.util.injector.Singleton;
+import com.senla.training.yeutukhovich.bookstore.util.injector.config.ConfigInjector;
+import com.senla.training.yeutukhovich.bookstore.util.injector.config.ConfigProperty;
 import com.senla.training.yeutukhovich.bookstore.util.reader.FileDataReader;
 import com.senla.training.yeutukhovich.bookstore.util.writer.FileDataWriter;
 
@@ -18,23 +21,24 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+@Singleton
 public class RequestServiceImpl implements RequestService {
 
-    private static RequestService instance;
+    @ConfigProperty(propertyName = PropertyKeyConstant.CVS_DIRECTORY_KEY)
+    private String cvsDirectoryPath;
 
+    @Autowired
     private IBookRepository bookRepository;
+    @Autowired
     private IRequestRepository requestRepository;
 
-    private RequestServiceImpl() {
-        this.bookRepository = BookRepository.getInstance();
-        this.requestRepository = RequestRepository.getInstance();
-    }
+    @Autowired
+    private BookstoreSerializer bookstoreSerializer;
+    @Autowired
+    private EntityCvsConverter entityCvsConverter;
 
-    public static RequestService getInstance() {
-        if (instance == null) {
-            instance = new RequestServiceImpl();
-        }
-        return instance;
+    private RequestServiceImpl() {
+
     }
 
     @Override
@@ -47,7 +51,6 @@ public class RequestServiceImpl implements RequestService {
         }
         return null;
     }
-
 
     @Override
     public List<Request> findSortedAllRequestsByBookTitle() {
@@ -78,11 +81,12 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public int exportAllRequests(String fileName) {
+        ConfigInjector.injectConfig(this);
         int exportedRequestsNumber = 0;
         if (fileName != null) {
-            String path = PathConstant.DIRECTORY_PATH.getPathConstant()
-                    + fileName + PathConstant.CVS_FORMAT_TYPE.getPathConstant();
-            List<String> requestStrings = EntityCvsConverter.getInstance().convertRequests(requestRepository.findAll());
+            String path = cvsDirectoryPath
+                    + fileName + ApplicationConstant.CVS_FORMAT_TYPE.getConstant();
+            List<String> requestStrings = entityCvsConverter.convertRequests(requestRepository.findAll());
             exportedRequestsNumber = FileDataWriter.writeData(path, requestStrings);
 
         }
@@ -91,12 +95,13 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public boolean exportRequest(Long requestId, String fileName) {
+        ConfigInjector.injectConfig(this);
         if (requestId != null && fileName != null) {
-            String path = PathConstant.DIRECTORY_PATH.getPathConstant()
-                    + fileName + PathConstant.CVS_FORMAT_TYPE.getPathConstant();
+            String path = cvsDirectoryPath
+                    + fileName + ApplicationConstant.CVS_FORMAT_TYPE.getConstant();
             Request request = requestRepository.findById(requestId);
             if (request != null) {
-                List<String> requestStrings = EntityCvsConverter.getInstance().convertRequests(List.of(request));
+                List<String> requestStrings = entityCvsConverter.convertRequests(List.of(request));
                 return FileDataWriter.writeData(path, requestStrings) != 0;
             }
         }
@@ -105,14 +110,15 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public int importRequests(String fileName) {
+        ConfigInjector.injectConfig(this);
         int importedRequestsNumber = 0;
         if (fileName != null) {
-            String path = PathConstant.DIRECTORY_PATH.getPathConstant()
-                    + fileName + PathConstant.CVS_FORMAT_TYPE.getPathConstant();
+            String path = cvsDirectoryPath
+                    + fileName + ApplicationConstant.CVS_FORMAT_TYPE.getConstant();
             List<String> requestsStrings = FileDataReader.readData(path);
 
             List<Request> repoRequests = requestRepository.findAll();
-            List<Request> importedRequests = EntityCvsConverter.getInstance().parseRequests(requestsStrings);
+            List<Request> importedRequests = entityCvsConverter.parseRequests(requestsStrings);
 
             for (Request importedRequest : importedRequests) {
                 Book dependentBook = bookRepository.findById(importedRequest.getBook().getId());
@@ -130,20 +136,6 @@ public class RequestServiceImpl implements RequestService {
             }
         }
         return importedRequestsNumber;
-    }
-
-    public void serializeRequests() {
-        List<Request> requests = requestRepository.findAll();
-        BookstoreSerializer.getInstance().serializeBookstore(requests,
-                PathConstant.SERIALIZED_REQUESTS_PATH.getPathConstant());
-    }
-
-    public void deserializeRequests() {
-        List<Request> requests = BookstoreSerializer.getInstance()
-                .deserializeBookstore(PathConstant.SERIALIZED_REQUESTS_PATH.getPathConstant());
-        if (requests != null) {
-            requests.forEach(request -> requestRepository.add(request));
-        }
     }
 
     private List<Request> findAllRequests() {

@@ -2,29 +2,24 @@ package com.senla.training.yeutukhovich.bookstore.controller;
 
 import com.senla.training.yeutukhovich.bookstore.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.service.book.BookService;
-import com.senla.training.yeutukhovich.bookstore.service.book.BookServiceImpl;
 import com.senla.training.yeutukhovich.bookstore.service.dto.BookDescription;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
+import com.senla.training.yeutukhovich.bookstore.util.injector.Autowired;
+import com.senla.training.yeutukhovich.bookstore.util.injector.Singleton;
 
 import java.util.Date;
 import java.util.stream.Collectors;
 
+@Singleton
 public class BookController {
 
-    private static BookController instance;
     private static final String BOOKS_DELIMITER = "\n";
 
+    @Autowired
     private BookService bookService;
 
-    private BookController(BookService bookService) {
-        this.bookService = bookService;
-    }
+    private BookController() {
 
-    public static BookController getInstance() {
-        if (instance == null) {
-            instance = new BookController(BookServiceImpl.getInstance());
-        }
-        return instance;
     }
 
     public String replenishBook(Long id) {
@@ -42,7 +37,6 @@ public class BookController {
     }
 
     public String findSortedAllBooksByAvailability() {
-
         return bookService.findSortedAllBooksByAvailability().stream()
                 .map(Book::toString)
                 .collect(Collectors.joining(BOOKS_DELIMITER));
@@ -72,13 +66,11 @@ public class BookController {
                 .collect(Collectors.joining(BOOKS_DELIMITER));
     }
 
-
     public String findSoldBooksBetweenDates(Date startDate, Date endDate) {
         return bookService.findSoldBooksBetweenDates(startDate, endDate).stream()
                 .map(Book::toString)
                 .collect(Collectors.joining(BOOKS_DELIMITER));
     }
-
 
     public String findUnsoldBooksBetweenDates(Date startDate, Date endDate) {
         return bookService.findUnsoldBooksBetweenDates(startDate, endDate).stream()
@@ -106,13 +98,5 @@ public class BookController {
 
     public boolean exportBook(Long bookId, String fileName) {
         return bookService.exportBook(bookId, fileName);
-    }
-
-    public void serializeBooks() {
-        bookService.serializeBooks();
-    }
-
-    public void deserializeBooks() {
-        bookService.deserializeBooks();
     }
 }

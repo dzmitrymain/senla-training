@@ -11,7 +11,6 @@ public class DateConverter {
     public static final SimpleDateFormat DAY_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
     public static final SimpleDateFormat STANDARD_DATE_FORMAT = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH);
 
-
     public static Date parseDate(String dateString, SimpleDateFormat dateFormat) {
         Date date = null;
         if (dateString != null && dateFormat != null) {

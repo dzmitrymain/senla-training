@@ -1,32 +1,26 @@
 package com.senla.training.yeutukhovich.bookstore.controller;
 
+import com.senla.training.yeutukhovich.bookstore.util.injector.Autowired;
 import com.senla.training.yeutukhovich.bookstore.domain.Order;
 import com.senla.training.yeutukhovich.bookstore.service.dto.CreationOrderResult;
 import com.senla.training.yeutukhovich.bookstore.service.dto.OrderDetails;
 import com.senla.training.yeutukhovich.bookstore.service.order.OrderService;
-import com.senla.training.yeutukhovich.bookstore.service.order.OrderServiceImpl;
+import com.senla.training.yeutukhovich.bookstore.util.injector.Singleton;
 
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.stream.Collectors;
 
+@Singleton
 public class OrderController {
-
-    private static OrderController instance;
 
     private static final String ORDER_DELIMITER = "\n";
 
+    @Autowired
     private OrderService orderService;
 
-    private OrderController(OrderService orderService) {
-        this.orderService = orderService;
-    }
+    private OrderController() {
 
-    public static OrderController getInstance() {
-        if (instance == null) {
-            instance = new OrderController(OrderServiceImpl.getInstance());
-        }
-        return instance;
     }
 
     public CreationOrderResult createOrder(Long bookId, String customerData) {
@@ -87,13 +81,5 @@ public class OrderController {
 
     public boolean exportOrder(Long orderId, String fileName) {
         return orderService.exportOrder(orderId, fileName);
-    }
-
-    public void serializeOrders() {
-        orderService.serializeOrders();
-    }
-
-    public void deserializeOrders() {
-        orderService.deserializeOrders();
     }
 }

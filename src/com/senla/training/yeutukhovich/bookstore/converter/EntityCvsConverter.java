@@ -6,28 +6,21 @@ import com.senla.training.yeutukhovich.bookstore.domain.Request;
 import com.senla.training.yeutukhovich.bookstore.domain.state.OrderState;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 import com.senla.training.yeutukhovich.bookstore.util.converter.DateConverter;
+import com.senla.training.yeutukhovich.bookstore.util.injector.Singleton;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@Singleton
 public class EntityCvsConverter {
 
-    private static EntityCvsConverter instance;
     private static final String DELIMITER = ";";
 
     private EntityCvsConverter() {
 
     }
-
-    public static EntityCvsConverter getInstance() {
-        if (instance == null) {
-            instance = new EntityCvsConverter();
-        }
-        return instance;
-    }
-
 
     public List<String> convertBooks(List<Book> books) {
         List<String> bookStrings = new ArrayList<>();

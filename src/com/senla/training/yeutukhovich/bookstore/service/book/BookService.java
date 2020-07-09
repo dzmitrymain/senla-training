@@ -35,8 +35,4 @@ public interface BookService {
     boolean exportBook(Long bookId, String fileName);
 
     int importBooks(String fileName);
-
-    void serializeBooks();
-
-    void deserializeBooks();
 }

@@ -5,12 +5,19 @@ import com.senla.training.yeutukhovich.bookstore.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.domain.Order;
 import com.senla.training.yeutukhovich.bookstore.domain.Request;
 import com.senla.training.yeutukhovich.bookstore.domain.state.OrderState;
-import com.senla.training.yeutukhovich.bookstore.repository.*;
+import com.senla.training.yeutukhovich.bookstore.repository.IBookRepository;
+import com.senla.training.yeutukhovich.bookstore.repository.IOrderRepository;
+import com.senla.training.yeutukhovich.bookstore.repository.IRequestRepository;
 import com.senla.training.yeutukhovich.bookstore.serializer.BookstoreSerializer;
 import com.senla.training.yeutukhovich.bookstore.service.dto.CreationOrderResult;
 import com.senla.training.yeutukhovich.bookstore.service.dto.OrderDetails;
+import com.senla.training.yeutukhovich.bookstore.util.constant.ApplicationConstant;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
-import com.senla.training.yeutukhovich.bookstore.util.constant.PathConstant;
+import com.senla.training.yeutukhovich.bookstore.util.constant.PropertyKeyConstant;
+import com.senla.training.yeutukhovich.bookstore.util.injector.Autowired;
+import com.senla.training.yeutukhovich.bookstore.util.injector.Singleton;
+import com.senla.training.yeutukhovich.bookstore.util.injector.config.ConfigInjector;
+import com.senla.training.yeutukhovich.bookstore.util.injector.config.ConfigProperty;
 import com.senla.training.yeutukhovich.bookstore.util.reader.FileDataReader;
 import com.senla.training.yeutukhovich.bookstore.util.writer.FileDataWriter;
 
@@ -21,25 +28,26 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+@Singleton
 public class OrderServiceImpl implements OrderService {
 
-    private static OrderService instance;
+    @ConfigProperty(propertyName = PropertyKeyConstant.CVS_DIRECTORY_KEY)
+    private String cvsDirectoryPath;
 
+    @Autowired
     private IBookRepository bookRepository;
+    @Autowired
     private IOrderRepository orderRepository;
+    @Autowired
     private IRequestRepository requestRepository;
 
-    private OrderServiceImpl() {
-        this.bookRepository = BookRepository.getInstance();
-        this.orderRepository = OrderRepository.getInstance();
-        this.requestRepository = RequestRepository.getInstance();
-    }
+    @Autowired
+    private BookstoreSerializer bookstoreSerializer;
+    @Autowired
+    private EntityCvsConverter entityCvsConverter;
 
-    public static OrderService getInstance() {
-        if (instance == null) {
-            instance = new OrderServiceImpl();
-        }
-        return instance;
+    private OrderServiceImpl() {
+
     }
 
     @Override
@@ -164,11 +172,12 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public int exportAllOrders(String fileName) {
+        ConfigInjector.injectConfig(this);
         int exportedOrdersNumber = 0;
         if (fileName != null) {
-            String path = PathConstant.DIRECTORY_PATH.getPathConstant()
-                    + fileName + PathConstant.CVS_FORMAT_TYPE.getPathConstant();
-            List<String> orderStrings = EntityCvsConverter.getInstance().convertOrders(orderRepository.findAll());
+            String path = cvsDirectoryPath
+                    + fileName + ApplicationConstant.CVS_FORMAT_TYPE.getConstant();
+            List<String> orderStrings = entityCvsConverter.convertOrders(orderRepository.findAll());
             exportedOrdersNumber = FileDataWriter.writeData(path, orderStrings);
         }
         return exportedOrdersNumber;
@@ -176,12 +185,13 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public boolean exportOrder(Long id, String fileName) {
+        ConfigInjector.injectConfig(this);
         if (id != null && fileName != null) {
-            String path = PathConstant.DIRECTORY_PATH.getPathConstant()
-                    + fileName + PathConstant.CVS_FORMAT_TYPE.getPathConstant();
+            String path = cvsDirectoryPath
+                    + fileName + ApplicationConstant.CVS_FORMAT_TYPE.getConstant();
             Order order = orderRepository.findById(id);
             if (order != null) {
-                List<String> orderStrings = EntityCvsConverter.getInstance().convertOrders(List.of(order));
+                List<String> orderStrings = entityCvsConverter.convertOrders(List.of(order));
                 return FileDataWriter.writeData(path, orderStrings) != 0;
             }
         }
@@ -190,14 +200,15 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public int importOrders(String fileName) {
+        ConfigInjector.injectConfig(this);
         int importedOrdersNumber = 0;
         if (fileName != null) {
-            String path = PathConstant.DIRECTORY_PATH.getPathConstant()
-                    + fileName + PathConstant.CVS_FORMAT_TYPE.getPathConstant();
+            String path = cvsDirectoryPath
+                    + fileName + ApplicationConstant.CVS_FORMAT_TYPE.getConstant();
             List<String> orderStrings = FileDataReader.readData(path);
 
             List<Order> repoOrders = orderRepository.findAll();
-            List<Order> importedOrders = EntityCvsConverter.getInstance().parseOrders(orderStrings);
+            List<Order> importedOrders = entityCvsConverter.parseOrders(orderStrings);
 
             for (Order importedOrder : importedOrders) {
                 Book dependentBook = bookRepository.findById(importedOrder.getBook().getId());
@@ -215,20 +226,6 @@ public class OrderServiceImpl implements OrderService {
             }
         }
         return importedOrdersNumber;
-    }
-
-    public void serializeOrders() {
-        List<Order> orders = orderRepository.findAll();
-        BookstoreSerializer.getInstance().serializeBookstore(orders,
-                PathConstant.SERIALIZED_ORDERS_PATH.getPathConstant());
-    }
-
-    public void deserializeOrders() {
-        List<Order> orders = BookstoreSerializer.getInstance()
-                .deserializeBookstore(PathConstant.SERIALIZED_ORDERS_PATH.getPathConstant());
-        if (orders != null) {
-            orders.forEach(order -> orderRepository.add(order));
-        }
     }
 
     private List<Order> findAllOrders() {

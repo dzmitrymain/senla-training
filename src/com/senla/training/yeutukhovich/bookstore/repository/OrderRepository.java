@@ -2,25 +2,18 @@ package com.senla.training.yeutukhovich.bookstore.repository;
 
 import com.senla.training.yeutukhovich.bookstore.domain.Order;
 import com.senla.training.yeutukhovich.bookstore.util.generator.IdGenerator;
+import com.senla.training.yeutukhovich.bookstore.util.injector.Singleton;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Singleton
 public class OrderRepository implements IOrderRepository {
-
-    private static IOrderRepository instance;
 
     private List<Order> orders = new ArrayList<>();
 
     private OrderRepository() {
 
-    }
-
-    public static IOrderRepository getInstance() {
-        if (instance == null) {
-            instance = new OrderRepository();
-        }
-        return instance;
     }
 
     @Override

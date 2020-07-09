@@ -2,25 +2,18 @@ package com.senla.training.yeutukhovich.bookstore.repository;
 
 import com.senla.training.yeutukhovich.bookstore.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.util.generator.IdGenerator;
+import com.senla.training.yeutukhovich.bookstore.util.injector.Singleton;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Singleton
 public class BookRepository implements IBookRepository {
-
-    private static IBookRepository instance;
 
     private List<Book> books = new ArrayList<>();
 
     private BookRepository() {
 
-    }
-
-    public static IBookRepository getInstance() {
-        if (instance == null) {
-            instance = new BookRepository();
-        }
-        return instance;
     }
 
     @Override
