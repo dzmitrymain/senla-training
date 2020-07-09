@@ -103,7 +103,6 @@ public class EntityCvsConverter {
 
     public List<Request> parseRequests(List<String> requestStrings) {
         List<Request> requests = new ArrayList<>();
-
         for (String requestString : requestStrings) {
             String[] stringObjects = requestString.split(DELIMITER);
             Request request = buildRequest(stringObjects);
@@ -180,7 +179,6 @@ public class EntityCvsConverter {
     }
 
     private Request buildRequest(String[] strings) {
-
         if (strings.length == 4) {
             try {
                 Request request = new Request();

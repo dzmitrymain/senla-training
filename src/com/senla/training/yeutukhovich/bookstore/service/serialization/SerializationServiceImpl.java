@@ -1,8 +1,8 @@
 package com.senla.training.yeutukhovich.bookstore.service.serialization;
 
-import com.senla.training.yeutukhovich.bookstore.repository.IBookRepository;
-import com.senla.training.yeutukhovich.bookstore.repository.IOrderRepository;
-import com.senla.training.yeutukhovich.bookstore.repository.IRequestRepository;
+import com.senla.training.yeutukhovich.bookstore.repository.BookRepository;
+import com.senla.training.yeutukhovich.bookstore.repository.OrderRepository;
+import com.senla.training.yeutukhovich.bookstore.repository.RequestRepository;
 import com.senla.training.yeutukhovich.bookstore.serializer.ApplicationState;
 import com.senla.training.yeutukhovich.bookstore.serializer.BookstoreSerializer;
 import com.senla.training.yeutukhovich.bookstore.util.constant.PropertyKeyConstant;
@@ -19,11 +19,11 @@ public class SerializationServiceImpl implements SerializationService {
     private String serializationDataPath;
 
     @Autowired
-    private IBookRepository bookRepository;
+    private BookRepository bookRepository;
     @Autowired
-    private IOrderRepository orderRepository;
+    private OrderRepository orderRepository;
     @Autowired
-    private IRequestRepository requestRepository;
+    private RequestRepository requestRepository;
 
     @Autowired
     private BookstoreSerializer bookstoreSerializer;

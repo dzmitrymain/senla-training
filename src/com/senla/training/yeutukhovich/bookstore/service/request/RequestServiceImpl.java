@@ -3,8 +3,8 @@ package com.senla.training.yeutukhovich.bookstore.service.request;
 import com.senla.training.yeutukhovich.bookstore.converter.EntityCvsConverter;
 import com.senla.training.yeutukhovich.bookstore.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.domain.Request;
-import com.senla.training.yeutukhovich.bookstore.repository.IBookRepository;
-import com.senla.training.yeutukhovich.bookstore.repository.IRequestRepository;
+import com.senla.training.yeutukhovich.bookstore.repository.BookRepository;
+import com.senla.training.yeutukhovich.bookstore.repository.RequestRepository;
 import com.senla.training.yeutukhovich.bookstore.serializer.BookstoreSerializer;
 import com.senla.training.yeutukhovich.bookstore.util.constant.ApplicationConstant;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
@@ -28,9 +28,9 @@ public class RequestServiceImpl implements RequestService {
     private String cvsDirectoryPath;
 
     @Autowired
-    private IBookRepository bookRepository;
+    private BookRepository bookRepository;
     @Autowired
-    private IRequestRepository requestRepository;
+    private RequestRepository requestRepository;
 
     @Autowired
     private BookstoreSerializer bookstoreSerializer;
