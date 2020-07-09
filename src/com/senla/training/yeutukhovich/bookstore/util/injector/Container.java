@@ -27,8 +27,8 @@ public class Container {
     }
 
     private static void initSingletons() {
-        for (Class singletonClazz : PackageScanner.findSingletons("")) {
-            singletons.add(newInstance(singletonClazz));
+        for (Class singletonClass : PackageScanner.findSingletons("")) {
+            singletons.add(newInstance(singletonClass));
         }
     }
 

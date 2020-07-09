@@ -126,10 +126,9 @@ public class EntityCvsConverter {
     }
 
     private Book buildBook(String[] strings) {
-        Book book = null;
         if (strings.length == 6) {
             try {
-                book = new Book();
+                Book book = new Book();
                 book.setId(Long.valueOf(strings[0]));
                 book.setTitle(strings[1]);
                 book.setAvailable(parseBoolean(strings[2]));
@@ -144,17 +143,17 @@ public class EntityCvsConverter {
                             , DateConverter.STANDARD_DATE_FORMAT));
                 }
                 book.setPrice(BigDecimal.valueOf(Double.parseDouble(strings[5])));
+                return book;
             } catch (IllegalArgumentException e) {
                 System.err.println(e.getMessage());
             }
         }
-        return book;
+        return null;
     }
 
     private Order buildOrder(String[] strings) {
-        Order order = null;
         if (strings.length == 7) {
-            order = new Order();
+            Order order = new Order();
             try {
                 order = new Order();
                 order.setId(Long.valueOf(strings[0]));
@@ -172,26 +171,28 @@ public class EntityCvsConverter {
                             , DateConverter.STANDARD_DATE_FORMAT));
                 }
                 order.setCustomerData(strings[6]);
+                return order;
             } catch (IllegalArgumentException e) {
                 System.err.println(e.getMessage());
             }
         }
-        return order;
+        return null;
     }
 
     private Request buildRequest(String[] strings) {
-        Request request = null;
+
         if (strings.length == 4) {
             try {
-                request = new Request();
+                Request request = new Request();
                 request.setId(Long.valueOf(strings[0]));
                 request.setBook(new Book(Long.valueOf(strings[1])));
                 request.setActive(parseBoolean(strings[2]));
                 request.setRequesterData(strings[3]);
+                return request;
             } catch (IllegalArgumentException e) {
                 System.err.println(e.getMessage());
             }
         }
-        return request;
+        return null;
     }
 }
