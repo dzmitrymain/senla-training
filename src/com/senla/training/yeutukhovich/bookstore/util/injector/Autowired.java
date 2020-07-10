@@ -9,4 +9,5 @@ import java.lang.annotation.Target;
 @Target(value = {ElementType.FIELD, ElementType.LOCAL_VARIABLE})
 @Retention(value = RetentionPolicy.RUNTIME)
 public @interface Autowired {
+    String defaultClassSimpleName() default "";
 }

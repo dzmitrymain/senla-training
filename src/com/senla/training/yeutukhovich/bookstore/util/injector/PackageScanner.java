@@ -1,5 +1,7 @@
 package com.senla.training.yeutukhovich.bookstore.util.injector;
 
+import com.senla.training.yeutukhovich.bookstore.exception.InternalException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,7 +12,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class PackageScanner {
+
     private static Set<Class> classes;
+
+    private PackageScanner() {
+
+    }
 
     public static Set<Class> findSingletons(String packageName) {
         return findClasses(packageName).stream()
@@ -23,7 +30,6 @@ public class PackageScanner {
     private static Set<Class> findClasses(String packageName) {
         classes = new HashSet<>();
         scanPackage(packageName);
-        System.out.println();
         return classes;
     }
 
@@ -39,7 +45,7 @@ public class PackageScanner {
                         classes.add(Class.forName(packageName.replaceAll("/", ".")
                                 + line.substring(0, line.lastIndexOf('.'))));
                     } catch (ClassNotFoundException e) {
-                        System.err.println(e.getMessage());
+                        throw new InternalException(e.getMessage());
                     }
                 }
                 if (!line.contains(".")) {
@@ -47,7 +53,7 @@ public class PackageScanner {
                 }
             });
         } catch (IOException e) {
-            System.err.println(e.getMessage());
+            throw new InternalException(e.getMessage());
         }
     }
 }

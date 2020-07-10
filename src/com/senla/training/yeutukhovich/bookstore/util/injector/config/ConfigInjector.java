@@ -1,12 +1,15 @@
 package com.senla.training.yeutukhovich.bookstore.util.injector.config;
 
+import com.senla.training.yeutukhovich.bookstore.exception.InternalException;
 import com.senla.training.yeutukhovich.bookstore.util.constant.ApplicationConstant;
+import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 import com.senla.training.yeutukhovich.bookstore.util.constant.PropertyKeyConstant;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.Properties;
 
 public class ConfigInjector {
@@ -24,31 +27,35 @@ public class ConfigInjector {
         PROPERTIES = new Properties(defaultProperties);
     }
 
+    private ConfigInjector() {
+
+    }
+
     public static void injectConfig(Object object) {
-        for (Field field : object.getClass().getDeclaredFields()) {
-            if (field.isAnnotationPresent(ConfigProperty.class)) {
-                ConfigProperty configProperty = field.getAnnotation(ConfigProperty.class);
-                loadStream(configProperty.configName());
-                String property = getProperty(configProperty.propertyName(), field);
-                if (property == null) {
-                    //TODO:literal?
-                    System.err.println("Can't find property: '" + configProperty.propertyName()
-                            + "' at properties file: '" + configProperty.configName() + "'");
-                    continue;
-                }
-                Object castedProperty = castProperty(property, configProperty.type());
-                field.setAccessible(true);
-                try {
-                    field.set(object, castedProperty);
-                } catch (IllegalAccessException e) {
-                    System.err.println(e.getMessage());
-                }
-            }
+        Arrays.stream(object.getClass().getDeclaredFields())
+                .filter(field -> field.isAnnotationPresent(ConfigProperty.class))
+                .forEach(field -> injectConfig(field, object));
+    }
+
+    public static void injectConfig(Field field, Object object) {
+        ConfigProperty configProperty = field.getAnnotation(ConfigProperty.class);
+        loadStream(configProperty.configName());
+        String property = getProperty(configProperty.propertyName(), field);
+        if (property == null) {
+            throw new InternalException(String.format(MessageConstant.CANT_FIND_PROPERTY.getMessage(),
+                    configProperty.propertyName(), configProperty.configName()));
+        }
+        Object castedProperty = castProperty(property, configProperty.type());
+        field.setAccessible(true);
+        try {
+            field.set(object, castedProperty);
+        } catch (IllegalAccessException e) {
+            throw new InternalException(e.getMessage());
         }
     }
 
     private static String getProperty(String propertyName, Field field) {
-        if ("ClassName.FieldName".equals(propertyName)) {
+        if (propertyName.isEmpty()) {
             return PROPERTIES.getProperty(field.getDeclaringClass().getSimpleName() + "." + field.getName());
         }
         return PROPERTIES.getProperty(propertyName);
@@ -75,7 +82,7 @@ public class ConfigInjector {
                 ApplicationConstant.RESOURCE_ROOT_FOLDER.getConstant() + "/" + propertiesPath)) {
             PROPERTIES.load(stream);
         } catch (IOException e) {
-            System.err.println(e.getMessage());
+            throw new InternalException(e.getMessage());
         }
     }
 }

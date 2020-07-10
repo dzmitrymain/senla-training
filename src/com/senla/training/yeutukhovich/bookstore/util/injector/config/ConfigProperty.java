@@ -9,9 +9,9 @@ import java.lang.annotation.Target;
 @Retention(value = RetentionPolicy.RUNTIME)
 public @interface ConfigProperty {
 
-    String configName() default "configuration.properties";
+    String configName() default "application.properties";
 
-    String propertyName() default "ClassName.FieldName";
+    String propertyName() default "";
 
     Type type() default Type.STRING;
 

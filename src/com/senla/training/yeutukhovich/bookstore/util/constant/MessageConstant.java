@@ -8,8 +8,12 @@ public enum MessageConstant {
     MENU_ITEM_INDEX_DELIMITER(". "),
 
     SOMETHING_WENT_WRONG("Something went wrong."),
+    CANT_FIND_SINGLETON("Can't find singleton"),
+    CANT_FIND_PROPERTY("Can't find property: '%s' at properties file: '%s'"),
     NO_DATA_WAS_FOUND("No data was found."),
-    STRING_FORMAT_UNPARSEABLE_BOOLEAN("Unparseable boolean: \"%s\""),
+    CONTAINER_NOT_INIT("Container has not initialized."),
+    AMBIGUITY_CHOICE("Ambiguity of choice '%s'. Specify the default implementation."),
+    STRING_FORMAT_UNPARSEABLE_BOOLEAN("Unparseable boolean: '%s'"),
 
     EDITION_NOT_NULL("Edition date can't be null."),
     BOOK_NOT_EXIST("Book not exist."),
