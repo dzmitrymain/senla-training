@@ -15,7 +15,7 @@ public class ApplicationState implements Serializable {
     private List<Order> orders;
     private List<Request> requests;
 
-    public ApplicationState(){
+    public ApplicationState() {
 
     }
 

@@ -4,11 +4,13 @@ import com.senla.training.yeutukhovich.bookstore.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.domain.Order;
 import com.senla.training.yeutukhovich.bookstore.domain.Request;
 import com.senla.training.yeutukhovich.bookstore.domain.state.OrderState;
+import com.senla.training.yeutukhovich.bookstore.exception.BusinessException;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 import com.senla.training.yeutukhovich.bookstore.util.converter.DateConverter;
 import com.senla.training.yeutukhovich.bookstore.util.injector.Singleton;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -46,9 +48,10 @@ public class EntityCvsConverter {
         for (String string : bookStrings) {
             String[] stringObjects = string.split(DELIMITER);
             Book book = buildBook(stringObjects);
-            if (book != null) {
-                books.add(book);
+            if (book == null) {
+                continue;
             }
+            books.add(book);
         }
         return books;
     }
@@ -79,9 +82,10 @@ public class EntityCvsConverter {
         for (String string : orderStrings) {
             String[] stringObjects = string.split(DELIMITER);
             Order order = buildOrder(stringObjects);
-            if (order != null) {
-                orders.add(order);
+            if (order == null) {
+                continue;
             }
+            orders.add(order);
         }
         return orders;
     }
@@ -106,9 +110,10 @@ public class EntityCvsConverter {
         for (String requestString : requestStrings) {
             String[] stringObjects = requestString.split(DELIMITER);
             Request request = buildRequest(stringObjects);
-            if (request != null) {
-                requests.add(request);
+            if (request == null) {
+                continue;
             }
+            requests.add(request);
         }
         return requests;
     }
@@ -143,8 +148,8 @@ public class EntityCvsConverter {
                 }
                 book.setPrice(BigDecimal.valueOf(Double.parseDouble(strings[5])));
                 return book;
-            } catch (IllegalArgumentException e) {
-                System.err.println(e.getMessage());
+            } catch (IllegalArgumentException | ParseException e) {
+                throw new BusinessException(MessageConstant.CANT_PARSE_BOOK.getMessage() + " " + e.getMessage());
             }
         }
         return null;
@@ -152,9 +157,8 @@ public class EntityCvsConverter {
 
     private Order buildOrder(String[] strings) {
         if (strings.length == 7) {
-            Order order = new Order();
             try {
-                order = new Order();
+                Order order = new Order();
                 order.setId(Long.valueOf(strings[0]));
                 order.setBook(new Book(Long.valueOf(strings[1])));
                 order.setState(OrderState.valueOf(strings[2]));
@@ -171,8 +175,8 @@ public class EntityCvsConverter {
                 }
                 order.setCustomerData(strings[6]);
                 return order;
-            } catch (IllegalArgumentException e) {
-                System.err.println(e.getMessage());
+            } catch (IllegalArgumentException | ParseException e) {
+                throw new BusinessException(MessageConstant.CANT_PARSE_ORDER.getMessage() + " " + e.getMessage());
             }
         }
         return null;
@@ -188,7 +192,7 @@ public class EntityCvsConverter {
                 request.setRequesterData(strings[3]);
                 return request;
             } catch (IllegalArgumentException e) {
-                System.err.println(e.getMessage());
+                throw new BusinessException(MessageConstant.CANT_PARSE_REQUEST.getMessage() + " " + e.getMessage());
             }
         }
         return null;

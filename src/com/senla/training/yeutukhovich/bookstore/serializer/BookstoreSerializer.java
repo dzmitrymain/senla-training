@@ -1,5 +1,6 @@
 package com.senla.training.yeutukhovich.bookstore.serializer;
 
+import com.senla.training.yeutukhovich.bookstore.exception.InternalException;
 import com.senla.training.yeutukhovich.bookstore.util.injector.Singleton;
 
 import java.io.*;
@@ -16,19 +17,17 @@ public class BookstoreSerializer {
                 new FileOutputStream(path))) {
             out.writeObject(applicationState);
         } catch (IOException e) {
-            System.err.println(e.getMessage());
+            throw new InternalException(e.getMessage());
         }
     }
 
     public ApplicationState deserializeBookstore(String path) {
-        ApplicationState applicationState = null;
         try (ObjectInputStream in = new ObjectInputStream(
                 new FileInputStream(path))) {
-            applicationState = (ApplicationState) in.readObject();
+            return (ApplicationState) in.readObject();
         } catch (IOException | ClassNotFoundException e) {
-            System.err.println(e.getMessage());
+            throw new InternalException(e.getMessage());
         }
-        return applicationState;
     }
 }
 

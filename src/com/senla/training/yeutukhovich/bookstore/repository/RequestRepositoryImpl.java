@@ -2,14 +2,18 @@ package com.senla.training.yeutukhovich.bookstore.repository;
 
 import com.senla.training.yeutukhovich.bookstore.domain.Request;
 import com.senla.training.yeutukhovich.bookstore.util.generator.IdGenerator;
+import com.senla.training.yeutukhovich.bookstore.util.injector.Autowired;
 import com.senla.training.yeutukhovich.bookstore.util.injector.Singleton;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Singleton
 public class RequestRepositoryImpl implements RequestRepository {
 
+    @Autowired
+    private IdGenerator idGenerator;
     private List<Request> requests = new ArrayList<>();
 
     private RequestRepositoryImpl() {
@@ -22,21 +26,16 @@ public class RequestRepositoryImpl implements RequestRepository {
     }
 
     @Override
-    public Request findById(Long id) {
-        if (id != null) {
-            for (Request request : requests) {
-                if (request.getId().equals(id)) {
-                    return request;
-                }
-            }
-        }
-        return null;
+    public Optional<Request> findById(Long id) {
+        return requests.stream()
+                .filter(request -> request.getId().equals(id))
+                .findFirst();
     }
 
     @Override
     public void add(Request entity) {
         if (entity != null && !requests.contains(entity)) {
-            entity.setId(IdGenerator.getInstance().getNextRequestIdNumber());
+            entity.setId(idGenerator.getNextRequestIdNumber());
             requests.add(entity);
         }
     }

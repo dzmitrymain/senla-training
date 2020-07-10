@@ -5,6 +5,7 @@ import com.senla.training.yeutukhovich.bookstore.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.domain.Order;
 import com.senla.training.yeutukhovich.bookstore.domain.Request;
 import com.senla.training.yeutukhovich.bookstore.domain.state.OrderState;
+import com.senla.training.yeutukhovich.bookstore.exception.BusinessException;
 import com.senla.training.yeutukhovich.bookstore.repository.BookRepository;
 import com.senla.training.yeutukhovich.bookstore.repository.OrderRepository;
 import com.senla.training.yeutukhovich.bookstore.repository.RequestRepository;
@@ -22,10 +23,7 @@ import com.senla.training.yeutukhovich.bookstore.util.reader.FileDataReader;
 import com.senla.training.yeutukhovich.bookstore.util.writer.FileDataWriter;
 
 import java.math.BigDecimal;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Singleton
@@ -53,40 +51,49 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public CreationOrderResult createOrder(Long bookId, String customerData) {
         CreationOrderResult result = new CreationOrderResult();
-        Book checkedBook = bookRepository.findById(bookId);
-        if (checkedBook != null) {
-            if (!checkedBook.isAvailable()) {
-                result.setRequestId(createRequest(bookId, customerData));
-            }
-            Order order = new Order(checkedBook, customerData);
-            orderRepository.add(order);
-            result.setOrderId(order.getId());
+        Optional<Book> bookOptional = bookRepository.findById(bookId);
+        if (bookOptional.isEmpty()) {
+            throw new BusinessException(MessageConstant.BOOK_NOT_EXIST.getMessage());
         }
+        if (!bookOptional.get().isAvailable()) {
+            result.setRequestId(createRequest(bookId, customerData));
+        }
+        Order order = new Order(bookOptional.get(), customerData);
+        orderRepository.add(order);
+        result.setOrderId(order.getId());
         return result;
     }
 
     @Override
-    public boolean cancelOrder(Long orderId) {
-        Order checkedOrder = orderRepository.findById(orderId);
-        if (checkedOrder != null && checkedOrder.getState() == OrderState.CREATED) {
-            checkedOrder.setState(OrderState.CANCELED);
-            orderRepository.update(checkedOrder);
-            return true;
+    public void cancelOrder(Long orderId) {
+        Optional<Order> orderOptional = orderRepository.findById(orderId);
+        if (orderOptional.isEmpty()) {
+            throw new BusinessException(MessageConstant.ORDER_NOT_EXIST.getMessage());
         }
-        return false;
+        Order order = orderOptional.get();
+        if (order.getState() != OrderState.CREATED) {
+            throw new BusinessException(MessageConstant.WRONG_ORDER_STATE.getMessage());
+        }
+        order.setState(OrderState.CANCELED);
+        orderRepository.update(order);
     }
 
     @Override
-    public boolean completeOrder(Long orderId) {
-        Order checkedOrder = orderRepository.findById(orderId);
-        if (checkedOrder != null && checkedOrder.getBook().isAvailable() &&
-                checkedOrder.getState() == OrderState.CREATED) {
-            checkedOrder.setState(OrderState.COMPLETED);
-            checkedOrder.setCompletionDate(new Date());
-            orderRepository.update(checkedOrder);
-            return true;
+    public void completeOrder(Long orderId) {
+        Optional<Order> orderOptional = orderRepository.findById(orderId);
+        if (orderOptional.isEmpty()) {
+            throw new BusinessException(MessageConstant.ORDER_NOT_EXIST.getMessage());
         }
-        return false;
+        Order order = orderOptional.get();
+        if (!order.getBook().isAvailable()) {
+            throw new BusinessException(MessageConstant.BOOK_NOT_AVAILABLE.getMessage());
+        }
+        if (order.getState() != OrderState.CREATED) {
+            throw new BusinessException(MessageConstant.WRONG_ORDER_STATE.getMessage());
+        }
+        order.setState(OrderState.COMPLETED);
+        order.setCompletionDate(new Date());
+        orderRepository.update(order);
     }
 
     @Override
@@ -155,75 +162,73 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderDetails showOrderDetails(Long orderId) {
-        Order checkedOrder = orderRepository.findById(orderId);
-        if (checkedOrder == null) {
-            return null;
+    public Optional<OrderDetails> showOrderDetails(Long orderId) {
+        Optional<Order> orderOptional = orderRepository.findById(orderId);
+        if (orderOptional.isEmpty()) {
+            return Optional.empty();
         }
+        Order order = orderOptional.get();
         OrderDetails orderDetails = new OrderDetails();
-        orderDetails.setCustomerData(checkedOrder.getCustomerData());
-        orderDetails.setBookTitle(checkedOrder.getBook().getTitle());
-        orderDetails.setPrice(checkedOrder.getCurrentBookPrice());
-        orderDetails.setState(checkedOrder.getState());
-        orderDetails.setCreationDate(checkedOrder.getCreationDate());
-        orderDetails.setCompletionDate(checkedOrder.getCompletionDate());
-        return orderDetails;
+        orderDetails.setCustomerData(order.getCustomerData());
+        orderDetails.setBookTitle(order.getBook().getTitle());
+        orderDetails.setPrice(order.getCurrentBookPrice());
+        orderDetails.setState(order.getState());
+        orderDetails.setCreationDate(order.getCreationDate());
+        orderDetails.setCompletionDate(order.getCompletionDate());
+        return Optional.of(orderDetails);
     }
 
     @Override
     public int exportAllOrders(String fileName) {
         ConfigInjector.injectConfig(this);
-        int exportedOrdersNumber = 0;
-        if (fileName != null) {
-            String path = cvsDirectoryPath
-                    + fileName + ApplicationConstant.CVS_FORMAT_TYPE.getConstant();
-            List<String> orderStrings = entityCvsConverter.convertOrders(orderRepository.findAll());
-            exportedOrdersNumber = FileDataWriter.writeData(path, orderStrings);
-        }
-        return exportedOrdersNumber;
+        String path = cvsDirectoryPath
+                + fileName + ApplicationConstant.CVS_FORMAT_TYPE.getConstant();
+        List<String> orderStrings = entityCvsConverter.convertOrders(orderRepository.findAll());
+        return FileDataWriter.writeData(path, orderStrings);
     }
 
     @Override
-    public boolean exportOrder(Long id, String fileName) {
+    public void exportOrder(Long id, String fileName) {
         ConfigInjector.injectConfig(this);
-        if (id != null && fileName != null) {
-            String path = cvsDirectoryPath
-                    + fileName + ApplicationConstant.CVS_FORMAT_TYPE.getConstant();
-            Order order = orderRepository.findById(id);
-            if (order != null) {
-                List<String> orderStrings = entityCvsConverter.convertOrders(List.of(order));
-                return FileDataWriter.writeData(path, orderStrings) != 0;
-            }
+        String path = cvsDirectoryPath
+                + fileName + ApplicationConstant.CVS_FORMAT_TYPE.getConstant();
+        Optional<Order> orderOptional = orderRepository.findById(id);
+        if (orderOptional.isEmpty()) {
+            throw new BusinessException(MessageConstant.ORDER_NOT_EXIST.getMessage());
         }
-        return false;
+        Order order = orderOptional.get();
+        List<String> orderStrings = entityCvsConverter.convertOrders(List.of(order));
+        FileDataWriter.writeData(path, orderStrings);
     }
 
     @Override
     public int importOrders(String fileName) {
+        if (fileName == null) {
+            return 0;
+        }
         ConfigInjector.injectConfig(this);
         int importedOrdersNumber = 0;
-        if (fileName != null) {
-            String path = cvsDirectoryPath
-                    + fileName + ApplicationConstant.CVS_FORMAT_TYPE.getConstant();
-            List<String> orderStrings = FileDataReader.readData(path);
+        String path = cvsDirectoryPath
+                + fileName + ApplicationConstant.CVS_FORMAT_TYPE.getConstant();
+        List<String> orderStrings = FileDataReader.readData(path);
 
-            List<Order> repoOrders = orderRepository.findAll();
-            List<Order> importedOrders = entityCvsConverter.parseOrders(orderStrings);
+        List<Order> repoOrders = orderRepository.findAll();
+        List<Order> importedOrders = entityCvsConverter.parseOrders(orderStrings);
 
-            for (Order importedOrder : importedOrders) {
-                Book dependentBook = bookRepository.findById(importedOrder.getBook().getId());
-                if (dependentBook == null) {
-                    System.err.println(MessageConstant.BOOK_NOT_NULL.getMessage());
-                    continue;
-                }
-                importedOrder.setBook(dependentBook);
-                if (repoOrders.contains(importedOrder)) {
-                    orderRepository.update(importedOrder);
-                } else {
-                    orderRepository.add(importedOrder);
-                }
-                importedOrdersNumber++;
+        for (Order importedOrder : importedOrders) {
+            Optional<Book> dependentBookOptional = bookRepository.findById(importedOrder.getBook().getId());
+            if (dependentBookOptional.isEmpty()) {
+                //log
+                //System.err.println(MessageConstant.BOOK_NOT_NULL.getMessage());
+                continue;
             }
+            importedOrder.setBook(dependentBookOptional.get());
+            if (repoOrders.contains(importedOrder)) {
+                orderRepository.update(importedOrder);
+            } else {
+                orderRepository.add(importedOrder);
+            }
+            importedOrdersNumber++;
         }
         return importedOrdersNumber;
     }
@@ -233,13 +238,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private Long createRequest(Long bookId, String requesterData) {
-        Long requestId = null;
-        Book checkedBook = bookRepository.findById(bookId);
-        if (checkedBook != null && !checkedBook.isAvailable()) {
-            Request request = new Request(checkedBook, requesterData);
-            requestRepository.add(request);
-            requestId = request.getId();
+        Optional<Book> bookOptional = bookRepository.findById(bookId);
+        if (bookOptional.isEmpty() || bookOptional.get().isAvailable()) {
+            return null;
         }
-        return requestId;
+        Request request = new Request(bookOptional.get(), requesterData);
+        requestRepository.add(request);
+        return request.getId();
     }
 }

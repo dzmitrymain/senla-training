@@ -1,18 +1,16 @@
 package com.senla.training.yeutukhovich.bookstore.util.generator;
 
-public class IdGenerator {
+import com.senla.training.yeutukhovich.bookstore.util.injector.Singleton;
 
-    private static IdGenerator instance;
+@Singleton
+public class IdGenerator {
 
     private long bookIdNumber;
     private long orderIdNumber;
     private long requestIdNumber;
 
-    public static IdGenerator getInstance() {
-        if (instance == null) {
-            instance = new IdGenerator();
-        }
-        return instance;
+    private IdGenerator(){
+
     }
 
     public long getNextBookIdNumber() {

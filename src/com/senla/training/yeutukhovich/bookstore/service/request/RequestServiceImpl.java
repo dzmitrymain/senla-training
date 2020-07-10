@@ -3,6 +3,7 @@ package com.senla.training.yeutukhovich.bookstore.service.request;
 import com.senla.training.yeutukhovich.bookstore.converter.EntityCvsConverter;
 import com.senla.training.yeutukhovich.bookstore.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.domain.Request;
+import com.senla.training.yeutukhovich.bookstore.exception.BusinessException;
 import com.senla.training.yeutukhovich.bookstore.repository.BookRepository;
 import com.senla.training.yeutukhovich.bookstore.repository.RequestRepository;
 import com.senla.training.yeutukhovich.bookstore.serializer.BookstoreSerializer;
@@ -19,6 +20,7 @@ import com.senla.training.yeutukhovich.bookstore.util.writer.FileDataWriter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Singleton
@@ -42,14 +44,16 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public Long createRequest(Long bookId, String requesterData) {
-        Book checkedBook = bookRepository.findById(bookId);
-        if (checkedBook != null && !checkedBook.isAvailable()) {
-            Request request = new Request(checkedBook, requesterData);
-            requestRepository.add(request);
-            return request.getId();
+    public void createRequest(Long bookId, String requesterData) {
+        Optional<Book> bookOptional = bookRepository.findById(bookId);
+        if (bookOptional.isEmpty()) {
+            throw new BusinessException(MessageConstant.BOOK_NOT_EXIST.getMessage());
         }
-        return null;
+        Book book = bookOptional.get();
+        if (bookOptional.get().isAvailable()) {
+            throw new BusinessException(MessageConstant.BOOK_ALREADY_REPLENISHED.getMessage());
+        }
+        requestRepository.add(new Request(book, requesterData));
     }
 
     @Override
@@ -82,58 +86,54 @@ public class RequestServiceImpl implements RequestService {
     @Override
     public int exportAllRequests(String fileName) {
         ConfigInjector.injectConfig(this);
-        int exportedRequestsNumber = 0;
-        if (fileName != null) {
-            String path = cvsDirectoryPath
-                    + fileName + ApplicationConstant.CVS_FORMAT_TYPE.getConstant();
-            List<String> requestStrings = entityCvsConverter.convertRequests(requestRepository.findAll());
-            exportedRequestsNumber = FileDataWriter.writeData(path, requestStrings);
-
-        }
-        return exportedRequestsNumber;
+        String path = cvsDirectoryPath
+                + fileName + ApplicationConstant.CVS_FORMAT_TYPE.getConstant();
+        List<String> requestStrings = entityCvsConverter.convertRequests(requestRepository.findAll());
+        return FileDataWriter.writeData(path, requestStrings);
     }
 
     @Override
-    public boolean exportRequest(Long requestId, String fileName) {
+    public void exportRequest(Long requestId, String fileName) {
         ConfigInjector.injectConfig(this);
-        if (requestId != null && fileName != null) {
-            String path = cvsDirectoryPath
-                    + fileName + ApplicationConstant.CVS_FORMAT_TYPE.getConstant();
-            Request request = requestRepository.findById(requestId);
-            if (request != null) {
-                List<String> requestStrings = entityCvsConverter.convertRequests(List.of(request));
-                return FileDataWriter.writeData(path, requestStrings) != 0;
-            }
+        String path = cvsDirectoryPath
+                + fileName + ApplicationConstant.CVS_FORMAT_TYPE.getConstant();
+        Optional<Request> requestOptional = requestRepository.findById(requestId);
+        if (requestOptional.isEmpty()) {
+            throw new BusinessException(MessageConstant.REQUEST_NOT_EXIST.getMessage());
         }
-        return false;
+        List<String> requestStrings = entityCvsConverter.convertRequests(List.of(requestOptional.get()));
+        FileDataWriter.writeData(path, requestStrings);
     }
 
     @Override
     public int importRequests(String fileName) {
+        if (fileName == null) {
+            return 0;
+        }
         ConfigInjector.injectConfig(this);
         int importedRequestsNumber = 0;
-        if (fileName != null) {
-            String path = cvsDirectoryPath
-                    + fileName + ApplicationConstant.CVS_FORMAT_TYPE.getConstant();
-            List<String> requestsStrings = FileDataReader.readData(path);
 
-            List<Request> repoRequests = requestRepository.findAll();
-            List<Request> importedRequests = entityCvsConverter.parseRequests(requestsStrings);
+        String path = cvsDirectoryPath
+                + fileName + ApplicationConstant.CVS_FORMAT_TYPE.getConstant();
+        List<String> requestsStrings = FileDataReader.readData(path);
 
-            for (Request importedRequest : importedRequests) {
-                Book dependentBook = bookRepository.findById(importedRequest.getBook().getId());
-                if (dependentBook == null) {
-                    System.err.println(MessageConstant.BOOK_NOT_NULL.getMessage());
-                    continue;
-                }
-                importedRequest.setBook(dependentBook);
-                if (repoRequests.contains(importedRequest)) {
-                    requestRepository.update(importedRequest);
-                } else {
-                    requestRepository.add(importedRequest);
-                }
-                importedRequestsNumber++;
+        List<Request> repoRequests = requestRepository.findAll();
+        List<Request> importedRequests = entityCvsConverter.parseRequests(requestsStrings);
+
+        for (Request importedRequest : importedRequests) {
+            Optional<Book> dependentBookOptional = bookRepository.findById(importedRequest.getBook().getId());
+            if (dependentBookOptional.isEmpty()) {
+                //log
+                //System.err.println(MessageConstant.BOOK_NOT_NULL.getMessage());
+                continue;
             }
+            importedRequest.setBook(dependentBookOptional.get());
+            if (repoRequests.contains(importedRequest)) {
+                requestRepository.update(importedRequest);
+            } else {
+                requestRepository.add(importedRequest);
+            }
+            importedRequestsNumber++;
         }
         return importedRequestsNumber;
     }

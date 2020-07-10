@@ -1,5 +1,6 @@
 package com.senla.training.yeutukhovich.bookstore.service.serialization;
 
+import com.senla.training.yeutukhovich.bookstore.exception.InternalException;
 import com.senla.training.yeutukhovich.bookstore.repository.BookRepository;
 import com.senla.training.yeutukhovich.bookstore.repository.OrderRepository;
 import com.senla.training.yeutukhovich.bookstore.repository.RequestRepository;
@@ -34,19 +35,19 @@ public class SerializationServiceImpl implements SerializationService {
         ApplicationState applicationState = new ApplicationState(bookRepository.findAll()
                 , orderRepository.findAll(), requestRepository.findAll());
         bookstoreSerializer.serializeBookstore(applicationState, serializationDataPath);
-
     }
 
     @Override
     public void deserializeBookstore() {
         ConfigInjector.injectConfig(this);
-        ApplicationState applicationState = bookstoreSerializer.deserializeBookstore(serializationDataPath);
-        if (applicationState == null) {
+        try {
+            ApplicationState applicationState = bookstoreSerializer.deserializeBookstore(serializationDataPath);
+            applicationState.getBooks().forEach(book -> bookRepository.add(book));
+            applicationState.getOrders().forEach(order -> orderRepository.add(order));
+            applicationState.getRequests().forEach(request -> requestRepository.add(request));
+        } catch (InternalException e) {
             EntityInitializer.initBooks().forEach(book -> bookRepository.add(book));
-            return;
+            throw e;
         }
-        applicationState.getBooks().forEach(book -> bookRepository.add(book));
-        applicationState.getOrders().forEach(order -> orderRepository.add(order));
-        applicationState.getRequests().forEach(request -> requestRepository.add(request));
     }
 }

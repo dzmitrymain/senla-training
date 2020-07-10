@@ -1,5 +1,6 @@
 package com.senla.training.yeutukhovich.bookstore.controller;
 
+import com.senla.training.yeutukhovich.bookstore.exception.InternalException;
 import com.senla.training.yeutukhovich.bookstore.service.serialization.SerializationService;
 import com.senla.training.yeutukhovich.bookstore.util.injector.Autowired;
 import com.senla.training.yeutukhovich.bookstore.util.injector.Singleton;
@@ -15,10 +16,18 @@ public class SerializationController {
     }
 
     public void serializeBookstore() {
-        serializationService.serializeBookstore();
+        try {
+            serializationService.serializeBookstore();
+        } catch (InternalException e) {
+            //log e.getMessage();
+        }
     }
 
     public void deserializeBookstore() {
-        serializationService.deserializeBookstore();
+        try {
+            serializationService.deserializeBookstore();
+        } catch (InternalException e) {
+            //log e.getMessage();
+        }
     }
 }

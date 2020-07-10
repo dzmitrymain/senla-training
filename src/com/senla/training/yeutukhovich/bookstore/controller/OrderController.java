@@ -1,14 +1,18 @@
 package com.senla.training.yeutukhovich.bookstore.controller;
 
-import com.senla.training.yeutukhovich.bookstore.util.injector.Autowired;
 import com.senla.training.yeutukhovich.bookstore.domain.Order;
+import com.senla.training.yeutukhovich.bookstore.exception.BusinessException;
+import com.senla.training.yeutukhovich.bookstore.exception.InternalException;
 import com.senla.training.yeutukhovich.bookstore.service.dto.CreationOrderResult;
 import com.senla.training.yeutukhovich.bookstore.service.dto.OrderDetails;
 import com.senla.training.yeutukhovich.bookstore.service.order.OrderService;
+import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
+import com.senla.training.yeutukhovich.bookstore.util.injector.Autowired;
 import com.senla.training.yeutukhovich.bookstore.util.injector.Singleton;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Singleton
@@ -23,16 +27,36 @@ public class OrderController {
 
     }
 
-    public CreationOrderResult createOrder(Long bookId, String customerData) {
-        return orderService.createOrder(bookId, customerData);
+    public String createOrder(Long bookId, String customerData) {
+        try {
+            CreationOrderResult creationOrderResult = orderService.createOrder(bookId, customerData);
+            if (creationOrderResult.getRequestId() == null) {
+                return MessageConstant.ORDER_HAS_BEEN_CREATED.getMessage();
+            }
+            return MessageConstant.ORDER_HAS_BEEN_CREATED.getMessage() + "\n"
+                    + MessageConstant.REQUEST_HAS_BEEN_CREATED.getMessage();
+        } catch (BusinessException e) {
+            return e.getMessage();
+        }
     }
 
-    public boolean cancelOrder(Long orderId) {
-        return orderService.cancelOrder(orderId);
+    public String cancelOrder(Long orderId) {
+        try {
+            orderService.cancelOrder(orderId);
+            return MessageConstant.ORDER_HAS_BEEN_CANCELED.getMessage();
+        } catch (BusinessException e) {
+            return e.getMessage();
+        }
     }
 
-    public boolean completeOrder(Long orderId) {
-        return orderService.completeOrder(orderId);
+    public String completeOrder(Long orderId) {
+        try {
+            orderService.completeOrder(orderId);
+            return MessageConstant.ORDER_HAS_BEEN_COMPLETED.getMessage();
+        } catch (BusinessException e) {
+            return e.getMessage();
+        }
+
     }
 
     public String findSortedAllOrdersByCompletionDate() {
@@ -67,19 +91,42 @@ public class OrderController {
         return orderService.calculateCompletedOrdersNumberBetweenDates(startDate, endDate);
     }
 
-    public OrderDetails showOrderDetails(Long orderId) {
-        return orderService.showOrderDetails(orderId);
+    public String showOrderDetails(Long orderId) {
+        Optional<OrderDetails> orderDetailsOptional = orderService.showOrderDetails(orderId);
+        if (orderDetailsOptional.isEmpty()) {
+            return MessageConstant.ORDER_DETAILS_WAS_NOT_FOUND.getMessage();
+        }
+        return orderDetailsOptional.get().toString();
     }
 
-    public int importOrders(String fileName) {
-        return orderService.importOrders(fileName);
+    public String importOrders(String fileName) {
+        try {
+            return MessageConstant.IMPORTED_ENTITIES.getMessage() + orderService.importOrders(fileName);
+        } catch (BusinessException e) {
+            return e.getMessage();
+        } catch (InternalException e) {
+            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
+        }
     }
 
-    public int exportAllOrders(String fileName) {
-        return orderService.exportAllOrders(fileName);
+    public String exportAllOrders(String fileName) {
+        try {
+            return MessageConstant.EXPORTED_ENTITIES.getMessage()
+                    + orderService.exportAllOrders(fileName);
+        } catch (InternalException e) {
+            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
+        }
+
     }
 
-    public boolean exportOrder(Long orderId, String fileName) {
-        return orderService.exportOrder(orderId, fileName);
+    public String exportOrder(Long orderId, String fileName) {
+        try {
+            orderService.exportOrder(orderId, fileName);
+            return MessageConstant.ENTITY_EXPORTED.getMessage();
+        } catch (BusinessException e) {
+            return e.getMessage();
+        } catch (InternalException e) {
+            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
+        }
     }
 }

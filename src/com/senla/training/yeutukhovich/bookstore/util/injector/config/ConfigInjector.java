@@ -31,6 +31,7 @@ public class ConfigInjector {
                 loadStream(configProperty.configName());
                 String property = getProperty(configProperty.propertyName(), field);
                 if (property == null) {
+                    //TODO:literal?
                     System.err.println("Can't find property: '" + configProperty.propertyName()
                             + "' at properties file: '" + configProperty.configName() + "'");
                     continue;
@@ -58,10 +59,10 @@ public class ConfigInjector {
             return property;
         }
         if (ConfigProperty.Type.BYTE == type) {
-            return Byte.valueOf(property);
+            return Byte.parseByte(property);
         }
         if (ConfigProperty.Type.BOOLEAN == type) {
-            return Boolean.valueOf(property);
+            return Boolean.parseBoolean(property);
         }
         return property;
     }

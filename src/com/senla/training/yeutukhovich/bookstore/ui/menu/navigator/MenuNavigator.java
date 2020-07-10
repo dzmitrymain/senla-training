@@ -2,6 +2,7 @@ package com.senla.training.yeutukhovich.bookstore.ui.menu.navigator;
 
 import com.senla.training.yeutukhovich.bookstore.ui.menu.Menu;
 import com.senla.training.yeutukhovich.bookstore.ui.menu.MenuItem;
+import com.senla.training.yeutukhovich.bookstore.ui.util.printer.UiConsolePrinter;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 import com.senla.training.yeutukhovich.bookstore.util.injector.Singleton;
 
@@ -37,22 +38,20 @@ public class MenuNavigator {
     }
 
     public void navigate(Integer index) {
-        if (index != null && (index > 0 &&
+        if (index == null || !(index > 0 &&
                 index <= currentMenu.getMenuItems().size())) {
+            UiConsolePrinter.printError(MessageConstant.ENTER_CORRECT_NUMBER.getMessage());
+            return;
+        }
 
-            MenuItem selectedMenuItem = currentMenu.getMenuItems().get(--index);
-
-            if (selectedMenuItem.getAction() != null) {
-                selectedMenuItem.doAction();
-            }
-
-            if (selectedMenuItem.getNextMenu() != null) {
-                currentMenu = selectedMenuItem.getNextMenu();
-            } else {
-                currentMenu = null;
-            }
+        MenuItem selectedMenuItem = currentMenu.getMenuItems().get(--index);
+        if (selectedMenuItem.getAction() != null) {
+            selectedMenuItem.doAction();
+        }
+        if (selectedMenuItem.getNextMenu() != null) {
+            currentMenu = selectedMenuItem.getNextMenu();
         } else {
-            System.err.println(MessageConstant.ENTER_CORRECT_NUMBER.getMessage());
+            currentMenu = null;
         }
     }
 }

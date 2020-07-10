@@ -7,14 +7,15 @@ import com.senla.training.yeutukhovich.bookstore.service.dto.OrderDetails;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public interface OrderService {
 
     CreationOrderResult createOrder(Long bookId, String customerData);
 
-    boolean cancelOrder(Long orderId);
+    void cancelOrder(Long orderId);
 
-    boolean completeOrder(Long orderId);
+    void completeOrder(Long orderId);
 
     List<Order> findSortedAllOrdersByCompletionDate();
 
@@ -28,11 +29,11 @@ public interface OrderService {
 
     int calculateCompletedOrdersNumberBetweenDates(Date startDate, Date endDate);
 
-    OrderDetails showOrderDetails(Long orderId);
+    Optional<OrderDetails> showOrderDetails(Long orderId);
 
     int exportAllOrders(String fileName);
 
-    boolean exportOrder(Long id, String fileName);
+    void exportOrder(Long id, String fileName);
 
     int importOrders(String fileName);
 }
