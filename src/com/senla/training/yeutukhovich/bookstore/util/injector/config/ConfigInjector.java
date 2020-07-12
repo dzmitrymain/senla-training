@@ -61,6 +61,8 @@ public class ConfigInjector {
         return PROPERTIES.getProperty(propertyName);
     }
 
+    // нарушено условие задание: при дефолтном значении атрибута ConfigProperty.Type type
+    // необходимо определить тип из поля, над которым стоит аннотация ConfigProperty
     private static Object castProperty(String property, ConfigProperty.Type type) {
         if (ConfigProperty.Type.STRING == type) {
             return property;

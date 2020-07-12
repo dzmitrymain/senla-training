@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 public class PackageScanner {
 
+    // не используем сырые типы
     private static Set<Class> classes;
 
     private PackageScanner() {
