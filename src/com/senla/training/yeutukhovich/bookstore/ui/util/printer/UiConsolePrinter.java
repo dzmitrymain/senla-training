@@ -4,7 +4,7 @@ import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 
 public class UiConsolePrinter {
 
-    private UiConsolePrinter(){
+    private UiConsolePrinter() {
 
     }
 

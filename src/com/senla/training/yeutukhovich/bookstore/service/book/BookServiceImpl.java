@@ -27,9 +27,9 @@ import java.util.stream.Collectors;
 @Singleton
 public class BookServiceImpl implements BookService {
 
-    @ConfigProperty(type = ConfigProperty.Type.BOOLEAN)
+    @ConfigProperty
     private boolean requestAutoCloseEnabled;
-    @ConfigProperty(type = ConfigProperty.Type.BYTE)
+    @ConfigProperty
     private byte staleMonthNumber;
 
     @ConfigProperty(propertyName = PropertyKeyConstant.CVS_DIRECTORY_KEY)

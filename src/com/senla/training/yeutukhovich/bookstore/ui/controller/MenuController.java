@@ -2,9 +2,9 @@ package com.senla.training.yeutukhovich.bookstore.ui.controller;
 
 import com.senla.training.yeutukhovich.bookstore.ui.menu.builder.MenuBuilder;
 import com.senla.training.yeutukhovich.bookstore.ui.menu.navigator.MenuNavigator;
+import com.senla.training.yeutukhovich.bookstore.ui.util.reader.UserInputReader;
 import com.senla.training.yeutukhovich.bookstore.util.injector.Autowired;
 import com.senla.training.yeutukhovich.bookstore.util.injector.Singleton;
-import com.senla.training.yeutukhovich.bookstore.ui.util.reader.UserInputReader;
 
 @Singleton
 public class MenuController {

@@ -13,9 +13,10 @@ public @interface ConfigProperty {
 
     String propertyName() default "";
 
-    Type type() default Type.STRING;
+    Type type() default Type.DEFAULT;
 
     enum Type {
+        DEFAULT,
         STRING,
         BOOLEAN,
         BYTE;

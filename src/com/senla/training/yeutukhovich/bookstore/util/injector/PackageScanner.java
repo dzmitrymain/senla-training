@@ -13,13 +13,13 @@ import java.util.stream.Collectors;
 
 public class PackageScanner {
 
-    private static Set<Class> classes;
+    private static Set<Class<?>> classes;
 
     private PackageScanner() {
 
     }
 
-    public static Set<Class> findSingletons(String packageName) {
+    public static Set<Class<?>> findSingletons(String packageName) {
         return findClasses(packageName).stream()
                 .filter(clazz ->
                         clazz.isAnnotationPresent(Singleton.class))
@@ -27,7 +27,7 @@ public class PackageScanner {
 
     }
 
-    private static Set<Class> findClasses(String packageName) {
+    private static Set<Class<?>> findClasses(String packageName) {
         classes = new HashSet<>();
         scanPackage(packageName);
         return classes;

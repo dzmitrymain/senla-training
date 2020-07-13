@@ -45,12 +45,14 @@ public class ConfigInjector {
             throw new InternalException(String.format(MessageConstant.CANT_FIND_PROPERTY.getMessage(),
                     configProperty.propertyName(), configProperty.configName()));
         }
-        Object castedProperty = castProperty(property, configProperty.type());
-        field.setAccessible(true);
         try {
+            Object castedProperty = castProperty(property, configProperty.type(), field.getType());
+            field.setAccessible(true);
             field.set(object, castedProperty);
-        } catch (IllegalAccessException e) {
+        } catch (ClassCastException | IllegalAccessException e) {
             throw new InternalException(e.getMessage());
+        } finally {
+            field.setAccessible(false);
         }
     }
 
@@ -61,17 +63,21 @@ public class ConfigInjector {
         return PROPERTIES.getProperty(propertyName);
     }
 
-    private static Object castProperty(String property, ConfigProperty.Type type) {
-        if (ConfigProperty.Type.STRING == type) {
+    private static Object castProperty(String property, ConfigProperty.Type type, Class<?> fieldType) {
+        String fieldTypeString = type.toString().toUpperCase();
+        if (ConfigProperty.Type.DEFAULT.toString().equals(fieldTypeString)) {
+            fieldTypeString = fieldType.getSimpleName().toUpperCase();
+        }
+        if (ConfigProperty.Type.STRING.toString().equals(fieldTypeString)) {
             return property;
         }
-        if (ConfigProperty.Type.BYTE == type) {
+        if (ConfigProperty.Type.BYTE.toString().equals(fieldTypeString)) {
             return Byte.parseByte(property);
         }
-        if (ConfigProperty.Type.BOOLEAN == type) {
+        if (ConfigProperty.Type.BOOLEAN.toString().equals(fieldTypeString)) {
             return Boolean.parseBoolean(property);
         }
-        return property;
+        throw new ClassCastException("Not supported class cast operation for type: " + fieldType.getSimpleName());
     }
 
     private static void loadStream(String propertiesPath) {
