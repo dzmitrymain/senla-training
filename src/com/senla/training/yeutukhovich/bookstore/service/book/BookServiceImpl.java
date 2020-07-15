@@ -53,6 +53,11 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void replenishBook(Long id) {
+        // если это сделано для подгрузки настроек "на горячую" - норм, но вообще по заданию
+        // нужно было инъецировать настройки при старте приложения, чтобы очистить код
+        // методов от ненужных строк, иначе это ничем не отличается от реализации из ДЗ-7 -
+        // каждый класс сам запрашивает свои настройки при каждом вызове метода
+        // рефлекшн не очень быстрый способ засетать поле, я бы даже сказал очень медленный
         ConfigInjector.injectConfig(this);
         Optional<Book> bookOptional = bookRepository.findById(id);
         if (bookOptional.isEmpty()) {

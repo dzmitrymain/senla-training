@@ -39,6 +39,9 @@ public class ConfigInjector {
 
     public static void injectConfig(Field field, Object object) {
         ConfigProperty configProperty = field.getAnnotation(ConfigProperty.class);
+        // очень абстрактное название для метода, который подгружает настройки (лоадПроперти получше будет)
+        // текущий метод injectConfig() вызывается в цикле, будет ли целесообразно вызывать подгрузку
+        // настроек каждый раз в каждом цикле?
         loadStream(configProperty.configName());
         String property = getProperty(configProperty.propertyName(), field);
         if (property == null) {
@@ -52,6 +55,7 @@ public class ConfigInjector {
         } catch (ClassCastException | IllegalAccessException e) {
             throw new InternalException(e.getMessage());
         } finally {
+            // сетать исходное значение
             field.setAccessible(false);
         }
     }
@@ -65,6 +69,11 @@ public class ConfigInjector {
 
     private static Object castProperty(String property, ConfigProperty.Type type, Class<?> fieldType) {
         String fieldTypeString = type.toString().toUpperCase();
+        // значения енама можно сравнивать через двойное равно (так читается лучше и надежней)
+        // а кастинг к типу поля вынести в другой метод и делать сравнение
+        // Class<?> fieldType == Integer.class
+        // то есть идти не от строковых имен, а все же от равенства объектов
+        // не принципиально, но надежней и наглядней
         if (ConfigProperty.Type.DEFAULT.toString().equals(fieldTypeString)) {
             fieldTypeString = fieldType.getSimpleName().toUpperCase();
         }
