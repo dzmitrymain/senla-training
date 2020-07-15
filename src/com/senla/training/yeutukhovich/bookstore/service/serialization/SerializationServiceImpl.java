@@ -29,6 +29,10 @@ public class SerializationServiceImpl implements SerializationService {
     @Autowired
     private BookstoreSerializer bookstoreSerializer;
 
+    private SerializationServiceImpl(){
+
+    }
+
     @Override
     public void serializeBookstore() {
 

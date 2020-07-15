@@ -15,7 +15,6 @@ public class Container {
 
     private static final Map<Class<?>, Object> singletons = new HashMap<>();
 
-
     static {
         initContainer();
     }
@@ -48,35 +47,34 @@ public class Container {
 
     @SuppressWarnings("unchecked")
     private static <T> T newInstance(Class<T> clazz) {
-        String errorMessage = "";
         for (Constructor<?> constructor : clazz.getDeclaredConstructors()) {
             if (constructor.getParameterCount() == 0) {
+                boolean tempAccessible = constructor.canAccess(null);
                 constructor.setAccessible(true);
                 try {
                     return (T) constructor.newInstance();
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                    errorMessage = e.getMessage();
+                    throw new InternalException(e.getMessage());
                 } finally {
-                    constructor.setAccessible(false);
+                    constructor.setAccessible(tempAccessible);
                 }
             }
         }
-        throw new InternalException(errorMessage);
+        throw new InternalException("Constructor without parameters not exists. " + clazz.getSimpleName());
     }
 
     private static void injectDependencies() {
-        singletons.values().stream()
-                .distinct()
-                .forEach(singleton -> {
+        singletons.values().forEach(singleton -> {
                     for (Field field : singleton.getClass().getDeclaredFields()) {
                         if (field.isAnnotationPresent(Autowired.class)) {
+                            boolean tempAccessible = field.canAccess(singleton);
                             field.setAccessible(true);
                             try {
                                 field.set(singleton, getImplementation(field.getType()));
                             } catch (IllegalAccessException e) {
                                 throw new InternalException(e.getMessage());
                             } finally {
-                                field.setAccessible(false);
+                                field.setAccessible(tempAccessible);
                             }
                         }
                         if (field.isAnnotationPresent(ConfigProperty.class)) {
