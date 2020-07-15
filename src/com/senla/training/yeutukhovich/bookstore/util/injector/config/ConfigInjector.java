@@ -9,12 +9,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.Properties;
 
 public class ConfigInjector {
 
     private static final Properties PROPERTIES;
+    private static String lastPropertyFileName;
 
     static {
         Properties defaultProperties = new Properties();
@@ -31,20 +31,17 @@ public class ConfigInjector {
 
     }
 
-    public static void injectConfig(Object object) {
-        Arrays.stream(object.getClass().getDeclaredFields())
-                .filter(field -> field.isAnnotationPresent(ConfigProperty.class))
-                .forEach(field -> injectConfig(field, object));
-    }
-
     public static void injectConfig(Field field, Object object) {
         ConfigProperty configProperty = field.getAnnotation(ConfigProperty.class);
-        loadStream(configProperty.configName());
+        if (!configProperty.configName().equals(lastPropertyFileName)) {
+            loadProperty(configProperty.configName());
+        }
         String property = getProperty(configProperty.propertyName(), field);
         if (property == null) {
             throw new InternalException(String.format(MessageConstant.CANT_FIND_PROPERTY.getMessage(),
                     configProperty.propertyName(), configProperty.configName()));
         }
+        boolean tempAccessible = field.canAccess(object);
         try {
             Object castedProperty = castProperty(property, configProperty.type(), field.getType());
             field.setAccessible(true);
@@ -52,7 +49,7 @@ public class ConfigInjector {
         } catch (ClassCastException | IllegalAccessException e) {
             throw new InternalException(e.getMessage());
         } finally {
-            field.setAccessible(false);
+            field.setAccessible(tempAccessible);
         }
     }
 
@@ -64,29 +61,39 @@ public class ConfigInjector {
     }
 
     private static Object castProperty(String property, ConfigProperty.Type type, Class<?> fieldType) {
-        String fieldTypeString = type.toString().toUpperCase();
-        if (ConfigProperty.Type.DEFAULT.toString().equals(fieldTypeString)) {
-            fieldTypeString = fieldType.getSimpleName().toUpperCase();
+        if (ConfigProperty.Type.DEFAULT == type) {
+            try {
+                ConfigProperty.Type defaultType = ConfigProperty.Type.valueOf(fieldType.getSimpleName().toUpperCase());
+                return castDefinedTypeProperty(property, defaultType);
+            } catch (IllegalArgumentException e) {
+                throw new InternalException("Not supported class cast operation for type: " + fieldType.getSimpleName());
+            }
         }
-        if (ConfigProperty.Type.STRING.toString().equals(fieldTypeString)) {
-            return property;
-        }
-        if (ConfigProperty.Type.BYTE.toString().equals(fieldTypeString)) {
-            return Byte.parseByte(property);
-        }
-        if (ConfigProperty.Type.BOOLEAN.toString().equals(fieldTypeString)) {
-            return Boolean.parseBoolean(property);
-        }
-        throw new ClassCastException("Not supported class cast operation for type: " + fieldType.getSimpleName());
+        return castDefinedTypeProperty(property, type);
     }
 
-    private static void loadStream(String propertiesPath) {
+    private static Object castDefinedTypeProperty(String property, ConfigProperty.Type type) {
+        if (ConfigProperty.Type.STRING == type) {
+            return property;
+        }
+        if (ConfigProperty.Type.BYTE == type) {
+            return Byte.parseByte(property);
+        }
+        if (ConfigProperty.Type.BOOLEAN == type) {
+            return Boolean.parseBoolean(property);
+        }
+        return null;
+    }
+
+
+    private static void loadProperty(String propertiesPath) {
         if (propertiesPath == null) {
             return;
         }
         try (InputStream stream = new FileInputStream(
                 ApplicationConstant.RESOURCE_ROOT_FOLDER.getConstant() + "/" + propertiesPath)) {
             PROPERTIES.load(stream);
+            lastPropertyFileName = propertiesPath;
         } catch (IOException e) {
             throw new InternalException(e.getMessage());
         }

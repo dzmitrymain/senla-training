@@ -180,7 +180,6 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public int exportAllOrders(String fileName) {
-        ConfigInjector.injectConfig(this);
         String path = cvsDirectoryPath
                 + fileName + ApplicationConstant.CVS_FORMAT_TYPE.getConstant();
         List<String> orderStrings = entityCvsConverter.convertOrders(orderRepository.findAll());
@@ -189,7 +188,6 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void exportOrder(Long id, String fileName) {
-        ConfigInjector.injectConfig(this);
         String path = cvsDirectoryPath
                 + fileName + ApplicationConstant.CVS_FORMAT_TYPE.getConstant();
         Optional<Order> orderOptional = orderRepository.findById(id);
@@ -206,7 +204,6 @@ public class OrderServiceImpl implements OrderService {
         if (fileName == null) {
             return 0;
         }
-        ConfigInjector.injectConfig(this);
         int importedOrdersNumber = 0;
         String path = cvsDirectoryPath
                 + fileName + ApplicationConstant.CVS_FORMAT_TYPE.getConstant();

@@ -53,7 +53,6 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void replenishBook(Long id) {
-        ConfigInjector.injectConfig(this);
         Optional<Book> bookOptional = bookRepository.findById(id);
         if (bookOptional.isEmpty()) {
             throw new BusinessException(MessageConstant.BOOK_NOT_EXIST.getMessage());
@@ -168,7 +167,6 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<Book> findStaleBooks() {
-        ConfigInjector.injectConfig(this);
         List<Order> orders = orderRepository.findAll();
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MONTH, -staleMonthNumber);
@@ -205,7 +203,6 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public int exportAllBooks(String fileName) {
-        ConfigInjector.injectConfig(this);
         String path = cvsDirectoryPath
                 + fileName + ApplicationConstant.CVS_FORMAT_TYPE.getConstant();
         List<String> bookStrings = entityCvsConverter.convertBooks(bookRepository.findAll());
@@ -214,7 +211,6 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void exportBook(Long bookId, String fileName) {
-        ConfigInjector.injectConfig(this);
         String path = cvsDirectoryPath
                 + fileName + ApplicationConstant.CVS_FORMAT_TYPE.getConstant();
         Optional<Book> bookOptional = bookRepository.findById(bookId);
@@ -231,7 +227,6 @@ public class BookServiceImpl implements BookService {
         if (fileName == null) {
             return 0;
         }
-        ConfigInjector.injectConfig(this);
         int importedBooksNumber = 0;
         String path = cvsDirectoryPath
                 + fileName + ApplicationConstant.CVS_FORMAT_TYPE.getConstant();

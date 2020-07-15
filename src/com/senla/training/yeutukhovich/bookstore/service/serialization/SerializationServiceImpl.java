@@ -31,7 +31,7 @@ public class SerializationServiceImpl implements SerializationService {
 
     @Override
     public void serializeBookstore() {
-        ConfigInjector.injectConfig(this);
+
         ApplicationState applicationState = new ApplicationState(bookRepository.findAll()
                 , orderRepository.findAll(), requestRepository.findAll());
         bookstoreSerializer.serializeBookstore(applicationState, serializationDataPath);
@@ -39,7 +39,6 @@ public class SerializationServiceImpl implements SerializationService {
 
     @Override
     public void deserializeBookstore() {
-        ConfigInjector.injectConfig(this);
         try {
             ApplicationState applicationState = bookstoreSerializer.deserializeBookstore(serializationDataPath);
             applicationState.getBooks().forEach(book -> bookRepository.add(book));

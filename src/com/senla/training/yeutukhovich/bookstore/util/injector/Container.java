@@ -49,7 +49,7 @@ public class Container {
     @SuppressWarnings("unchecked")
     private static <T> T newInstance(Class<T> clazz) {
         String errorMessage = "";
-        for (Constructor constructor : clazz.getDeclaredConstructors()) {
+        for (Constructor<?> constructor : clazz.getDeclaredConstructors()) {
             if (constructor.getParameterCount() == 0) {
                 constructor.setAccessible(true);
                 try {

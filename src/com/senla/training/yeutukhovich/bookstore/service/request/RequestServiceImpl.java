@@ -85,7 +85,6 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public int exportAllRequests(String fileName) {
-        ConfigInjector.injectConfig(this);
         String path = cvsDirectoryPath
                 + fileName + ApplicationConstant.CVS_FORMAT_TYPE.getConstant();
         List<String> requestStrings = entityCvsConverter.convertRequests(requestRepository.findAll());
@@ -94,7 +93,6 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public void exportRequest(Long requestId, String fileName) {
-        ConfigInjector.injectConfig(this);
         String path = cvsDirectoryPath
                 + fileName + ApplicationConstant.CVS_FORMAT_TYPE.getConstant();
         Optional<Request> requestOptional = requestRepository.findById(requestId);
@@ -110,7 +108,6 @@ public class RequestServiceImpl implements RequestService {
         if (fileName == null) {
             return 0;
         }
-        ConfigInjector.injectConfig(this);
         int importedRequestsNumber = 0;
 
         String path = cvsDirectoryPath
