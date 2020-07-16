@@ -63,23 +63,23 @@ public class ConfigInjector {
     private static Object castProperty(String property, ConfigProperty.Type type, Class<?> fieldType) {
         if (ConfigProperty.Type.DEFAULT == type) {
             try {
-                ConfigProperty.Type defaultType = ConfigProperty.Type.valueOf(fieldType.getSimpleName().toUpperCase());
-                return castDefinedTypeProperty(property, defaultType);
+                ConfigProperty.Type.valueOf(fieldType.getSimpleName().toUpperCase());
+                return castDefinedTypeProperty(property, fieldType);
             } catch (IllegalArgumentException e) {
                 throw new InternalException("Not supported class cast operation for type: " + fieldType.getSimpleName());
             }
         }
-        return castDefinedTypeProperty(property, type);
+        return castDefinedTypeProperty(property, fieldType);
     }
 
-    private static Object castDefinedTypeProperty(String property, ConfigProperty.Type type) {
-        if (ConfigProperty.Type.STRING == type) {
+    private static Object castDefinedTypeProperty(String property, Class<?> fieldType) {
+        if (fieldType == String.class) {
             return property;
         }
-        if (ConfigProperty.Type.BYTE == type) {
+        if (fieldType == byte.class) {
             return Byte.parseByte(property);
         }
-        if (ConfigProperty.Type.BOOLEAN == type) {
+        if (fieldType == boolean.class) {
             return Boolean.parseBoolean(property);
         }
         return null;
