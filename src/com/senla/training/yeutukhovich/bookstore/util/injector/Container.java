@@ -35,7 +35,7 @@ public class Container {
     }
 
     private static void initSingletons() {
-        PackageScanner.findSingletons("")
+        PackageScanner.findSingletons()
                 .forEach(singletonClass -> {
                     Object singletonInstance = newInstance(singletonClass);
                     for (Type interfaceType : singletonClass.getGenericInterfaces()) {
