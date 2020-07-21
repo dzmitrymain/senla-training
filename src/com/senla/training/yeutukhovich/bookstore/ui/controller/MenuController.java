@@ -2,21 +2,17 @@ package com.senla.training.yeutukhovich.bookstore.ui.controller;
 
 import com.senla.training.yeutukhovich.bookstore.ui.menu.builder.MenuBuilder;
 import com.senla.training.yeutukhovich.bookstore.ui.menu.navigator.MenuNavigator;
-import com.senla.training.yeutukhovich.bookstore.util.reader.InputReader;
+import com.senla.training.yeutukhovich.bookstore.ui.util.reader.UserInputReader;
+import com.senla.training.yeutukhovich.bookstore.util.injector.Autowired;
+import com.senla.training.yeutukhovich.bookstore.util.injector.Singleton;
 
+@Singleton
 public class MenuController {
 
-    private static MenuController instance;
-
+    @Autowired
     private MenuBuilder menuBuilder;
+    @Autowired
     private MenuNavigator menuNavigator;
-
-    public static MenuController getInstance() {
-        if (instance == null) {
-            instance = new MenuController();
-        }
-        return instance;
-    }
 
     private MenuController() {
 
@@ -44,7 +40,7 @@ public class MenuController {
 
         while (menuNavigator.getCurrentMenu() != null) {
             menuNavigator.printMenu();
-            menuNavigator.navigate(InputReader.readInputInteger());
+            menuNavigator.navigate(UserInputReader.readInputInteger());
         }
     }
 }

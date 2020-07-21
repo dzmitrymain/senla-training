@@ -5,70 +5,85 @@ import com.senla.training.yeutukhovich.bookstore.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.domain.Order;
 import com.senla.training.yeutukhovich.bookstore.domain.Request;
 import com.senla.training.yeutukhovich.bookstore.domain.state.OrderState;
-import com.senla.training.yeutukhovich.bookstore.repository.*;
+import com.senla.training.yeutukhovich.bookstore.exception.BusinessException;
+import com.senla.training.yeutukhovich.bookstore.repository.BookRepository;
+import com.senla.training.yeutukhovich.bookstore.repository.OrderRepository;
+import com.senla.training.yeutukhovich.bookstore.repository.RequestRepository;
 import com.senla.training.yeutukhovich.bookstore.serializer.BookstoreSerializer;
 import com.senla.training.yeutukhovich.bookstore.service.dto.BookDescription;
-import com.senla.training.yeutukhovich.bookstore.util.configuration.ConfigurationData;
-import com.senla.training.yeutukhovich.bookstore.util.constant.PathConstant;
-import com.senla.training.yeutukhovich.bookstore.util.initializer.EntityInitializer;
+import com.senla.training.yeutukhovich.bookstore.util.constant.ApplicationConstant;
+import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
+import com.senla.training.yeutukhovich.bookstore.util.constant.PropertyKeyConstant;
+import com.senla.training.yeutukhovich.bookstore.util.injector.Autowired;
+import com.senla.training.yeutukhovich.bookstore.util.injector.Singleton;
+import com.senla.training.yeutukhovich.bookstore.util.injector.config.ConfigInjector;
+import com.senla.training.yeutukhovich.bookstore.util.injector.config.ConfigProperty;
 import com.senla.training.yeutukhovich.bookstore.util.reader.FileDataReader;
 import com.senla.training.yeutukhovich.bookstore.util.writer.FileDataWriter;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Singleton
 public class BookServiceImpl implements BookService {
 
-    private static final Boolean REQUEST_AUTO_CLOSE = Boolean.valueOf(
-            ConfigurationData.getValue(ConfigurationData.REQUEST_AUTO_CLOSE));
-    private static final byte STALE_MONTH_NUMBER = Byte.parseByte(
-            ConfigurationData.getValue(ConfigurationData.STALE_MONTH_NUMBER));
+    @ConfigProperty
+    private boolean requestAutoCloseEnabled;
+    @ConfigProperty
+    private byte staleMonthNumber;
 
-    private static BookService instance;
+    @ConfigProperty(propertyName = PropertyKeyConstant.CVS_DIRECTORY_KEY)
+    private String cvsDirectoryPath;
 
-    private IBookRepository bookRepository = BookRepository.getInstance();
-    private IOrderRepository orderRepository = OrderRepository.getInstance();
-    private IRequestRepository requestRepository = RequestRepository.getInstance();
+    @Autowired
+    private BookRepository bookRepository;
+    @Autowired
+    private OrderRepository orderRepository;
+    @Autowired
+    private RequestRepository requestRepository;
+
+    @Autowired
+    private BookstoreSerializer bookstoreSerializer;
+    @Autowired
+    private EntityCvsConverter entityCvsConverter;
 
     private BookServiceImpl() {
 
     }
 
-    public static BookService getInstance() {
-        if (instance == null) {
-            instance = new BookServiceImpl();
+    @Override
+    public void replenishBook(Long id) {
+        Optional<Book> bookOptional = bookRepository.findById(id);
+        if (bookOptional.isEmpty()) {
+            throw new BusinessException(MessageConstant.BOOK_NOT_EXIST.getMessage());
         }
-        return instance;
+        if (bookOptional.get().isAvailable()) {
+            throw new BusinessException(MessageConstant.BOOK_ALREADY_REPLENISHED.getMessage());
+        }
+        Book checkedBook = bookOptional.get();
+        checkedBook.setAvailable(true);
+        checkedBook.setReplenishmentDate(new Date());
+        bookRepository.update(checkedBook);
+        if (requestAutoCloseEnabled) {
+            closeRequests(checkedBook);
+        }
+        updateOrders(checkedBook);
     }
 
     @Override
-    public boolean replenishBook(Long id) {
-
-
-        Book checkedBook = bookRepository.findById(id);
-        if (checkedBook != null && !checkedBook.isAvailable()) {
-            checkedBook.setAvailable(true);
-            checkedBook.setReplenishmentDate(new Date());
-            bookRepository.update(checkedBook);
-            if (REQUEST_AUTO_CLOSE) {
-                closeRequests(checkedBook);
-            }
-            updateOrders(checkedBook);
-            return true;
+    public void writeOffBook(Long id) {
+        Optional<Book> bookOptional = bookRepository.findById(id);
+        if (bookOptional.isEmpty()) {
+            throw new BusinessException(MessageConstant.BOOK_NOT_EXIST.getMessage());
         }
-        return false;
-    }
-
-    @Override
-    public boolean writeOffBook(Long id) {
-        Book checkedBook = bookRepository.findById(id);
-        if (checkedBook != null && checkedBook.isAvailable()) {
-            checkedBook.setAvailable(false);
-            bookRepository.update(checkedBook);
-            updateOrders(checkedBook);
-            return true;
+        if (!bookOptional.get().isAvailable()) {
+            throw new BusinessException(MessageConstant.BOOK_ALREADY_WRITTEN_OFF.getMessage());
         }
-        return false;
+
+        Book book = bookOptional.get();
+        book.setAvailable(false);
+        bookRepository.update(book);
+        updateOrders(book);
     }
 
     public List<Book> findSortedAllBooksByAvailability() {
@@ -125,7 +140,6 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<Book> findSoldBooksBetweenDates(Date startDate, Date endDate) {
         List<Order> orders = orderRepository.findAll();
-
         return orders.stream()
                 .filter(order -> order.getState() == OrderState.COMPLETED
                         && order.getCompletionDate().after(startDate)
@@ -138,7 +152,6 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<Book> findUnsoldBooksBetweenDates(Date startDate, Date endDate) {
         List<Order> orders = orderRepository.findAll();
-
         List<Book> soldBooks = orders.stream()
                 .filter(order -> order.getState() == OrderState.COMPLETED
                         && order.getCompletionDate().after(startDate)
@@ -146,7 +159,6 @@ public class BookServiceImpl implements BookService {
                 .map(Order::getBook)
                 .distinct()
                 .collect(Collectors.toList());
-
         return bookRepository.findAll()
                 .stream()
                 .filter(book -> !soldBooks.contains(book))
@@ -155,10 +167,9 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<Book> findStaleBooks() {
-
         List<Order> orders = orderRepository.findAll();
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MONTH, -STALE_MONTH_NUMBER);
+        calendar.add(Calendar.MONTH, -staleMonthNumber);
         Date currentDate = new Date();
         Date staleDate = new Date(calendar.getTimeInMillis());
 
@@ -169,7 +180,6 @@ public class BookServiceImpl implements BookService {
                 .map(Order::getBook)
                 .distinct()
                 .collect(Collectors.toList());
-
         return bookRepository.findAll()
                 .stream()
                 .filter(book -> !soldBooks.contains(book) && book.getReplenishmentDate() != null
@@ -178,85 +188,64 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookDescription showBookDescription(Long id) {
-        Book checkedBook = bookRepository.findById(id);
-
-        if (checkedBook == null) {
-            return null;
+    public Optional<BookDescription> showBookDescription(Long id) {
+        Optional<Book> bookOptional = bookRepository.findById(id);
+        if (bookOptional.isEmpty()) {
+            return Optional.empty();
         }
-
+        Book book = bookOptional.get();
         BookDescription bookDescription = new BookDescription();
-        bookDescription.setTitle(checkedBook.getTitle());
-        bookDescription.setEditionDate(checkedBook.getEditionDate());
-        bookDescription.setReplenishmentDate(checkedBook.getReplenishmentDate());
-        return bookDescription;
+        bookDescription.setTitle(book.getTitle());
+        bookDescription.setEditionDate(book.getEditionDate());
+        bookDescription.setReplenishmentDate(book.getReplenishmentDate());
+        return Optional.of(bookDescription);
     }
 
     @Override
     public int exportAllBooks(String fileName) {
-        int exportedBooksNumber = 0;
-        if (fileName != null) {
-            String path = PathConstant.DIRECTORY_PATH.getPathConstant()
-                    + fileName + PathConstant.CVS_FORMAT_TYPE.getPathConstant();
-            List<String> bookStrings = EntityCvsConverter.getInstance().convertBooks(bookRepository.findAll());
-            exportedBooksNumber = FileDataWriter.writeData(path, bookStrings);
-
-        }
-        return exportedBooksNumber;
+        String path = cvsDirectoryPath
+                + fileName + ApplicationConstant.CVS_FORMAT_TYPE.getConstant();
+        List<String> bookStrings = entityCvsConverter.convertBooks(bookRepository.findAll());
+        return FileDataWriter.writeData(path, bookStrings);
     }
 
     @Override
-    public boolean exportBook(Long bookId, String fileName) {
-        if (bookId != null && fileName != null) {
-            String path = PathConstant.DIRECTORY_PATH.getPathConstant()
-                    + fileName + PathConstant.CVS_FORMAT_TYPE.getPathConstant();
-            Book book = bookRepository.findById(bookId);
-            if (book != null) {
-                List<String> bookStrings = EntityCvsConverter.getInstance().convertBooks(List.of(book));
-                return FileDataWriter.writeData(path, bookStrings) != 0;
-            }
+    public void exportBook(Long bookId, String fileName) {
+        String path = cvsDirectoryPath
+                + fileName + ApplicationConstant.CVS_FORMAT_TYPE.getConstant();
+        Optional<Book> bookOptional = bookRepository.findById(bookId);
+        if (bookOptional.isEmpty()) {
+            throw new BusinessException(MessageConstant.BOOK_NOT_EXIST.getMessage());
         }
-        return false;
+        Book book = bookOptional.get();
+        List<String> bookStrings = entityCvsConverter.convertBooks(List.of(book));
+        FileDataWriter.writeData(path, bookStrings);
     }
 
     @Override
     public int importBooks(String fileName) {
+        if (fileName == null) {
+            return 0;
+        }
         int importedBooksNumber = 0;
-        if (fileName != null) {
-            String path = PathConstant.DIRECTORY_PATH.getPathConstant()
-                    + fileName + PathConstant.CVS_FORMAT_TYPE.getPathConstant();
-            List<String> dataStrings = FileDataReader.readData(path);
+        String path = cvsDirectoryPath
+                + fileName + ApplicationConstant.CVS_FORMAT_TYPE.getConstant();
+        List<String> dataStrings = FileDataReader.readData(path);
 
-            List<Book> repoBooks = bookRepository.findAll();
-            List<Book> importedBooks = EntityCvsConverter.getInstance().parseBooks(dataStrings);
+        List<Book> repoBooks = bookRepository.findAll();
+        List<Book> importedBooks = entityCvsConverter.parseBooks(dataStrings);
 
-            for (Book importedBook : importedBooks) {
-                if (repoBooks.contains(importedBook)) {
-                    bookRepository.update(importedBook);
-                    updateOrders(importedBook);
-                    updateRequests(importedBook);
-                } else {
-                    bookRepository.add(importedBook);
-                }
-                importedBooksNumber++;
+        for (Book importedBook : importedBooks) {
+            if (repoBooks.contains(importedBook)) {
+                bookRepository.update(importedBook);
+                updateOrders(importedBook);
+                updateRequests(importedBook);
+            } else {
+                bookRepository.add(importedBook);
             }
+            importedBooksNumber++;
         }
         return importedBooksNumber;
-    }
-
-    public void serializeBooks() {
-        List<Book> books = bookRepository.findAll();
-        BookstoreSerializer.getInstance().serializeBookstore(books,
-                PathConstant.SERIALIZED_BOOKS_PATH.getPathConstant());
-    }
-
-    public void deserializeBooks() {
-        List<Book> books = BookstoreSerializer.getInstance()
-                .deserializeBookstore(PathConstant.SERIALIZED_BOOKS_PATH.getPathConstant());
-        if (books == null) {
-            books = EntityInitializer.initBooks();
-        }
-        books.forEach(book -> bookRepository.add(book));
     }
 
     private List<Book> findAllBooks() {
@@ -266,34 +255,37 @@ public class BookServiceImpl implements BookService {
     private void closeRequests(Book book) {
         List<Request> requests = requestRepository.findAll();
         for (Request request : requests) {
-            if (request != null && request.isActive() && request.getBook().getId().equals(book.getId())) {
-                request.setActive(false);
-                requestRepository.update(request);
+            if (request == null || !request.isActive() || !request.getBook().getId().equals(book.getId())) {
+                continue;
             }
+            request.setActive(false);
+            requestRepository.update(request);
         }
     }
 
     private void updateRequests(Book book) {
         List<Request> requests = requestRepository.findAll();
         for (Request request : requests) {
-            if (request.getBook().getId().equals(book.getId())) {
-                request.setBook(book);
-                if (request.isActive() && book.isAvailable()) {
-                    request.setActive(false);
-                }
-                requestRepository.update(request);
+            if (!request.getBook().getId().equals(book.getId())) {
+                continue;
             }
+            request.setBook(book);
+            if (request.isActive() && book.isAvailable()) {
+                request.setActive(false);
+            }
+            requestRepository.update(request);
         }
     }
 
     private void updateOrders(Book book) {
         List<Order> orders = orderRepository.findAll();
         for (Order order : orders) {
-            if (order.getState() == OrderState.CREATED &&
-                    order.getBook().getId().equals(book.getId())) {
-                order.setBook(book);
-                orderRepository.update(order);
+            if (order.getState() != OrderState.CREATED ||
+                    !order.getBook().getId().equals(book.getId())) {
+                continue;
             }
+            order.setBook(book);
+            orderRepository.update(order);
         }
     }
 }

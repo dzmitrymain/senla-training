@@ -1,45 +1,33 @@
 package com.senla.training.yeutukhovich.bookstore.serializer;
 
-import com.senla.training.yeutukhovich.bookstore.domain.AbstractEntity;
+import com.senla.training.yeutukhovich.bookstore.exception.InternalException;
+import com.senla.training.yeutukhovich.bookstore.util.injector.Singleton;
 
 import java.io.*;
-import java.util.List;
 
+@Singleton
 public class BookstoreSerializer {
-
-    private static BookstoreSerializer instance;
 
     private BookstoreSerializer() {
 
     }
 
-    public static BookstoreSerializer getInstance() {
-        if (instance == null) {
-            instance = new BookstoreSerializer();
-        }
-        return instance;
-    }
-
-    public <T extends AbstractEntity> void serializeBookstore(List<T> entities, String path) {
-
+    public void serializeBookstore(ApplicationState applicationState, String path) {
         try (ObjectOutputStream out = new ObjectOutputStream(
                 new FileOutputStream(path))) {
-            out.writeObject(entities);
+            out.writeObject(applicationState);
         } catch (IOException e) {
-            System.err.println(e.getMessage());
+            throw new InternalException(e.getMessage());
         }
     }
 
-    public <T extends AbstractEntity> List<T> deserializeBookstore(String path) {
-        List<T> entities = null;
-
+    public ApplicationState deserializeBookstore(String path) {
         try (ObjectInputStream in = new ObjectInputStream(
                 new FileInputStream(path))) {
-            entities = (List<T>) in.readObject();
+            return (ApplicationState) in.readObject();
         } catch (IOException | ClassNotFoundException e) {
-            System.err.println(e.getMessage());
+            throw new InternalException(e.getMessage());
         }
-        return entities;
     }
 }
 

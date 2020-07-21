@@ -5,80 +5,95 @@ import com.senla.training.yeutukhovich.bookstore.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.domain.Order;
 import com.senla.training.yeutukhovich.bookstore.domain.Request;
 import com.senla.training.yeutukhovich.bookstore.domain.state.OrderState;
-import com.senla.training.yeutukhovich.bookstore.repository.*;
+import com.senla.training.yeutukhovich.bookstore.exception.BusinessException;
+import com.senla.training.yeutukhovich.bookstore.repository.BookRepository;
+import com.senla.training.yeutukhovich.bookstore.repository.OrderRepository;
+import com.senla.training.yeutukhovich.bookstore.repository.RequestRepository;
 import com.senla.training.yeutukhovich.bookstore.serializer.BookstoreSerializer;
 import com.senla.training.yeutukhovich.bookstore.service.dto.CreationOrderResult;
 import com.senla.training.yeutukhovich.bookstore.service.dto.OrderDetails;
+import com.senla.training.yeutukhovich.bookstore.util.constant.ApplicationConstant;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
-import com.senla.training.yeutukhovich.bookstore.util.constant.PathConstant;
+import com.senla.training.yeutukhovich.bookstore.util.constant.PropertyKeyConstant;
+import com.senla.training.yeutukhovich.bookstore.util.injector.Autowired;
+import com.senla.training.yeutukhovich.bookstore.util.injector.Singleton;
+import com.senla.training.yeutukhovich.bookstore.util.injector.config.ConfigInjector;
+import com.senla.training.yeutukhovich.bookstore.util.injector.config.ConfigProperty;
 import com.senla.training.yeutukhovich.bookstore.util.reader.FileDataReader;
 import com.senla.training.yeutukhovich.bookstore.util.writer.FileDataWriter;
 
 import java.math.BigDecimal;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
+@Singleton
 public class OrderServiceImpl implements OrderService {
 
-    private static OrderService instance;
+    @ConfigProperty(propertyName = PropertyKeyConstant.CVS_DIRECTORY_KEY)
+    private String cvsDirectoryPath;
 
-    private IBookRepository bookRepository;
-    private IOrderRepository orderRepository;
-    private IRequestRepository requestRepository;
+    @Autowired
+    private BookRepository bookRepository;
+    @Autowired
+    private OrderRepository orderRepository;
+    @Autowired
+    private RequestRepository requestRepository;
+
+    @Autowired
+    private BookstoreSerializer bookstoreSerializer;
+    @Autowired
+    private EntityCvsConverter entityCvsConverter;
 
     private OrderServiceImpl() {
-        this.bookRepository = BookRepository.getInstance();
-        this.orderRepository = OrderRepository.getInstance();
-        this.requestRepository = RequestRepository.getInstance();
-    }
 
-    public static OrderService getInstance() {
-        if (instance == null) {
-            instance = new OrderServiceImpl();
-        }
-        return instance;
     }
 
     @Override
     public CreationOrderResult createOrder(Long bookId, String customerData) {
         CreationOrderResult result = new CreationOrderResult();
-        Book checkedBook = bookRepository.findById(bookId);
-        if (checkedBook != null) {
-            if (!checkedBook.isAvailable()) {
-                result.setRequestId(createRequest(bookId, customerData));
-            }
-            Order order = new Order(checkedBook, customerData);
-            orderRepository.add(order);
-            result.setOrderId(order.getId());
+        Optional<Book> bookOptional = bookRepository.findById(bookId);
+        if (bookOptional.isEmpty()) {
+            throw new BusinessException(MessageConstant.BOOK_NOT_EXIST.getMessage());
         }
+        if (!bookOptional.get().isAvailable()) {
+            result.setRequestId(createRequest(bookId, customerData));
+        }
+        Order order = new Order(bookOptional.get(), customerData);
+        orderRepository.add(order);
+        result.setOrderId(order.getId());
         return result;
     }
 
     @Override
-    public boolean cancelOrder(Long orderId) {
-        Order checkedOrder = orderRepository.findById(orderId);
-        if (checkedOrder != null && checkedOrder.getState() == OrderState.CREATED) {
-            checkedOrder.setState(OrderState.CANCELED);
-            orderRepository.update(checkedOrder);
-            return true;
+    public void cancelOrder(Long orderId) {
+        Optional<Order> orderOptional = orderRepository.findById(orderId);
+        if (orderOptional.isEmpty()) {
+            throw new BusinessException(MessageConstant.ORDER_NOT_EXIST.getMessage());
         }
-        return false;
+        Order order = orderOptional.get();
+        if (order.getState() != OrderState.CREATED) {
+            throw new BusinessException(MessageConstant.WRONG_ORDER_STATE.getMessage());
+        }
+        order.setState(OrderState.CANCELED);
+        orderRepository.update(order);
     }
 
     @Override
-    public boolean completeOrder(Long orderId) {
-        Order checkedOrder = orderRepository.findById(orderId);
-        if (checkedOrder != null && checkedOrder.getBook().isAvailable() &&
-                checkedOrder.getState() == OrderState.CREATED) {
-            checkedOrder.setState(OrderState.COMPLETED);
-            checkedOrder.setCompletionDate(new Date());
-            orderRepository.update(checkedOrder);
-            return true;
+    public void completeOrder(Long orderId) {
+        Optional<Order> orderOptional = orderRepository.findById(orderId);
+        if (orderOptional.isEmpty()) {
+            throw new BusinessException(MessageConstant.ORDER_NOT_EXIST.getMessage());
         }
-        return false;
+        Order order = orderOptional.get();
+        if (!order.getBook().isAvailable()) {
+            throw new BusinessException(MessageConstant.BOOK_NOT_AVAILABLE.getMessage());
+        }
+        if (order.getState() != OrderState.CREATED) {
+            throw new BusinessException(MessageConstant.WRONG_ORDER_STATE.getMessage());
+        }
+        order.setState(OrderState.COMPLETED);
+        order.setCompletionDate(new Date());
+        orderRepository.update(order);
     }
 
     @Override
@@ -147,88 +162,72 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderDetails showOrderDetails(Long orderId) {
-        Order checkedOrder = orderRepository.findById(orderId);
-        if (checkedOrder == null) {
-            return null;
+    public Optional<OrderDetails> showOrderDetails(Long orderId) {
+        Optional<Order> orderOptional = orderRepository.findById(orderId);
+        if (orderOptional.isEmpty()) {
+            return Optional.empty();
         }
+        Order order = orderOptional.get();
         OrderDetails orderDetails = new OrderDetails();
-        orderDetails.setCustomerData(checkedOrder.getCustomerData());
-        orderDetails.setBookTitle(checkedOrder.getBook().getTitle());
-        orderDetails.setPrice(checkedOrder.getCurrentBookPrice());
-        orderDetails.setState(checkedOrder.getState());
-        orderDetails.setCreationDate(checkedOrder.getCreationDate());
-        orderDetails.setCompletionDate(checkedOrder.getCompletionDate());
-        return orderDetails;
+        orderDetails.setCustomerData(order.getCustomerData());
+        orderDetails.setBookTitle(order.getBook().getTitle());
+        orderDetails.setPrice(order.getCurrentBookPrice());
+        orderDetails.setState(order.getState());
+        orderDetails.setCreationDate(order.getCreationDate());
+        orderDetails.setCompletionDate(order.getCompletionDate());
+        return Optional.of(orderDetails);
     }
 
     @Override
     public int exportAllOrders(String fileName) {
-        int exportedOrdersNumber = 0;
-        if (fileName != null) {
-            String path = PathConstant.DIRECTORY_PATH.getPathConstant()
-                    + fileName + PathConstant.CVS_FORMAT_TYPE.getPathConstant();
-            List<String> orderStrings = EntityCvsConverter.getInstance().convertOrders(orderRepository.findAll());
-            exportedOrdersNumber = FileDataWriter.writeData(path, orderStrings);
-        }
-        return exportedOrdersNumber;
+        String path = cvsDirectoryPath
+                + fileName + ApplicationConstant.CVS_FORMAT_TYPE.getConstant();
+        List<String> orderStrings = entityCvsConverter.convertOrders(orderRepository.findAll());
+        return FileDataWriter.writeData(path, orderStrings);
     }
 
     @Override
-    public boolean exportOrder(Long id, String fileName) {
-        if (id != null && fileName != null) {
-            String path = PathConstant.DIRECTORY_PATH.getPathConstant()
-                    + fileName + PathConstant.CVS_FORMAT_TYPE.getPathConstant();
-            Order order = orderRepository.findById(id);
-            if (order != null) {
-                List<String> orderStrings = EntityCvsConverter.getInstance().convertOrders(List.of(order));
-                return FileDataWriter.writeData(path, orderStrings) != 0;
-            }
+    public void exportOrder(Long id, String fileName) {
+        String path = cvsDirectoryPath
+                + fileName + ApplicationConstant.CVS_FORMAT_TYPE.getConstant();
+        Optional<Order> orderOptional = orderRepository.findById(id);
+        if (orderOptional.isEmpty()) {
+            throw new BusinessException(MessageConstant.ORDER_NOT_EXIST.getMessage());
         }
-        return false;
+        Order order = orderOptional.get();
+        List<String> orderStrings = entityCvsConverter.convertOrders(List.of(order));
+        FileDataWriter.writeData(path, orderStrings);
     }
 
     @Override
     public int importOrders(String fileName) {
+        if (fileName == null) {
+            return 0;
+        }
         int importedOrdersNumber = 0;
-        if (fileName != null) {
-            String path = PathConstant.DIRECTORY_PATH.getPathConstant()
-                    + fileName + PathConstant.CVS_FORMAT_TYPE.getPathConstant();
-            List<String> orderStrings = FileDataReader.readData(path);
+        String path = cvsDirectoryPath
+                + fileName + ApplicationConstant.CVS_FORMAT_TYPE.getConstant();
+        List<String> orderStrings = FileDataReader.readData(path);
 
-            List<Order> repoOrders = orderRepository.findAll();
-            List<Order> importedOrders = EntityCvsConverter.getInstance().parseOrders(orderStrings);
+        List<Order> repoOrders = orderRepository.findAll();
+        List<Order> importedOrders = entityCvsConverter.parseOrders(orderStrings);
 
-            for (Order importedOrder : importedOrders) {
-                Book dependentBook = bookRepository.findById(importedOrder.getBook().getId());
-                if (dependentBook == null) {
-                    System.err.println(MessageConstant.BOOK_NOT_NULL.getMessage());
-                    continue;
-                }
-                importedOrder.setBook(dependentBook);
-                if (repoOrders.contains(importedOrder)) {
-                    orderRepository.update(importedOrder);
-                } else {
-                    orderRepository.add(importedOrder);
-                }
-                importedOrdersNumber++;
+        for (Order importedOrder : importedOrders) {
+            Optional<Book> dependentBookOptional = bookRepository.findById(importedOrder.getBook().getId());
+            if (dependentBookOptional.isEmpty()) {
+                //log
+                //System.err.println(MessageConstant.BOOK_NOT_NULL.getMessage());
+                continue;
             }
+            importedOrder.setBook(dependentBookOptional.get());
+            if (repoOrders.contains(importedOrder)) {
+                orderRepository.update(importedOrder);
+            } else {
+                orderRepository.add(importedOrder);
+            }
+            importedOrdersNumber++;
         }
         return importedOrdersNumber;
-    }
-
-    public void serializeOrders() {
-        List<Order> orders = orderRepository.findAll();
-        BookstoreSerializer.getInstance().serializeBookstore(orders,
-                PathConstant.SERIALIZED_ORDERS_PATH.getPathConstant());
-    }
-
-    public void deserializeOrders() {
-        List<Order> orders = BookstoreSerializer.getInstance()
-                .deserializeBookstore(PathConstant.SERIALIZED_ORDERS_PATH.getPathConstant());
-        if (orders != null) {
-            orders.forEach(order -> orderRepository.add(order));
-        }
     }
 
     private List<Order> findAllOrders() {
@@ -236,13 +235,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private Long createRequest(Long bookId, String requesterData) {
-        Long requestId = null;
-        Book checkedBook = bookRepository.findById(bookId);
-        if (checkedBook != null && !checkedBook.isAvailable()) {
-            Request request = new Request(checkedBook, requesterData);
-            requestRepository.add(request);
-            requestId = request.getId();
+        Optional<Book> bookOptional = bookRepository.findById(bookId);
+        if (bookOptional.isEmpty() || bookOptional.get().isAvailable()) {
+            return null;
         }
-        return requestId;
+        Request request = new Request(bookOptional.get(), requesterData);
+        requestRepository.add(request);
+        return request.getId();
     }
 }

@@ -5,12 +5,13 @@ import com.senla.training.yeutukhovich.bookstore.service.dto.BookDescription;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public interface BookService {
 
-    boolean replenishBook(Long id);
+    void replenishBook(Long id);
 
-    boolean writeOffBook(Long id);
+    void writeOffBook(Long id);
 
     List<Book> findSortedAllBooksByAvailability();
 
@@ -28,15 +29,11 @@ public interface BookService {
 
     List<Book> findStaleBooks();
 
-    BookDescription showBookDescription(Long id);
+    Optional<BookDescription> showBookDescription(Long id);
 
     int exportAllBooks(String fileName);
 
-    boolean exportBook(Long bookId, String fileName);
+    void exportBook(Long bookId, String fileName);
 
     int importBooks(String fileName);
-
-    void serializeBooks();
-
-    void deserializeBooks();
 }

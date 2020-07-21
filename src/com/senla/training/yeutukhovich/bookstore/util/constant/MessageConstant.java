@@ -7,37 +7,41 @@ public enum MessageConstant {
     MENU_NAME_INDENT("        "),
     MENU_ITEM_INDEX_DELIMITER(". "),
 
-    STRING_FORMAT_UNPARSEABLE_BOOLEAN("Unparseable boolean: \"%s\""),
-
-    EDITION_NOT_NULL("Edition date can't be null"),
-    BOOK_NOT_NULL("Book not exist."),
-    CREATION_NOT_NULL("Creation date can't be null"),
-
+    SOMETHING_WENT_WRONG("Something went wrong."),
+    CANT_FIND_SINGLETON("Can't find singleton"),
+    CANT_FIND_PROPERTY("Can't find property: '%s' at properties file: '%s'"),
     NO_DATA_WAS_FOUND("No data was found."),
+    CONTAINER_NOT_INIT("Container has not initialized."),
+    AMBIGUITY_CHOICE("Ambiguity of choice '%s'. Specify the default implementation."),
+    STRING_FORMAT_UNPARSEABLE_BOOLEAN("Unparseable boolean: '%s'"),
+
+    EDITION_NOT_NULL("Edition date can't be null."),
+    BOOK_NOT_EXIST("Book not exist."),
+    BOOK_ALREADY_REPLENISHED("Book already replenished."),
+    BOOK_ALREADY_WRITTEN_OFF("Book already written off."),
+    CREATION_NOT_NULL("Creation date can't be null."),
 
     ENTER_BOOK_ID("Please, enter book id: "),
+    BOOK_NOT_AVAILABLE("Book not available."),
     BOOK_HAS_BEEN_REPLENISHED("Book has been replenished."),
-    BOOK_HAS_NOT_BEEN_REPLENISHED("Book has not been replenished. Check entered book id."),
     BOOK_HAS_BEEN_WRITTEN_OFF("Book has been written off."),
-    BOOK_HAS_NOT_BEEN_WRITTEN_OFF("Book has not been written off. Check entered book id."),
     BOOK_DESCRIPTION_WAS_NOT_FOUND("Book description was not found. Check entered book id."),
 
     ENTER_ORDER_ID("Please, enter order id: "),
+    ORDER_NOT_EXIST("Order not exist."),
+    WRONG_ORDER_STATE("Wrong current order state."),
     ORDER_HAS_BEEN_CREATED("Order has been created."),
-    ORDER_HAS_NOT_BEEN_CREATED("Order has not been created. Check entered book id."),
     ORDER_HAS_BEEN_CANCELED("Order has been canceled."),
-    ORDER_HAS_NOT_BEEN_CANCELED("Order has not been canceled. Check entered order id."),
     ORDER_HAS_BEEN_COMPLETED("Order has been completed."),
-    ORDER_HAS_NOT_BEEN_COMPLETED("Order has not been completed. Check entered order id."),
     COMPLETED_ORDERS_NUMBER("Completed orders number: "),
     ENTER_CUSTOMER_DATA("Please, enter customer data: "),
     ORDER_DETAILS_WAS_NOT_FOUND("Order details was not found. Check entered order id."),
     PROFIT("Profit: "),
 
     ENTER_REQUEST_ID("Please, enter request id: "),
+    REQUEST_NOT_EXIST("Request not exist."),
     REQUEST_HAS_BEEN_CREATED("Book request has been created."),
     ENTER_REQUESTER_DATA("Please, enter requester data: "),
-    REQUEST_HAS_NOT_BEEN_CREATED("Book request has not been created. Check entered book id."),
 
     EARLIEST_DATE_BOUND_YYYY_MM_DD("Please enter an earliest date bound in format \"yyyy-MM-dd\": "),
     LATEST_DATE_BOUND_YYYY_MM_DD("Please enter a latest date bound in format \"yyyy-MM-dd\": "),
@@ -45,8 +49,10 @@ public enum MessageConstant {
     IMPORTED_ENTITIES("Imported entities number: "),
     EXPORTED_ENTITIES("Exported entities number: "),
     ENTITY_EXPORTED("Entity has been exported."),
-    ENTITY_NOT_EXPORTED("Entity has not been exported"),
     ENTER_FILE_NAME("Please, enter file name: "),
+    CANT_PARSE_BOOK("Can't parse book from cvs file."),
+    CANT_PARSE_ORDER("Can't parse order from cvs file."),
+    CANT_PARSE_REQUEST("Can't parse request from cvs file."),
     ENTER_CORRECT_NUMBER("Please, enter the correct number.");
 
     private String message;

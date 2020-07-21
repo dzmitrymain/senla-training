@@ -1,48 +1,49 @@
 package com.senla.training.yeutukhovich.bookstore.controller;
 
 import com.senla.training.yeutukhovich.bookstore.domain.Book;
+import com.senla.training.yeutukhovich.bookstore.exception.BusinessException;
+import com.senla.training.yeutukhovich.bookstore.exception.InternalException;
 import com.senla.training.yeutukhovich.bookstore.service.book.BookService;
-import com.senla.training.yeutukhovich.bookstore.service.book.BookServiceImpl;
 import com.senla.training.yeutukhovich.bookstore.service.dto.BookDescription;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
+import com.senla.training.yeutukhovich.bookstore.util.injector.Autowired;
+import com.senla.training.yeutukhovich.bookstore.util.injector.Singleton;
 
 import java.util.Date;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Singleton
 public class BookController {
 
-    private static BookController instance;
     private static final String BOOKS_DELIMITER = "\n";
 
+    @Autowired
     private BookService bookService;
 
-    private BookController(BookService bookService) {
-        this.bookService = bookService;
-    }
+    private BookController() {
 
-    public static BookController getInstance() {
-        if (instance == null) {
-            instance = new BookController(BookServiceImpl.getInstance());
-        }
-        return instance;
     }
 
     public String replenishBook(Long id) {
-        if (bookService.replenishBook(id)) {
+        try {
+            bookService.replenishBook(id);
             return MessageConstant.BOOK_HAS_BEEN_REPLENISHED.getMessage();
+        } catch (BusinessException e) {
+            return e.getMessage();
         }
-        return MessageConstant.BOOK_HAS_NOT_BEEN_REPLENISHED.getMessage();
     }
 
     public String writeOffBook(Long id) {
-        if (bookService.writeOffBook(id)) {
+        try {
+            bookService.writeOffBook(id);
             return MessageConstant.BOOK_HAS_BEEN_WRITTEN_OFF.getMessage();
+        } catch (BusinessException e) {
+            return e.getMessage();
         }
-        return MessageConstant.BOOK_HAS_NOT_BEEN_WRITTEN_OFF.getMessage();
     }
 
     public String findSortedAllBooksByAvailability() {
-
         return bookService.findSortedAllBooksByAvailability().stream()
                 .map(Book::toString)
                 .collect(Collectors.joining(BOOKS_DELIMITER));
@@ -72,13 +73,11 @@ public class BookController {
                 .collect(Collectors.joining(BOOKS_DELIMITER));
     }
 
-
     public String findSoldBooksBetweenDates(Date startDate, Date endDate) {
         return bookService.findSoldBooksBetweenDates(startDate, endDate).stream()
                 .map(Book::toString)
                 .collect(Collectors.joining(BOOKS_DELIMITER));
     }
-
 
     public String findUnsoldBooksBetweenDates(Date startDate, Date endDate) {
         return bookService.findUnsoldBooksBetweenDates(startDate, endDate).stream()
@@ -92,27 +91,41 @@ public class BookController {
                 .collect(Collectors.joining(BOOKS_DELIMITER));
     }
 
-    public BookDescription showBookDescription(Long id) {
-        return bookService.showBookDescription(id);
+    public String showBookDescription(Long id) {
+        Optional<BookDescription> bookDescriptionOptional = bookService.showBookDescription(id);
+        if (bookDescriptionOptional.isEmpty()) {
+            return MessageConstant.BOOK_DESCRIPTION_WAS_NOT_FOUND.getMessage();
+        }
+        return bookDescriptionOptional.get().toString();
     }
 
-    public int importBooks(String fileName) {
-        return bookService.importBooks(fileName);
+    public String importBooks(String fileName) {
+        try {
+            return MessageConstant.IMPORTED_ENTITIES.getMessage() + bookService.importBooks(fileName);
+        } catch (BusinessException e) {
+            return e.getMessage();
+        } catch (InternalException e) {
+            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
+        }
     }
 
-    public int exportAllBooks(String fileName) {
-        return bookService.exportAllBooks(fileName);
+    public String exportAllBooks(String fileName) {
+        try {
+            return MessageConstant.EXPORTED_ENTITIES.getMessage()
+                    + bookService.exportAllBooks(fileName);
+        } catch (InternalException e) {
+            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
+        }
     }
 
-    public boolean exportBook(Long bookId, String fileName) {
-        return bookService.exportBook(bookId, fileName);
-    }
-
-    public void serializeBooks() {
-        bookService.serializeBooks();
-    }
-
-    public void deserializeBooks() {
-        bookService.deserializeBooks();
+    public String exportBook(Long bookId, String fileName) {
+        try {
+            bookService.exportBook(bookId, fileName);
+            return MessageConstant.ENTITY_EXPORTED.getMessage();
+        } catch (BusinessException e) {
+            return e.getMessage();
+        } catch (InternalException e) {
+            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
+        }
     }
 }

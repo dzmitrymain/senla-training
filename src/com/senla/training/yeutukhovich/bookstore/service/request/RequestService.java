@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface RequestService {
 
-    Long createRequest(Long bookId, String requesterData);
+    void createRequest(Long bookId, String requesterData);
 
     List<Request> findSortedAllRequestsByBookTitle();
 
@@ -16,11 +16,7 @@ public interface RequestService {
 
     int exportAllRequests(String fileName);
 
-    boolean exportRequest(Long requestId, String fileName);
+    void exportRequest(Long requestId, String fileName);
 
     int importRequests(String fileName);
-
-    void serializeRequests();
-
-    void deserializeRequests();
 }
