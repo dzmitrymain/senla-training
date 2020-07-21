@@ -30,6 +30,7 @@ public class PackageScanner {
         Set<Class<?>> classes = new HashSet<>();
         Queue<String> packagePathQueue = new PriorityQueue<>();
         packagePathQueue.add(ROOT_PACKAGE_PATH);
+        // можно объявить переменную внутри цикла?
         String packagePath;
         while (!packagePathQueue.isEmpty()) {
             packagePath = packagePathQueue.poll();

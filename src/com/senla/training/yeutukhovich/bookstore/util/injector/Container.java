@@ -65,6 +65,7 @@ public class Container {
 
     private static void injectDependencies() {
         singletons.values().forEach(singleton -> {
+                    // можно вынести в приватный метод, чтобы разгрузить лямбду
                     for (Field field : singleton.getClass().getDeclaredFields()) {
                         if (field.isAnnotationPresent(Autowired.class)) {
                             boolean tempAccessible = field.canAccess(singleton);
