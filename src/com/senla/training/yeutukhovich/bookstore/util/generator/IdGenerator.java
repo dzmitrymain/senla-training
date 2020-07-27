@@ -9,7 +9,7 @@ public class IdGenerator {
     private long orderIdNumber;
     private long requestIdNumber;
 
-    private IdGenerator(){
+    private IdGenerator() {
 
     }
 

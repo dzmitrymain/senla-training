@@ -11,7 +11,7 @@ import java.util.List;
 public class FileDataWriter {
 
     private FileDataWriter() {
-        
+
     }
 
     public static int writeData(String path, List<String> data) {

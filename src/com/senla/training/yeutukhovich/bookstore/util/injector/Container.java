@@ -65,22 +65,22 @@ public class Container {
 
     private static void injectDependencies() {
         singletons.values().forEach(singleton -> {
-                    for (Field field : singleton.getClass().getDeclaredFields()) {
-                        if (field.isAnnotationPresent(Autowired.class)) {
-                            boolean tempAccessible = field.canAccess(singleton);
-                            field.setAccessible(true);
-                            try {
-                                field.set(singleton, getImplementation(field.getType()));
-                            } catch (IllegalAccessException e) {
-                                throw new InternalException(e.getMessage());
-                            } finally {
-                                field.setAccessible(tempAccessible);
-                            }
-                        }
-                        if (field.isAnnotationPresent(ConfigProperty.class)) {
-                            ConfigInjector.injectConfig(field, singleton);
-                        }
+            for (Field field : singleton.getClass().getDeclaredFields()) {
+                if (field.isAnnotationPresent(Autowired.class)) {
+                    boolean tempAccessible = field.canAccess(singleton);
+                    field.setAccessible(true);
+                    try {
+                        field.set(singleton, getImplementation(field.getType()));
+                    } catch (IllegalAccessException e) {
+                        throw new InternalException(e.getMessage());
+                    } finally {
+                        field.setAccessible(tempAccessible);
                     }
-                });
+                }
+                if (field.isAnnotationPresent(ConfigProperty.class)) {
+                    ConfigInjector.injectConfig(field, singleton);
+                }
+            }
+        });
     }
 }
