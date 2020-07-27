@@ -11,7 +11,7 @@ public class FirstTaskMainApplication {
         } catch (InterruptedException ignored) {
         }
     });
-    
+
     public static void main(String[] args) throws InterruptedException {
         System.out.println(MY_THREAD.getState()); //NEW
         MY_THREAD.start();
