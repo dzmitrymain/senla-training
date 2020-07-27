@@ -22,7 +22,7 @@ public class FirstTaskMainApplication {
         System.out.println(FIRST_THREAD.getState()); //TERMINATED
     }
 
-    private static synchronized void blockingMethod() throws InterruptedException {
+    private static synchronized void doSomething() throws InterruptedException {
         Thread.sleep(200);
     }
 
@@ -32,7 +32,7 @@ public class FirstTaskMainApplication {
             System.out.println(Thread.currentThread().getState()); //RUNNABLE
             try {
                 Thread.sleep(100);
-                blockingMethod();
+                doSomething();
                 SECOND_THREAD.join();
             } catch (InterruptedException ignored) {
                 //ignored
@@ -44,7 +44,7 @@ public class FirstTaskMainApplication {
         @Override
         public void run() {
             try {
-                blockingMethod();
+                doSomething();
                 Thread.sleep(300);
             } catch (InterruptedException ignored) {
                 //ignored
