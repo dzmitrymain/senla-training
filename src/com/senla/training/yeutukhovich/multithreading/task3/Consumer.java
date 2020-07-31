@@ -4,6 +4,7 @@ public class Consumer implements Runnable {
 
     private NumberStorage storage;
 
+    // модификатор доступа?
     Consumer(NumberStorage storage) {
         this.storage = storage;
     }

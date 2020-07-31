@@ -7,6 +7,7 @@ public class NumberStorage {
     private int storageSize;
     private List<Integer> numbers;
 
+    // модификатор доступа?
     NumberStorage(int storageSize) {
         this.storageSize = storageSize;
         numbers = new ArrayList<>(storageSize);
@@ -23,6 +24,7 @@ public class NumberStorage {
     }
 
     public synchronized Integer get() throws InterruptedException {
+        // isEmpty()
         while (numbers.size() == 0) {
             wait();
         }
