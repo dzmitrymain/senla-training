@@ -30,9 +30,8 @@ public class PackageScanner {
         Set<Class<?>> classes = new HashSet<>();
         Queue<String> packagePathQueue = new PriorityQueue<>();
         packagePathQueue.add(ROOT_PACKAGE_PATH);
-        String packagePath;
         while (!packagePathQueue.isEmpty()) {
-            packagePath = packagePathQueue.poll();
+            String packagePath = packagePathQueue.poll();
             for (String line : getContentLines(packagePath)) {
                 if (line.endsWith(".class")) {
                     try {

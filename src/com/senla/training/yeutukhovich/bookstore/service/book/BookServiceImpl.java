@@ -16,7 +16,6 @@ import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 import com.senla.training.yeutukhovich.bookstore.util.constant.PropertyKeyConstant;
 import com.senla.training.yeutukhovich.bookstore.util.injector.Autowired;
 import com.senla.training.yeutukhovich.bookstore.util.injector.Singleton;
-import com.senla.training.yeutukhovich.bookstore.util.injector.config.ConfigInjector;
 import com.senla.training.yeutukhovich.bookstore.util.injector.config.ConfigProperty;
 import com.senla.training.yeutukhovich.bookstore.util.reader.FileDataReader;
 import com.senla.training.yeutukhovich.bookstore.util.writer.FileDataWriter;

@@ -4,7 +4,6 @@ import com.senla.training.yeutukhovich.bookstore.domain.Request;
 import com.senla.training.yeutukhovich.bookstore.util.generator.IdGenerator;
 import com.senla.training.yeutukhovich.bookstore.util.injector.Autowired;
 import com.senla.training.yeutukhovich.bookstore.util.injector.Singleton;
-import com.senla.training.yeutukhovich.bookstore.util.injector.config.ConfigProperty;
 
 import java.util.ArrayList;
 import java.util.List;

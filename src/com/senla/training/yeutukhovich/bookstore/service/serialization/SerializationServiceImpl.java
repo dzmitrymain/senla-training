@@ -10,7 +10,6 @@ import com.senla.training.yeutukhovich.bookstore.util.constant.PropertyKeyConsta
 import com.senla.training.yeutukhovich.bookstore.util.initializer.EntityInitializer;
 import com.senla.training.yeutukhovich.bookstore.util.injector.Autowired;
 import com.senla.training.yeutukhovich.bookstore.util.injector.Singleton;
-import com.senla.training.yeutukhovich.bookstore.util.injector.config.ConfigInjector;
 import com.senla.training.yeutukhovich.bookstore.util.injector.config.ConfigProperty;
 
 @Singleton
@@ -29,7 +28,7 @@ public class SerializationServiceImpl implements SerializationService {
     @Autowired
     private BookstoreSerializer bookstoreSerializer;
 
-    private SerializationServiceImpl(){
+    private SerializationServiceImpl() {
 
     }
 

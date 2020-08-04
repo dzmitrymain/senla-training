@@ -19,6 +19,6 @@ public @interface ConfigProperty {
         DEFAULT,
         STRING,
         BOOLEAN,
-        BYTE;
+        BYTE
     }
 }
