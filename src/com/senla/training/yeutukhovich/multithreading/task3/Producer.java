@@ -3,7 +3,7 @@ package com.senla.training.yeutukhovich.multithreading.task3;
 public class Producer implements Runnable {
     private NumberStorage storage;
 
-    Producer(NumberStorage storage) {
+    protected Producer(NumberStorage storage) {
         this.storage = storage;
     }
 

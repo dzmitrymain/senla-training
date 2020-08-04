@@ -4,7 +4,7 @@ public class Consumer implements Runnable {
 
     private NumberStorage storage;
 
-    Consumer(NumberStorage storage) {
+    protected Consumer(NumberStorage storage) {
         this.storage = storage;
     }
 

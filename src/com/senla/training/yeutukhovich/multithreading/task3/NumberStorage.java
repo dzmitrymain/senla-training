@@ -7,7 +7,7 @@ public class NumberStorage {
     private int storageSize;
     private List<Integer> numbers;
 
-    NumberStorage(int storageSize) {
+    protected NumberStorage(int storageSize) {
         this.storageSize = storageSize;
         numbers = new ArrayList<>(storageSize);
     }
@@ -23,7 +23,7 @@ public class NumberStorage {
     }
 
     public synchronized Integer get() throws InterruptedException {
-        while (numbers.size() == 0) {
+        while (numbers.isEmpty()) {
             wait();
         }
         Integer number = numbers.remove(0);

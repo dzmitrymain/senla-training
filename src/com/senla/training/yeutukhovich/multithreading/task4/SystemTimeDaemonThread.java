@@ -9,7 +9,7 @@ public class SystemTimeDaemonThread extends Thread {
 
     private int millisDelay;
 
-    SystemTimeDaemonThread(int secondsDelay) {
+    protected SystemTimeDaemonThread(int secondsDelay) {
         millisDelay = secondsDelay * 1000;
         this.setDaemon(true);
         start();
@@ -19,7 +19,7 @@ public class SystemTimeDaemonThread extends Thread {
     public void run() {
         while (!isInterrupted()) {
             try {
-                System.out.println(formatTime(System.currentTimeMillis()));
+                System.out.println(formatTime());
                 Thread.sleep(millisDelay);
             } catch (InterruptedException ignored) {
                 //ignored
@@ -27,7 +27,7 @@ public class SystemTimeDaemonThread extends Thread {
         }
     }
 
-    private static String formatTime(long time) {
-        return TIME_FORMAT.format(new Date(time));
+    private static String formatTime() {
+        return TIME_FORMAT.format(new Date());
     }
 }

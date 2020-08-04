@@ -9,6 +9,7 @@ public class FirstTaskMainApplication {
             doWork();
             doSleep();
         } catch (InterruptedException ignored) {
+            //ignored
         }
     });
 
@@ -27,7 +28,7 @@ public class FirstTaskMainApplication {
     }
 
     private static synchronized void doWork() throws InterruptedException {  //250-350ms
-        BigInteger count = new BigInteger("1");
+        BigInteger count = BigInteger.valueOf(1);
         for (int i = 1; i < 20_000; i++) {
             count = count.multiply(new BigInteger(String.valueOf(i)));
         }
