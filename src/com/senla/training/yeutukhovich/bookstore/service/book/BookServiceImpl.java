@@ -6,9 +6,6 @@ import com.senla.training.yeutukhovich.bookstore.domain.Order;
 import com.senla.training.yeutukhovich.bookstore.domain.Request;
 import com.senla.training.yeutukhovich.bookstore.domain.state.OrderState;
 import com.senla.training.yeutukhovich.bookstore.exception.BusinessException;
-import com.senla.training.yeutukhovich.bookstore.repository.BookRepository;
-import com.senla.training.yeutukhovich.bookstore.repository.OrderRepository;
-import com.senla.training.yeutukhovich.bookstore.repository.RequestRepository;
 import com.senla.training.yeutukhovich.bookstore.serializer.BookstoreSerializer;
 import com.senla.training.yeutukhovich.bookstore.service.AbstractService;
 import com.senla.training.yeutukhovich.bookstore.service.dto.BookDescription;
@@ -21,6 +18,7 @@ import com.senla.training.yeutukhovich.bookstore.util.injector.config.ConfigProp
 import com.senla.training.yeutukhovich.bookstore.util.reader.FileDataReader;
 import com.senla.training.yeutukhovich.bookstore.util.writer.FileDataWriter;
 
+import java.sql.Connection;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -36,13 +34,6 @@ public class BookServiceImpl extends AbstractService implements BookService {
     private String cvsDirectoryPath;
 
     @Autowired
-    private BookRepository bookRepository;
-    @Autowired
-    private OrderRepository orderRepository;
-    @Autowired
-    private RequestRepository requestRepository;
-
-    @Autowired
     private BookstoreSerializer bookstoreSerializer;
     @Autowired
     private EntityCvsConverter entityCvsConverter;
@@ -53,7 +44,8 @@ public class BookServiceImpl extends AbstractService implements BookService {
 
     @Override
     public void replenishBook(Long id) {
-        Optional<Book> bookOptional = bookRepository.findById(id);
+        Connection connection = connector.getConnection();
+        Optional<Book> bookOptional = bookDao.findById(connection, id);
         if (bookOptional.isEmpty()) {
             throw new BusinessException(MessageConstant.BOOK_NOT_EXIST.getMessage());
         }
@@ -63,7 +55,7 @@ public class BookServiceImpl extends AbstractService implements BookService {
         Book checkedBook = bookOptional.get();
         checkedBook.setAvailable(true);
         checkedBook.setReplenishmentDate(new Date());
-        bookRepository.update(checkedBook);
+        bookDao.update(connection, checkedBook);
         if (requestAutoCloseEnabled) {
             closeRequests(checkedBook);
         }

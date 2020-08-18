@@ -30,11 +30,6 @@ public class RequestServiceImpl extends AbstractService implements RequestServic
     private String cvsDirectoryPath;
 
     @Autowired
-    private BookRepository bookRepository;
-    @Autowired
-    private RequestRepository requestRepository;
-
-    @Autowired
     private BookstoreSerializer bookstoreSerializer;
     @Autowired
     private EntityCvsConverter entityCvsConverter;

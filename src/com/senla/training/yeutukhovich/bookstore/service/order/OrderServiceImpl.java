@@ -33,13 +33,6 @@ public class OrderServiceImpl extends AbstractService implements OrderService {
     private String cvsDirectoryPath;
 
     @Autowired
-    private BookRepository bookRepository;
-    @Autowired
-    private OrderRepository orderRepository;
-    @Autowired
-    private RequestRepository requestRepository;
-
-    @Autowired
     private BookstoreSerializer bookstoreSerializer;
     @Autowired
     private EntityCvsConverter entityCvsConverter;
