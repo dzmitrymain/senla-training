@@ -4,7 +4,7 @@ import com.senla.training.yeutukhovich.bookstore.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.domain.Order;
 import com.senla.training.yeutukhovich.bookstore.domain.Request;
 import com.senla.training.yeutukhovich.bookstore.domain.state.OrderState;
-import com.senla.training.yeutukhovich.bookstore.util.constant.database.Fields;
+import com.senla.training.yeutukhovich.bookstore.util.constant.Fields;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

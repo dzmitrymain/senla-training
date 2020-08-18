@@ -10,6 +10,7 @@ import com.senla.training.yeutukhovich.bookstore.repository.BookRepository;
 import com.senla.training.yeutukhovich.bookstore.repository.OrderRepository;
 import com.senla.training.yeutukhovich.bookstore.repository.RequestRepository;
 import com.senla.training.yeutukhovich.bookstore.serializer.BookstoreSerializer;
+import com.senla.training.yeutukhovich.bookstore.service.AbstractService;
 import com.senla.training.yeutukhovich.bookstore.service.dto.CreationOrderResult;
 import com.senla.training.yeutukhovich.bookstore.service.dto.OrderDetails;
 import com.senla.training.yeutukhovich.bookstore.util.constant.ApplicationConstant;
@@ -26,7 +27,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Singleton
-public class OrderServiceImpl implements OrderService {
+public class OrderServiceImpl extends AbstractService implements OrderService {
 
     @ConfigProperty(propertyName = PropertyKeyConstant.CVS_DIRECTORY_KEY)
     private String cvsDirectoryPath;

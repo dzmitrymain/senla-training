@@ -10,6 +10,7 @@ import com.senla.training.yeutukhovich.bookstore.repository.BookRepository;
 import com.senla.training.yeutukhovich.bookstore.repository.OrderRepository;
 import com.senla.training.yeutukhovich.bookstore.repository.RequestRepository;
 import com.senla.training.yeutukhovich.bookstore.serializer.BookstoreSerializer;
+import com.senla.training.yeutukhovich.bookstore.service.AbstractService;
 import com.senla.training.yeutukhovich.bookstore.service.dto.BookDescription;
 import com.senla.training.yeutukhovich.bookstore.util.constant.ApplicationConstant;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
@@ -24,7 +25,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Singleton
-public class BookServiceImpl implements BookService {
+public class BookServiceImpl extends AbstractService implements BookService {
 
     @ConfigProperty
     private boolean requestAutoCloseEnabled;
