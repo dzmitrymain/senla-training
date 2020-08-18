@@ -8,8 +8,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Container {
 
@@ -17,6 +16,7 @@ public class Container {
 
     static {
         initContainer();
+        System.out.println();
     }
 
     private Container() {
@@ -68,7 +68,7 @@ public class Container {
     }
 
     private static void injectDependenciesInObject(Object singleton) {
-        for (Field field : singleton.getClass().getDeclaredFields()) {
+        for (Field field : getInheritedFields(singleton.getClass())) {
             if (field.isAnnotationPresent(Autowired.class)) {
                 boolean tempAccessible = field.canAccess(singleton);
                 field.setAccessible(true);
@@ -84,5 +84,15 @@ public class Container {
                 ConfigInjector.injectConfig(field, singleton);
             }
         }
+    }
+
+    private static List<Field> getInheritedFields(Class<?> clazz) {
+        List<Field> result = new ArrayList<>();
+        Class<?> i = clazz;
+        while (i != null && i != Object.class) {
+            result.addAll(Arrays.asList(i.getDeclaredFields()));
+            i = i.getSuperclass();
+        }
+        return result;
     }
 }
