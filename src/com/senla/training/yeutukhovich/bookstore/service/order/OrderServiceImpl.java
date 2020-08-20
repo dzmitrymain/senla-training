@@ -1,41 +1,28 @@
 package com.senla.training.yeutukhovich.bookstore.service.order;
 
-import com.senla.training.yeutukhovich.bookstore.converter.EntityCvsConverter;
 import com.senla.training.yeutukhovich.bookstore.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.domain.Order;
 import com.senla.training.yeutukhovich.bookstore.domain.Request;
 import com.senla.training.yeutukhovich.bookstore.domain.state.OrderState;
 import com.senla.training.yeutukhovich.bookstore.exception.BusinessException;
-import com.senla.training.yeutukhovich.bookstore.repository.BookRepository;
-import com.senla.training.yeutukhovich.bookstore.repository.OrderRepository;
-import com.senla.training.yeutukhovich.bookstore.repository.RequestRepository;
-import com.senla.training.yeutukhovich.bookstore.serializer.BookstoreSerializer;
+import com.senla.training.yeutukhovich.bookstore.exception.InternalException;
 import com.senla.training.yeutukhovich.bookstore.service.AbstractService;
 import com.senla.training.yeutukhovich.bookstore.service.dto.CreationOrderResult;
 import com.senla.training.yeutukhovich.bookstore.service.dto.OrderDetails;
 import com.senla.training.yeutukhovich.bookstore.util.constant.ApplicationConstant;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
-import com.senla.training.yeutukhovich.bookstore.util.constant.PropertyKeyConstant;
-import com.senla.training.yeutukhovich.bookstore.util.injector.Autowired;
 import com.senla.training.yeutukhovich.bookstore.util.injector.Singleton;
-import com.senla.training.yeutukhovich.bookstore.util.injector.config.ConfigProperty;
-import com.senla.training.yeutukhovich.bookstore.util.reader.FileDataReader;
 import com.senla.training.yeutukhovich.bookstore.util.writer.FileDataWriter;
 
 import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+//TODO: add DAO SELECT methods
 @Singleton
 public class OrderServiceImpl extends AbstractService implements OrderService {
-
-    @ConfigProperty(propertyName = PropertyKeyConstant.CVS_DIRECTORY_KEY)
-    private String cvsDirectoryPath;
-
-    @Autowired
-    private BookstoreSerializer bookstoreSerializer;
-    @Autowired
-    private EntityCvsConverter entityCvsConverter;
 
     private OrderServiceImpl() {
 
@@ -43,23 +30,38 @@ public class OrderServiceImpl extends AbstractService implements OrderService {
 
     @Override
     public CreationOrderResult createOrder(Long bookId, String customerData) {
+        Connection connection = connector.getConnection();
         CreationOrderResult result = new CreationOrderResult();
-        Optional<Book> bookOptional = bookRepository.findById(bookId);
+        Optional<Book> bookOptional = bookDao.findById(connection, bookId);
         if (bookOptional.isEmpty()) {
             throw new BusinessException(MessageConstant.BOOK_NOT_EXIST.getMessage());
         }
-        if (!bookOptional.get().isAvailable()) {
-            result.setRequestId(createRequest(bookId, customerData));
+        try {
+            connection.setAutoCommit(false);
+            try {
+                if (!bookOptional.get().isAvailable()) {
+                    result.setRequestId(createRequest(connection, bookOptional.get(), customerData));
+                }
+                Order order = new Order(bookOptional.get(), customerData);
+                orderDao.add(connection, order);
+                connection.commit();
+                result.setOrderId(order.getId());
+                return result;
+            } catch (SQLException e) {
+                connection.rollback();
+                throw e;
+            } finally {
+                connection.setAutoCommit(true);
+            }
+        } catch (SQLException e) {
+            throw new InternalException(e.getMessage());
         }
-        Order order = new Order(bookOptional.get(), customerData);
-        orderRepository.add(order);
-        result.setOrderId(order.getId());
-        return result;
     }
 
     @Override
     public void cancelOrder(Long orderId) {
-        Optional<Order> orderOptional = orderRepository.findById(orderId);
+        Connection connection = connector.getConnection();
+        Optional<Order> orderOptional = orderDao.findById(connection, orderId);
         if (orderOptional.isEmpty()) {
             throw new BusinessException(MessageConstant.ORDER_NOT_EXIST.getMessage());
         }
@@ -68,12 +70,14 @@ public class OrderServiceImpl extends AbstractService implements OrderService {
             throw new BusinessException(MessageConstant.WRONG_ORDER_STATE.getMessage());
         }
         order.setState(OrderState.CANCELED);
-        orderRepository.update(order);
+        order.setCompletionDate(new Date());
+        orderDao.update(connection, order);
     }
 
     @Override
     public void completeOrder(Long orderId) {
-        Optional<Order> orderOptional = orderRepository.findById(orderId);
+        Connection connection = connector.getConnection();
+        Optional<Order> orderOptional = orderDao.findById(connection, orderId);
         if (orderOptional.isEmpty()) {
             throw new BusinessException(MessageConstant.ORDER_NOT_EXIST.getMessage());
         }
@@ -86,7 +90,7 @@ public class OrderServiceImpl extends AbstractService implements OrderService {
         }
         order.setState(OrderState.COMPLETED);
         order.setCompletionDate(new Date());
-        orderRepository.update(order);
+        orderDao.update(connection, order);
     }
 
     @Override
@@ -126,7 +130,8 @@ public class OrderServiceImpl extends AbstractService implements OrderService {
 
     @Override
     public List<Order> findCompletedOrdersBetweenDates(Date startDate, Date endDate) {
-        List<Order> orders = orderRepository.findAll();
+        Connection connection = connector.getConnection();
+        List<Order> orders = orderDao.findAll(connection);
         return orders.stream()
                 .filter(order -> order.getState() == OrderState.COMPLETED &&
                         order.getCompletionDate().after(startDate) &&
@@ -136,7 +141,8 @@ public class OrderServiceImpl extends AbstractService implements OrderService {
 
     @Override
     public BigDecimal calculateProfitBetweenDates(Date startDate, Date endDate) {
-        List<Order> orders = orderRepository.findAll();
+        Connection connection = connector.getConnection();
+        List<Order> orders = orderDao.findAll(connection);
         List<Order> completedOrders = orders.stream()
                 .filter(order -> order.getState() == OrderState.COMPLETED &&
                         order.getCompletionDate().after(startDate) &&
@@ -156,7 +162,8 @@ public class OrderServiceImpl extends AbstractService implements OrderService {
 
     @Override
     public Optional<OrderDetails> showOrderDetails(Long orderId) {
-        Optional<Order> orderOptional = orderRepository.findById(orderId);
+        Connection connection = connector.getConnection();
+        Optional<Order> orderOptional = orderDao.findById(connection, orderId);
         if (orderOptional.isEmpty()) {
             return Optional.empty();
         }
@@ -173,17 +180,19 @@ public class OrderServiceImpl extends AbstractService implements OrderService {
 
     @Override
     public int exportAllOrders(String fileName) {
+        Connection connection = connector.getConnection();
         String path = cvsDirectoryPath
                 + fileName + ApplicationConstant.CVS_FORMAT_TYPE.getConstant();
-        List<String> orderStrings = entityCvsConverter.convertOrders(orderRepository.findAll());
+        List<String> orderStrings = entityCvsConverter.convertOrders(orderDao.findAll(connection));
         return FileDataWriter.writeData(path, orderStrings);
     }
 
     @Override
     public void exportOrder(Long id, String fileName) {
+        Connection connection = connector.getConnection();
         String path = cvsDirectoryPath
                 + fileName + ApplicationConstant.CVS_FORMAT_TYPE.getConstant();
-        Optional<Order> orderOptional = orderRepository.findById(id);
+        Optional<Order> orderOptional = orderDao.findById(connection, id);
         if (orderOptional.isEmpty()) {
             throw new BusinessException(MessageConstant.ORDER_NOT_EXIST.getMessage());
         }
@@ -194,46 +203,51 @@ public class OrderServiceImpl extends AbstractService implements OrderService {
 
     @Override
     public int importOrders(String fileName) {
+        Connection connection = connector.getConnection();
         if (fileName == null) {
             return 0;
         }
         int importedOrdersNumber = 0;
-        String path = cvsDirectoryPath
-                + fileName + ApplicationConstant.CVS_FORMAT_TYPE.getConstant();
-        List<String> orderStrings = FileDataReader.readData(path);
-
-        List<Order> repoOrders = orderRepository.findAll();
+        List<String> orderStrings = readStringsFromFile(fileName);
+        List<Order> repoOrders = orderDao.findAll(connection);
         List<Order> importedOrders = entityCvsConverter.parseOrders(orderStrings);
-
-        for (Order importedOrder : importedOrders) {
-            Optional<Book> dependentBookOptional = bookRepository.findById(importedOrder.getBook().getId());
-            if (dependentBookOptional.isEmpty()) {
-                //log
-                //System.err.println(MessageConstant.BOOK_NOT_NULL.getMessage());
-                continue;
+        try {
+            connection.setAutoCommit(false);
+            try {
+                for (Order importedOrder : importedOrders) {
+                    Optional<Book> dependentBookOptional = bookDao.findById(connection, importedOrder.getBook().getId());
+                    if (dependentBookOptional.isEmpty()) {
+                        //log(MessageConstant.BOOK_NOT_NULL.getMessage());
+                        continue;
+                    }
+                    importedOrder.setBook(dependentBookOptional.get());
+                    if (repoOrders.contains(importedOrder)) {
+                        orderDao.update(connection, importedOrder);
+                    } else {
+                        orderDao.add(connection, importedOrder);
+                    }
+                    importedOrdersNumber++;
+                }
+                connection.commit();
+                return importedOrdersNumber;
+            } catch (SQLException e) {
+                connection.rollback();
+                throw e;
+            } finally {
+                connection.setAutoCommit(true);
             }
-            importedOrder.setBook(dependentBookOptional.get());
-            if (repoOrders.contains(importedOrder)) {
-                orderRepository.update(importedOrder);
-            } else {
-                orderRepository.add(importedOrder);
-            }
-            importedOrdersNumber++;
+        } catch (SQLException e) {
+            throw new InternalException(e.getMessage());
         }
-        return importedOrdersNumber;
     }
 
     private List<Order> findAllOrders() {
-        return orderRepository.findAll();
+        Connection connection = connector.getConnection();
+        return orderDao.findAll(connection);
     }
 
-    private Long createRequest(Long bookId, String requesterData) {
-        Optional<Book> bookOptional = bookRepository.findById(bookId);
-        if (bookOptional.isEmpty() || bookOptional.get().isAvailable()) {
-            return null;
-        }
-        Request request = new Request(bookOptional.get(), requesterData);
-        requestRepository.add(request);
-        return request.getId();
+    private Long createRequest(Connection connection, Book book, String requesterData) {
+        Request request = new Request(book, requesterData);
+        return requestDao.add(connection, request);
     }
 }

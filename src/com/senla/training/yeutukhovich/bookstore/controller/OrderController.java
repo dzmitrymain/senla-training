@@ -10,7 +10,6 @@ import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 import com.senla.training.yeutukhovich.bookstore.util.injector.Autowired;
 import com.senla.training.yeutukhovich.bookstore.util.injector.Singleton;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,6 +36,9 @@ public class OrderController {
                     + MessageConstant.REQUEST_HAS_BEEN_CREATED.getMessage();
         } catch (BusinessException e) {
             return e.getMessage();
+        } catch (InternalException e) {
+            System.err.println(e.getMessage()); //log
+            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
     }
 
@@ -46,6 +48,9 @@ public class OrderController {
             return MessageConstant.ORDER_HAS_BEEN_CANCELED.getMessage();
         } catch (BusinessException e) {
             return e.getMessage();
+        } catch (InternalException e) {
+            System.err.println(e.getMessage()); //log
+            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
     }
 
@@ -55,48 +60,85 @@ public class OrderController {
             return MessageConstant.ORDER_HAS_BEEN_COMPLETED.getMessage();
         } catch (BusinessException e) {
             return e.getMessage();
+        } catch (InternalException e) {
+            System.err.println(e.getMessage()); //log
+            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
-
     }
 
     public String findSortedAllOrdersByCompletionDate() {
-        return orderService.findSortedAllOrdersByCompletionDate().stream()
-                .map(Order::toString)
-                .collect(Collectors.joining(ORDER_DELIMITER));
+        try {
+            return orderService.findSortedAllOrdersByCompletionDate().stream()
+                    .map(Order::toString)
+                    .collect(Collectors.joining(ORDER_DELIMITER));
+        } catch (InternalException e) {
+            System.err.println(e.getMessage()); //log
+            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
+        }
     }
 
     public String findSortedAllOrdersByPrice() {
-        return orderService.findSortedAllOrdersByPrice().stream()
-                .map(Order::toString)
-                .collect(Collectors.joining(ORDER_DELIMITER));
+        try {
+            return orderService.findSortedAllOrdersByPrice().stream()
+                    .map(Order::toString)
+                    .collect(Collectors.joining(ORDER_DELIMITER));
+        } catch (InternalException e) {
+            System.err.println(e.getMessage()); //log
+            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
+        }
     }
 
     public String findSortedAllOrdersByState() {
-        return orderService.findSortedAllOrdersByState().stream()
-                .map(Order::toString)
-                .collect(Collectors.joining(ORDER_DELIMITER));
+        try {
+            return orderService.findSortedAllOrdersByState().stream()
+                    .map(Order::toString)
+                    .collect(Collectors.joining(ORDER_DELIMITER));
+        } catch (InternalException e) {
+            System.err.println(e.getMessage()); //log
+            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
+        }
     }
 
     public String findCompletedOrdersBetweenDates(Date startDate, Date endDate) {
-        return orderService.findCompletedOrdersBetweenDates(startDate, endDate).stream()
-                .map(Order::toString)
-                .collect(Collectors.joining(ORDER_DELIMITER));
+        try {
+            return orderService.findCompletedOrdersBetweenDates(startDate, endDate).stream()
+                    .map(Order::toString)
+                    .collect(Collectors.joining(ORDER_DELIMITER));
+        } catch (InternalException e) {
+            System.err.println(e.getMessage()); //log
+            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
+        }
     }
 
-    public BigDecimal calculateProfitBetweenDates(Date startDate, Date endDate) {
-        return orderService.calculateProfitBetweenDates(startDate, endDate);
+    public String calculateProfitBetweenDates(Date startDate, Date endDate) {
+        try {
+            return orderService.calculateProfitBetweenDates(startDate, endDate).toString();
+        } catch (InternalException e) {
+            System.err.println(e.getMessage()); //log
+            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
+        }
     }
 
-    public int calculateCompletedOrdersNumberBetweenDates(Date startDate, Date endDate) {
-        return orderService.calculateCompletedOrdersNumberBetweenDates(startDate, endDate);
+    public String calculateCompletedOrdersNumberBetweenDates(Date startDate, Date endDate) {
+        try {
+            return String.valueOf(orderService.calculateCompletedOrdersNumberBetweenDates(startDate, endDate));
+        } catch (InternalException e) {
+            System.err.println(e.getMessage()); //log
+            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
+        }
     }
 
     public String showOrderDetails(Long orderId) {
-        Optional<OrderDetails> orderDetailsOptional = orderService.showOrderDetails(orderId);
-        if (orderDetailsOptional.isEmpty()) {
-            return MessageConstant.ORDER_DETAILS_WAS_NOT_FOUND.getMessage();
+        try {
+            Optional<OrderDetails> orderDetailsOptional = orderService.showOrderDetails(orderId);
+            if (orderDetailsOptional.isEmpty()) {
+                return MessageConstant.ORDER_DETAILS_WAS_NOT_FOUND.getMessage();
+            }
+            return orderDetailsOptional.get().toString();
+        } catch (InternalException e) {
+            System.err.println(e.getMessage()); //log
+            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
-        return orderDetailsOptional.get().toString();
     }
 
     public String importOrders(String fileName) {
@@ -105,6 +147,7 @@ public class OrderController {
         } catch (BusinessException e) {
             return e.getMessage();
         } catch (InternalException e) {
+            System.err.println(e.getMessage()); //log
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
     }
@@ -114,6 +157,7 @@ public class OrderController {
             return MessageConstant.EXPORTED_ENTITIES.getMessage()
                     + orderService.exportAllOrders(fileName);
         } catch (InternalException e) {
+            System.err.println(e.getMessage()); //log
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
 
@@ -126,6 +170,7 @@ public class OrderController {
         } catch (BusinessException e) {
             return e.getMessage();
         } catch (InternalException e) {
+            System.err.println(e.getMessage()); //log
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
     }

@@ -28,25 +28,43 @@ public class RequestController {
             return MessageConstant.REQUEST_HAS_BEEN_CREATED.getMessage();
         } catch (BusinessException e) {
             return e.getMessage();
+        } catch (InternalException e) {
+            System.err.println(e.getMessage()); //log
+            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
     }
 
     public String findSortedAllRequestsByBookTitle() {
-        return requestService.findSortedAllRequestsByBookTitle().stream()
-                .map(Request::toString)
-                .collect(Collectors.joining(REQUEST_DELIMITER));
+        try {
+            return requestService.findSortedAllRequestsByBookTitle().stream()
+                    .map(Request::toString)
+                    .collect(Collectors.joining(REQUEST_DELIMITER));
+        } catch (InternalException e) {
+            System.err.println(e.getMessage()); //log
+            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
+        }
     }
 
     public String findSortedAllRequestsByIsActive() {
-        return requestService.findSortedAllRequestsByIsActive().stream()
-                .map(Request::toString)
-                .collect(Collectors.joining(REQUEST_DELIMITER));
+        try {
+            return requestService.findSortedAllRequestsByIsActive().stream()
+                    .map(Request::toString)
+                    .collect(Collectors.joining(REQUEST_DELIMITER));
+        } catch (InternalException e) {
+            System.err.println(e.getMessage()); //log
+            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
+        }
     }
 
     public String findSortedAllRequestsByRequesterData() {
-        return requestService.findSortedAllRequestsByRequesterData().stream()
-                .map(Request::toString)
-                .collect(Collectors.joining(REQUEST_DELIMITER));
+        try {
+            return requestService.findSortedAllRequestsByRequesterData().stream()
+                    .map(Request::toString)
+                    .collect(Collectors.joining(REQUEST_DELIMITER));
+        } catch (InternalException e) {
+            System.err.println(e.getMessage()); //log
+            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
+        }
     }
 
     public String exportAllRequests(String fileName) {
@@ -54,6 +72,7 @@ public class RequestController {
             return MessageConstant.EXPORTED_ENTITIES.getMessage()
                     + requestService.exportAllRequests(fileName);
         } catch (InternalException e) {
+            System.err.println(e.getMessage()); //log
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
     }
@@ -65,6 +84,7 @@ public class RequestController {
         } catch (BusinessException e) {
             return e.getMessage();
         } catch (InternalException e) {
+            System.err.println(e.getMessage()); //log
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
     }
@@ -76,6 +96,7 @@ public class RequestController {
         } catch (BusinessException e) {
             return e.getMessage();
         } catch (InternalException e) {
+            System.err.println(e.getMessage()); //log
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
     }

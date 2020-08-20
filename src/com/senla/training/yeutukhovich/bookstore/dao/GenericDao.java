@@ -12,7 +12,7 @@ public interface GenericDao<T extends AbstractEntity> {
 
     Optional<T> findById(Connection connection, Long id);
 
-    void add(Connection connection, T entity);
+    Long add(Connection connection, T entity);
 
     void update(Connection connection, T entity);
 }

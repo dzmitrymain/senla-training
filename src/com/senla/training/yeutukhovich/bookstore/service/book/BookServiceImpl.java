@@ -1,27 +1,25 @@
 package com.senla.training.yeutukhovich.bookstore.service.book;
 
-import com.senla.training.yeutukhovich.bookstore.converter.EntityCvsConverter;
 import com.senla.training.yeutukhovich.bookstore.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.domain.Order;
 import com.senla.training.yeutukhovich.bookstore.domain.Request;
 import com.senla.training.yeutukhovich.bookstore.domain.state.OrderState;
 import com.senla.training.yeutukhovich.bookstore.exception.BusinessException;
-import com.senla.training.yeutukhovich.bookstore.serializer.BookstoreSerializer;
+import com.senla.training.yeutukhovich.bookstore.exception.InternalException;
 import com.senla.training.yeutukhovich.bookstore.service.AbstractService;
 import com.senla.training.yeutukhovich.bookstore.service.dto.BookDescription;
 import com.senla.training.yeutukhovich.bookstore.util.constant.ApplicationConstant;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
-import com.senla.training.yeutukhovich.bookstore.util.constant.PropertyKeyConstant;
-import com.senla.training.yeutukhovich.bookstore.util.injector.Autowired;
 import com.senla.training.yeutukhovich.bookstore.util.injector.Singleton;
 import com.senla.training.yeutukhovich.bookstore.util.injector.config.ConfigProperty;
-import com.senla.training.yeutukhovich.bookstore.util.reader.FileDataReader;
 import com.senla.training.yeutukhovich.bookstore.util.writer.FileDataWriter;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+//TODO: create DAO SELECT methods
 @Singleton
 public class BookServiceImpl extends AbstractService implements BookService {
 
@@ -29,14 +27,6 @@ public class BookServiceImpl extends AbstractService implements BookService {
     private boolean requestAutoCloseEnabled;
     @ConfigProperty
     private byte staleMonthNumber;
-
-    @ConfigProperty(propertyName = PropertyKeyConstant.CVS_DIRECTORY_KEY)
-    private String cvsDirectoryPath;
-
-    @Autowired
-    private BookstoreSerializer bookstoreSerializer;
-    @Autowired
-    private EntityCvsConverter entityCvsConverter;
 
     private BookServiceImpl() {
 
@@ -55,27 +45,38 @@ public class BookServiceImpl extends AbstractService implements BookService {
         Book checkedBook = bookOptional.get();
         checkedBook.setAvailable(true);
         checkedBook.setReplenishmentDate(new Date());
-        bookDao.update(connection, checkedBook);
-        if (requestAutoCloseEnabled) {
-            closeRequests(checkedBook);
+        try {
+            connection.setAutoCommit(false);
+            try {
+                bookDao.update(connection, checkedBook);
+                if (requestAutoCloseEnabled) {
+                    closeRequests(connection, checkedBook);
+                }
+                connection.commit();
+            } catch (SQLException e) {
+                connection.rollback();
+                throw e;
+            } finally {
+                connection.setAutoCommit(true);
+            }
+        } catch (SQLException e) {
+            throw new InternalException(e.getMessage());
         }
-        updateOrders(checkedBook);
     }
 
     @Override
     public void writeOffBook(Long id) {
-        Optional<Book> bookOptional = bookRepository.findById(id);
+        Connection connection = connector.getConnection();
+        Optional<Book> bookOptional = bookDao.findById(connection, id);
         if (bookOptional.isEmpty()) {
             throw new BusinessException(MessageConstant.BOOK_NOT_EXIST.getMessage());
         }
         if (!bookOptional.get().isAvailable()) {
             throw new BusinessException(MessageConstant.BOOK_ALREADY_WRITTEN_OFF.getMessage());
         }
-
         Book book = bookOptional.get();
         book.setAvailable(false);
-        bookRepository.update(book);
-        updateOrders(book);
+        bookDao.update(connection, book);
     }
 
     public List<Book> findSortedAllBooksByAvailability() {
@@ -131,7 +132,8 @@ public class BookServiceImpl extends AbstractService implements BookService {
 
     @Override
     public List<Book> findSoldBooksBetweenDates(Date startDate, Date endDate) {
-        List<Order> orders = orderRepository.findAll();
+        Connection connection = connector.getConnection();
+        List<Order> orders = orderDao.findAll(connection);
         return orders.stream()
                 .filter(order -> order.getState() == OrderState.COMPLETED
                         && order.getCompletionDate().after(startDate)
@@ -143,7 +145,8 @@ public class BookServiceImpl extends AbstractService implements BookService {
 
     @Override
     public List<Book> findUnsoldBooksBetweenDates(Date startDate, Date endDate) {
-        List<Order> orders = orderRepository.findAll();
+        Connection connection = connector.getConnection();
+        List<Order> orders = orderDao.findAll(connection);
         List<Book> soldBooks = orders.stream()
                 .filter(order -> order.getState() == OrderState.COMPLETED
                         && order.getCompletionDate().after(startDate)
@@ -151,7 +154,7 @@ public class BookServiceImpl extends AbstractService implements BookService {
                 .map(Order::getBook)
                 .distinct()
                 .collect(Collectors.toList());
-        return bookRepository.findAll()
+        return bookDao.findAll(connection)
                 .stream()
                 .filter(book -> !soldBooks.contains(book))
                 .collect(Collectors.toList());
@@ -159,7 +162,8 @@ public class BookServiceImpl extends AbstractService implements BookService {
 
     @Override
     public List<Book> findStaleBooks() {
-        List<Order> orders = orderRepository.findAll();
+        Connection connection = connector.getConnection();
+        List<Order> orders = orderDao.findAll(connection);
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MONTH, -staleMonthNumber);
         Date currentDate = new Date();
@@ -172,7 +176,7 @@ public class BookServiceImpl extends AbstractService implements BookService {
                 .map(Order::getBook)
                 .distinct()
                 .collect(Collectors.toList());
-        return bookRepository.findAll()
+        return bookDao.findAll(connection)
                 .stream()
                 .filter(book -> !soldBooks.contains(book) && book.getReplenishmentDate() != null
                         && book.getReplenishmentDate().before(staleDate))
@@ -181,7 +185,8 @@ public class BookServiceImpl extends AbstractService implements BookService {
 
     @Override
     public Optional<BookDescription> showBookDescription(Long id) {
-        Optional<Book> bookOptional = bookRepository.findById(id);
+        Connection connection = connector.getConnection();
+        Optional<Book> bookOptional = bookDao.findById(connection, id);
         if (bookOptional.isEmpty()) {
             return Optional.empty();
         }
@@ -195,17 +200,19 @@ public class BookServiceImpl extends AbstractService implements BookService {
 
     @Override
     public int exportAllBooks(String fileName) {
+        Connection connection = connector.getConnection();
         String path = cvsDirectoryPath
                 + fileName + ApplicationConstant.CVS_FORMAT_TYPE.getConstant();
-        List<String> bookStrings = entityCvsConverter.convertBooks(bookRepository.findAll());
+        List<String> bookStrings = entityCvsConverter.convertBooks(bookDao.findAll(connection));
         return FileDataWriter.writeData(path, bookStrings);
     }
 
     @Override
     public void exportBook(Long bookId, String fileName) {
+        Connection connection = connector.getConnection();
         String path = cvsDirectoryPath
                 + fileName + ApplicationConstant.CVS_FORMAT_TYPE.getConstant();
-        Optional<Book> bookOptional = bookRepository.findById(bookId);
+        Optional<Book> bookOptional = bookDao.findById(connection, bookId);
         if (bookOptional.isEmpty()) {
             throw new BusinessException(MessageConstant.BOOK_NOT_EXIST.getMessage());
         }
@@ -214,70 +221,70 @@ public class BookServiceImpl extends AbstractService implements BookService {
         FileDataWriter.writeData(path, bookStrings);
     }
 
+    //TODO: import bug
     @Override
     public int importBooks(String fileName) {
+        Connection connection = connector.getConnection();
         if (fileName == null) {
             return 0;
         }
         int importedBooksNumber = 0;
-        String path = cvsDirectoryPath
-                + fileName + ApplicationConstant.CVS_FORMAT_TYPE.getConstant();
-        List<String> dataStrings = FileDataReader.readData(path);
-
-        List<Book> repoBooks = bookRepository.findAll();
+        List<String> dataStrings = readStringsFromFile(fileName);
+        List<Book> repoBooks = bookDao.findAll(connection);
         List<Book> importedBooks = entityCvsConverter.parseBooks(dataStrings);
-
-        for (Book importedBook : importedBooks) {
-            if (repoBooks.contains(importedBook)) {
-                bookRepository.update(importedBook);
-                updateOrders(importedBook);
-                updateRequests(importedBook);
-            } else {
-                bookRepository.add(importedBook);
+        try {
+            connection.setAutoCommit(false);
+            try {
+                for (Book importedBook : importedBooks) {
+                    if (repoBooks.contains(importedBook)) {
+                        bookDao.update(connection, importedBook);
+                        updateRequestsAfterImport(importedBook);
+                    } else {
+                        bookDao.add(connection, importedBook);
+                    }
+                    importedBooksNumber++;
+                }
+                connection.commit();
+            } catch (SQLException e) {
+                connection.rollback();
+                throw e;
+            } finally {
+                connection.setAutoCommit(true);
             }
-            importedBooksNumber++;
+        } catch (SQLException e) {
+            throw new InternalException(e.getMessage());
         }
         return importedBooksNumber;
     }
 
     private List<Book> findAllBooks() {
-        return bookRepository.findAll();
+        Connection connection = connector.getConnection();
+        return bookDao.findAll(connection);
     }
 
-    private void closeRequests(Book book) {
-        List<Request> requests = requestRepository.findAll();
+    private void closeRequests(Connection connection, Book book) {
+        //TODO: change SELECT
+        List<Request> requests = requestDao.findAll(connection);
         for (Request request : requests) {
             if (request == null || !request.isActive() || !request.getBook().getId().equals(book.getId())) {
                 continue;
             }
             request.setActive(false);
-            requestRepository.update(request);
+            requestDao.update(connection, request);
         }
     }
 
-    private void updateRequests(Book book) {
-        List<Request> requests = requestRepository.findAll();
+    private void updateRequestsAfterImport(Book book) {
+        Connection connection = connector.getConnection();
+        List<Request> requests = requestDao.findAll(connection);
         for (Request request : requests) {
             if (!request.getBook().getId().equals(book.getId())) {
                 continue;
             }
-            request.setBook(book);
             if (request.isActive() && book.isAvailable()) {
                 request.setActive(false);
+                requestDao.update(connection, request);
             }
-            requestRepository.update(request);
-        }
-    }
-
-    private void updateOrders(Book book) {
-        List<Order> orders = orderRepository.findAll();
-        for (Order order : orders) {
-            if (order.getState() != OrderState.CREATED ||
-                    !order.getBook().getId().equals(book.getId())) {
-                continue;
-            }
-            order.setBook(book);
-            orderRepository.update(order);
         }
     }
 }

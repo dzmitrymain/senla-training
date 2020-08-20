@@ -2,6 +2,7 @@ package com.senla.training.yeutukhovich.bookstore.dao;
 
 import com.senla.training.yeutukhovich.bookstore.domain.Order;
 import com.senla.training.yeutukhovich.bookstore.domain.state.OrderState;
+import com.senla.training.yeutukhovich.bookstore.exception.InternalException;
 import com.senla.training.yeutukhovich.bookstore.util.converter.DBResultSetParser;
 import com.senla.training.yeutukhovich.bookstore.util.injector.Singleton;
 
@@ -31,16 +32,13 @@ public class OrderDaoImpl implements OrderDao {
     @Override
     public List<Order> findAll(Connection connection) {
         List<Order> orders = new ArrayList<>();
-        if (connection == null) {
-            return orders;
-        }
         try (Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery(FIND_ALL);
             while (resultSet.next()) {
                 orders.add(DBResultSetParser.parseOrder(resultSet));
             }
         } catch (SQLException | ParseException e) {
-            e.printStackTrace();
+            throw new InternalException(e.getMessage());
         }
         return orders;
     }
@@ -53,35 +51,34 @@ public class OrderDaoImpl implements OrderDao {
             if (resultSet.next()) {
                 return Optional.of(DBResultSetParser.parseOrder(resultSet));
             }
-        } catch (SQLException | ParseException | NullPointerException e) {
-            e.printStackTrace();
+        } catch (SQLException | ParseException e) {
+            throw new InternalException(e.getMessage());
         }
         return Optional.empty();
     }
 
     @Override
-    public void add(Connection connection, Order entity) {
-        if (connection == null || entity == null) {
-            return;
-        }
-        try (PreparedStatement preparedStatement = connection.prepareStatement(ADD_ORDER)) {
+    public Long add(Connection connection, Order entity) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(ADD_ORDER,
+                PreparedStatement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setLong(1, entity.getBook().getId());
             preparedStatement.setInt(2, OrderState.CREATED.getIdNumber());
             preparedStatement.setBigDecimal(3, entity.getCurrentBookPrice());
             preparedStatement.setTimestamp(4, new Timestamp(entity.getCreationDate().getTime()));
             preparedStatement.setString(5, entity.getCustomerData());
             preparedStatement.execute();
+            ResultSet generetedKeys = preparedStatement.getGeneratedKeys();
+            if (generetedKeys.next()) {
+                return generetedKeys.getLong(1);
+            }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new InternalException(e.getMessage());
         }
+        return null;
     }
 
-    //TODO: If cancel, set completion_date
     @Override
     public void update(Connection connection, Order entity) {
-        if (connection == null || entity == null) {
-            return;
-        }
         try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ORDER)) {
             preparedStatement.setLong(1, entity.getBook().getId());
             preparedStatement.setInt(2, entity.getState().getIdNumber());
@@ -93,7 +90,7 @@ public class OrderDaoImpl implements OrderDao {
             preparedStatement.setLong(7, entity.getId());
             preparedStatement.execute();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new InternalException(e.getMessage());
         }
     }
 }

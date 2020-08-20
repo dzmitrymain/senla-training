@@ -20,7 +20,7 @@ public class DBConnector {
 
     private Connection connection;
 
-    public DBConnector() {
+    public void init() {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection(url, login, password);
@@ -37,7 +37,6 @@ public class DBConnector {
         try {
             connection.close();
         } catch (SQLException e) {
-            //TODO: DaoException
             throw new InternalException(e.getMessage());
         }
     }

@@ -31,6 +31,9 @@ public class BookController {
             return MessageConstant.BOOK_HAS_BEEN_REPLENISHED.getMessage();
         } catch (BusinessException e) {
             return e.getMessage();
+        } catch (InternalException e) {
+            System.err.println(e.getMessage()); //log
+            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
     }
 
@@ -40,63 +43,111 @@ public class BookController {
             return MessageConstant.BOOK_HAS_BEEN_WRITTEN_OFF.getMessage();
         } catch (BusinessException e) {
             return e.getMessage();
+        } catch (InternalException e) {
+            System.err.println(e.getMessage()); //log
+            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
     }
 
     public String findSortedAllBooksByAvailability() {
-        return bookService.findSortedAllBooksByAvailability().stream()
-                .map(Book::toString)
-                .collect(Collectors.joining(BOOKS_DELIMITER));
+        try {
+            return bookService.findSortedAllBooksByAvailability().stream()
+                    .map(Book::toString)
+                    .collect(Collectors.joining(BOOKS_DELIMITER));
+        } catch (InternalException e) {
+            System.err.println(e.getMessage()); //log
+            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
+        }
     }
 
     public String findSortedAllBooksByEditionDate() {
-        return bookService.findSortedAllBooksByEditionDate().stream()
-                .map(Book::toString)
-                .collect(Collectors.joining(BOOKS_DELIMITER));
+        try {
+            return bookService.findSortedAllBooksByEditionDate().stream()
+                    .map(Book::toString)
+                    .collect(Collectors.joining(BOOKS_DELIMITER));
+        } catch (InternalException e) {
+            System.err.println(e.getMessage()); //log
+            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
+        }
     }
 
     public String findSortedAllBooksByPrice() {
-        return bookService.findSortedBooksByPrice().stream()
-                .map(Book::toString)
-                .collect(Collectors.joining(BOOKS_DELIMITER));
+        try {
+            return bookService.findSortedBooksByPrice().stream()
+                    .map(Book::toString)
+                    .collect(Collectors.joining(BOOKS_DELIMITER));
+        } catch (InternalException e) {
+            System.err.println(e.getMessage()); //log
+            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
+        }
     }
 
     public String findSortedAllBooksByReplenishmentDate() {
-        return bookService.findSortedAllBooksByReplenishmentDate().stream()
-                .map(Book::toString)
-                .collect(Collectors.joining(BOOKS_DELIMITER));
+        try {
+            return bookService.findSortedAllBooksByReplenishmentDate().stream()
+                    .map(Book::toString)
+                    .collect(Collectors.joining(BOOKS_DELIMITER));
+        } catch (InternalException e) {
+            System.err.println(e.getMessage()); //log
+            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
+        }
     }
 
     public String findSortedAllBooksByTitle() {
-        return bookService.findSortedAllBooksByTitle().stream()
-                .map(Book::toString)
-                .collect(Collectors.joining(BOOKS_DELIMITER));
+        try {
+            return bookService.findSortedAllBooksByTitle().stream()
+                    .map(Book::toString)
+                    .collect(Collectors.joining(BOOKS_DELIMITER));
+        } catch (InternalException e) {
+            System.err.println(e.getMessage()); //log
+            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
+        }
     }
 
     public String findSoldBooksBetweenDates(Date startDate, Date endDate) {
-        return bookService.findSoldBooksBetweenDates(startDate, endDate).stream()
-                .map(Book::toString)
-                .collect(Collectors.joining(BOOKS_DELIMITER));
+        try {
+            return bookService.findSoldBooksBetweenDates(startDate, endDate).stream()
+                    .map(Book::toString)
+                    .collect(Collectors.joining(BOOKS_DELIMITER));
+        } catch (InternalException e) {
+            System.err.println(e.getMessage()); //log
+            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
+        }
     }
 
     public String findUnsoldBooksBetweenDates(Date startDate, Date endDate) {
-        return bookService.findUnsoldBooksBetweenDates(startDate, endDate).stream()
-                .map(Book::toString)
-                .collect(Collectors.joining(BOOKS_DELIMITER));
+        try {
+            return bookService.findUnsoldBooksBetweenDates(startDate, endDate).stream()
+                    .map(Book::toString)
+                    .collect(Collectors.joining(BOOKS_DELIMITER));
+        } catch (InternalException e) {
+            System.err.println(e.getMessage()); //log
+            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
+        }
     }
 
     public String findStaleBooks() {
-        return bookService.findStaleBooks().stream()
-                .map(Book::toString)
-                .collect(Collectors.joining(BOOKS_DELIMITER));
+        try {
+            return bookService.findStaleBooks().stream()
+                    .map(Book::toString)
+                    .collect(Collectors.joining(BOOKS_DELIMITER));
+        } catch (InternalException e) {
+            System.err.println(e.getMessage()); //log
+            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
+        }
     }
 
     public String showBookDescription(Long id) {
-        Optional<BookDescription> bookDescriptionOptional = bookService.showBookDescription(id);
-        if (bookDescriptionOptional.isEmpty()) {
-            return MessageConstant.BOOK_DESCRIPTION_WAS_NOT_FOUND.getMessage();
+        try {
+            Optional<BookDescription> bookDescriptionOptional = bookService.showBookDescription(id);
+            if (bookDescriptionOptional.isEmpty()) {
+                return MessageConstant.BOOK_DESCRIPTION_WAS_NOT_FOUND.getMessage();
+            }
+            return bookDescriptionOptional.get().toString();
+        } catch (InternalException e) {
+            System.err.println(e.getMessage()); //log
+            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
-        return bookDescriptionOptional.get().toString();
     }
 
     public String importBooks(String fileName) {
@@ -105,6 +156,7 @@ public class BookController {
         } catch (BusinessException e) {
             return e.getMessage();
         } catch (InternalException e) {
+            System.err.println(e.getMessage()); //log
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
     }
@@ -114,6 +166,7 @@ public class BookController {
             return MessageConstant.EXPORTED_ENTITIES.getMessage()
                     + bookService.exportAllBooks(fileName);
         } catch (InternalException e) {
+            System.err.println(e.getMessage()); //log
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
     }
@@ -125,6 +178,7 @@ public class BookController {
         } catch (BusinessException e) {
             return e.getMessage();
         } catch (InternalException e) {
+            System.err.println(e.getMessage()); //log
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
     }

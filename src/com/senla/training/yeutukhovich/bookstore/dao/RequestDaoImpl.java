@@ -1,6 +1,7 @@
 package com.senla.training.yeutukhovich.bookstore.dao;
 
 import com.senla.training.yeutukhovich.bookstore.domain.Request;
+import com.senla.training.yeutukhovich.bookstore.exception.InternalException;
 import com.senla.training.yeutukhovich.bookstore.util.converter.DBResultSetParser;
 import com.senla.training.yeutukhovich.bookstore.util.injector.Singleton;
 
@@ -25,16 +26,13 @@ public class RequestDaoImpl implements RequestDao {
     @Override
     public List<Request> findAll(Connection connection) {
         List<Request> requests = new ArrayList<>();
-        if (connection == null) {
-            return requests;
-        }
         try (Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery(FIND_ALL);
             while (resultSet.next()) {
                 requests.add(DBResultSetParser.parseRequest(resultSet));
             }
         } catch (SQLException | ParseException e) {
-            e.printStackTrace();
+            throw new InternalException(e.getMessage());
         }
         return requests;
     }
@@ -47,23 +45,28 @@ public class RequestDaoImpl implements RequestDao {
             if (resultSet.next()) {
                 return Optional.of(DBResultSetParser.parseRequest(resultSet));
             }
-        } catch (SQLException | ParseException | NullPointerException e) {
-            e.printStackTrace();
+        } catch (SQLException | ParseException e) {
+            throw new InternalException(e.getMessage());
         }
         return Optional.empty();
     }
 
     @Override
-    public void add(Connection connection, Request entity) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement(ADD_REQUEST)) {
+    public Long add(Connection connection, Request entity) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(ADD_REQUEST,
+                PreparedStatement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setLong(1, entity.getBook().getId());
-            preparedStatement.setBoolean(2,entity.isActive());
+            preparedStatement.setBoolean(2, entity.isActive());
             preparedStatement.setString(3, entity.getRequesterData());
-
             preparedStatement.execute();
-        } catch (SQLException | NullPointerException e) {
-            e.printStackTrace();
+            ResultSet generetedKeys = preparedStatement.getGeneratedKeys();
+            if (generetedKeys.next()) {
+                return generetedKeys.getLong(1);
+            }
+        } catch (SQLException e) {
+            throw new InternalException(e.getMessage());
         }
+        return null;
     }
 
     @Override
@@ -74,8 +77,8 @@ public class RequestDaoImpl implements RequestDao {
             preparedStatement.setString(3, entity.getRequesterData());
             preparedStatement.setLong(4, entity.getId());
             preparedStatement.execute();
-        } catch (SQLException | NullPointerException e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new InternalException(e.getMessage());
         }
     }
 }

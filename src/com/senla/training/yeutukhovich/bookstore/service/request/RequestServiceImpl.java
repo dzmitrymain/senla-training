@@ -1,38 +1,26 @@
 package com.senla.training.yeutukhovich.bookstore.service.request;
 
-import com.senla.training.yeutukhovich.bookstore.converter.EntityCvsConverter;
 import com.senla.training.yeutukhovich.bookstore.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.domain.Request;
 import com.senla.training.yeutukhovich.bookstore.exception.BusinessException;
-import com.senla.training.yeutukhovich.bookstore.repository.BookRepository;
-import com.senla.training.yeutukhovich.bookstore.repository.RequestRepository;
-import com.senla.training.yeutukhovich.bookstore.serializer.BookstoreSerializer;
+import com.senla.training.yeutukhovich.bookstore.exception.InternalException;
 import com.senla.training.yeutukhovich.bookstore.service.AbstractService;
 import com.senla.training.yeutukhovich.bookstore.util.constant.ApplicationConstant;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
-import com.senla.training.yeutukhovich.bookstore.util.constant.PropertyKeyConstant;
-import com.senla.training.yeutukhovich.bookstore.util.injector.Autowired;
 import com.senla.training.yeutukhovich.bookstore.util.injector.Singleton;
-import com.senla.training.yeutukhovich.bookstore.util.injector.config.ConfigProperty;
-import com.senla.training.yeutukhovich.bookstore.util.reader.FileDataReader;
 import com.senla.training.yeutukhovich.bookstore.util.writer.FileDataWriter;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+//TODO: create DAO SELECT methods
 @Singleton
 public class RequestServiceImpl extends AbstractService implements RequestService {
-
-    @ConfigProperty(propertyName = PropertyKeyConstant.CVS_DIRECTORY_KEY)
-    private String cvsDirectoryPath;
-
-    @Autowired
-    private BookstoreSerializer bookstoreSerializer;
-    @Autowired
-    private EntityCvsConverter entityCvsConverter;
 
     private RequestServiceImpl() {
 
@@ -40,7 +28,8 @@ public class RequestServiceImpl extends AbstractService implements RequestServic
 
     @Override
     public void createRequest(Long bookId, String requesterData) {
-        Optional<Book> bookOptional = bookRepository.findById(bookId);
+        Connection connection = connector.getConnection();
+        Optional<Book> bookOptional = bookDao.findById(connection, bookId);
         if (bookOptional.isEmpty()) {
             throw new BusinessException(MessageConstant.BOOK_NOT_EXIST.getMessage());
         }
@@ -48,7 +37,7 @@ public class RequestServiceImpl extends AbstractService implements RequestServic
         if (bookOptional.get().isAvailable()) {
             throw new BusinessException(MessageConstant.BOOK_ALREADY_REPLENISHED.getMessage());
         }
-        requestRepository.add(new Request(book, requesterData));
+        requestDao.add(connection, new Request(book, requesterData));
     }
 
     @Override
@@ -80,17 +69,19 @@ public class RequestServiceImpl extends AbstractService implements RequestServic
 
     @Override
     public int exportAllRequests(String fileName) {
+        Connection connection = connector.getConnection();
         String path = cvsDirectoryPath
                 + fileName + ApplicationConstant.CVS_FORMAT_TYPE.getConstant();
-        List<String> requestStrings = entityCvsConverter.convertRequests(requestRepository.findAll());
+        List<String> requestStrings = entityCvsConverter.convertRequests(requestDao.findAll(connection));
         return FileDataWriter.writeData(path, requestStrings);
     }
 
     @Override
     public void exportRequest(Long requestId, String fileName) {
+        Connection connection = connector.getConnection();
         String path = cvsDirectoryPath
                 + fileName + ApplicationConstant.CVS_FORMAT_TYPE.getConstant();
-        Optional<Request> requestOptional = requestRepository.findById(requestId);
+        Optional<Request> requestOptional = requestDao.findById(connection, requestId);
         if (requestOptional.isEmpty()) {
             throw new BusinessException(MessageConstant.REQUEST_NOT_EXIST.getMessage());
         }
@@ -100,37 +91,46 @@ public class RequestServiceImpl extends AbstractService implements RequestServic
 
     @Override
     public int importRequests(String fileName) {
+        Connection connection = connector.getConnection();
         if (fileName == null) {
             return 0;
         }
         int importedRequestsNumber = 0;
-
-        String path = cvsDirectoryPath
-                + fileName + ApplicationConstant.CVS_FORMAT_TYPE.getConstant();
-        List<String> requestsStrings = FileDataReader.readData(path);
-
-        List<Request> repoRequests = requestRepository.findAll();
+        List<String> requestsStrings = readStringsFromFile(fileName);
+        List<Request> repoRequests = requestDao.findAll(connection);
         List<Request> importedRequests = entityCvsConverter.parseRequests(requestsStrings);
-
-        for (Request importedRequest : importedRequests) {
-            Optional<Book> dependentBookOptional = bookRepository.findById(importedRequest.getBook().getId());
-            if (dependentBookOptional.isEmpty()) {
-                //log
-                //System.err.println(MessageConstant.BOOK_NOT_NULL.getMessage());
-                continue;
+        try {
+            connection.setAutoCommit(false);
+            try {
+                for (Request importedRequest : importedRequests) {
+                    Optional<Book> dependentBookOptional = bookDao.findById(connection, importedRequest.getBook().getId());
+                    if (dependentBookOptional.isEmpty()) {
+                        //log(MessageConstant.BOOK_NOT_NULL.getMessage());
+                        continue;
+                    }
+                    importedRequest.setBook(dependentBookOptional.get());
+                    if (repoRequests.contains(importedRequest)) {
+                        requestDao.update(connection, importedRequest);
+                    } else {
+                        requestDao.add(connection, importedRequest);
+                    }
+                    importedRequestsNumber++;
+                }
+                connection.commit();
+                return importedRequestsNumber;
+            } catch (SQLException e) {
+                connection.rollback();
+                throw e;
+            } finally {
+                connection.setAutoCommit(true);
             }
-            importedRequest.setBook(dependentBookOptional.get());
-            if (repoRequests.contains(importedRequest)) {
-                requestRepository.update(importedRequest);
-            } else {
-                requestRepository.add(importedRequest);
-            }
-            importedRequestsNumber++;
+        } catch (SQLException e) {
+            throw new InternalException(e.getMessage());
         }
-        return importedRequestsNumber;
     }
 
     private List<Request> findAllRequests() {
-        return requestRepository.findAll();
+        Connection connection = connector.getConnection();
+        return requestDao.findAll(connection);
     }
 }

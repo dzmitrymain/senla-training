@@ -1,6 +1,7 @@
 package com.senla.training.yeutukhovich.bookstore.dao;
 
 import com.senla.training.yeutukhovich.bookstore.domain.Book;
+import com.senla.training.yeutukhovich.bookstore.exception.InternalException;
 import com.senla.training.yeutukhovich.bookstore.util.converter.DBResultSetParser;
 import com.senla.training.yeutukhovich.bookstore.util.converter.DateConverter;
 import com.senla.training.yeutukhovich.bookstore.util.injector.Singleton;
@@ -22,16 +23,13 @@ public class BookDaoImpl implements BookDao {
     @Override
     public List<Book> findAll(Connection connection) {
         List<Book> books = new ArrayList<>();
-        if (connection == null) {
-            return books;
-        }
         try (Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery(FIND_ALL);
             while (resultSet.next()) {
                 books.add(DBResultSetParser.parseBook(resultSet));
             }
         } catch (SQLException | ParseException e) {
-            e.printStackTrace();
+            throw new InternalException(e.getMessage());
         }
         return books;
     }
@@ -45,32 +43,33 @@ public class BookDaoImpl implements BookDao {
                 return Optional.of(DBResultSetParser.parseBook(resultSet));
             }
         } catch (SQLException | ParseException e) {
-            e.printStackTrace();
+            throw new InternalException(e.getMessage());
         }
         return Optional.empty();
     }
 
     @Override
-    public void add(Connection connection, Book entity) {
-        if (connection == null || entity == null) {
-            return;
-        }
-        try (PreparedStatement preparedStatement = connection.prepareStatement(ADD_BOOK)) {
+    public Long add(Connection connection, Book entity) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(ADD_BOOK,
+                PreparedStatement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, entity.getTitle());
             preparedStatement.setBoolean(2, entity.isAvailable());
-            preparedStatement.setInt(3, Integer.parseInt(DateConverter.formatDate(entity.getEditionDate(), DateConverter.YEAR_DATE_FORMAT)));
+            preparedStatement.setInt(3, Integer.parseInt(DateConverter.formatDate(entity.getEditionDate(),
+                    DateConverter.YEAR_DATE_FORMAT)));
             preparedStatement.setBigDecimal(4, entity.getPrice());
             preparedStatement.execute();
+            ResultSet generetedKeys = preparedStatement.getGeneratedKeys();
+            if (generetedKeys.next()) {
+                return generetedKeys.getLong(1);
+            }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new InternalException(e.getMessage());
         }
+        return null;
     }
 
     @Override
     public void update(Connection connection, Book entity) {
-        if (connection == null || entity == null) {
-            return;
-        }
         try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_BOOK_BY_ID)) {
             preparedStatement.setString(1, entity.getTitle());
             preparedStatement.setBoolean(2, entity.isAvailable());
@@ -79,7 +78,7 @@ public class BookDaoImpl implements BookDao {
             preparedStatement.setLong(5, entity.getId());
             preparedStatement.execute();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new InternalException(e.getMessage());
         }
     }
 

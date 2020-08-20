@@ -22,8 +22,6 @@ public class ConfigInjector {
         defaultProperties.setProperty(PropertyKeyConstant.REQUEST_AUTO_CLOSE_ENABLED, "true");
 
         defaultProperties.setProperty(PropertyKeyConstant.CVS_DIRECTORY_KEY, "resources/cvs/");
-        defaultProperties.setProperty(PropertyKeyConstant.SERIALIZATION_DATA_PATH_KEY,
-                "resources/data/ApplicationState.dat");
         PROPERTIES = new Properties(defaultProperties);
     }
 
