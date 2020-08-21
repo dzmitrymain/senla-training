@@ -1,9 +1,6 @@
 package com.senla.training.yeutukhovich.bookstore.service.book;
 
 import com.senla.training.yeutukhovich.bookstore.domain.Book;
-import com.senla.training.yeutukhovich.bookstore.domain.Order;
-import com.senla.training.yeutukhovich.bookstore.domain.Request;
-import com.senla.training.yeutukhovich.bookstore.domain.state.OrderState;
 import com.senla.training.yeutukhovich.bookstore.exception.BusinessException;
 import com.senla.training.yeutukhovich.bookstore.exception.InternalException;
 import com.senla.training.yeutukhovich.bookstore.service.AbstractService;
@@ -19,7 +16,6 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-//TODO: create DAO SELECT methods
 @Singleton
 public class BookServiceImpl extends AbstractService implements BookService {
 
@@ -50,7 +46,7 @@ public class BookServiceImpl extends AbstractService implements BookService {
             try {
                 bookDao.update(connection, checkedBook);
                 if (requestAutoCloseEnabled) {
-                    closeRequests(connection, checkedBook);
+                    requestDao.closeRequestsByBookId(connection, checkedBook.getId());
                 }
                 connection.commit();
             } catch (SQLException e) {
@@ -79,6 +75,7 @@ public class BookServiceImpl extends AbstractService implements BookService {
         bookDao.update(connection, book);
     }
 
+    @Override
     public List<Book> findSortedAllBooksByAvailability() {
         return findAllBooks().stream()
                 .sorted(Comparator.nullsLast(
@@ -87,22 +84,25 @@ public class BookServiceImpl extends AbstractService implements BookService {
                 .collect(Collectors.toList());
     }
 
+    @Override
     public List<Book> findSortedAllBooksByEditionDate() {
         return findAllBooks().stream()
                 .sorted(Comparator.nullsLast(
-                        (o1, o2) -> o1.getEditionDate().compareTo(o2.getEditionDate())))
+                        Comparator.comparing(Book::getEditionDate)))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
 
-    public List<Book> findSortedBooksByPrice() {
+    @Override
+    public List<Book> findSortedAllBooksByPrice() {
         return findAllBooks().stream()
                 .sorted(Comparator.nullsLast(
-                        (o1, o2) -> o1.getPrice().compareTo(o2.getPrice())))
+                        Comparator.comparing(Book::getPrice)))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
 
+    @Override
     public List<Book> findSortedAllBooksByReplenishmentDate() {
         return findAllBooks().stream()
                 .sorted(Comparator.nullsLast(
@@ -122,65 +122,32 @@ public class BookServiceImpl extends AbstractService implements BookService {
                 .collect(Collectors.toList());
     }
 
+    @Override
     public List<Book> findSortedAllBooksByTitle() {
         return findAllBooks().stream()
                 .sorted(Comparator.nullsLast(
-                        (o1, o2) -> o1.getTitle().compareTo(o2.getTitle())))
+                        Comparator.comparing(Book::getTitle)))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<Book> findSoldBooksBetweenDates(Date startDate, Date endDate) {
-        Connection connection = connector.getConnection();
-        List<Order> orders = orderDao.findAll(connection);
-        return orders.stream()
-                .filter(order -> order.getState() == OrderState.COMPLETED
-                        && order.getCompletionDate().after(startDate)
-                        && order.getCompletionDate().before(endDate))
-                .map(Order::getBook)
-                .distinct()
-                .collect(Collectors.toList());
+        return bookDao.findSoldBooksBetweenDates(connector.getConnection(), startDate, endDate);
     }
 
     @Override
     public List<Book> findUnsoldBooksBetweenDates(Date startDate, Date endDate) {
-        Connection connection = connector.getConnection();
-        List<Order> orders = orderDao.findAll(connection);
-        List<Book> soldBooks = orders.stream()
-                .filter(order -> order.getState() == OrderState.COMPLETED
-                        && order.getCompletionDate().after(startDate)
-                        && order.getCompletionDate().before(endDate))
-                .map(Order::getBook)
-                .distinct()
-                .collect(Collectors.toList());
-        return bookDao.findAll(connection)
-                .stream()
-                .filter(book -> !soldBooks.contains(book))
-                .collect(Collectors.toList());
+        return bookDao.findUnsoldBooksBetweenDates(connector.getConnection(), startDate, endDate);
     }
 
     @Override
     public List<Book> findStaleBooks() {
         Connection connection = connector.getConnection();
-        List<Order> orders = orderDao.findAll(connection);
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MONTH, -staleMonthNumber);
-        Date currentDate = new Date();
         Date staleDate = new Date(calendar.getTimeInMillis());
-
-        List<Book> soldBooks = orders.stream()
-                .filter(order -> order.getState() == OrderState.COMPLETED
-                        && order.getCompletionDate().after(staleDate)
-                        && order.getCompletionDate().before(currentDate))
-                .map(Order::getBook)
-                .distinct()
-                .collect(Collectors.toList());
-        return bookDao.findAll(connection)
-                .stream()
-                .filter(book -> !soldBooks.contains(book) && book.getReplenishmentDate() != null
-                        && book.getReplenishmentDate().before(staleDate))
-                .collect(Collectors.toList());
+        return bookDao.findStaleBooksBetweenDates(connection, staleDate, new Date());
     }
 
     @Override
@@ -220,8 +187,7 @@ public class BookServiceImpl extends AbstractService implements BookService {
         List<String> bookStrings = entityCvsConverter.convertBooks(List.of(book));
         FileDataWriter.writeData(path, bookStrings);
     }
-
-    //TODO: import bug
+    
     @Override
     public int importBooks(String fileName) {
         Connection connection = connector.getConnection();
@@ -238,7 +204,7 @@ public class BookServiceImpl extends AbstractService implements BookService {
                 for (Book importedBook : importedBooks) {
                     if (repoBooks.contains(importedBook)) {
                         bookDao.update(connection, importedBook);
-                        updateRequestsAfterImport(importedBook);
+                        updateRequestsAfterImport(connection, importedBook);
                     } else {
                         bookDao.add(connection, importedBook);
                     }
@@ -262,29 +228,9 @@ public class BookServiceImpl extends AbstractService implements BookService {
         return bookDao.findAll(connection);
     }
 
-    private void closeRequests(Connection connection, Book book) {
-        //TODO: change SELECT
-        List<Request> requests = requestDao.findAll(connection);
-        for (Request request : requests) {
-            if (request == null || !request.isActive() || !request.getBook().getId().equals(book.getId())) {
-                continue;
-            }
-            request.setActive(false);
-            requestDao.update(connection, request);
-        }
-    }
-
-    private void updateRequestsAfterImport(Book book) {
-        Connection connection = connector.getConnection();
-        List<Request> requests = requestDao.findAll(connection);
-        for (Request request : requests) {
-            if (!request.getBook().getId().equals(book.getId())) {
-                continue;
-            }
-            if (request.isActive() && book.isAvailable()) {
-                request.setActive(false);
-                requestDao.update(connection, request);
-            }
+    private void updateRequestsAfterImport(Connection connection, Book book) {
+        if (book.isAvailable()) {
+            requestDao.closeRequestsByBookId(connection, book.getId());
         }
     }
 }

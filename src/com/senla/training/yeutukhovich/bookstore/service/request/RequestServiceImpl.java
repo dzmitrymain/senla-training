@@ -18,7 +18,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-//TODO: create DAO SELECT methods
 @Singleton
 public class RequestServiceImpl extends AbstractService implements RequestService {
 
@@ -44,7 +43,7 @@ public class RequestServiceImpl extends AbstractService implements RequestServic
     public List<Request> findSortedAllRequestsByBookTitle() {
         return findAllRequests().stream()
                 .sorted(Comparator.nullsLast(
-                        (o1, o2) -> o1.getBook().getTitle().compareTo(o2.getBook().getTitle())))
+                        Comparator.comparing(o -> o.getBook().getTitle())))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
@@ -62,7 +61,7 @@ public class RequestServiceImpl extends AbstractService implements RequestServic
     public List<Request> findSortedAllRequestsByRequesterData() {
         return findAllRequests().stream()
                 .sorted(Comparator.nullsLast(
-                        (o1, o2) -> o1.getRequesterData().compareTo(o2.getRequesterData())))
+                        Comparator.comparing(Request::getRequesterData)))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
@@ -130,7 +129,6 @@ public class RequestServiceImpl extends AbstractService implements RequestServic
     }
 
     private List<Request> findAllRequests() {
-        Connection connection = connector.getConnection();
-        return requestDao.findAll(connection);
+        return requestDao.findAll(connector.getConnection());
     }
 }

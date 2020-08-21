@@ -20,7 +20,6 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-//TODO: add DAO SELECT methods
 @Singleton
 public class OrderServiceImpl extends AbstractService implements OrderService {
 
@@ -40,7 +39,7 @@ public class OrderServiceImpl extends AbstractService implements OrderService {
             connection.setAutoCommit(false);
             try {
                 if (!bookOptional.get().isAvailable()) {
-                    result.setRequestId(createRequest(connection, bookOptional.get(), customerData));
+                    result.setRequestId(requestDao.add(connection, new Request(bookOptional.get(), customerData)));
                 }
                 Order order = new Order(bookOptional.get(), customerData);
                 orderDao.add(connection, order);
@@ -115,7 +114,7 @@ public class OrderServiceImpl extends AbstractService implements OrderService {
     @Override
     public List<Order> findSortedAllOrdersByPrice() {
         return findAllOrders().stream()
-                .sorted(Comparator.nullsLast((o1, o2) -> o1.getCurrentBookPrice().compareTo(o2.getCurrentBookPrice())))
+                .sorted(Comparator.nullsLast(Comparator.comparing(Order::getCurrentBookPrice)))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
@@ -123,31 +122,20 @@ public class OrderServiceImpl extends AbstractService implements OrderService {
     @Override
     public List<Order> findSortedAllOrdersByState() {
         return findAllOrders().stream()
-                .sorted(Comparator.nullsLast((o1, o2) -> o1.getState().compareTo(o2.getState())))
+                .sorted(Comparator.nullsLast(Comparator.comparing(Order::getState)))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<Order> findCompletedOrdersBetweenDates(Date startDate, Date endDate) {
-        Connection connection = connector.getConnection();
-        List<Order> orders = orderDao.findAll(connection);
-        return orders.stream()
-                .filter(order -> order.getState() == OrderState.COMPLETED &&
-                        order.getCompletionDate().after(startDate) &&
-                        order.getCompletionDate().before(endDate))
-                .collect(Collectors.toList());
+        return orderDao.findCompletedOrdersBetweenDates(connector.getConnection(), startDate, endDate);
     }
 
     @Override
     public BigDecimal calculateProfitBetweenDates(Date startDate, Date endDate) {
-        Connection connection = connector.getConnection();
-        List<Order> orders = orderDao.findAll(connection);
-        List<Order> completedOrders = orders.stream()
-                .filter(order -> order.getState() == OrderState.COMPLETED &&
-                        order.getCompletionDate().after(startDate) &&
-                        order.getCompletionDate().before(endDate))
-                .collect(Collectors.toList());
+        List<Order> completedOrders = orderDao.findCompletedOrdersBetweenDates(connector.getConnection(),
+                startDate, endDate);
         BigDecimal profit = new BigDecimal(0);
         for (Order order : completedOrders) {
             profit = profit.add(order.getCurrentBookPrice());
@@ -244,10 +232,5 @@ public class OrderServiceImpl extends AbstractService implements OrderService {
     private List<Order> findAllOrders() {
         Connection connection = connector.getConnection();
         return orderDao.findAll(connection);
-    }
-
-    private Long createRequest(Connection connection, Book book, String requesterData) {
-        Request request = new Request(book, requesterData);
-        return requestDao.add(connection, request);
     }
 }

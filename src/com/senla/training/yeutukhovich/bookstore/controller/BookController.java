@@ -73,7 +73,7 @@ public class BookController {
 
     public String findSortedAllBooksByPrice() {
         try {
-            return bookService.findSortedBooksByPrice().stream()
+            return bookService.findSortedAllBooksByPrice().stream()
                     .map(Book::toString)
                     .collect(Collectors.joining(BOOKS_DELIMITER));
         } catch (InternalException e) {

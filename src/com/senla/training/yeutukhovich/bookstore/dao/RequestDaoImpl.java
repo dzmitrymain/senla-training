@@ -22,6 +22,7 @@ public class RequestDaoImpl implements RequestDao {
     private static final String ADD_REQUEST = "INSERT INTO requests (book_id, is_active, requester_data) VALUES (?,?,?);";
     private static final String UPDATE_REQUEST = "UPDATE requests SET book_id=?, is_active=?, requester_data=? " +
             "WHERE id=?;";
+    private static final String CLOSE_REQUESTS_BY_BOOK_ID = "UPDATE requests SET is_active=0 WHERE book_id=? AND is_active=1";
 
     @Override
     public List<Request> findAll(Connection connection) {
@@ -77,6 +78,16 @@ public class RequestDaoImpl implements RequestDao {
             preparedStatement.setString(3, entity.getRequesterData());
             preparedStatement.setLong(4, entity.getId());
             preparedStatement.execute();
+        } catch (SQLException e) {
+            throw new InternalException(e.getMessage());
+        }
+    }
+
+    @Override
+    public Long closeRequestsByBookId(Connection connection, Long bookId) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(CLOSE_REQUESTS_BY_BOOK_ID)) {
+            preparedStatement.setLong(1, bookId);
+            return Long.valueOf(preparedStatement.executeUpdate());
         } catch (SQLException e) {
             throw new InternalException(e.getMessage());
         }

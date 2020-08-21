@@ -17,7 +17,7 @@ public interface BookService {
 
     List<Book> findSortedAllBooksByEditionDate();
 
-    List<Book> findSortedBooksByPrice();
+    List<Book> findSortedAllBooksByPrice();
 
     List<Book> findSortedAllBooksByReplenishmentDate();
 
