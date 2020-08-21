@@ -187,7 +187,7 @@ public class BookServiceImpl extends AbstractService implements BookService {
         List<String> bookStrings = entityCvsConverter.convertBooks(List.of(book));
         FileDataWriter.writeData(path, bookStrings);
     }
-    
+
     @Override
     public int importBooks(String fileName) {
         Connection connection = connector.getConnection();

@@ -3,11 +3,9 @@ package com.senla.training.yeutukhovich.bookstore.util.injector;
 import com.senla.training.yeutukhovich.bookstore.exception.InternalException;
 import com.senla.training.yeutukhovich.bookstore.util.injector.config.ConfigInjector;
 import com.senla.training.yeutukhovich.bookstore.util.injector.config.ConfigProperty;
+import com.senla.training.yeutukhovich.bookstore.util.injector.config.PostConstruct;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Type;
+import java.lang.reflect.*;
 import java.util.*;
 
 public class Container {
@@ -31,6 +29,7 @@ public class Container {
     private static void initContainer() {
         initSingletons();
         injectDependencies();
+        invokeInits();
     }
 
     private static void initSingletons() {
@@ -66,6 +65,10 @@ public class Container {
         singletons.values().forEach(Container::injectDependenciesInObject);
     }
 
+    private static void invokeInits() {
+        singletons.values().forEach(Container::invokeInitsInObject);
+    }
+
     private static void injectDependenciesInObject(Object singleton) {
         for (Field field : getInheritedFields(singleton.getClass())) {
             if (field.isAnnotationPresent(Autowired.class)) {
@@ -81,6 +84,19 @@ public class Container {
             }
             if (field.isAnnotationPresent(ConfigProperty.class)) {
                 ConfigInjector.injectConfig(field, singleton);
+            }
+        }
+    }
+
+    private static void invokeInitsInObject(Object singleton) {
+        for (Method method:singleton.getClass().getDeclaredMethods()) {
+            if(method.isAnnotationPresent(PostConstruct.class)){
+                method.setAccessible(true);
+                try {
+                    method.invoke(singleton);
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    throw new InternalException(e.getMessage());
+                }
             }
         }
     }

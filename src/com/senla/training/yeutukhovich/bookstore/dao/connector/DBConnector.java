@@ -3,6 +3,7 @@ package com.senla.training.yeutukhovich.bookstore.dao.connector;
 import com.senla.training.yeutukhovich.bookstore.exception.InternalException;
 import com.senla.training.yeutukhovich.bookstore.util.injector.Singleton;
 import com.senla.training.yeutukhovich.bookstore.util.injector.config.ConfigProperty;
+import com.senla.training.yeutukhovich.bookstore.util.injector.config.PostConstruct;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -20,6 +21,7 @@ public class DBConnector {
 
     private Connection connection;
 
+    @PostConstruct
     public void init() {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
