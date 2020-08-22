@@ -1,5 +1,6 @@
-package com.senla.training.yeutukhovich.bookstore.dao;
+package com.senla.training.yeutukhovich.bookstore.dao.book;
 
+import com.senla.training.yeutukhovich.bookstore.dao.GenericDao;
 import com.senla.training.yeutukhovich.bookstore.domain.Book;
 
 import java.sql.Connection;
