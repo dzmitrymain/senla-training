@@ -29,6 +29,7 @@ public class DbConnector {
             Class.forName(driverName);
             connection = DriverManager.getConnection(url, login, password);
         } catch (SQLException | ClassNotFoundException e) {
+            System.err.println(e); //log
             throw new InternalException(e.getMessage());
         }
     }
