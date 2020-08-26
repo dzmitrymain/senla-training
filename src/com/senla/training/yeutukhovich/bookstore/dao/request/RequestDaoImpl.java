@@ -5,7 +5,6 @@ import com.senla.training.yeutukhovich.bookstore.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.domain.Request;
 import com.senla.training.yeutukhovich.bookstore.exception.InternalException;
 import com.senla.training.yeutukhovich.bookstore.util.constant.Fields;
-import com.senla.training.yeutukhovich.bookstore.util.converter.DateConverter;
 import com.senla.training.yeutukhovich.bookstore.util.injector.Singleton;
 
 import java.sql.Connection;
@@ -19,9 +18,9 @@ import java.util.Date;
 public class RequestDaoImpl extends AbstractEntityDao<Request> implements RequestDao {
 
     private static final String FIND_ALL = "SELECT requests.id AS request_id, book_id, is_active, requester_data, title," +
-            "is_available, edition_date, replenishment_date, price FROM requests JOIN books ON requests.book_id=books.id;";
+            "is_available, edition_year, replenishment_date, price FROM requests JOIN books ON requests.book_id=books.id;";
     private static final String FIND_BY_ID = "SELECT requests.id AS request_id, book_id, is_active, requester_data, title, " +
-            "is_available, edition_date, replenishment_date, price FROM requests JOIN books ON requests.book_id=books.id " +
+            "is_available, edition_year, replenishment_date, price FROM requests JOIN books ON requests.book_id=books.id " +
             "WHERE requests.id=?";
     private static final String ADD_REQUEST = "INSERT INTO requests (book_id, is_active, requester_data) VALUES (?,?,?);";
     private static final String UPDATE_REQUEST = "UPDATE requests SET book_id=?, is_active=?, requester_data=? " +
@@ -71,8 +70,7 @@ public class RequestDaoImpl extends AbstractEntityDao<Request> implements Reques
         book.setId(resultSet.getLong(Fields.BOOK_ID.getFieldName()));
         book.setTitle(resultSet.getString(Fields.TITLE.getFieldName()));
         book.setAvailable(resultSet.getBoolean(Fields.IS_AVAILABLE.getFieldName()));
-        book.setEditionDate(DateConverter.parseDate(String.valueOf(resultSet.getInt(Fields.EDITION_DATE.getFieldName())),
-                DateConverter.YEAR_DATE_FORMAT));
+        book.setEditionYear(resultSet.getInt(Fields.EDITION_YEAR.getFieldName()));
         book.setReplenishmentDate(new Date(resultSet.getTimestamp(Fields.REPLENISHMENT_DATE.getFieldName()).getTime()));
         book.setPrice(resultSet.getBigDecimal(Fields.PRICE.getFieldName()));
         request.setBook(book);

@@ -2,9 +2,9 @@ package com.senla.training.yeutukhovich.bookstore.service;
 
 import com.senla.training.yeutukhovich.bookstore.converter.EntityCvsConverter;
 import com.senla.training.yeutukhovich.bookstore.dao.book.BookDao;
+import com.senla.training.yeutukhovich.bookstore.dao.connector.DBConnector;
 import com.senla.training.yeutukhovich.bookstore.dao.order.OrderDao;
 import com.senla.training.yeutukhovich.bookstore.dao.request.RequestDao;
-import com.senla.training.yeutukhovich.bookstore.dao.connector.DBConnector;
 import com.senla.training.yeutukhovich.bookstore.util.constant.ApplicationConstant;
 import com.senla.training.yeutukhovich.bookstore.util.constant.PropertyKeyConstant;
 import com.senla.training.yeutukhovich.bookstore.util.injector.Autowired;

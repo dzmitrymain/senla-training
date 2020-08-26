@@ -5,7 +5,7 @@ INSERT INTO `yeutukhovich_bookstore`.`order_states` (`state_type`)
 VALUES ('CREATED'),('CANCELED'),('COMPLETED');
 
 -- yeutukhovich_bookstore.books
-INSERT INTO `yeutukhovich_bookstore`.`books` (`title`, `is_available`, `edition_date`, `replenishment_date`, `price`) 
+INSERT INTO `yeutukhovich_bookstore`.`books` (`title`, `is_available`, `edition_year`, `replenishment_date`, `price`)
 VALUES ('Jonathan Livingston Seagull', '1', '1970', CURRENT_TIMESTAMP, '25.90')
 	  ,('Hard to be a god', '1', '1964', CURRENT_TIMESTAMP, '29.99')
 	  ,('Hotel \"At a Lost Climber\"', '0', '1970', CURRENT_TIMESTAMP, '22.50')

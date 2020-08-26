@@ -10,6 +10,8 @@ import java.util.List;
 public interface BookDao extends GenericDao<Book> {
 
     List<Book> findSoldBooksBetweenDates(Connection connection, Date startDate, Date endDate);
+
     List<Book> findUnsoldBooksBetweenDates(Connection connection, Date startDate, Date endDate);
+
     List<Book> findStaleBooksBetweenDates(Connection connection, Date startDate, Date endDate);
 }

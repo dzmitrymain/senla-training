@@ -7,7 +7,7 @@ public enum Fields {
     REQUEST_ID("request_id"),
     TITLE("title"),
     IS_AVAILABLE("is_available"),
-    EDITION_DATE("edition_date"),
+    EDITION_YEAR("edition_year"),
     REPLENISHMENT_DATE("replenishment_date"),
     PRICE("price"),
     CURRENT_PRICE("current_price"),

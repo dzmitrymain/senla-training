@@ -4,7 +4,6 @@ import com.senla.training.yeutukhovich.bookstore.dao.AbstractEntityDao;
 import com.senla.training.yeutukhovich.bookstore.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.exception.InternalException;
 import com.senla.training.yeutukhovich.bookstore.util.constant.Fields;
-import com.senla.training.yeutukhovich.bookstore.util.converter.DateConverter;
 import com.senla.training.yeutukhovich.bookstore.util.injector.Singleton;
 
 import java.sql.*;
@@ -16,20 +15,20 @@ import java.util.List;
 @Singleton
 public class BookDaoImpl extends AbstractEntityDao<Book> implements BookDao {
 
-    private static final String FIND_ALL = "SELECT id AS book_id, title, is_available, edition_date, replenishment_date," +
+    private static final String FIND_ALL = "SELECT id AS book_id, title, is_available, edition_year, replenishment_date," +
             " price FROM books;";
-    private static final String FIND_BY_ID = "SELECT id AS book_id, title, is_available, edition_date, replenishment_date," +
+    private static final String FIND_BY_ID = "SELECT id AS book_id, title, is_available, edition_year, replenishment_date," +
             " price FROM books WHERE id=?;";
-    private static final String ADD_BOOK = "INSERT INTO books (title, is_available, edition_date, price) VALUES (?,?,?,?);";
-    private static final String UPDATE_BOOK_BY_ID = "UPDATE books SET title=?, is_available=?, edition_date=?, price=? WHERE id=?;";
+    private static final String ADD_BOOK = "INSERT INTO books (title, is_available, edition_year, price) VALUES (?,?,?,?);";
+    private static final String UPDATE_BOOK_BY_ID = "UPDATE books SET title=?, is_available=?, edition_year=?, price=? WHERE id=?;";
     private static final String FIND_SOLD_BOOKS_BETWEEN_DATES = "SELECT DISTINCT books.id AS book_id, title, is_available," +
-            " edition_date, replenishment_date, books.price FROM orders JOIN books ON books.id=orders.book_id WHERE " +
+            " edition_year, replenishment_date, books.price FROM orders JOIN books ON books.id=orders.book_id WHERE " +
             "(completion_date BETWEEN ? AND ?) AND order_states_id=3;";
     private static final String FIND_UNSOLD_BOOKS_BETWEEN_DATES = "SELECT books.id AS book_id, title, is_available, " +
-            "edition_date, replenishment_date, books.price FROM books WHERE books.id NOT IN (SELECT DISTINCT books.id FROM " +
+            "edition_year, replenishment_date, books.price FROM books WHERE books.id NOT IN (SELECT DISTINCT books.id FROM " +
             "orders JOIN books ON books.id=orders.book_id WHERE (completion_date BETWEEN ? AND ?) AND order_states_id=3);";
     private static final String FIND_STALE_BOOKS_BETWEEN_DATES = "SELECT books.id AS book_id, title, is_available, " +
-            "edition_date, replenishment_date, books.price FROM books WHERE replenishment_date <= ?" +
+            "edition_year, replenishment_date, books.price FROM books WHERE replenishment_date <= ?" +
             " AND books.id NOT IN (SELECT DISTINCT books.id FROM orders JOIN books ON books.id=orders.book_id WHERE " +
             "(completion_date BETWEEN ? AND ?) AND order_states_id=3);";
 
@@ -113,8 +112,7 @@ public class BookDaoImpl extends AbstractEntityDao<Book> implements BookDao {
         book.setId(resultSet.getLong(Fields.BOOK_ID.getFieldName()));
         book.setTitle(resultSet.getString(Fields.TITLE.getFieldName()));
         book.setAvailable(resultSet.getBoolean(Fields.IS_AVAILABLE.getFieldName()));
-        book.setEditionDate(DateConverter.parseDate(String.valueOf(resultSet.getInt(Fields.EDITION_DATE.getFieldName())),
-                DateConverter.YEAR_DATE_FORMAT));
+        book.setEditionYear(resultSet.getInt(Fields.EDITION_YEAR.getFieldName()));
         book.setReplenishmentDate(new Date(resultSet.getTimestamp(Fields.REPLENISHMENT_DATE.getFieldName()).getTime()));
         book.setPrice(resultSet.getBigDecimal(Fields.PRICE.getFieldName()));
         return book;
@@ -124,8 +122,7 @@ public class BookDaoImpl extends AbstractEntityDao<Book> implements BookDao {
     protected void prepareInsert(PreparedStatement preparedStatement, Book entity) throws SQLException {
         preparedStatement.setString(1, entity.getTitle());
         preparedStatement.setBoolean(2, entity.isAvailable());
-        preparedStatement.setInt(3, Integer.parseInt(DateConverter.formatDate(entity.getEditionDate(),
-                DateConverter.YEAR_DATE_FORMAT)));
+        preparedStatement.setInt(3, entity.getEditionYear());
         preparedStatement.setBigDecimal(4, entity.getPrice());
     }
 
@@ -133,8 +130,7 @@ public class BookDaoImpl extends AbstractEntityDao<Book> implements BookDao {
     protected void prepareUpdate(PreparedStatement preparedStatement, Book entity) throws SQLException {
         preparedStatement.setString(1, entity.getTitle());
         preparedStatement.setBoolean(2, entity.isAvailable());
-        preparedStatement.setInt(3, Integer.parseInt(DateConverter.formatDate(entity.getEditionDate(),
-                DateConverter.YEAR_DATE_FORMAT)));
+        preparedStatement.setInt(3, entity.getEditionYear());
         preparedStatement.setBigDecimal(4, entity.getPrice());
         preparedStatement.setLong(5, entity.getId());
     }

@@ -22,7 +22,7 @@ public enum MenuNameConstant {
     SORT_BY_STATE("Sort by state"),
     SORT_BY_PRICE("Sort by price"),
     SORT_BY_AVAILABILITY("Sort by availability"),
-    SORT_BY_EDITION_DATE("Sort by edition date"),
+    SORT_BY_EDITION_YEAR("Sort by edition year"),
     SORT_BY_REPLENISHMENT_DATE("Sort by replenishment date"),
     SORT_BY_COMPLETION_DATE("Sort by completion date"),
     SORT_BY_REQUESTER_DATA("Sort by requester data"),

@@ -89,8 +89,8 @@ public class Container {
     }
 
     private static void invokeInitsInObject(Object singleton) {
-        for (Method method:singleton.getClass().getDeclaredMethods()) {
-            if(method.isAnnotationPresent(PostConstruct.class)){
+        for (Method method : singleton.getClass().getDeclaredMethods()) {
+            if (method.isAnnotationPresent(PostConstruct.class)) {
                 method.setAccessible(true);
                 try {
                     method.invoke(singleton);

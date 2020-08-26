@@ -85,10 +85,10 @@ public class BookServiceImpl extends AbstractService implements BookService {
     }
 
     @Override
-    public List<Book> findSortedAllBooksByEditionDate() {
+    public List<Book> findSortedAllBooksByEditionYear() {
         return findAllBooks().stream()
                 .sorted(Comparator.nullsLast(
-                        Comparator.comparing(Book::getEditionDate)))
+                        Comparator.comparing(Book::getEditionYear)))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
@@ -160,7 +160,7 @@ public class BookServiceImpl extends AbstractService implements BookService {
         Book book = bookOptional.get();
         BookDescription bookDescription = new BookDescription();
         bookDescription.setTitle(book.getTitle());
-        bookDescription.setEditionDate(book.getEditionDate());
+        bookDescription.setEditionYear(book.getEditionYear());
         bookDescription.setReplenishmentDate(book.getReplenishmentDate());
         return Optional.of(bookDescription);
     }

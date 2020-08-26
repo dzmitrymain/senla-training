@@ -60,9 +60,9 @@ public class BookController {
         }
     }
 
-    public String findSortedAllBooksByEditionDate() {
+    public String findSortedAllBooksByEditionYear() {
         try {
-            return bookService.findSortedAllBooksByEditionDate().stream()
+            return bookService.findSortedAllBooksByEditionYear().stream()
                     .map(Book::toString)
                     .collect(Collectors.joining(BOOKS_DELIMITER));
         } catch (InternalException e) {

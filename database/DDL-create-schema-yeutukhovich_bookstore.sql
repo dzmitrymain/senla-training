@@ -6,7 +6,7 @@ CREATE TABLE `yeutukhovich_bookstore`.`books` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `title` VARCHAR(45) NOT NULL,
   `is_available` TINYINT NOT NULL,
-  `edition_date` INT NOT NULL,
+  `edition_year` INT NOT NULL,
   `replenishment_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `price` DECIMAL(15,2) NOT NULL,
   PRIMARY KEY (`id`));

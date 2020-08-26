@@ -6,7 +6,6 @@ import com.senla.training.yeutukhovich.bookstore.domain.Order;
 import com.senla.training.yeutukhovich.bookstore.domain.state.OrderState;
 import com.senla.training.yeutukhovich.bookstore.exception.InternalException;
 import com.senla.training.yeutukhovich.bookstore.util.constant.Fields;
-import com.senla.training.yeutukhovich.bookstore.util.converter.DateConverter;
 import com.senla.training.yeutukhovich.bookstore.util.injector.Singleton;
 
 import java.sql.*;
@@ -21,11 +20,11 @@ public class OrderDaoImpl extends AbstractEntityDao<Order> implements OrderDao {
 
     private static final String FIND_ALL = "SELECT orders.id AS order_id, book_id, state_type," +
             " orders.price AS current_price, creation_date, completion_date, customer_data, title, " +
-            "is_available, edition_date, replenishment_date, books.price FROM orders " +
+            "is_available, edition_year, replenishment_date, books.price FROM orders " +
             "JOIN books ON books.id=orders.book_id JOIN order_states ON orders.order_states_id=order_states.id;";
     private static final String FIND_BY_ID = "SELECT orders.id AS order_id, book_id, state_type," +
             " orders.price AS current_price, creation_date, completion_date, customer_data, title, " +
-            "is_available, edition_date, replenishment_date, books.price FROM orders " +
+            "is_available, edition_year, replenishment_date, books.price FROM orders " +
             "JOIN books ON books.id=orders.book_id JOIN order_states ON orders.order_states_id=order_states.id " +
             "WHERE orders.id=?;";
     private static final String ADD_ORDER = "INSERT INTO orders (book_id, order_states_id, price, creation_date, " +
@@ -34,7 +33,7 @@ public class OrderDaoImpl extends AbstractEntityDao<Order> implements OrderDao {
             "completion_date=?, customer_data=? WHERE id=?";
     private static final String FIND_COMPLETED_ORDERS_BETWEEN_DATES = "SELECT orders.id AS order_id, book_id, state_type, " +
             "orders.price AS current_price, creation_date, completion_date, customer_data, title, " +
-            "is_available, edition_date, replenishment_date, books.price FROM orders " +
+            "is_available, edition_year, replenishment_date, books.price FROM orders " +
             "JOIN books ON books.id=orders.book_id JOIN order_states ON orders.order_states_id=order_states.id " +
             "WHERE order_states_id=3 AND (completion_date BETWEEN ? AND ?);";
 
@@ -91,8 +90,7 @@ public class OrderDaoImpl extends AbstractEntityDao<Order> implements OrderDao {
         book.setId(resultSet.getLong(Fields.BOOK_ID.getFieldName()));
         book.setTitle(resultSet.getString(Fields.TITLE.getFieldName()));
         book.setAvailable(resultSet.getBoolean(Fields.IS_AVAILABLE.getFieldName()));
-        book.setEditionDate(DateConverter.parseDate(String.valueOf(resultSet.getInt(Fields.EDITION_DATE.getFieldName())),
-                DateConverter.YEAR_DATE_FORMAT));
+        book.setEditionYear(resultSet.getInt(Fields.EDITION_YEAR.getFieldName()));
         book.setReplenishmentDate(new Date(resultSet.getTimestamp(Fields.REPLENISHMENT_DATE.getFieldName()).getTime()));
         book.setPrice(resultSet.getBigDecimal(Fields.PRICE.getFieldName()));
         order.setBook(book);
