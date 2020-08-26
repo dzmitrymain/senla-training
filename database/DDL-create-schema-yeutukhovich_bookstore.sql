@@ -10,7 +10,7 @@ CREATE TABLE `yeutukhovich_bookstore`.`books`
     `edition_year`       INT            NOT NULL,
     `replenishment_date` TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `price`              DECIMAL(15, 2) NOT NULL,
-    PRIMARY KEY (`id`)
+    CONSTRAINT `pk_books_id` PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `yeutukhovich_bookstore`.`orders`
@@ -22,7 +22,7 @@ CREATE TABLE `yeutukhovich_bookstore`.`orders`
     `creation_date`   TIMESTAMP      NOT NULL,
     `completion_date` TIMESTAMP      NULL DEFAULT NULL,
     `customer_data`   VARCHAR(45)    NOT NULL,
-    PRIMARY KEY (`id`)
+    CONSTRAINT `pk_orders_id` PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `yeutukhovich_bookstore`.`requests`
@@ -31,7 +31,7 @@ CREATE TABLE `yeutukhovich_bookstore`.`requests`
     `book_id`        INT         NOT NULL,
     `is_active`      TINYINT     NOT NULL,
     `requester_data` VARCHAR(45) NOT NULL,
-    PRIMARY KEY (`id`)
+    CONSTRAINT `pk_requests_id` PRIMARY KEY (`id`)
 );
 
 ALTER TABLE `yeutukhovich_bookstore`.`orders`
