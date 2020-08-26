@@ -51,22 +51,20 @@ public class BookServiceImpl implements BookService {
     @Override
     public void replenishBook(Long id) {
         Connection connection = connector.getConnection();
-        Optional<Book> bookOptional = bookDao.findById(connection, id);
-        if (bookOptional.isEmpty()) {
-            throw new BusinessException(MessageConstant.BOOK_NOT_EXIST.getMessage());
-        }
-        if (bookOptional.get().isAvailable()) {
+        Book book = bookDao.findById(connection, id)
+                .orElseThrow(() -> new BusinessException(MessageConstant.BOOK_NOT_EXIST.getMessage()));
+
+        if (book.isAvailable()) {
             throw new BusinessException(MessageConstant.BOOK_ALREADY_REPLENISHED.getMessage());
         }
-        Book checkedBook = bookOptional.get();
-        checkedBook.setAvailable(true);
-        checkedBook.setReplenishmentDate(new Date());
+        book.setAvailable(true);
+        book.setReplenishmentDate(new Date());
         try {
             connection.setAutoCommit(false);
             try {
-                bookDao.update(connection, checkedBook);
+                bookDao.update(connection, book);
                 if (requestAutoCloseEnabled) {
-                    requestDao.closeRequestsByBookId(connection, checkedBook.getId());
+                    requestDao.closeRequestsByBookId(connection, book.getId());
                 }
                 connection.commit();
             } catch (SQLException e) {
@@ -83,17 +81,15 @@ public class BookServiceImpl implements BookService {
     @Override
     public void writeOffBook(Long id) {
         Connection connection = connector.getConnection();
-        Optional<Book> bookOptional = bookDao.findById(connection, id);
-        if (bookOptional.isEmpty()) {
-            throw new BusinessException(MessageConstant.BOOK_NOT_EXIST.getMessage());
-        }
-        if (!bookOptional.get().isAvailable()) {
+        Book book = bookDao.findById(connection, id)
+                .orElseThrow(() -> new BusinessException(MessageConstant.BOOK_NOT_EXIST.getMessage()));
+        if (!book.isAvailable()) {
             throw new BusinessException(MessageConstant.BOOK_ALREADY_WRITTEN_OFF.getMessage());
         }
-        Book book = bookOptional.get();
         book.setAvailable(false);
         bookDao.update(connection, book);
     }
+
 
     @Override
     public List<Book> findSortedAllBooksByAvailability() {
@@ -171,18 +167,15 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Optional<BookDescription> showBookDescription(Long id) {
+    public BookDescription showBookDescription(Long id) {
         Connection connection = connector.getConnection();
-        Optional<Book> bookOptional = bookDao.findById(connection, id);
-        if (bookOptional.isEmpty()) {
-            return Optional.empty();
-        }
-        Book book = bookOptional.get();
+        Book book = bookDao.findById(connection, id)
+                .orElseThrow(() -> new BusinessException(MessageConstant.BOOK_NOT_EXIST.getMessage()));
         BookDescription bookDescription = new BookDescription();
         bookDescription.setTitle(book.getTitle());
         bookDescription.setEditionYear(book.getEditionYear());
         bookDescription.setReplenishmentDate(book.getReplenishmentDate());
-        return Optional.of(bookDescription);
+        return bookDescription;
     }
 
     @Override

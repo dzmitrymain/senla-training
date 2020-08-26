@@ -29,7 +29,7 @@ public interface BookService {
 
     List<Book> findStaleBooks();
 
-    Optional<BookDescription> showBookDescription(Long id);
+    BookDescription showBookDescription(Long id);
 
     int exportAllBooks(String fileName);
 

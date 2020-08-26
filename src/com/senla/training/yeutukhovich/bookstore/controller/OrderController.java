@@ -4,14 +4,12 @@ import com.senla.training.yeutukhovich.bookstore.domain.Order;
 import com.senla.training.yeutukhovich.bookstore.exception.BusinessException;
 import com.senla.training.yeutukhovich.bookstore.exception.InternalException;
 import com.senla.training.yeutukhovich.bookstore.service.dto.CreationOrderResult;
-import com.senla.training.yeutukhovich.bookstore.service.dto.OrderDetails;
 import com.senla.training.yeutukhovich.bookstore.service.order.OrderService;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 import com.senla.training.yeutukhovich.bookstore.util.injector.Autowired;
 import com.senla.training.yeutukhovich.bookstore.util.injector.Singleton;
 
 import java.util.Date;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Singleton
@@ -130,11 +128,9 @@ public class OrderController {
 
     public String showOrderDetails(Long orderId) {
         try {
-            Optional<OrderDetails> orderDetailsOptional = orderService.showOrderDetails(orderId);
-            if (orderDetailsOptional.isEmpty()) {
-                return MessageConstant.ORDER_DETAILS_WAS_NOT_FOUND.getMessage();
-            }
-            return orderDetailsOptional.get().toString();
+            return orderService.showOrderDetails(orderId).toString();
+        } catch (BusinessException e) {
+            return e.getMessage();
         } catch (InternalException e) {
             System.err.println(e.getMessage()); //log
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();

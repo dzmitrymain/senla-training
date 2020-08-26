@@ -53,17 +53,15 @@ public class OrderServiceImpl implements OrderService {
     public CreationOrderResult createOrder(Long bookId, String customerData) {
         Connection connection = connector.getConnection();
         CreationOrderResult result = new CreationOrderResult();
-        Optional<Book> bookOptional = bookDao.findById(connection, bookId);
-        if (bookOptional.isEmpty()) {
-            throw new BusinessException(MessageConstant.BOOK_NOT_EXIST.getMessage());
-        }
+        Book book = bookDao.findById(connection, bookId)
+                .orElseThrow(() -> new BusinessException(MessageConstant.BOOK_NOT_EXIST.getMessage()));
         try {
             connection.setAutoCommit(false);
             try {
-                if (!bookOptional.get().isAvailable()) {
-                    result.setRequestId(requestDao.add(connection, new Request(bookOptional.get(), customerData)));
+                if (!book.isAvailable()) {
+                    result.setRequestId(requestDao.add(connection, new Request(book, customerData)));
                 }
-                Order order = new Order(bookOptional.get(), customerData);
+                Order order = new Order(book, customerData);
                 orderDao.add(connection, order);
                 connection.commit();
                 result.setOrderId(order.getId());
@@ -82,11 +80,8 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void cancelOrder(Long orderId) {
         Connection connection = connector.getConnection();
-        Optional<Order> orderOptional = orderDao.findById(connection, orderId);
-        if (orderOptional.isEmpty()) {
-            throw new BusinessException(MessageConstant.ORDER_NOT_EXIST.getMessage());
-        }
-        Order order = orderOptional.get();
+        Order order = orderDao.findById(connection, orderId)
+                .orElseThrow(() -> new BusinessException(MessageConstant.ORDER_NOT_EXIST.getMessage()));
         if (order.getState() != OrderState.CREATED) {
             throw new BusinessException(MessageConstant.WRONG_ORDER_STATE.getMessage());
         }
@@ -98,11 +93,8 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void completeOrder(Long orderId) {
         Connection connection = connector.getConnection();
-        Optional<Order> orderOptional = orderDao.findById(connection, orderId);
-        if (orderOptional.isEmpty()) {
-            throw new BusinessException(MessageConstant.ORDER_NOT_EXIST.getMessage());
-        }
-        Order order = orderOptional.get();
+        Order order = orderDao.findById(connection, orderId)
+                .orElseThrow(() -> new BusinessException(MessageConstant.ORDER_NOT_EXIST.getMessage()));
         if (!order.getBook().isAvailable()) {
             throw new BusinessException(MessageConstant.BOOK_NOT_AVAILABLE.getMessage());
         }
@@ -171,13 +163,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Optional<OrderDetails> showOrderDetails(Long orderId) {
+    public OrderDetails showOrderDetails(Long orderId) {
         Connection connection = connector.getConnection();
-        Optional<Order> orderOptional = orderDao.findById(connection, orderId);
-        if (orderOptional.isEmpty()) {
-            return Optional.empty();
-        }
-        Order order = orderOptional.get();
+        Order order = orderDao.findById(connection, orderId)
+                .orElseThrow(() -> new BusinessException(MessageConstant.ORDER_NOT_EXIST.getMessage()));
         OrderDetails orderDetails = new OrderDetails();
         orderDetails.setCustomerData(order.getCustomerData());
         orderDetails.setBookTitle(order.getBook().getTitle());
@@ -185,7 +174,7 @@ public class OrderServiceImpl implements OrderService {
         orderDetails.setState(order.getState());
         orderDetails.setCreationDate(order.getCreationDate());
         orderDetails.setCompletionDate(order.getCompletionDate());
-        return Optional.of(orderDetails);
+        return orderDetails;
     }
 
     @Override

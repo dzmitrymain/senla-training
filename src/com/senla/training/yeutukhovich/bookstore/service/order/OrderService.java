@@ -29,7 +29,7 @@ public interface OrderService {
 
     int calculateCompletedOrdersNumberBetweenDates(Date startDate, Date endDate);
 
-    Optional<OrderDetails> showOrderDetails(Long orderId);
+    OrderDetails showOrderDetails(Long orderId);
 
     int exportAllOrders(String fileName);
 

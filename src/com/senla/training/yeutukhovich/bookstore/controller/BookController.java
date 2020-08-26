@@ -4,13 +4,11 @@ import com.senla.training.yeutukhovich.bookstore.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.exception.BusinessException;
 import com.senla.training.yeutukhovich.bookstore.exception.InternalException;
 import com.senla.training.yeutukhovich.bookstore.service.book.BookService;
-import com.senla.training.yeutukhovich.bookstore.service.dto.BookDescription;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 import com.senla.training.yeutukhovich.bookstore.util.injector.Autowired;
 import com.senla.training.yeutukhovich.bookstore.util.injector.Singleton;
 
 import java.util.Date;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Singleton
@@ -139,11 +137,9 @@ public class BookController {
 
     public String showBookDescription(Long id) {
         try {
-            Optional<BookDescription> bookDescriptionOptional = bookService.showBookDescription(id);
-            if (bookDescriptionOptional.isEmpty()) {
-                return MessageConstant.BOOK_DESCRIPTION_WAS_NOT_FOUND.getMessage();
-            }
-            return bookDescriptionOptional.get().toString();
+            return bookService.showBookDescription(id).toString();
+        } catch (BusinessException e) {
+            return e.getMessage();
         } catch (InternalException e) {
             System.err.println(e.getMessage()); //log
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
