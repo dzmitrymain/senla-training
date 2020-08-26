@@ -10,4 +10,10 @@ import java.util.List;
 public interface OrderDao extends GenericDao<Order> {
 
     List<Order> findCompletedOrdersBetweenDates(Connection connection, Date startDate, Date endDate);
+
+    List<Order> findSortedAllOrdersByCompletionDate(Connection connection);
+
+    List<Order> findSortedAllOrdersByPrice(Connection connection);
+
+    List<Order> findSortedAllOrdersByState(Connection connection);
 }

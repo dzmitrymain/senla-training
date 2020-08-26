@@ -11,6 +11,9 @@ import java.util.Optional;
 
 public abstract class AbstractEntityDao<T extends AbstractEntity> implements GenericDao<T> {
 
+    protected static final String ORDER_BY = "ORDER BY";
+    protected static final String DESC = "DESC";
+
     protected abstract String getFindAllQuery();
 
     protected abstract String getFindByIdQuery();
@@ -27,9 +30,14 @@ public abstract class AbstractEntityDao<T extends AbstractEntity> implements Gen
 
     @Override
     public List<T> findAll(Connection connection) {
+        return findAll(connection, "");
+    }
+
+    @Override
+    public List<T> findAll(Connection connection, String sortingQueryPart) {
         List<T> entities = new ArrayList<>();
         try (Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery(getFindAllQuery());
+            ResultSet resultSet = statement.executeQuery(getFindAllQuery() + sortingQueryPart);
             while (resultSet.next()) {
                 entities.add(parseResultSetEntity(resultSet));
             }

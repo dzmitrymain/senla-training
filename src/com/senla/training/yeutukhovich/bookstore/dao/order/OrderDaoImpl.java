@@ -21,19 +21,19 @@ public class OrderDaoImpl extends AbstractEntityDao<Order> implements OrderDao {
     private static final String FIND_ALL = "SELECT orders.id AS order_id, book_id, state," +
             " orders.price AS current_price, creation_date, completion_date, customer_data, title, " +
             "is_available, edition_year, replenishment_date, books.price FROM orders " +
-            "JOIN books ON books.id=orders.book_id;";
+            "JOIN books ON books.id=orders.book_id";
     private static final String FIND_BY_ID = "SELECT orders.id AS order_id, book_id, state," +
             " orders.price AS current_price, creation_date, completion_date, customer_data, title, " +
             "is_available, edition_year, replenishment_date, books.price FROM orders " +
-            "JOIN books ON books.id=orders.book_id WHERE orders.id=?;";
+            "JOIN books ON books.id=orders.book_id WHERE orders.id=?";
     private static final String ADD_ORDER = "INSERT INTO orders (book_id, state, price, creation_date, " +
-            "customer_data) VALUES (?,?,?,?,?);";
+            "customer_data) VALUES (?,?,?,?,?)";
     private static final String UPDATE_ORDER = "UPDATE orders SET book_id=?, state=?, price=?, creation_date=?," +
             "completion_date=?, customer_data=? WHERE id=?";
     private static final String FIND_COMPLETED_ORDERS_BETWEEN_DATES = "SELECT orders.id AS order_id, book_id, state, " +
             "orders.price AS current_price, creation_date, completion_date, customer_data, title, " +
             "is_available, edition_year, replenishment_date, books.price FROM orders " +
-            "JOIN books ON books.id=orders.book_id WHERE state='COMPLETED' AND (completion_date BETWEEN ? AND ?);";
+            "JOIN books ON books.id=orders.book_id WHERE state='COMPLETED' AND (completion_date BETWEEN ? AND ?)";
 
     @Override
     public List<Order> findCompletedOrdersBetweenDates(Connection connection, Date startDate, Date endDate) {
@@ -49,6 +49,21 @@ public class OrderDaoImpl extends AbstractEntityDao<Order> implements OrderDao {
         } catch (SQLException | ParseException e) {
             throw new InternalException(e.getMessage());
         }
+    }
+
+    @Override
+    public List<Order> findSortedAllOrdersByCompletionDate(Connection connection) {
+        return findAll(connection, " " + ORDER_BY + " " + Fields.COMPLETION_DATE.getFieldName() + " " + DESC);
+    }
+
+    @Override
+    public List<Order> findSortedAllOrdersByPrice(Connection connection) {
+        return findAll(connection, " " + ORDER_BY + " " + Fields.PRICE.getFieldName());
+    }
+
+    @Override
+    public List<Order> findSortedAllOrdersByState(Connection connection) {
+        return findAll(connection, " " + ORDER_BY + " " + Fields.STATE.getFieldName());
     }
 
     @Override

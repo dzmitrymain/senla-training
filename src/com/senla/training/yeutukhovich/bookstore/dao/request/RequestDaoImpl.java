@@ -13,18 +13,19 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.List;
 
 @Singleton
 public class RequestDaoImpl extends AbstractEntityDao<Request> implements RequestDao {
 
     private static final String FIND_ALL = "SELECT requests.id AS request_id, book_id, is_active, requester_data, title," +
-            "is_available, edition_year, replenishment_date, price FROM requests JOIN books ON requests.book_id=books.id;";
+            "is_available, edition_year, replenishment_date, price FROM requests JOIN books ON requests.book_id=books.id";
     private static final String FIND_BY_ID = "SELECT requests.id AS request_id, book_id, is_active, requester_data, title, " +
             "is_available, edition_year, replenishment_date, price FROM requests JOIN books ON requests.book_id=books.id " +
             "WHERE requests.id=?";
-    private static final String ADD_REQUEST = "INSERT INTO requests (book_id, is_active, requester_data) VALUES (?,?,?);";
+    private static final String ADD_REQUEST = "INSERT INTO requests (book_id, is_active, requester_data) VALUES (?,?,?)";
     private static final String UPDATE_REQUEST = "UPDATE requests SET book_id=?, is_active=?, requester_data=? " +
-            "WHERE id=?;";
+            "WHERE id=?";
     private static final String CLOSE_REQUESTS_BY_BOOK_ID = "UPDATE requests SET is_active=0 WHERE book_id=? AND is_active=1";
 
     @Override
@@ -35,6 +36,21 @@ public class RequestDaoImpl extends AbstractEntityDao<Request> implements Reques
         } catch (SQLException e) {
             throw new InternalException(e.getMessage());
         }
+    }
+
+    @Override
+    public List<Request> findSortedAllRequestsByBookTitle(Connection connection) {
+        return findAll(connection, " " + ORDER_BY + " " + Fields.TITLE.getFieldName());
+    }
+
+    @Override
+    public List<Request> findSortedAllRequestsByIsActive(Connection connection) {
+        return findAll(connection, " " + ORDER_BY + " " + Fields.IS_ACTIVE.getFieldName() + " " + DESC);
+    }
+
+    @Override
+    public List<Request> findSortedAllRequestsByRequesterData(Connection connection) {
+        return findAll(connection, " " + ORDER_BY + " " + Fields.REQUESTER_DATA.getFieldName());
     }
 
     @Override

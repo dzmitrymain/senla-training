@@ -10,6 +10,8 @@ public interface GenericDao<T extends AbstractEntity> {
 
     List<T> findAll(Connection connection);
 
+    List<T> findAll(Connection connection, String sortingQueryPart);
+
     Optional<T> findById(Connection connection, Long id);
 
     Long add(Connection connection, T entity);

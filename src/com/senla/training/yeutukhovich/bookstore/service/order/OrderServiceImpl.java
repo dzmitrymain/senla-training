@@ -25,8 +25,9 @@ import com.senla.training.yeutukhovich.bookstore.util.writer.FileDataWriter;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 @Singleton
 public class OrderServiceImpl implements OrderService {
@@ -104,37 +105,17 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> findSortedAllOrdersByCompletionDate() {
-        return findAllOrders().stream()
-                .sorted(Comparator.nullsLast((o1, o2) -> {
-                    if (o1.getCompletionDate() == null && o2.getCompletionDate() == null) {
-                        return 0;
-                    }
-                    if (o1.getCompletionDate() == null) {
-                        return 1;
-                    }
-                    if (o2.getCompletionDate() == null) {
-                        return -1;
-                    }
-                    return o2.getCompletionDate().compareTo(o1.getCompletionDate());
-                }))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+        return orderDao.findSortedAllOrdersByCompletionDate(connector.getConnection());
     }
 
     @Override
     public List<Order> findSortedAllOrdersByPrice() {
-        return findAllOrders().stream()
-                .sorted(Comparator.nullsLast(Comparator.comparing(Order::getCurrentBookPrice)))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+        return orderDao.findSortedAllOrdersByPrice(connector.getConnection());
     }
 
     @Override
     public List<Order> findSortedAllOrdersByState() {
-        return findAllOrders().stream()
-                .sorted(Comparator.nullsLast(Comparator.comparing(Order::getState)))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+        return orderDao.findSortedAllOrdersByState(connector.getConnection());
     }
 
     @Override

@@ -19,11 +19,8 @@ import com.senla.training.yeutukhovich.bookstore.util.writer.FileDataWriter;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Singleton
 public class RequestServiceImpl implements RequestService {
@@ -56,29 +53,17 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public List<Request> findSortedAllRequestsByBookTitle() {
-        return findAllRequests().stream()
-                .sorted(Comparator.nullsLast(
-                        Comparator.comparing(o -> o.getBook().getTitle())))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+        return requestDao.findSortedAllRequestsByBookTitle(connector.getConnection());
     }
 
     @Override
     public List<Request> findSortedAllRequestsByIsActive() {
-        return findAllRequests().stream()
-                .sorted(Comparator.nullsLast(
-                        (o1, o2) -> o2.isActive().compareTo(o1.isActive())))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+        return requestDao.findSortedAllRequestsByIsActive(connector.getConnection());
     }
 
     @Override
     public List<Request> findSortedAllRequestsByRequesterData() {
-        return findAllRequests().stream()
-                .sorted(Comparator.nullsLast(
-                        Comparator.comparing(Request::getRequesterData)))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+        return requestDao.findSortedAllRequestsByRequesterData(connector.getConnection());
     }
 
     @Override

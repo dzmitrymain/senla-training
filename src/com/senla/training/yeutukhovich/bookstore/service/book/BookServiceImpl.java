@@ -20,8 +20,10 @@ import com.senla.training.yeutukhovich.bookstore.util.writer.FileDataWriter;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 @Singleton
 public class BookServiceImpl implements BookService {
@@ -89,58 +91,27 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<Book> findSortedAllBooksByAvailability() {
-        return findAllBooks().stream()
-                .sorted(Comparator.nullsLast(
-                        (o1, o2) -> o2.isAvailable().compareTo(o1.isAvailable())))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+        return bookDao.findSortedAllBooksByAvailability(connector.getConnection());
     }
 
     @Override
     public List<Book> findSortedAllBooksByEditionYear() {
-        return findAllBooks().stream()
-                .sorted(Comparator.nullsLast(
-                        Comparator.comparing(Book::getEditionYear)))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+        return bookDao.findSortedAllBooksByEditionYear(connector.getConnection());
     }
 
     @Override
     public List<Book> findSortedAllBooksByPrice() {
-        return findAllBooks().stream()
-                .sorted(Comparator.nullsLast(
-                        Comparator.comparing(Book::getPrice)))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+        return bookDao.findSortedAllBooksByPrice(connector.getConnection());
     }
 
     @Override
     public List<Book> findSortedAllBooksByReplenishmentDate() {
-        return findAllBooks().stream()
-                .sorted(Comparator.nullsLast(
-                        (o1, o2) -> {
-                            if (o1.getReplenishmentDate() == null && o2.getReplenishmentDate() == null) {
-                                return 0;
-                            }
-                            if (o1.getReplenishmentDate() == null) {
-                                return 1;
-                            }
-                            if (o2.getReplenishmentDate() == null) {
-                                return -1;
-                            }
-                            return o1.getReplenishmentDate().compareTo(o2.getReplenishmentDate());
-                        }))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+        return bookDao.findSortedAllBooksByReplenishmentDate(connector.getConnection());
     }
 
     @Override
     public List<Book> findSortedAllBooksByTitle() {
-        return findAllBooks().stream()
-                .sorted(Comparator.nullsLast(
-                        Comparator.comparing(Book::getTitle)))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+        return bookDao.findSortedAllBooksByTitle(connector.getConnection());
     }
 
     @Override
