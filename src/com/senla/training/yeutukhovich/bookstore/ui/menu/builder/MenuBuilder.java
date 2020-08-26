@@ -28,14 +28,9 @@ public class MenuBuilder {
     @Autowired
     private RequestController requestController;
 
-    private MenuBuilder() {
-
-    }
-
     public Menu getRootMenu() {
         return rootMenu;
     }
-
 
     public void buildMenu() {
         rootMenu = new Menu(MenuNameConstant.MAIN_MENU.getMenuName());

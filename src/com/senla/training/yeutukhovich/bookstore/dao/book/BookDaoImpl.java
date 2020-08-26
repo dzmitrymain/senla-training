@@ -32,7 +32,6 @@ public class BookDaoImpl extends AbstractEntityDao<Book> implements BookDao {
             " AND books.id NOT IN (SELECT DISTINCT books.id FROM orders JOIN books ON books.id=orders.book_id WHERE " +
             "(completion_date BETWEEN ? AND ?) AND order_states_id=3);";
 
-
     @Override
     public List<Book> findSoldBooksBetweenDates(Connection connection, Date startDate, Date endDate) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(FIND_SOLD_BOOKS_BETWEEN_DATES)) {

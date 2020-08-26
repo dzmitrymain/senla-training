@@ -28,9 +28,13 @@ INSERT INTO `yeutukhovich_bookstore`.`requests` (`id`, `book_id`, `is_active`, `
 VALUES ('1', '3', '1', 'Customer3')
      , ('2', '4', '1', 'Customer4');
 
-ALTER TABLE `books` AUTO_INCREMENT=6;
-ALTER TABLE `orders` AUTO_INCREMENT=5;
-ALTER TABLE `order_states` AUTO_INCREMENT=4;
-ALTER TABLE `requests` AUTO_INCREMENT=3;
+ALTER TABLE `books`
+    AUTO_INCREMENT = 6;
+ALTER TABLE `orders`
+    AUTO_INCREMENT = 5;
+ALTER TABLE `order_states`
+    AUTO_INCREMENT = 4;
+ALTER TABLE `requests`
+    AUTO_INCREMENT = 3;
 
 COMMIT;

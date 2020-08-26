@@ -18,10 +18,6 @@ public class RequestController {
     @Autowired
     private RequestService requestService;
 
-    private RequestController() {
-
-    }
-
     public String createRequest(Long bookId, String requesterData) {
         try {
             requestService.createRequest(bookId, requesterData);

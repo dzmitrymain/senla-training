@@ -20,10 +20,6 @@ public class EntityCvsConverter {
 
     private static final String DELIMITER = ";";
 
-    private EntityCvsConverter() {
-
-    }
-
     public List<String> convertBooks(List<Book> books) {
         List<String> bookStrings = new ArrayList<>();
         for (Book book : books) {

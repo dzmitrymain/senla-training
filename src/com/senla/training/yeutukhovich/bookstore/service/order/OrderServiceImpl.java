@@ -45,10 +45,6 @@ public class OrderServiceImpl implements OrderService {
     @ConfigProperty(propertyName = PropertyKeyConstant.CVS_DIRECTORY_KEY)
     private String cvsDirectoryPath;
 
-    private OrderServiceImpl() {
-
-    }
-
     @Override
     public CreationOrderResult createOrder(Long bookId, String customerData) {
         Connection connection = connector.getConnection();

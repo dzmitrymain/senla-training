@@ -44,10 +44,6 @@ public class BookServiceImpl implements BookService {
     @ConfigProperty
     private byte staleMonthNumber;
 
-    private BookServiceImpl() {
-
-    }
-
     @Override
     public void replenishBook(Long id) {
         Connection connection = connector.getConnection();

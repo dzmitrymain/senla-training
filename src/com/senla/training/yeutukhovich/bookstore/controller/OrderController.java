@@ -20,10 +20,6 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    private OrderController() {
-
-    }
-
     public String createOrder(Long bookId, String customerData) {
         try {
             CreationOrderResult creationOrderResult = orderService.createOrder(bookId, customerData);

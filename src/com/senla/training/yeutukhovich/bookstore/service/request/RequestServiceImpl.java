@@ -40,10 +40,6 @@ public class RequestServiceImpl implements RequestService {
     @ConfigProperty(propertyName = PropertyKeyConstant.CVS_DIRECTORY_KEY)
     private String cvsDirectoryPath;
 
-    private RequestServiceImpl() {
-
-    }
-
     @Override
     public void createRequest(Long bookId, String requesterData) {
         Connection connection = connector.getConnection();

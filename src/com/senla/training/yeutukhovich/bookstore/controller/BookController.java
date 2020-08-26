@@ -19,10 +19,6 @@ public class BookController {
     @Autowired
     private BookService bookService;
 
-    private BookController() {
-
-    }
-
     public String replenishBook(Long id) {
         try {
             bookService.replenishBook(id);

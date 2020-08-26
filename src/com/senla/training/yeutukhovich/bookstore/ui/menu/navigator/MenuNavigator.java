@@ -11,10 +11,6 @@ public class MenuNavigator {
 
     private Menu currentMenu;
 
-    private MenuNavigator() {
-
-    }
-
     public Menu getCurrentMenu() {
         return currentMenu;
     }

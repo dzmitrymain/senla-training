@@ -2,7 +2,8 @@ DROP DATABASE IF EXISTS `yeutukhovich_bookstore`;
 CREATE DATABASE `yeutukhovich_bookstore`;
 USE `yeutukhovich_bookstore`;
 
-CREATE TABLE `yeutukhovich_bookstore`.`books`(
+CREATE TABLE `yeutukhovich_bookstore`.`books`
+(
     `id`                 INT            NOT NULL AUTO_INCREMENT,
     `title`              VARCHAR(45)    NOT NULL,
     `is_available`       TINYINT        NOT NULL,
@@ -12,13 +13,15 @@ CREATE TABLE `yeutukhovich_bookstore`.`books`(
     PRIMARY KEY (`id`)
 );
 
-CREATE TABLE `yeutukhovich_bookstore`.`order_states`(
+CREATE TABLE `yeutukhovich_bookstore`.`order_states`
+(
     `id`         INT         NOT NULL AUTO_INCREMENT,
     `state_type` VARCHAR(10) NOT NULL,
     PRIMARY KEY (`id`)
 );
 
-CREATE TABLE `yeutukhovich_bookstore`.`orders`(
+CREATE TABLE `yeutukhovich_bookstore`.`orders`
+(
     `id`              INT            NOT NULL AUTO_INCREMENT,
     `book_id`         INT            NOT NULL,
     `order_states_id` INT            NOT NULL,
@@ -29,7 +32,8 @@ CREATE TABLE `yeutukhovich_bookstore`.`orders`(
     PRIMARY KEY (`id`)
 );
 
-CREATE TABLE `yeutukhovich_bookstore`.`requests`(
+CREATE TABLE `yeutukhovich_bookstore`.`requests`
+(
     `id`             INT         NOT NULL AUTO_INCREMENT,
     `book_id`        INT         NOT NULL,
     `is_active`      TINYINT     NOT NULL,

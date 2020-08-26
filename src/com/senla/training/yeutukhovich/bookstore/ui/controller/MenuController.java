@@ -14,10 +14,6 @@ public class MenuController {
     @Autowired
     private MenuNavigator menuNavigator;
 
-    private MenuController() {
-
-    }
-
     public MenuBuilder getMenuBuilder() {
         return menuBuilder;
     }
