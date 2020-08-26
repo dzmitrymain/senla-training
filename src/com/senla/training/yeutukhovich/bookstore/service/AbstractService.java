@@ -2,7 +2,7 @@ package com.senla.training.yeutukhovich.bookstore.service;
 
 import com.senla.training.yeutukhovich.bookstore.converter.EntityCvsConverter;
 import com.senla.training.yeutukhovich.bookstore.dao.book.BookDao;
-import com.senla.training.yeutukhovich.bookstore.dao.connector.DBConnector;
+import com.senla.training.yeutukhovich.bookstore.dao.connector.DbConnector;
 import com.senla.training.yeutukhovich.bookstore.dao.order.OrderDao;
 import com.senla.training.yeutukhovich.bookstore.dao.request.RequestDao;
 import com.senla.training.yeutukhovich.bookstore.util.constant.ApplicationConstant;
@@ -16,7 +16,7 @@ import java.util.List;
 public abstract class AbstractService {
 
     @Autowired
-    protected DBConnector connector;
+    protected DbConnector connector;
 
     @Autowired
     protected BookDao bookDao;

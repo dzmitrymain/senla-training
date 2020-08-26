@@ -10,7 +10,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 @Singleton
-public class DBConnector {
+public class DbConnector {
 
     @ConfigProperty(propertyName = "database.path")
     private String url;
@@ -18,13 +18,15 @@ public class DBConnector {
     private String login;
     @ConfigProperty(propertyName = "database.password")
     private String password;
+    @ConfigProperty(propertyName = "database.driverName")
+    private String driverName;
 
     private Connection connection;
 
     @PostConstruct
     public void init() {
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
+            Class.forName(driverName);
             connection = DriverManager.getConnection(url, login, password);
         } catch (SQLException | ClassNotFoundException e) {
             throw new InternalException(e.getMessage());
@@ -32,6 +34,13 @@ public class DBConnector {
     }
 
     public Connection getConnection() {
+        try {
+            if (connection.isClosed()) {
+                init();
+            }
+        } catch (SQLException e) {
+            throw new InternalException(e.getMessage());
+        }
         return connection;
     }
 
