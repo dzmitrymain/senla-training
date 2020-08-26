@@ -23,14 +23,14 @@ public class BookDaoImpl extends AbstractEntityDao<Book> implements BookDao {
     private static final String UPDATE_BOOK_BY_ID = "UPDATE books SET title=?, is_available=?, edition_year=?, price=? WHERE id=?;";
     private static final String FIND_SOLD_BOOKS_BETWEEN_DATES = "SELECT DISTINCT books.id AS book_id, title, is_available," +
             " edition_year, replenishment_date, books.price FROM orders JOIN books ON books.id=orders.book_id WHERE " +
-            "(completion_date BETWEEN ? AND ?) AND order_states_id=3;";
+            "(completion_date BETWEEN ? AND ?) AND state='COMPLETED';";
     private static final String FIND_UNSOLD_BOOKS_BETWEEN_DATES = "SELECT books.id AS book_id, title, is_available, " +
             "edition_year, replenishment_date, books.price FROM books WHERE books.id NOT IN (SELECT DISTINCT books.id FROM " +
-            "orders JOIN books ON books.id=orders.book_id WHERE (completion_date BETWEEN ? AND ?) AND order_states_id=3);";
+            "orders JOIN books ON books.id=orders.book_id WHERE (completion_date BETWEEN ? AND ?) AND state='COMPLETED');";
     private static final String FIND_STALE_BOOKS_BETWEEN_DATES = "SELECT books.id AS book_id, title, is_available, " +
             "edition_year, replenishment_date, books.price FROM books WHERE replenishment_date <= ?" +
             " AND books.id NOT IN (SELECT DISTINCT books.id FROM orders JOIN books ON books.id=orders.book_id WHERE " +
-            "(completion_date BETWEEN ? AND ?) AND order_states_id=3);";
+            "(completion_date BETWEEN ? AND ?) AND state='COMPLETED');";
 
     @Override
     public List<Book> findSoldBooksBetweenDates(Connection connection, Date startDate, Date endDate) {

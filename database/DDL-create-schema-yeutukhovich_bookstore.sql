@@ -13,18 +13,11 @@ CREATE TABLE `yeutukhovich_bookstore`.`books`
     PRIMARY KEY (`id`)
 );
 
-CREATE TABLE `yeutukhovich_bookstore`.`order_states`
-(
-    `id`         INT         NOT NULL AUTO_INCREMENT,
-    `state_type` VARCHAR(10) NOT NULL,
-    PRIMARY KEY (`id`)
-);
-
 CREATE TABLE `yeutukhovich_bookstore`.`orders`
 (
     `id`              INT            NOT NULL AUTO_INCREMENT,
     `book_id`         INT            NOT NULL,
-    `order_states_id` INT            NOT NULL,
+    `state`           VARCHAR(10)    NOT NULL,
     `price`           DECIMAL(15, 2) NOT NULL,
     `creation_date`   TIMESTAMP      NOT NULL,
     `completion_date` TIMESTAMP      NULL DEFAULT NULL,
@@ -43,15 +36,9 @@ CREATE TABLE `yeutukhovich_bookstore`.`requests`
 
 ALTER TABLE `yeutukhovich_bookstore`.`orders`
     ADD INDEX `fk_orders_books_idx` (`book_id` ASC) VISIBLE,
-    ADD INDEX `fk_orders_order_states_idx` (`order_states_id` ASC) VISIBLE,
     ADD CONSTRAINT `fk_orders_books`
         FOREIGN KEY (`book_id`)
             REFERENCES `yeutukhovich_bookstore`.`books` (`id`)
-            ON DELETE RESTRICT
-            ON UPDATE RESTRICT,
-    ADD CONSTRAINT `fk_orders_order_states`
-        FOREIGN KEY (`order_states_id`)
-            REFERENCES `yeutukhovich_bookstore`.`order_states` (`id`)
             ON DELETE RESTRICT
             ON UPDATE RESTRICT;
 

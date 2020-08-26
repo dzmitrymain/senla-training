@@ -18,24 +18,22 @@ import java.util.Optional;
 @Singleton
 public class OrderDaoImpl extends AbstractEntityDao<Order> implements OrderDao {
 
-    private static final String FIND_ALL = "SELECT orders.id AS order_id, book_id, state_type," +
+    private static final String FIND_ALL = "SELECT orders.id AS order_id, book_id, state," +
             " orders.price AS current_price, creation_date, completion_date, customer_data, title, " +
             "is_available, edition_year, replenishment_date, books.price FROM orders " +
-            "JOIN books ON books.id=orders.book_id JOIN order_states ON orders.order_states_id=order_states.id;";
-    private static final String FIND_BY_ID = "SELECT orders.id AS order_id, book_id, state_type," +
+            "JOIN books ON books.id=orders.book_id;";
+    private static final String FIND_BY_ID = "SELECT orders.id AS order_id, book_id, state," +
             " orders.price AS current_price, creation_date, completion_date, customer_data, title, " +
             "is_available, edition_year, replenishment_date, books.price FROM orders " +
-            "JOIN books ON books.id=orders.book_id JOIN order_states ON orders.order_states_id=order_states.id " +
-            "WHERE orders.id=?;";
-    private static final String ADD_ORDER = "INSERT INTO orders (book_id, order_states_id, price, creation_date, " +
+            "JOIN books ON books.id=orders.book_id WHERE orders.id=?;";
+    private static final String ADD_ORDER = "INSERT INTO orders (book_id, state, price, creation_date, " +
             "customer_data) VALUES (?,?,?,?,?);";
-    private static final String UPDATE_ORDER = "UPDATE orders SET book_id=?, order_states_id=?, price=?, creation_date=?," +
+    private static final String UPDATE_ORDER = "UPDATE orders SET book_id=?, state=?, price=?, creation_date=?," +
             "completion_date=?, customer_data=? WHERE id=?";
-    private static final String FIND_COMPLETED_ORDERS_BETWEEN_DATES = "SELECT orders.id AS order_id, book_id, state_type, " +
+    private static final String FIND_COMPLETED_ORDERS_BETWEEN_DATES = "SELECT orders.id AS order_id, book_id, state, " +
             "orders.price AS current_price, creation_date, completion_date, customer_data, title, " +
             "is_available, edition_year, replenishment_date, books.price FROM orders " +
-            "JOIN books ON books.id=orders.book_id JOIN order_states ON orders.order_states_id=order_states.id " +
-            "WHERE order_states_id=3 AND (completion_date BETWEEN ? AND ?);";
+            "JOIN books ON books.id=orders.book_id WHERE state='COMPLETED' AND (completion_date BETWEEN ? AND ?);";
 
     @Override
     public List<Order> findCompletedOrdersBetweenDates(Connection connection, Date startDate, Date endDate) {
@@ -80,7 +78,7 @@ public class OrderDaoImpl extends AbstractEntityDao<Order> implements OrderDao {
         }
         Order order = new Order();
         order.setId(resultSet.getLong(Fields.ORDER_ID.getFieldName()));
-        order.setState(OrderState.valueOf(resultSet.getString(Fields.STATE_TYPE.getFieldName())));
+        order.setState(OrderState.valueOf(resultSet.getString(Fields.STATE.getFieldName())));
         order.setCurrentBookPrice(resultSet.getBigDecimal(Fields.CURRENT_PRICE.getFieldName()));
         order.setCreationDate(new Date(resultSet.getTimestamp(Fields.CREATION_DATE.getFieldName()).getTime()));
         Optional.ofNullable(resultSet.getTimestamp(Fields.COMPLETION_DATE.getFieldName()))
@@ -100,7 +98,7 @@ public class OrderDaoImpl extends AbstractEntityDao<Order> implements OrderDao {
     @Override
     protected void prepareInsert(PreparedStatement preparedStatement, Order entity) throws SQLException {
         preparedStatement.setLong(1, entity.getBook().getId());
-        preparedStatement.setInt(2, OrderState.CREATED.getIdNumber());
+        preparedStatement.setString(2, OrderState.CREATED.toString());
         preparedStatement.setBigDecimal(3, entity.getCurrentBookPrice());
         preparedStatement.setTimestamp(4, new Timestamp(entity.getCreationDate().getTime()));
         preparedStatement.setString(5, entity.getCustomerData());
@@ -109,7 +107,7 @@ public class OrderDaoImpl extends AbstractEntityDao<Order> implements OrderDao {
     @Override
     protected void prepareUpdate(PreparedStatement preparedStatement, Order entity) throws SQLException {
         preparedStatement.setLong(1, entity.getBook().getId());
-        preparedStatement.setInt(2, entity.getState().getIdNumber());
+        preparedStatement.setString(2, entity.getState().toString());
         preparedStatement.setBigDecimal(3, entity.getCurrentBookPrice());
         preparedStatement.setTimestamp(4, new Timestamp(entity.getCreationDate().getTime()));
         preparedStatement.setTimestamp(5,

@@ -14,7 +14,7 @@ public enum Fields {
     CREATION_DATE("creation_date"),
     COMPLETION_DATE("completion_date"),
     CUSTOMER_DATA("customer_data"),
-    STATE_TYPE("state_type"),
+    STATE("state"),
     IS_ACTIVE("is_active"),
     REQUESTER_DATA("requester_data");
 
