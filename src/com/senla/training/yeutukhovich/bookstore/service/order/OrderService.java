@@ -7,7 +7,6 @@ import com.senla.training.yeutukhovich.bookstore.service.dto.OrderDetails;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 public interface OrderService {
 
@@ -29,7 +28,7 @@ public interface OrderService {
 
     int calculateCompletedOrdersNumberBetweenDates(Date startDate, Date endDate);
 
-    Optional<OrderDetails> showOrderDetails(Long orderId);
+    OrderDetails showOrderDetails(Long orderId);
 
     int exportAllOrders(String fileName);
 

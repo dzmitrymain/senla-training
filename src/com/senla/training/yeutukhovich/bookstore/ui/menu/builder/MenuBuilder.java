@@ -28,14 +28,9 @@ public class MenuBuilder {
     @Autowired
     private RequestController requestController;
 
-    private MenuBuilder() {
-
-    }
-
     public Menu getRootMenu() {
         return rootMenu;
     }
-
 
     public void buildMenu() {
         rootMenu = new Menu(MenuNameConstant.MAIN_MENU.getMenuName());
@@ -169,8 +164,8 @@ public class MenuBuilder {
         MenuItem allBooksSortByAvailability = new MenuItem(MenuNameConstant.SORT_BY_AVAILABILITY.getMenuName(),
                 () -> UiConsolePrinter.printMessage(bookController.findSortedAllBooksByAvailability()),
                 showAllBooksMenu);
-        MenuItem allBooksSortByEditionDate = new MenuItem(MenuNameConstant.SORT_BY_EDITION_DATE.getMenuName(),
-                () -> UiConsolePrinter.printMessage(bookController.findSortedAllBooksByEditionDate()),
+        MenuItem allBooksSortByEditionYear = new MenuItem(MenuNameConstant.SORT_BY_EDITION_YEAR.getMenuName(),
+                () -> UiConsolePrinter.printMessage(bookController.findSortedAllBooksByEditionYear()),
                 showAllBooksMenu);
         MenuItem allBooksSortByReplenishmentDate = new MenuItem(MenuNameConstant.SORT_BY_REPLENISHMENT_DATE.getMenuName(),
                 () -> UiConsolePrinter.printMessage(bookController.findSortedAllBooksByReplenishmentDate()),
@@ -180,7 +175,7 @@ public class MenuBuilder {
                 previousBookMenu);
 
         Collections.addAll(showAllBooksMenu.getMenuItems(), allBooksSortByTitle, allBooksSortByPrice,
-                allBooksSortByAvailability, allBooksSortByEditionDate, allBooksSortByReplenishmentDate,
+                allBooksSortByAvailability, allBooksSortByEditionYear, allBooksSortByReplenishmentDate,
                 previousBookMenuItem);
         return showAllBooksMenu;
     }

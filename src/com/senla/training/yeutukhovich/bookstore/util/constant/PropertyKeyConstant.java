@@ -7,5 +7,4 @@ public class PropertyKeyConstant {
     public static final String REQUEST_AUTO_CLOSE_ENABLED = "BookServiceImpl.requestAutoCloseEnabled";
 
     public static final String CVS_DIRECTORY_KEY = "cvs.directoryPath";
-    public static final String SERIALIZATION_DATA_PATH_KEY = "serialization.dataPath";
 }

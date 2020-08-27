@@ -20,10 +20,6 @@ public class EntityCvsConverter {
 
     private static final String DELIMITER = ";";
 
-    private EntityCvsConverter() {
-
-    }
-
     public List<String> convertBooks(List<Book> books) {
         List<String> bookStrings = new ArrayList<>();
         for (Book book : books) {
@@ -33,7 +29,7 @@ public class EntityCvsConverter {
                     DELIMITER +
                     book.isAvailable() +
                     DELIMITER +
-                    book.getEditionDate() +
+                    book.getEditionYear() +
                     DELIMITER +
                     book.getReplenishmentDate() +
                     DELIMITER +
@@ -136,12 +132,7 @@ public class EntityCvsConverter {
                 book.setId(Long.valueOf(strings[0]));
                 book.setTitle(strings[1]);
                 book.setAvailable(parseBoolean(strings[2]));
-                Date editionDate = DateConverter.parseDate(strings[3], DateConverter.STANDARD_DATE_FORMAT);
-                if (editionDate == null) {
-                    throw new IllegalArgumentException(MessageConstant.EDITION_NOT_NULL.getMessage());
-                } else {
-                    book.setEditionDate(editionDate);
-                }
+                book.setEditionYear(Integer.parseInt(strings[3]));
                 if (!"null".equals(strings[4])) {
                     book.setReplenishmentDate(DateConverter.parseDate(strings[4]
                             , DateConverter.STANDARD_DATE_FORMAT));

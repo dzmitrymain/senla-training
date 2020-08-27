@@ -9,7 +9,7 @@ public class Book extends AbstractEntity {
 
     private String title;
     private Boolean isAvailable;
-    private Date editionDate;
+    private int editionYear;
     private Date replenishmentDate;
     private BigDecimal price;
 
@@ -21,11 +21,11 @@ public class Book extends AbstractEntity {
         this.id = id;
     }
 
-    public Book(String title, Boolean isAvailable, Date editionDate, Date replenishmentDate, BigDecimal price) {
+    public Book(String title, Boolean isAvailable, int editionYear, Date replenishmentDate, BigDecimal price) {
         this.title = title;
         this.setAvailable(isAvailable);
         this.replenishmentDate = replenishmentDate;
-        this.editionDate = editionDate;
+        this.editionYear = editionYear;
         this.price = price;
     }
 
@@ -45,12 +45,12 @@ public class Book extends AbstractEntity {
         isAvailable = available;
     }
 
-    public Date getEditionDate() {
-        return editionDate;
+    public int getEditionYear() {
+        return editionYear;
     }
 
-    public void setEditionDate(Date editionDate) {
-        this.editionDate = editionDate;
+    public void setEditionYear(int editionYear) {
+        this.editionYear = editionYear;
     }
 
     public Date getReplenishmentDate() {

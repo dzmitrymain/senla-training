@@ -8,7 +8,7 @@ import java.util.Date;
 public class BookDescription {
 
     private String title;
-    private Date editionDate;
+    private int editionYear;
     private Date replenishmentDate;
 
     public String getTitle() {
@@ -19,12 +19,12 @@ public class BookDescription {
         this.title = title;
     }
 
-    public Date getEditionDate() {
-        return editionDate;
+    public int getEditionYear() {
+        return editionYear;
     }
 
-    public void setEditionDate(Date editionDate) {
-        this.editionDate = editionDate;
+    public void setEditionYear(int editionYear) {
+        this.editionYear = editionYear;
     }
 
     public Date getReplenishmentDate() {
@@ -45,7 +45,7 @@ public class BookDescription {
 
         return "Book description [" +
                 "title='" + title +
-                "', edition date=" + DateConverter.formatDate(editionDate, DateConverter.YEAR_DATE_FORMAT) +
+                "', edition year=" + editionYear +
                 replenishmentDateToString.toString() + ']';
     }
 }

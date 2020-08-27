@@ -5,7 +5,6 @@ import com.senla.training.yeutukhovich.bookstore.service.dto.BookDescription;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 public interface BookService {
 
@@ -15,9 +14,9 @@ public interface BookService {
 
     List<Book> findSortedAllBooksByAvailability();
 
-    List<Book> findSortedAllBooksByEditionDate();
+    List<Book> findSortedAllBooksByEditionYear();
 
-    List<Book> findSortedBooksByPrice();
+    List<Book> findSortedAllBooksByPrice();
 
     List<Book> findSortedAllBooksByReplenishmentDate();
 
@@ -29,7 +28,7 @@ public interface BookService {
 
     List<Book> findStaleBooks();
 
-    Optional<BookDescription> showBookDescription(Long id);
+    BookDescription showBookDescription(Long id);
 
     int exportAllBooks(String fileName);
 
