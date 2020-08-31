@@ -88,7 +88,7 @@ public class ConfigInjector {
         }
         try (InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(propertiesPath)) {
             if (stream == null) {
-                return;
+                throw new IOException("Can't find properties file: " + propertiesPath);
             }
             PROPERTIES.load(stream);
             lastPropertyFileName = propertiesPath;
