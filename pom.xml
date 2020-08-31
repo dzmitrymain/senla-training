@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.senla.training.yeutukhovich.bookstore</groupId>
+    <artifactId>bookstore</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>Bookstore</name>
+
+    <properties>
+        <maven.compiler.source>1.11</maven.compiler.source>
+        <maven.compiler.target>1.11</maven.compiler.target>
+    </properties>
+
+    <modules>
+        <module>Controller</module>
+        <module>Service</module>
+        <module>DAO</module>
+        <module>CvsConverter</module>
+        <module>DependencyInjection</module>
+        <module>Domain</module>
+        <module>Exception</module>
+        <module>Runner</module>
+        <module>UI</module>
+        <module>Util</module>
+    </modules>
+
+</project>
