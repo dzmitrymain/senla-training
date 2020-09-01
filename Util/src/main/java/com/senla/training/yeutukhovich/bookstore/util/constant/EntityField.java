@@ -1,6 +1,6 @@
 package com.senla.training.yeutukhovich.bookstore.util.constant;
 
-public enum Fields {
+public enum EntityField {
 
     BOOK_ID("book_id"),
     ORDER_ID("order_id"),
@@ -20,7 +20,7 @@ public enum Fields {
 
     private String fieldName;
 
-    Fields(String fieldName) {
+    EntityField(String fieldName) {
         this.fieldName = fieldName;
     }
 

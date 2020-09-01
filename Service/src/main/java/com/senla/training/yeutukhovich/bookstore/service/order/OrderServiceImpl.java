@@ -59,9 +59,8 @@ public class OrderServiceImpl implements OrderService {
                     result.setRequestId(requestDao.add(connection, new Request(book, customerData)));
                 }
                 Order order = new Order(book, customerData);
-                orderDao.add(connection, order);
+                result.setOrderId(orderDao.add(connection, order));
                 connection.commit();
-                result.setOrderId(order.getId());
                 return result;
             } catch (SQLException e) {
                 connection.rollback();

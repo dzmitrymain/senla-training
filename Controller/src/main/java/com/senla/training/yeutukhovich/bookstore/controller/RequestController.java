@@ -6,6 +6,7 @@ import com.senla.training.yeutukhovich.bookstore.domain.Request;
 import com.senla.training.yeutukhovich.bookstore.exception.BusinessException;
 import com.senla.training.yeutukhovich.bookstore.exception.InternalException;
 import com.senla.training.yeutukhovich.bookstore.service.request.RequestService;
+import com.senla.training.yeutukhovich.bookstore.util.constant.LoggerConstant;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,9 +26,10 @@ public class RequestController {
     public String createRequest(Long bookId, String requesterData) {
         try {
             requestService.createRequest(bookId, requesterData);
+            LOGGER.info(LoggerConstant.CREATE_REQUEST_SUCCESS.getMessage(), bookId);
             return MessageConstant.REQUEST_HAS_BEEN_CREATED.getMessage();
         } catch (BusinessException e) {
-            LOGGER.warn(e.getMessage());
+            LOGGER.warn(LoggerConstant.CREATE_REQUEST_FAIL.getMessage(), bookId, e.getMessage());
             return e.getMessage();
         } catch (InternalException e) {
             LOGGER.error(e.getMessage(), e);
@@ -37,9 +39,11 @@ public class RequestController {
 
     public String findSortedAllRequestsByBookTitle() {
         try {
-            return requestService.findSortedAllRequestsByBookTitle().stream()
+            String result = requestService.findSortedAllRequestsByBookTitle().stream()
                     .map(Request::toString)
                     .collect(Collectors.joining(REQUEST_DELIMITER));
+            LOGGER.info(LoggerConstant.FIND_ALL_REQUESTS_SORTED_BY_BOOK_TITLE.getMessage());
+            return result;
         } catch (InternalException e) {
             LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
@@ -48,9 +52,11 @@ public class RequestController {
 
     public String findSortedAllRequestsByIsActive() {
         try {
-            return requestService.findSortedAllRequestsByIsActive().stream()
+            String result = requestService.findSortedAllRequestsByIsActive().stream()
                     .map(Request::toString)
                     .collect(Collectors.joining(REQUEST_DELIMITER));
+            LOGGER.info(LoggerConstant.FIND_ALL_REQUESTS_SORTED_BY_IS_ACTIVE.getMessage());
+            return result;
         } catch (InternalException e) {
             LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
@@ -59,9 +65,11 @@ public class RequestController {
 
     public String findSortedAllRequestsByRequesterData() {
         try {
-            return requestService.findSortedAllRequestsByRequesterData().stream()
+            String result = requestService.findSortedAllRequestsByRequesterData().stream()
                     .map(Request::toString)
                     .collect(Collectors.joining(REQUEST_DELIMITER));
+            LOGGER.info(LoggerConstant.FIND_ALL_REQUESTS_SORTED_BY_REQUESTER_DATA.getMessage());
+            return result;
         } catch (InternalException e) {
             LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
@@ -70,8 +78,10 @@ public class RequestController {
 
     public String exportAllRequests(String fileName) {
         try {
-            return MessageConstant.EXPORTED_ENTITIES.getMessage()
+            String result = MessageConstant.EXPORTED_ENTITIES.getMessage()
                     + requestService.exportAllRequests(fileName);
+            LOGGER.info(LoggerConstant.EXPORT_ALL_REQUESTS.getMessage(), fileName);
+            return result;
         } catch (InternalException e) {
             LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
@@ -81,9 +91,10 @@ public class RequestController {
     public String exportRequest(Long requestId, String fileName) {
         try {
             requestService.exportRequest(requestId, fileName);
+            LOGGER.info(LoggerConstant.EXPORT_REQUEST_SUCCESS.getMessage(), requestId, fileName);
             return MessageConstant.ENTITY_EXPORTED.getMessage();
         } catch (BusinessException e) {
-            LOGGER.warn(e.getMessage());
+            LOGGER.warn(LoggerConstant.EXPORT_REQUEST_FAIL.getMessage(), requestId, e.getMessage());
             return e.getMessage();
         } catch (InternalException e) {
             LOGGER.error(e.getMessage(), e);
@@ -93,10 +104,12 @@ public class RequestController {
 
     public String importRequests(String fileName) {
         try {
-            return MessageConstant.IMPORTED_ENTITIES.getMessage()
+            String result = MessageConstant.IMPORTED_ENTITIES.getMessage()
                     + requestService.importRequests(fileName);
+            LOGGER.info(LoggerConstant.IMPORT_REQUESTS_SUCCESS.getMessage(), fileName);
+            return result;
         } catch (BusinessException e) {
-            LOGGER.warn(e.getMessage());
+            LOGGER.warn(LoggerConstant.IMPORT_REQUESTS_FAIL.getMessage(), e.getMessage());
             return e.getMessage();
         } catch (InternalException e) {
             LOGGER.error(e.getMessage(), e);

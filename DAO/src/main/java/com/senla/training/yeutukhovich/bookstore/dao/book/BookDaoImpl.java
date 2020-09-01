@@ -4,7 +4,7 @@ import com.senla.training.yeutukhovich.bookstore.dao.AbstractEntityDao;
 import com.senla.training.yeutukhovich.bookstore.dependencyinjection.Singleton;
 import com.senla.training.yeutukhovich.bookstore.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.exception.InternalException;
-import com.senla.training.yeutukhovich.bookstore.util.constant.Fields;
+import com.senla.training.yeutukhovich.bookstore.util.constant.EntityField;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -88,28 +88,28 @@ public class BookDaoImpl extends AbstractEntityDao<Book> implements BookDao {
 
     @Override
     public List<Book> findSortedAllBooksByAvailability(Connection connection) {
-        return findAll(connection, " " + ORDER_BY + " " + Fields.IS_AVAILABLE.getFieldName() + " " + DESC);
+        return findAll(connection, " " + ORDER_BY + " " + EntityField.IS_AVAILABLE.getFieldName() + " " + DESC);
     }
 
     @Override
     public List<Book> findSortedAllBooksByEditionYear(Connection connection) {
-        return findAll(connection, " " + ORDER_BY + " " + Fields.EDITION_YEAR.getFieldName());
+        return findAll(connection, " " + ORDER_BY + " " + EntityField.EDITION_YEAR.getFieldName());
     }
 
     @Override
     public List<Book> findSortedAllBooksByPrice(Connection connection) {
-        return findAll(connection, " " + ORDER_BY + " " + Fields.PRICE.getFieldName());
+        return findAll(connection, " " + ORDER_BY + " " + EntityField.PRICE.getFieldName());
     }
 
     @Override
     public List<Book> findSortedAllBooksByReplenishmentDate(Connection connection) {
-        return findAll(connection, " " + ORDER_BY + " " + Fields.REPLENISHMENT_DATE.getFieldName() +
+        return findAll(connection, " " + ORDER_BY + " " + EntityField.REPLENISHMENT_DATE.getFieldName() +
                 " " + DESC);
     }
 
     @Override
     public List<Book> findSortedAllBooksByTitle(Connection connection) {
-        return findAll(connection, " " + ORDER_BY + " " + Fields.TITLE.getFieldName());
+        return findAll(connection, " " + ORDER_BY + " " + EntityField.TITLE.getFieldName());
     }
 
     @Override
@@ -138,12 +138,12 @@ public class BookDaoImpl extends AbstractEntityDao<Book> implements BookDao {
             return null;
         }
         Book book = new Book();
-        book.setId(resultSet.getLong(Fields.BOOK_ID.getFieldName()));
-        book.setTitle(resultSet.getString(Fields.TITLE.getFieldName()));
-        book.setAvailable(resultSet.getBoolean(Fields.IS_AVAILABLE.getFieldName()));
-        book.setEditionYear(resultSet.getInt(Fields.EDITION_YEAR.getFieldName()));
-        book.setReplenishmentDate(new Date(resultSet.getTimestamp(Fields.REPLENISHMENT_DATE.getFieldName()).getTime()));
-        book.setPrice(resultSet.getBigDecimal(Fields.PRICE.getFieldName()));
+        book.setId(resultSet.getLong(EntityField.BOOK_ID.getFieldName()));
+        book.setTitle(resultSet.getString(EntityField.TITLE.getFieldName()));
+        book.setAvailable(resultSet.getBoolean(EntityField.IS_AVAILABLE.getFieldName()));
+        book.setEditionYear(resultSet.getInt(EntityField.EDITION_YEAR.getFieldName()));
+        book.setReplenishmentDate(new Date(resultSet.getTimestamp(EntityField.REPLENISHMENT_DATE.getFieldName()).getTime()));
+        book.setPrice(resultSet.getBigDecimal(EntityField.PRICE.getFieldName()));
         return book;
     }
 

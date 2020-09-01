@@ -6,7 +6,7 @@ import com.senla.training.yeutukhovich.bookstore.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.domain.Order;
 import com.senla.training.yeutukhovich.bookstore.domain.state.OrderState;
 import com.senla.training.yeutukhovich.bookstore.exception.InternalException;
-import com.senla.training.yeutukhovich.bookstore.util.constant.Fields;
+import com.senla.training.yeutukhovich.bookstore.util.constant.EntityField;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -57,17 +57,17 @@ public class OrderDaoImpl extends AbstractEntityDao<Order> implements OrderDao {
 
     @Override
     public List<Order> findSortedAllOrdersByCompletionDate(Connection connection) {
-        return findAll(connection, " " + ORDER_BY + " " + Fields.COMPLETION_DATE.getFieldName() + " " + DESC);
+        return findAll(connection, " " + ORDER_BY + " " + EntityField.COMPLETION_DATE.getFieldName() + " " + DESC);
     }
 
     @Override
     public List<Order> findSortedAllOrdersByPrice(Connection connection) {
-        return findAll(connection, " " + ORDER_BY + " " + Fields.PRICE.getFieldName());
+        return findAll(connection, " " + ORDER_BY + " " + EntityField.PRICE.getFieldName());
     }
 
     @Override
     public List<Order> findSortedAllOrdersByState(Connection connection) {
-        return findAll(connection, " " + ORDER_BY + " " + Fields.STATE.getFieldName());
+        return findAll(connection, " " + ORDER_BY + " " + EntityField.STATE.getFieldName());
     }
 
     @Override
@@ -96,20 +96,20 @@ public class OrderDaoImpl extends AbstractEntityDao<Order> implements OrderDao {
             return null;
         }
         Order order = new Order();
-        order.setId(resultSet.getLong(Fields.ORDER_ID.getFieldName()));
-        order.setState(OrderState.valueOf(resultSet.getString(Fields.STATE.getFieldName())));
-        order.setCurrentBookPrice(resultSet.getBigDecimal(Fields.CURRENT_PRICE.getFieldName()));
-        order.setCreationDate(new Date(resultSet.getTimestamp(Fields.CREATION_DATE.getFieldName()).getTime()));
-        Optional.ofNullable(resultSet.getTimestamp(Fields.COMPLETION_DATE.getFieldName()))
+        order.setId(resultSet.getLong(EntityField.ORDER_ID.getFieldName()));
+        order.setState(OrderState.valueOf(resultSet.getString(EntityField.STATE.getFieldName())));
+        order.setCurrentBookPrice(resultSet.getBigDecimal(EntityField.CURRENT_PRICE.getFieldName()));
+        order.setCreationDate(new Date(resultSet.getTimestamp(EntityField.CREATION_DATE.getFieldName()).getTime()));
+        Optional.ofNullable(resultSet.getTimestamp(EntityField.COMPLETION_DATE.getFieldName()))
                 .ifPresent(timestamp -> order.setCompletionDate(new Date(timestamp.getTime())));
-        order.setCustomerData(resultSet.getString(Fields.CUSTOMER_DATA.getFieldName()));
+        order.setCustomerData(resultSet.getString(EntityField.CUSTOMER_DATA.getFieldName()));
         Book book = new Book();
-        book.setId(resultSet.getLong(Fields.BOOK_ID.getFieldName()));
-        book.setTitle(resultSet.getString(Fields.TITLE.getFieldName()));
-        book.setAvailable(resultSet.getBoolean(Fields.IS_AVAILABLE.getFieldName()));
-        book.setEditionYear(resultSet.getInt(Fields.EDITION_YEAR.getFieldName()));
-        book.setReplenishmentDate(new Date(resultSet.getTimestamp(Fields.REPLENISHMENT_DATE.getFieldName()).getTime()));
-        book.setPrice(resultSet.getBigDecimal(Fields.PRICE.getFieldName()));
+        book.setId(resultSet.getLong(EntityField.BOOK_ID.getFieldName()));
+        book.setTitle(resultSet.getString(EntityField.TITLE.getFieldName()));
+        book.setAvailable(resultSet.getBoolean(EntityField.IS_AVAILABLE.getFieldName()));
+        book.setEditionYear(resultSet.getInt(EntityField.EDITION_YEAR.getFieldName()));
+        book.setReplenishmentDate(new Date(resultSet.getTimestamp(EntityField.REPLENISHMENT_DATE.getFieldName()).getTime()));
+        book.setPrice(resultSet.getBigDecimal(EntityField.PRICE.getFieldName()));
         order.setBook(book);
         return order;
     }

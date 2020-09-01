@@ -5,7 +5,7 @@ import com.senla.training.yeutukhovich.bookstore.dependencyinjection.Singleton;
 import com.senla.training.yeutukhovich.bookstore.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.domain.Request;
 import com.senla.training.yeutukhovich.bookstore.exception.InternalException;
-import com.senla.training.yeutukhovich.bookstore.util.constant.Fields;
+import com.senla.training.yeutukhovich.bookstore.util.constant.EntityField;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -40,17 +40,17 @@ public class RequestDaoImpl extends AbstractEntityDao<Request> implements Reques
 
     @Override
     public List<Request> findSortedAllRequestsByBookTitle(Connection connection) {
-        return findAll(connection, " " + ORDER_BY + " " + Fields.TITLE.getFieldName());
+        return findAll(connection, " " + ORDER_BY + " " + EntityField.TITLE.getFieldName());
     }
 
     @Override
     public List<Request> findSortedAllRequestsByIsActive(Connection connection) {
-        return findAll(connection, " " + ORDER_BY + " " + Fields.IS_ACTIVE.getFieldName() + " " + DESC);
+        return findAll(connection, " " + ORDER_BY + " " + EntityField.IS_ACTIVE.getFieldName() + " " + DESC);
     }
 
     @Override
     public List<Request> findSortedAllRequestsByRequesterData(Connection connection) {
-        return findAll(connection, " " + ORDER_BY + " " + Fields.REQUESTER_DATA.getFieldName());
+        return findAll(connection, " " + ORDER_BY + " " + EntityField.REQUESTER_DATA.getFieldName());
     }
 
     @Override
@@ -79,16 +79,16 @@ public class RequestDaoImpl extends AbstractEntityDao<Request> implements Reques
             return null;
         }
         Request request = new Request();
-        request.setId(resultSet.getLong(Fields.REQUEST_ID.getFieldName()));
-        request.setActive(resultSet.getBoolean(Fields.IS_ACTIVE.getFieldName()));
-        request.setRequesterData(resultSet.getString(Fields.REQUESTER_DATA.getFieldName()));
+        request.setId(resultSet.getLong(EntityField.REQUEST_ID.getFieldName()));
+        request.setActive(resultSet.getBoolean(EntityField.IS_ACTIVE.getFieldName()));
+        request.setRequesterData(resultSet.getString(EntityField.REQUESTER_DATA.getFieldName()));
         Book book = new Book();
-        book.setId(resultSet.getLong(Fields.BOOK_ID.getFieldName()));
-        book.setTitle(resultSet.getString(Fields.TITLE.getFieldName()));
-        book.setAvailable(resultSet.getBoolean(Fields.IS_AVAILABLE.getFieldName()));
-        book.setEditionYear(resultSet.getInt(Fields.EDITION_YEAR.getFieldName()));
-        book.setReplenishmentDate(new Date(resultSet.getTimestamp(Fields.REPLENISHMENT_DATE.getFieldName()).getTime()));
-        book.setPrice(resultSet.getBigDecimal(Fields.PRICE.getFieldName()));
+        book.setId(resultSet.getLong(EntityField.BOOK_ID.getFieldName()));
+        book.setTitle(resultSet.getString(EntityField.TITLE.getFieldName()));
+        book.setAvailable(resultSet.getBoolean(EntityField.IS_AVAILABLE.getFieldName()));
+        book.setEditionYear(resultSet.getInt(EntityField.EDITION_YEAR.getFieldName()));
+        book.setReplenishmentDate(new Date(resultSet.getTimestamp(EntityField.REPLENISHMENT_DATE.getFieldName()).getTime()));
+        book.setPrice(resultSet.getBigDecimal(EntityField.PRICE.getFieldName()));
         request.setBook(book);
         return request;
     }
