@@ -8,12 +8,15 @@ import com.senla.training.yeutukhovich.bookstore.exception.InternalException;
 import com.senla.training.yeutukhovich.bookstore.service.dto.CreationOrderResult;
 import com.senla.training.yeutukhovich.bookstore.service.order.OrderService;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 import java.util.stream.Collectors;
 
 @Singleton
 public class OrderController {
+    private static final Logger LOGGER = LoggerFactory.getLogger(OrderController.class);
 
     private static final String ORDER_DELIMITER = "\n";
 
@@ -29,9 +32,10 @@ public class OrderController {
             return MessageConstant.ORDER_HAS_BEEN_CREATED.getMessage() + "\n"
                     + MessageConstant.REQUEST_HAS_BEEN_CREATED.getMessage();
         } catch (BusinessException e) {
+            LOGGER.warn(e.getMessage());
             return e.getMessage();
         } catch (InternalException e) {
-            System.err.println(e.getMessage()); //log
+            LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
     }
@@ -41,9 +45,10 @@ public class OrderController {
             orderService.cancelOrder(orderId);
             return MessageConstant.ORDER_HAS_BEEN_CANCELED.getMessage();
         } catch (BusinessException e) {
+            LOGGER.warn(e.getMessage());
             return e.getMessage();
         } catch (InternalException e) {
-            System.err.println(e.getMessage()); //log
+            LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
     }
@@ -53,9 +58,10 @@ public class OrderController {
             orderService.completeOrder(orderId);
             return MessageConstant.ORDER_HAS_BEEN_COMPLETED.getMessage();
         } catch (BusinessException e) {
+            LOGGER.warn(e.getMessage());
             return e.getMessage();
         } catch (InternalException e) {
-            System.err.println(e.getMessage()); //log
+            LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
     }
@@ -66,7 +72,7 @@ public class OrderController {
                     .map(Order::toString)
                     .collect(Collectors.joining(ORDER_DELIMITER));
         } catch (InternalException e) {
-            System.err.println(e.getMessage()); //log
+            LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
     }
@@ -77,7 +83,7 @@ public class OrderController {
                     .map(Order::toString)
                     .collect(Collectors.joining(ORDER_DELIMITER));
         } catch (InternalException e) {
-            System.err.println(e.getMessage()); //log
+            LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
     }
@@ -88,7 +94,7 @@ public class OrderController {
                     .map(Order::toString)
                     .collect(Collectors.joining(ORDER_DELIMITER));
         } catch (InternalException e) {
-            System.err.println(e.getMessage()); //log
+            LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
     }
@@ -99,7 +105,7 @@ public class OrderController {
                     .map(Order::toString)
                     .collect(Collectors.joining(ORDER_DELIMITER));
         } catch (InternalException e) {
-            System.err.println(e.getMessage()); //log
+            LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
     }
@@ -108,7 +114,7 @@ public class OrderController {
         try {
             return orderService.calculateProfitBetweenDates(startDate, endDate).toString();
         } catch (InternalException e) {
-            System.err.println(e.getMessage()); //log
+            LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
     }
@@ -117,7 +123,7 @@ public class OrderController {
         try {
             return String.valueOf(orderService.calculateCompletedOrdersNumberBetweenDates(startDate, endDate));
         } catch (InternalException e) {
-            System.err.println(e.getMessage()); //log
+            LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
     }
@@ -126,9 +132,10 @@ public class OrderController {
         try {
             return orderService.showOrderDetails(orderId).toString();
         } catch (BusinessException e) {
+            LOGGER.warn(e.getMessage());
             return e.getMessage();
         } catch (InternalException e) {
-            System.err.println(e.getMessage()); //log
+            LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
     }
@@ -137,9 +144,10 @@ public class OrderController {
         try {
             return MessageConstant.IMPORTED_ENTITIES.getMessage() + orderService.importOrders(fileName);
         } catch (BusinessException e) {
+            LOGGER.warn(e.getMessage());
             return e.getMessage();
         } catch (InternalException e) {
-            System.err.println(e.getMessage()); //log
+            LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
     }
@@ -149,7 +157,7 @@ public class OrderController {
             return MessageConstant.EXPORTED_ENTITIES.getMessage()
                     + orderService.exportAllOrders(fileName);
         } catch (InternalException e) {
-            System.err.println(e.getMessage()); //log
+            LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
 
@@ -160,9 +168,10 @@ public class OrderController {
             orderService.exportOrder(orderId, fileName);
             return MessageConstant.ENTITY_EXPORTED.getMessage();
         } catch (BusinessException e) {
+            LOGGER.warn(e.getMessage());
             return e.getMessage();
         } catch (InternalException e) {
-            System.err.println(e.getMessage()); //log
+            LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
     }

@@ -14,6 +14,8 @@
     <properties>
         <maven.compiler.source>1.11</maven.compiler.source>
         <maven.compiler.target>1.11</maven.compiler.target>
+        <sl4j.version>1.7.30</sl4j.version>
+        <logback.version>1.2.3</logback.version>
     </properties>
 
     <modules>
@@ -28,5 +30,20 @@
         <module>UI</module>
         <module>Util</module>
     </modules>
+
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${sl4j.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+    </dependencies>
 
 </project>

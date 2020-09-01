@@ -7,11 +7,14 @@ import com.senla.training.yeutukhovich.bookstore.exception.BusinessException;
 import com.senla.training.yeutukhovich.bookstore.exception.InternalException;
 import com.senla.training.yeutukhovich.bookstore.service.request.RequestService;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.stream.Collectors;
 
 @Singleton
 public class RequestController {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RequestController.class);
 
     private static final String REQUEST_DELIMITER = "\n";
 
@@ -23,9 +26,10 @@ public class RequestController {
             requestService.createRequest(bookId, requesterData);
             return MessageConstant.REQUEST_HAS_BEEN_CREATED.getMessage();
         } catch (BusinessException e) {
+            LOGGER.warn(e.getMessage());
             return e.getMessage();
         } catch (InternalException e) {
-            System.err.println(e.getMessage()); //log
+            LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
     }
@@ -36,7 +40,7 @@ public class RequestController {
                     .map(Request::toString)
                     .collect(Collectors.joining(REQUEST_DELIMITER));
         } catch (InternalException e) {
-            System.err.println(e.getMessage()); //log
+            LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
     }
@@ -47,7 +51,7 @@ public class RequestController {
                     .map(Request::toString)
                     .collect(Collectors.joining(REQUEST_DELIMITER));
         } catch (InternalException e) {
-            System.err.println(e.getMessage()); //log
+            LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
     }
@@ -58,7 +62,7 @@ public class RequestController {
                     .map(Request::toString)
                     .collect(Collectors.joining(REQUEST_DELIMITER));
         } catch (InternalException e) {
-            System.err.println(e.getMessage()); //log
+            LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
     }
@@ -68,7 +72,7 @@ public class RequestController {
             return MessageConstant.EXPORTED_ENTITIES.getMessage()
                     + requestService.exportAllRequests(fileName);
         } catch (InternalException e) {
-            System.err.println(e.getMessage()); //log
+            LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
     }
@@ -78,9 +82,10 @@ public class RequestController {
             requestService.exportRequest(requestId, fileName);
             return MessageConstant.ENTITY_EXPORTED.getMessage();
         } catch (BusinessException e) {
+            LOGGER.warn(e.getMessage());
             return e.getMessage();
         } catch (InternalException e) {
-            System.err.println(e.getMessage()); //log
+            LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
     }
@@ -90,9 +95,10 @@ public class RequestController {
             return MessageConstant.IMPORTED_ENTITIES.getMessage()
                     + requestService.importRequests(fileName);
         } catch (BusinessException e) {
+            LOGGER.warn(e.getMessage());
             return e.getMessage();
         } catch (InternalException e) {
-            System.err.println(e.getMessage()); //log
+            LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
     }

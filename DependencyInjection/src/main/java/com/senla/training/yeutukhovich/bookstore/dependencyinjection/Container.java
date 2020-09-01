@@ -4,11 +4,14 @@ import com.senla.training.yeutukhovich.bookstore.dependencyinjection.config.Conf
 import com.senla.training.yeutukhovich.bookstore.dependencyinjection.config.ConfigProperty;
 import com.senla.training.yeutukhovich.bookstore.dependencyinjection.config.PostConstruct;
 import com.senla.training.yeutukhovich.bookstore.exception.InternalException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.*;
 import java.util.*;
 
 public class Container {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Container.class);
 
     private static final Map<Class<?>, Object> singletons = new HashMap<>();
 
@@ -27,9 +30,14 @@ public class Container {
 
 
     private static void initContainer() {
-        initSingletons();
-        injectDependencies();
-        invokeInits();
+        try {
+            initSingletons();
+            injectDependencies();
+            invokeInits();
+        } catch (InternalException e) {
+            LOGGER.error(e.getMessage(), e);
+            throw e;
+        }
     }
 
     private static void initSingletons() {

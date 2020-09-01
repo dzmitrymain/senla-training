@@ -7,12 +7,15 @@ import com.senla.training.yeutukhovich.bookstore.exception.BusinessException;
 import com.senla.training.yeutukhovich.bookstore.exception.InternalException;
 import com.senla.training.yeutukhovich.bookstore.service.book.BookService;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 import java.util.stream.Collectors;
 
 @Singleton
 public class BookController {
+    private static final Logger LOGGER = LoggerFactory.getLogger(BookController.class);
 
     private static final String BOOKS_DELIMITER = "\n";
 
@@ -24,9 +27,10 @@ public class BookController {
             bookService.replenishBook(id);
             return MessageConstant.BOOK_HAS_BEEN_REPLENISHED.getMessage();
         } catch (BusinessException e) {
+            LOGGER.warn(e.getMessage());
             return e.getMessage();
         } catch (InternalException e) {
-            System.err.println(e.getMessage()); //log
+            LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
     }
@@ -36,9 +40,10 @@ public class BookController {
             bookService.writeOffBook(id);
             return MessageConstant.BOOK_HAS_BEEN_WRITTEN_OFF.getMessage();
         } catch (BusinessException e) {
+            LOGGER.warn(e.getMessage());
             return e.getMessage();
         } catch (InternalException e) {
-            System.err.println(e.getMessage()); //log
+            LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
     }
@@ -49,7 +54,7 @@ public class BookController {
                     .map(Book::toString)
                     .collect(Collectors.joining(BOOKS_DELIMITER));
         } catch (InternalException e) {
-            System.err.println(e.getMessage()); //log
+            LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
     }
@@ -60,7 +65,7 @@ public class BookController {
                     .map(Book::toString)
                     .collect(Collectors.joining(BOOKS_DELIMITER));
         } catch (InternalException e) {
-            System.err.println(e.getMessage()); //log
+            LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
     }
@@ -71,7 +76,7 @@ public class BookController {
                     .map(Book::toString)
                     .collect(Collectors.joining(BOOKS_DELIMITER));
         } catch (InternalException e) {
-            System.err.println(e.getMessage()); //log
+            LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
     }
@@ -82,7 +87,7 @@ public class BookController {
                     .map(Book::toString)
                     .collect(Collectors.joining(BOOKS_DELIMITER));
         } catch (InternalException e) {
-            System.err.println(e.getMessage()); //log
+            LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
     }
@@ -93,7 +98,7 @@ public class BookController {
                     .map(Book::toString)
                     .collect(Collectors.joining(BOOKS_DELIMITER));
         } catch (InternalException e) {
-            System.err.println(e.getMessage()); //log
+            LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
     }
@@ -104,7 +109,7 @@ public class BookController {
                     .map(Book::toString)
                     .collect(Collectors.joining(BOOKS_DELIMITER));
         } catch (InternalException e) {
-            System.err.println(e.getMessage()); //log
+            LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
     }
@@ -115,7 +120,7 @@ public class BookController {
                     .map(Book::toString)
                     .collect(Collectors.joining(BOOKS_DELIMITER));
         } catch (InternalException e) {
-            System.err.println(e.getMessage()); //log
+            LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
     }
@@ -126,7 +131,7 @@ public class BookController {
                     .map(Book::toString)
                     .collect(Collectors.joining(BOOKS_DELIMITER));
         } catch (InternalException e) {
-            System.err.println(e.getMessage()); //log
+            LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
     }
@@ -135,6 +140,7 @@ public class BookController {
         try {
             return bookService.showBookDescription(id).toString();
         } catch (BusinessException e) {
+            LOGGER.warn(e.getMessage());
             return e.getMessage();
         } catch (InternalException e) {
             System.err.println(e.getMessage()); //log
@@ -146,9 +152,10 @@ public class BookController {
         try {
             return MessageConstant.IMPORTED_ENTITIES.getMessage() + bookService.importBooks(fileName);
         } catch (BusinessException e) {
+            LOGGER.warn(e.getMessage());
             return e.getMessage();
         } catch (InternalException e) {
-            System.err.println(e.getMessage()); //log
+            LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
     }
@@ -158,7 +165,7 @@ public class BookController {
             return MessageConstant.EXPORTED_ENTITIES.getMessage()
                     + bookService.exportAllBooks(fileName);
         } catch (InternalException e) {
-            System.err.println(e.getMessage()); //log
+            LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
     }
@@ -168,9 +175,10 @@ public class BookController {
             bookService.exportBook(bookId, fileName);
             return MessageConstant.ENTITY_EXPORTED.getMessage();
         } catch (BusinessException e) {
+            LOGGER.warn(e.getMessage());
             return e.getMessage();
         } catch (InternalException e) {
-            System.err.println(e.getMessage()); //log
+            LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
     }

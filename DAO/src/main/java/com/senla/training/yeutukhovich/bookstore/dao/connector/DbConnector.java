@@ -4,6 +4,8 @@ import com.senla.training.yeutukhovich.bookstore.dependencyinjection.Singleton;
 import com.senla.training.yeutukhovich.bookstore.dependencyinjection.config.ConfigProperty;
 import com.senla.training.yeutukhovich.bookstore.dependencyinjection.config.PostConstruct;
 import com.senla.training.yeutukhovich.bookstore.exception.InternalException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -11,6 +13,7 @@ import java.sql.SQLException;
 
 @Singleton
 public class DbConnector {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DbConnector.class);
 
     @ConfigProperty(propertyName = "database.path")
     private String url;
@@ -29,7 +32,7 @@ public class DbConnector {
             Class.forName(driverName);
             connection = DriverManager.getConnection(url, login, password);
         } catch (SQLException | ClassNotFoundException e) {
-            System.err.println(e); //log
+            LOGGER.error(e.getMessage(), e);
             throw new InternalException(e.getMessage());
         }
     }

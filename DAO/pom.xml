@@ -11,6 +11,10 @@
 
     <artifactId>bookstore-dao</artifactId>
 
+    <properties>
+        <jdbc.version>8.0.21</jdbc.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.senla.training.yeutukhovich.bookstore</groupId>
@@ -40,7 +44,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.21</version>
+            <version>${jdbc.version}</version>
         </dependency>
     </dependencies>
 
