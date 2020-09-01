@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 @Singleton
 public class BookController {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(BookController.class);
 
     private static final String BOOKS_DELIMITER = "\n";

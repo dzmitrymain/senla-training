@@ -2,7 +2,7 @@ package com.senla.training.yeutukhovich.bookstore.ui.util.printer;
 
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 
-public class UiConsolePrinter {
+public final class UiConsolePrinter {
 
     private UiConsolePrinter() {
 

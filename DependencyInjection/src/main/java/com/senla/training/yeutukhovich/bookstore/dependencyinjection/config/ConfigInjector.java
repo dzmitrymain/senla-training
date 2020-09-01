@@ -9,7 +9,7 @@ import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.Properties;
 
-public class ConfigInjector {
+public final class ConfigInjector {
 
     private static final Properties PROPERTIES;
     private static String lastPropertyFileName;

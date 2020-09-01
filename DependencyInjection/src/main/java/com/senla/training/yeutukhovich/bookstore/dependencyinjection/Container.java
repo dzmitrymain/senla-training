@@ -7,10 +7,20 @@ import com.senla.training.yeutukhovich.bookstore.exception.InternalException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.*;
-import java.util.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class Container {
+
+public final class Container {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(Container.class);
 
     private static final Map<Class<?>, Object> singletons = new HashMap<>();
@@ -41,7 +51,7 @@ public class Container {
     }
 
     private static void initSingletons() {
-        SingletonClasses.getSingletons()
+        SingletonDirectory.getSingletons()
                 .forEach(singletonClass -> {
                     Object singletonInstance = newInstance(singletonClass);
                     for (Type interfaceType : singletonClass.getGenericInterfaces()) {

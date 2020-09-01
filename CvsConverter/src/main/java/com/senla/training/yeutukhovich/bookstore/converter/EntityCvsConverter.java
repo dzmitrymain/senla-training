@@ -134,8 +134,8 @@ public class EntityCvsConverter {
                 book.setAvailable(parseBoolean(strings[2]));
                 book.setEditionYear(Integer.parseInt(strings[3]));
                 if (!"null".equals(strings[4])) {
-                    book.setReplenishmentDate(DateConverter.parseDate(strings[4]
-                            , DateConverter.STANDARD_DATE_FORMAT));
+                    book.setReplenishmentDate(DateConverter.parseDate(strings[4],
+                            DateConverter.STANDARD_DATE_FORMAT));
                 }
                 book.setPrice(BigDecimal.valueOf(Double.parseDouble(strings[5])));
                 return book;
@@ -161,8 +161,8 @@ public class EntityCvsConverter {
                     order.setCreationDate(creationDate);
                 }
                 if (!"null".equals(strings[5])) {
-                    order.setCompletionDate(DateConverter.parseDate(strings[5]
-                            , DateConverter.STANDARD_DATE_FORMAT));
+                    order.setCompletionDate(DateConverter.parseDate(strings[5],
+                            DateConverter.STANDARD_DATE_FORMAT));
                 }
                 order.setCustomerData(strings[6]);
                 return order;

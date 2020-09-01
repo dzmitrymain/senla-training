@@ -31,5 +31,4 @@ public class Menu {
     public void setMenuItems(List<MenuItem> menuItems) {
         this.menuItems = menuItems;
     }
-
 }

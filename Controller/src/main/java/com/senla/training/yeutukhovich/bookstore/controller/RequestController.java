@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 @Singleton
 public class RequestController {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(RequestController.class);
 
     private static final String REQUEST_DELIMITER = "\n";

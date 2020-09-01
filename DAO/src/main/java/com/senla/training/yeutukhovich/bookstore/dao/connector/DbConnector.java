@@ -13,6 +13,7 @@ import java.sql.SQLException;
 
 @Singleton
 public class DbConnector {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(DbConnector.class);
 
     @ConfigProperty(propertyName = "database.path")

@@ -10,7 +10,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class UserInputReader {
+public final class UserInputReader {
 
     private static final BufferedReader READER = new BufferedReader(new InputStreamReader(System.in));
 

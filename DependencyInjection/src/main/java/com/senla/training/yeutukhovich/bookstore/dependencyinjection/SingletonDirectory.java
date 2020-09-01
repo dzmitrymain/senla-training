@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class SingletonClasses {
+public final class SingletonDirectory {
 
     private static final HashSet<Class<?>> SINGLETONS = new HashSet<>();
 
@@ -33,12 +33,11 @@ public class SingletonClasses {
         }
     }
 
-    private SingletonClasses() {
+    private SingletonDirectory() {
 
     }
 
     public static Set<Class<?>> getSingletons() {
         return SINGLETONS;
-
     }
 }

@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 @Singleton
 public class OrderController {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(OrderController.class);
 
     private static final String ORDER_DELIMITER = "\n";
@@ -160,7 +161,6 @@ public class OrderController {
             LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
-
     }
 
     public String exportOrder(Long orderId, String fileName) {
