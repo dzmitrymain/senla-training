@@ -1,5 +1,7 @@
 *.DS_Store
-/.idea
-/out
+.idea
+logs
+target
+out
 *.MF
 *.iml
