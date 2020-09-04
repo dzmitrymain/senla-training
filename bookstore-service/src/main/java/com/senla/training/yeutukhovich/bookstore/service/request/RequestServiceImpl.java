@@ -13,7 +13,6 @@ import com.senla.training.yeutukhovich.bookstore.exception.BusinessException;
 import com.senla.training.yeutukhovich.bookstore.exception.InternalException;
 import com.senla.training.yeutukhovich.bookstore.util.constant.ApplicationConstant;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
-import com.senla.training.yeutukhovich.bookstore.util.constant.PropertyKeyConstant;
 import com.senla.training.yeutukhovich.bookstore.util.reader.FileDataReader;
 import com.senla.training.yeutukhovich.bookstore.util.writer.FileDataWriter;
 
@@ -34,7 +33,7 @@ public class RequestServiceImpl implements RequestService {
     @Autowired
     private EntityCvsConverter entityCvsConverter;
 
-    @ConfigProperty(propertyName = PropertyKeyConstant.CVS_DIRECTORY_KEY)
+    @ConfigProperty(propertyName = "csv.directoryPath")
     private String cvsDirectoryPath;
 
     @Override

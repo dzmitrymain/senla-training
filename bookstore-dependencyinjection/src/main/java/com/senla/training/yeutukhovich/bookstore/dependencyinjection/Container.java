@@ -3,7 +3,7 @@ package com.senla.training.yeutukhovich.bookstore.dependencyinjection;
 import com.senla.training.yeutukhovich.bookstore.dependencyinjection.config.ConfigInjector;
 import com.senla.training.yeutukhovich.bookstore.dependencyinjection.config.ConfigProperty;
 import com.senla.training.yeutukhovich.bookstore.dependencyinjection.config.PostConstruct;
-import com.senla.training.yeutukhovich.bookstore.exception.InternalException;
+import com.senla.training.yeutukhovich.bookstore.dependencyinjection.exception.ApplicationContextException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +44,7 @@ public final class Container {
             initSingletons();
             injectDependencies();
             invokeInits();
-        } catch (InternalException e) {
+        } catch (ApplicationContextException e) {
             LOGGER.error(e.getMessage(), e);
             throw e;
         }
@@ -70,13 +70,13 @@ public final class Container {
                 try {
                     return (T) constructor.newInstance();
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                    throw new InternalException(e.getMessage());
+                    throw new ApplicationContextException(e.getMessage());
                 } finally {
                     constructor.setAccessible(tempAccessible);
                 }
             }
         }
-        throw new InternalException("Constructor without parameters not exists. " + clazz.getSimpleName());
+        throw new ApplicationContextException("Constructor without parameters not exists. " + clazz.getSimpleName());
     }
 
     private static void injectDependencies() {
@@ -95,7 +95,7 @@ public final class Container {
                 try {
                     field.set(singleton, getImplementation(field.getType()));
                 } catch (IllegalAccessException e) {
-                    throw new InternalException(e.getMessage());
+                    throw new ApplicationContextException(e.getMessage());
                 } finally {
                     field.setAccessible(tempAccessible);
                 }
@@ -113,7 +113,7 @@ public final class Container {
                 try {
                     method.invoke(singleton);
                 } catch (IllegalAccessException | InvocationTargetException e) {
-                    throw new InternalException(e.getMessage());
+                    throw new ApplicationContextException(e.getMessage());
                 }
             }
         }

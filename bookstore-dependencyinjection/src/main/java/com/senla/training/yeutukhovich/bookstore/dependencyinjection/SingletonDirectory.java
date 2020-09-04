@@ -1,6 +1,6 @@
 package com.senla.training.yeutukhovich.bookstore.dependencyinjection;
 
-import com.senla.training.yeutukhovich.bookstore.exception.InternalException;
+import com.senla.training.yeutukhovich.bookstore.dependencyinjection.exception.ApplicationContextException;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -29,7 +29,7 @@ public final class SingletonDirectory {
                     Class.forName("com.senla.training.yeutukhovich.bookstore.dao.order.OrderDaoImpl")
             ));
         } catch (ClassNotFoundException e) {
-            throw new InternalException(e.getMessage());
+            throw new ApplicationContextException(e.getMessage());
         }
     }
 

@@ -18,7 +18,6 @@ import com.senla.training.yeutukhovich.bookstore.service.dto.CreationOrderResult
 import com.senla.training.yeutukhovich.bookstore.service.dto.OrderDetails;
 import com.senla.training.yeutukhovich.bookstore.util.constant.ApplicationConstant;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
-import com.senla.training.yeutukhovich.bookstore.util.constant.PropertyKeyConstant;
 import com.senla.training.yeutukhovich.bookstore.util.reader.FileDataReader;
 import com.senla.training.yeutukhovich.bookstore.util.writer.FileDataWriter;
 
@@ -43,7 +42,7 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private EntityCvsConverter entityCvsConverter;
 
-    @ConfigProperty(propertyName = PropertyKeyConstant.CVS_DIRECTORY_KEY)
+    @ConfigProperty(propertyName = "csv.directoryPath")
     private String cvsDirectoryPath;
 
     @Override

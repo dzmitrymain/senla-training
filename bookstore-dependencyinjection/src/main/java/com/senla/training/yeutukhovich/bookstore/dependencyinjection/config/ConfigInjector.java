@@ -1,8 +1,7 @@
 package com.senla.training.yeutukhovich.bookstore.dependencyinjection.config;
 
-import com.senla.training.yeutukhovich.bookstore.exception.InternalException;
-import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
-import com.senla.training.yeutukhovich.bookstore.util.constant.PropertyKeyConstant;
+import com.senla.training.yeutukhovich.bookstore.dependencyinjection.exception.ApplicationContextException;
+import com.senla.training.yeutukhovich.bookstore.dependencyinjection.util.PropertyKeyConstant;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,7 +17,6 @@ public final class ConfigInjector {
         Properties defaultProperties = new Properties();
         defaultProperties.setProperty(PropertyKeyConstant.STALE_MONTH_NUMBER, "6");
         defaultProperties.setProperty(PropertyKeyConstant.REQUEST_AUTO_CLOSE_ENABLED, "true");
-
         defaultProperties.setProperty(PropertyKeyConstant.CVS_DIRECTORY_KEY, "resources/cvs/");
         PROPERTIES = new Properties(defaultProperties);
     }
@@ -34,7 +32,7 @@ public final class ConfigInjector {
         }
         String property = getProperty(configProperty.propertyName(), field);
         if (property == null) {
-            throw new InternalException(String.format(MessageConstant.CANT_FIND_PROPERTY.getMessage(),
+            throw new ApplicationContextException(String.format("Can't find property: '%s' at properties file: '%s'",
                     configProperty.propertyName(), configProperty.configName()));
         }
         boolean tempAccessible = field.canAccess(object);
@@ -43,7 +41,7 @@ public final class ConfigInjector {
             field.setAccessible(true);
             field.set(object, castedProperty);
         } catch (ClassCastException | IllegalAccessException e) {
-            throw new InternalException(e.getMessage());
+            throw new ApplicationContextException(e.getMessage());
         } finally {
             field.setAccessible(tempAccessible);
         }
@@ -62,7 +60,7 @@ public final class ConfigInjector {
                 ConfigProperty.Type.valueOf(fieldType.getSimpleName().toUpperCase());
                 return castDefinedTypeProperty(property, fieldType);
             } catch (IllegalArgumentException e) {
-                throw new InternalException("Not supported class cast operation for type: " + fieldType.getSimpleName());
+                throw new ApplicationContextException("Not supported class cast operation for type: " + fieldType.getSimpleName());
             }
         }
         return castDefinedTypeProperty(property, fieldType);
@@ -93,7 +91,7 @@ public final class ConfigInjector {
             PROPERTIES.load(stream);
             lastPropertyFileName = propertiesPath;
         } catch (IOException e) {
-            throw new InternalException(e.getMessage());
+            throw new ApplicationContextException(e.getMessage());
         }
     }
 }

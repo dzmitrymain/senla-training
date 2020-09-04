@@ -8,11 +8,9 @@ public enum MessageConstant {
     MENU_ITEM_INDEX_DELIMITER(". "),
 
     SOMETHING_WENT_WRONG("Something went wrong."),
-    CANT_FIND_PROPERTY("Can't find property: '%s' at properties file: '%s'"),
     NO_DATA_WAS_FOUND("No data was found."),
     STRING_FORMAT_UNPARSEABLE_BOOLEAN("Unparseable boolean: '%s'"),
 
-    EDITION_NOT_NULL("Edition date can't be null."),
     BOOK_NOT_EXIST("Book not exist."),
     BOOK_ALREADY_REPLENISHED("Book already replenished."),
     BOOK_ALREADY_WRITTEN_OFF("Book already written off."),
@@ -22,7 +20,6 @@ public enum MessageConstant {
     BOOK_NOT_AVAILABLE("Book not available."),
     BOOK_HAS_BEEN_REPLENISHED("Book has been replenished."),
     BOOK_HAS_BEEN_WRITTEN_OFF("Book has been written off."),
-    BOOK_DESCRIPTION_WAS_NOT_FOUND("Book description was not found. Check entered book id."),
 
     ENTER_ORDER_ID("Please, enter order id: "),
     ORDER_NOT_EXIST("Order not exist."),
@@ -32,7 +29,6 @@ public enum MessageConstant {
     ORDER_HAS_BEEN_COMPLETED("Order has been completed."),
     COMPLETED_ORDERS_NUMBER("Completed orders number: "),
     ENTER_CUSTOMER_DATA("Please, enter customer data: "),
-    ORDER_DETAILS_WAS_NOT_FOUND("Order details was not found. Check entered order id."),
     PROFIT("Profit: "),
 
     ENTER_REQUEST_ID("Please, enter request id: "),

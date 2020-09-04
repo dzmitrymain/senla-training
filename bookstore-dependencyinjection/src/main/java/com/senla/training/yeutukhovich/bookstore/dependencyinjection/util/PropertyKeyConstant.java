@@ -1,6 +1,5 @@
-package com.senla.training.yeutukhovich.bookstore.util.constant;
+package com.senla.training.yeutukhovich.bookstore.dependencyinjection.util;
 
-// Не enum, потому что поле енама нельзя передать в атрибут аннотации
 public class PropertyKeyConstant {
 
     public static final String STALE_MONTH_NUMBER = "BookServiceImpl.staleMonthNumber";
