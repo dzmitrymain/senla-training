@@ -9,7 +9,7 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>Bookstore</name>
+    <name>bookstore</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -20,16 +20,16 @@
     </properties>
 
     <modules>
-        <module>Controller</module>
-        <module>Service</module>
-        <module>DAO</module>
-        <module>CvsConverter</module>
-        <module>DependencyInjection</module>
-        <module>Domain</module>
-        <module>Exception</module>
-        <module>Runner</module>
-        <module>UI</module>
-        <module>Util</module>
+        <module>bookstore-controller</module>
+        <module>bookstore-service</module>
+        <module>bookstore-dao</module>
+        <module>bookstore-csvconverter</module>
+        <module>bookstore-dependencyinjection</module>
+        <module>bookstore-domain</module>
+        <module>bookstore-exception</module>
+        <module>bookstore-runner</module>
+        <module>bookstore-ui</module>
+        <module>bookstore-util</module>
     </modules>
 
     <dependencies>
