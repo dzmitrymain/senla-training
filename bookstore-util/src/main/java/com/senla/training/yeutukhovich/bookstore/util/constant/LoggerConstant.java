@@ -17,7 +17,7 @@ public enum LoggerConstant {
     SHOW_BOOK_DESCRIPTION_SUCCESS("Book[id={}] description was showed."),
     SHOW_BOOK_DESCRIPTION_FAIL("Book[id={}] description wasn't showed. Cause: {}"),
     IMPORT_BOOKS_SUCCESS("Books were imported. File name: {}"),
-    IMPORT_BOOKS_FAIL("Books were imported. Cause: {}"),
+    IMPORT_BOOKS_FAIL("Books were not imported. Cause: {}"),
     EXPORT_ALL_BOOKS("Books were exported. File name: {}"),
     EXPORT_BOOK_SUCCESS("Book[id={}] was exported. File name: {}"),
     EXPORT_BOOK_FAIL("Book[id={}] wasn't exported. Cause: {}"),
@@ -37,7 +37,7 @@ public enum LoggerConstant {
     SHOW_ORDER_DETAILS_SUCCESS("Order[id={}] details showed."),
     SHOW_ORDER_DETAILS_FAIL("Order[id={}] details wasn't showed. Cause: {}"),
     IMPORT_ORDERS_SUCCESS("Orders were imported. File name: {}"),
-    IMPORT_ORDERS_FAIL("Orders were imported. Cause: {}"),
+    IMPORT_ORDERS_FAIL("Orders were not imported. Cause: {}"),
     EXPORT_ALL_ORDERS("Orders were exported. File name: {}"),
     EXPORT_ORDER_SUCCESS("Order[id={}] was exported. File name: {}"),
     EXPORT_ORDER_FAIL("Order[id={}] wasn't exported. Cause: {}"),
@@ -48,10 +48,12 @@ public enum LoggerConstant {
     FIND_ALL_REQUESTS_SORTED_BY_IS_ACTIVE("Requests searched. Sorted by 'is active'"),
     FIND_ALL_REQUESTS_SORTED_BY_REQUESTER_DATA("Requests searched. Sorted by requester data"),
     IMPORT_REQUESTS_SUCCESS("Requests were imported. File name: {}"),
-    IMPORT_REQUESTS_FAIL("Requests were imported. Cause: {}"),
+    IMPORT_REQUESTS_FAIL("Requests were not imported. Cause: {}"),
     EXPORT_ALL_REQUESTS("Requests were exported. File name: {}"),
     EXPORT_REQUEST_SUCCESS("Request[id={}] was exported. File name: {}"),
-    EXPORT_REQUEST_FAIL("Requests[id={}] wasn't exported. Cause: {}");
+    EXPORT_REQUEST_FAIL("Requests[id={}] wasn't exported. Cause: {}"),
+
+    SESSION_FACTORY_BUILD_FAILURE("Session factory build failure. Cause: {}");
 
     private String message;
 

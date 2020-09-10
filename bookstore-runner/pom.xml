@@ -20,19 +20,19 @@
         </dependency>
         <dependency>
             <groupId>com.senla.training.yeutukhovich.bookstore</groupId>
-            <artifactId>bookstore-service</artifactId>
+            <artifactId>bookstore-model-service</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.senla.training.yeutukhovich.bookstore</groupId>
-            <artifactId>bookstore-dao</artifactId>
+            <artifactId>bookstore-model-dao</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.senla.training.yeutukhovich.bookstore</groupId>
-            <artifactId>bookstore-cvsconverter</artifactId>
+            <artifactId>bookstore-csvconverter</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>

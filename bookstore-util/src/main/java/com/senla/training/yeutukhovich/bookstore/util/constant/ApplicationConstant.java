@@ -1,16 +1,7 @@
 package com.senla.training.yeutukhovich.bookstore.util.constant;
 
-public enum ApplicationConstant {
+public class ApplicationConstant {
 
-    CVS_FORMAT_TYPE(".cvs");
-
-    private String constant;
-
-    ApplicationConstant(String constant) {
-        this.constant = constant;
-    }
-
-    public String getConstant() {
-        return constant;
-    }
+    public static final String CVS_FORMAT_TYPE = ".cvs";
+    public static final String CVS_DIRECTORY_PATH_PROPERTY_NAME = "csv.directoryPath";
 }

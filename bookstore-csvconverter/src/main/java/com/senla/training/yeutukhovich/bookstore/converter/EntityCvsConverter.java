@@ -1,11 +1,11 @@
 package com.senla.training.yeutukhovich.bookstore.converter;
 
 import com.senla.training.yeutukhovich.bookstore.dependencyinjection.Singleton;
-import com.senla.training.yeutukhovich.bookstore.domain.Book;
-import com.senla.training.yeutukhovich.bookstore.domain.Order;
-import com.senla.training.yeutukhovich.bookstore.domain.Request;
-import com.senla.training.yeutukhovich.bookstore.domain.state.OrderState;
 import com.senla.training.yeutukhovich.bookstore.exception.BusinessException;
+import com.senla.training.yeutukhovich.bookstore.model.domain.Book;
+import com.senla.training.yeutukhovich.bookstore.model.domain.Order;
+import com.senla.training.yeutukhovich.bookstore.model.domain.Request;
+import com.senla.training.yeutukhovich.bookstore.model.domain.state.OrderState;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 import com.senla.training.yeutukhovich.bookstore.util.converter.DateConverter;
 
@@ -31,7 +31,7 @@ public class EntityCvsConverter {
                     DELIMITER +
                     book.getEditionYear() +
                     DELIMITER +
-                    book.getReplenishmentDate() +
+                    new Date(book.getReplenishmentDate().getTime()) +
                     DELIMITER +
                     book.getPrice();
             bookStrings.add(bookString);
@@ -55,6 +55,8 @@ public class EntityCvsConverter {
     public List<String> convertOrders(List<Order> orders) {
         List<String> orderStrings = new ArrayList<>();
         for (Order order : orders) {
+            String completionDateString = order.getCompletionDate() == null ?
+                    null : new Date(order.getCompletionDate().getTime()).toString();
             String orderString = order.getId() +
                     DELIMITER +
                     order.getBook().getId() +
@@ -63,9 +65,9 @@ public class EntityCvsConverter {
                     DELIMITER +
                     order.getCurrentBookPrice() +
                     DELIMITER +
-                    order.getCreationDate() +
+                    new Date(order.getCreationDate().getTime()) +
                     DELIMITER +
-                    order.getCompletionDate() +
+                    completionDateString +
                     DELIMITER +
                     order.getCustomerData();
             orderStrings.add(orderString);

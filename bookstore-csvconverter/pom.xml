@@ -20,7 +20,7 @@
         </dependency>
         <dependency>
             <groupId>com.senla.training.yeutukhovich.bookstore</groupId>
-            <artifactId>bookstore-domain</artifactId>
+            <artifactId>bookstore-model-domain</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>

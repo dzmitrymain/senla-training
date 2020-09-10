@@ -2,10 +2,10 @@ package com.senla.training.yeutukhovich.bookstore.controller;
 
 import com.senla.training.yeutukhovich.bookstore.dependencyinjection.Autowired;
 import com.senla.training.yeutukhovich.bookstore.dependencyinjection.Singleton;
-import com.senla.training.yeutukhovich.bookstore.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.exception.BusinessException;
 import com.senla.training.yeutukhovich.bookstore.exception.InternalException;
-import com.senla.training.yeutukhovich.bookstore.service.book.BookService;
+import com.senla.training.yeutukhovich.bookstore.model.domain.Book;
+import com.senla.training.yeutukhovich.bookstore.model.service.book.BookService;
 import com.senla.training.yeutukhovich.bookstore.util.constant.LoggerConstant;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 import com.senla.training.yeutukhovich.bookstore.util.converter.DateConverter;

@@ -17,16 +17,15 @@ public final class SingletonDirectory {
                     Class.forName("com.senla.training.yeutukhovich.bookstore.controller.RequestController"),
                     Class.forName("com.senla.training.yeutukhovich.bookstore.controller.BookController"),
                     Class.forName("com.senla.training.yeutukhovich.bookstore.ui.menu.navigator.MenuNavigator"),
-                    Class.forName("com.senla.training.yeutukhovich.bookstore.service.order.OrderServiceImpl"),
-                    Class.forName("com.senla.training.yeutukhovich.bookstore.service.book.BookServiceImpl"),
+                    Class.forName("com.senla.training.yeutukhovich.bookstore.model.service.order.OrderServiceImpl"),
+                    Class.forName("com.senla.training.yeutukhovich.bookstore.model.service.book.BookServiceImpl"),
                     Class.forName("com.senla.training.yeutukhovich.bookstore.converter.EntityCvsConverter"),
-                    Class.forName("com.senla.training.yeutukhovich.bookstore.service.request.RequestServiceImpl"),
+                    Class.forName("com.senla.training.yeutukhovich.bookstore.model.service.request.RequestServiceImpl"),
                     Class.forName("com.senla.training.yeutukhovich.bookstore.ui.menu.builder.MenuBuilder"),
-                    Class.forName("com.senla.training.yeutukhovich.bookstore.dao.request.RequestDaoImpl"),
+                    Class.forName("com.senla.training.yeutukhovich.bookstore.model.dao.request.RequestDaoImpl"),
                     Class.forName("com.senla.training.yeutukhovich.bookstore.ui.controller.MenuController"),
-                    Class.forName("com.senla.training.yeutukhovich.bookstore.dao.connector.DbConnector"),
-                    Class.forName("com.senla.training.yeutukhovich.bookstore.dao.book.BookDaoImpl"),
-                    Class.forName("com.senla.training.yeutukhovich.bookstore.dao.order.OrderDaoImpl")
+                    Class.forName("com.senla.training.yeutukhovich.bookstore.model.dao.book.BookDaoImpl"),
+                    Class.forName("com.senla.training.yeutukhovich.bookstore.model.dao.order.OrderDaoImpl")
             ));
         } catch (ClassNotFoundException e) {
             throw new ApplicationContextException(e.getMessage());
