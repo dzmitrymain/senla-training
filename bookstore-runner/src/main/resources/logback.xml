@@ -11,6 +11,14 @@
         </encoder>
     </appender>
 
+    <appender name="FILE-SQL" class="ch.qos.logback.core.FileAppender">
+        <file>logs/hibernate-sql.log</file>
+        <append>true</append>
+        <encoder>
+            <pattern>${DEFAULT_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>${DEFAULT_PATTERN}</pattern>
@@ -19,12 +27,16 @@
 
     <logger name="com.senla.training.yeutukhovich.bookstore" level="debug" additivity="false">
         <appender-ref ref="FILE"/>
-        <appender-ref ref="STDOUT"/>
+        <!--        <appender-ref ref="STDOUT"/>-->
+    </logger>
+
+    <logger name="org.hibernate.SQL" level="debug" additivity="false">
+        <appender-ref ref="FILE-SQL"/>
+        <!--        <appender-ref ref="STDOUT"/>-->
     </logger>
 
     <root level="error">
         <appender-ref ref="FILE"/>
-        <appender-ref ref="STDOUT"/>
+        <!--        <appender-ref ref="STDOUT"/>-->
     </root>
-
 </configuration>
