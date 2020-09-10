@@ -25,7 +25,7 @@ public class Order extends AbstractEntity {
     private Long id;
     @Column(name = "state")
     private String state;
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id")
     private Book book;
     @Column(name = "price")
@@ -113,7 +113,6 @@ public class Order extends AbstractEntity {
     public String toString() {
         return "Order [id=" + id +
                 ", state=" + state +
-                ", customer data='" + customerData +
-                "', book title='" + book.getTitle() + "']";
+                ", customer data='" + customerData + "']";
     }
 }

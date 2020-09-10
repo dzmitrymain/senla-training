@@ -17,7 +17,7 @@ public class Request extends AbstractEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id")
     private Book book;
     @Column(name = "is_active")
@@ -72,7 +72,6 @@ public class Request extends AbstractEntity {
     @Override
     public String toString() {
         return "Request [id=" + id +
-                ", book title=" + book.getTitle() +
                 ", is active=" + isActive +
                 ", requester data='" + requesterData +
                 "']";
