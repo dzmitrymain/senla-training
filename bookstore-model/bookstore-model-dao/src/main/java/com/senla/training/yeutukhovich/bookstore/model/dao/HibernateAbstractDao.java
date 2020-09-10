@@ -5,6 +5,7 @@ import com.senla.training.yeutukhovich.bookstore.model.domain.AbstractEntity;
 import org.hibernate.Session;
 
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +23,8 @@ public abstract class HibernateAbstractDao<T extends AbstractEntity, PK extends 
     public List<T> findAll() {
         Session session = HibernateUtil.getCurrentSession();
         CriteriaQuery<T> criteriaQuery = session.getCriteriaBuilder().createQuery(type);
-        criteriaQuery.from(type);
+        Root<T> entities = criteriaQuery.from(type);
+        criteriaQuery.select(entities);
         return session.createQuery(criteriaQuery).getResultList();
     }
 
