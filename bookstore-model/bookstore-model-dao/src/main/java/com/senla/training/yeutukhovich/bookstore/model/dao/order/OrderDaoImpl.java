@@ -25,7 +25,7 @@ public class OrderDaoImpl extends HibernateAbstractDao<Order, Long> implements O
 
     @Override
     public List<Order> findCompletedOrdersBetweenDates(Date startDate, Date endDate) {
-        Session session = HibernateUtil.getCurrentSession();
+        Session session = hibernateUtil.getCurrentSession();
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<Order> criteriaQuery = cb.createQuery(Order.class);
         Root<Order> orders = criteriaQuery.from(Order.class);
@@ -36,7 +36,7 @@ public class OrderDaoImpl extends HibernateAbstractDao<Order, Long> implements O
     }
 
     public BigDecimal calculateProfitBetweenDates(Date startDate, Date endDate) {
-        Session session = HibernateUtil.getCurrentSession();
+        Session session = hibernateUtil.getCurrentSession();
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<BigDecimal> criteriaQuery = cb.createQuery(BigDecimal.class);
         Root<Order> orders = criteriaQuery.from(Order.class);
@@ -48,7 +48,7 @@ public class OrderDaoImpl extends HibernateAbstractDao<Order, Long> implements O
 
     @Override
     public Long calculateCompletedOrdersNumberBetweenDates(Date startDate, Date endDate) {
-        Session session = HibernateUtil.getCurrentSession();
+        Session session = hibernateUtil.getCurrentSession();
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<Long> criteriaQuery = cb.createQuery(Long.class);
         Root<Order> orders = criteriaQuery.from(Order.class);
@@ -74,7 +74,7 @@ public class OrderDaoImpl extends HibernateAbstractDao<Order, Long> implements O
     }
 
     private List<Order> findAllSortedOrders(SingularAttribute<Order, ?> singularAttribute, boolean ascOrder) {
-        Session session = HibernateUtil.getCurrentSession();
+        Session session = hibernateUtil.getCurrentSession();
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
         CriteriaQuery<Order> criteriaQuery = criteriaBuilder.createQuery(Order.class);
         Root<Order> root = criteriaQuery.from(Order.class);

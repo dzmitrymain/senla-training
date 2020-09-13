@@ -28,7 +28,7 @@ public class BookDaoImpl extends HibernateAbstractDao<Book, Long> implements Boo
 
     @Override
     public List<Book> findSoldBooksBetweenDates(Date startDate, Date endDate) {
-        Session session = HibernateUtil.getCurrentSession();
+        Session session = hibernateUtil.getCurrentSession();
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<Book> criteriaQuery = cb.createQuery(Book.class);
         Root<Book> books = criteriaQuery.from(Book.class);
@@ -42,7 +42,7 @@ public class BookDaoImpl extends HibernateAbstractDao<Book, Long> implements Boo
 
     @Override
     public List<Book> findStaleBooksBetweenDates(Date startDate, Date endDate) {
-        Session session = HibernateUtil.getCurrentSession();
+        Session session = hibernateUtil.getCurrentSession();
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<Book> criteriaQuery = cb.createQuery(Book.class);
         Root<Book> books = criteriaQuery.from(Book.class);
@@ -62,7 +62,7 @@ public class BookDaoImpl extends HibernateAbstractDao<Book, Long> implements Boo
 
     @Override
     public List<Book> findUnsoldBooksBetweenDates(Date startDate, Date endDate) {
-        Session session = HibernateUtil.getCurrentSession();
+        Session session = hibernateUtil.getCurrentSession();
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<Book> criteriaQuery = cb.createQuery(Book.class);
         Root<Book> books = criteriaQuery.from(Book.class);
@@ -105,7 +105,7 @@ public class BookDaoImpl extends HibernateAbstractDao<Book, Long> implements Boo
     }
 
     private List<Book> findAllSortedBooks(SingularAttribute<Book, ?> singularAttribute, boolean ascOrder) {
-        Session session = HibernateUtil.getCurrentSession();
+        Session session = hibernateUtil.getCurrentSession();
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
         CriteriaQuery<Book> criteriaQuery = criteriaBuilder.createQuery(Book.class);
         Root<Book> books = criteriaQuery.from(Book.class);

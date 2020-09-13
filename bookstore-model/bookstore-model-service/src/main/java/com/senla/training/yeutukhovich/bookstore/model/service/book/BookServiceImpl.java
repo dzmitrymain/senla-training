@@ -33,6 +33,8 @@ public class BookServiceImpl implements BookService {
     @Autowired
     private RequestDao requestDao;
     @Autowired
+    private HibernateUtil hibernateUtil;
+    @Autowired
     private EntityCvsConverter entityCvsConverter;
 
     @Value("${csv.directoryPath:resources/cvs/}")
@@ -45,7 +47,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public void replenishBook(Long id) {
         try {
-            Session session = HibernateUtil.getCurrentSession();
+            Session session = hibernateUtil.getCurrentSession();
             try {
                 session.beginTransaction();
                 Book book = bookDao.findById(id)
@@ -77,7 +79,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void writeOffBook(Long id) {
-        try (Session session = HibernateUtil.getCurrentSession()) {
+        try (Session session = hibernateUtil.getCurrentSession()) {
             session.beginTransaction();
             Book book = bookDao.findById(id)
                     .orElseThrow(() -> new BusinessException(MessageConstant.BOOK_NOT_EXIST.getMessage()));
@@ -97,7 +99,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<Book> findSortedAllBooksByAvailability() {
-        try (Session session = HibernateUtil.getCurrentSession()) {
+        try (Session session = hibernateUtil.getCurrentSession()) {
             session.beginTransaction();
             return bookDao.findSortedAllBooksByAvailability();
         } catch (Throwable e) {
@@ -107,7 +109,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<Book> findSortedAllBooksByEditionYear() {
-        try (Session session = HibernateUtil.getCurrentSession()) {
+        try (Session session = hibernateUtil.getCurrentSession()) {
             session.beginTransaction();
             return bookDao.findSortedAllBooksByEditionYear();
         } catch (Throwable e) {
@@ -117,7 +119,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<Book> findSortedAllBooksByPrice() {
-        try (Session session = HibernateUtil.getCurrentSession()) {
+        try (Session session = hibernateUtil.getCurrentSession()) {
             session.beginTransaction();
             System.out.println();
             return bookDao.findSortedAllBooksByPrice();
@@ -128,7 +130,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<Book> findSortedAllBooksByReplenishmentDate() {
-        try (Session session = HibernateUtil.getCurrentSession()) {
+        try (Session session = hibernateUtil.getCurrentSession()) {
             session.beginTransaction();
             return bookDao.findSortedAllBooksByReplenishmentDate();
         } catch (Throwable e) {
@@ -138,7 +140,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<Book> findSortedAllBooksByTitle() {
-        try (Session session = HibernateUtil.getCurrentSession()) {
+        try (Session session = hibernateUtil.getCurrentSession()) {
             session.beginTransaction();
             return bookDao.findSortedAllBooksByTitle();
         } catch (Throwable e) {
@@ -148,7 +150,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<Book> findSoldBooksBetweenDates(Date startDate, Date endDate) {
-        try (Session session = HibernateUtil.getCurrentSession()) {
+        try (Session session = hibernateUtil.getCurrentSession()) {
             session.beginTransaction();
             return bookDao.findSoldBooksBetweenDates(startDate, endDate);
         } catch (Throwable e) {
@@ -158,7 +160,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<Book> findUnsoldBooksBetweenDates(Date startDate, Date endDate) {
-        try (Session session = HibernateUtil.getCurrentSession()) {
+        try (Session session = hibernateUtil.getCurrentSession()) {
             session.beginTransaction();
             return bookDao.findUnsoldBooksBetweenDates(startDate, endDate);
         } catch (Throwable e) {
@@ -168,7 +170,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<Book> findStaleBooks() {
-        try (Session session = HibernateUtil.getCurrentSession()) {
+        try (Session session = hibernateUtil.getCurrentSession()) {
             Calendar calendar = Calendar.getInstance();
             calendar.add(Calendar.MONTH, -staleMonthNumber);
             Date staleDate = new Date(calendar.getTimeInMillis());
@@ -181,7 +183,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDescription showBookDescription(Long id) {
-        try (Session session = HibernateUtil.getCurrentSession()) {
+        try (Session session = hibernateUtil.getCurrentSession()) {
             session.beginTransaction();
             Book book = bookDao.findById(id)
                     .orElseThrow(() -> new BusinessException(MessageConstant.BOOK_NOT_EXIST.getMessage()));
@@ -199,7 +201,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public int exportAllBooks(String fileName) {
-        try (Session session = HibernateUtil.getCurrentSession()) {
+        try (Session session = hibernateUtil.getCurrentSession()) {
             session.beginTransaction();
             String path = cvsDirectoryPath
                     + fileName + ApplicationConstant.CVS_FORMAT_TYPE;
@@ -212,7 +214,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void exportBook(Long bookId, String fileName) {
-        try (Session session = HibernateUtil.getCurrentSession()) {
+        try (Session session = hibernateUtil.getCurrentSession()) {
             session.beginTransaction();
             String path = cvsDirectoryPath
                     + fileName + ApplicationConstant.CVS_FORMAT_TYPE;
@@ -239,7 +241,7 @@ public class BookServiceImpl implements BookService {
         List<String> dataStrings = readStringsFromFile(fileName);
         List<Book> importedBooks = entityCvsConverter.parseBooks(dataStrings);
         try {
-            Session session = HibernateUtil.getCurrentSession();
+            Session session = hibernateUtil.getCurrentSession();
             try {
                 session.beginTransaction();
                 List<Book> repoBooks = bookDao.findAll();

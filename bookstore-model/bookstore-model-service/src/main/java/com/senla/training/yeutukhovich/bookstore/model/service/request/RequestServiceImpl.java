@@ -28,6 +28,8 @@ public class RequestServiceImpl implements RequestService {
     @Autowired
     private RequestDao requestDao;
     @Autowired
+    private HibernateUtil hibernateUtil;
+    @Autowired
     private EntityCvsConverter entityCvsConverter;
 
     @Value("${csv.directoryPath:resources/cvs/}")
@@ -35,7 +37,7 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public void createRequest(Long bookId, String requesterData) {
-        try (Session session = HibernateUtil.getCurrentSession()) {
+        try (Session session = hibernateUtil.getCurrentSession()) {
             session.beginTransaction();
             Book book = bookDao.findById(bookId)
                     .orElseThrow(() -> new BusinessException(MessageConstant.BOOK_NOT_EXIST.getMessage()));
@@ -53,7 +55,7 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public List<Request> findSortedAllRequestsByBookTitle() {
-        try (Session session = HibernateUtil.getCurrentSession()) {
+        try (Session session = hibernateUtil.getCurrentSession()) {
             session.beginTransaction();
             return requestDao.findSortedAllRequestsByBookTitle();
         } catch (Throwable e) {
@@ -63,7 +65,7 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public List<Request> findSortedAllRequestsByIsActive() {
-        try (Session session = HibernateUtil.getCurrentSession()) {
+        try (Session session = hibernateUtil.getCurrentSession()) {
             session.beginTransaction();
             return requestDao.findSortedAllRequestsByIsActive();
         } catch (Throwable e) {
@@ -73,7 +75,7 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public List<Request> findSortedAllRequestsByRequesterData() {
-        try (Session session = HibernateUtil.getCurrentSession()) {
+        try (Session session = hibernateUtil.getCurrentSession()) {
             session.beginTransaction();
             return requestDao.findSortedAllRequestsByRequesterData();
         } catch (Throwable e) {
@@ -83,7 +85,7 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public int exportAllRequests(String fileName) {
-        try (Session session = HibernateUtil.getCurrentSession()) {
+        try (Session session = hibernateUtil.getCurrentSession()) {
             session.beginTransaction();
             String path = cvsDirectoryPath
                     + fileName + ApplicationConstant.CVS_FORMAT_TYPE;
@@ -96,7 +98,7 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public void exportRequest(Long requestId, String fileName) {
-        try (Session session = HibernateUtil.getCurrentSession()) {
+        try (Session session = hibernateUtil.getCurrentSession()) {
             session.beginTransaction();
             String path = cvsDirectoryPath
                     + fileName + ApplicationConstant.CVS_FORMAT_TYPE;
@@ -122,7 +124,7 @@ public class RequestServiceImpl implements RequestService {
         List<String> requestsStrings = readStringsFromFile(fileName);
         List<Request> importedRequests = entityCvsConverter.parseRequests(requestsStrings);
         try {
-            Session session = HibernateUtil.getCurrentSession();
+            Session session = hibernateUtil.getCurrentSession();
             try {
                 session.beginTransaction();
                 List<Request> repoRequests = requestDao.findAll();

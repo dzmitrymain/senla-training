@@ -37,6 +37,8 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private RequestDao requestDao;
     @Autowired
+    private HibernateUtil hibernateUtil;
+    @Autowired
     private EntityCvsConverter entityCvsConverter;
 
     @Value("${csv.directoryPath:resources/cvs/}")
@@ -45,7 +47,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public CreationOrderResult createOrder(Long bookId, String customerData) {
         try {
-            Session session = HibernateUtil.getCurrentSession();
+            Session session = hibernateUtil.getCurrentSession();
             try {
                 session.beginTransaction();
                 CreationOrderResult result = new CreationOrderResult();
@@ -75,7 +77,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void cancelOrder(Long orderId) {
-        try (Session session = HibernateUtil.getCurrentSession()) {
+        try (Session session = hibernateUtil.getCurrentSession()) {
             session.beginTransaction();
             Order order = orderDao.findById(orderId)
                     .orElseThrow(() -> new BusinessException(MessageConstant.ORDER_NOT_EXIST.getMessage()));
@@ -95,7 +97,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void completeOrder(Long orderId) {
-        try (Session session = HibernateUtil.getCurrentSession()) {
+        try (Session session = hibernateUtil.getCurrentSession()) {
             session.beginTransaction();
             Order order = orderDao.findById(orderId)
                     .orElseThrow(() -> new BusinessException(MessageConstant.ORDER_NOT_EXIST.getMessage()));
@@ -118,7 +120,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> findSortedAllOrdersByCompletionDate() {
-        try (Session session = HibernateUtil.getCurrentSession()) {
+        try (Session session = hibernateUtil.getCurrentSession()) {
             session.beginTransaction();
             return orderDao.findSortedAllOrdersByCompletionDate();
         } catch (Throwable e) {
@@ -128,7 +130,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> findSortedAllOrdersByPrice() {
-        try (Session session = HibernateUtil.getCurrentSession()) {
+        try (Session session = hibernateUtil.getCurrentSession()) {
             session.beginTransaction();
             return orderDao.findSortedAllOrdersByPrice();
         } catch (Throwable e) {
@@ -138,7 +140,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> findSortedAllOrdersByState() {
-        try (Session session = HibernateUtil.getCurrentSession()) {
+        try (Session session = hibernateUtil.getCurrentSession()) {
             session.beginTransaction();
             return orderDao.findSortedAllOrdersByState();
         } catch (Throwable e) {
@@ -148,7 +150,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> findCompletedOrdersBetweenDates(Date startDate, Date endDate) {
-        try (Session session = HibernateUtil.getCurrentSession()) {
+        try (Session session = hibernateUtil.getCurrentSession()) {
             session.beginTransaction();
             return orderDao.findCompletedOrdersBetweenDates(startDate, endDate);
         } catch (Throwable e) {
@@ -158,7 +160,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public BigDecimal calculateProfitBetweenDates(Date startDate, Date endDate) {
-        try (Session session = HibernateUtil.getCurrentSession()) {
+        try (Session session = hibernateUtil.getCurrentSession()) {
             session.beginTransaction();
             return orderDao.calculateProfitBetweenDates(startDate, endDate);
         } catch (Throwable e) {
@@ -168,7 +170,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Long calculateCompletedOrdersNumberBetweenDates(Date startDate, Date endDate) {
-        try (Session session = HibernateUtil.getCurrentSession()) {
+        try (Session session = hibernateUtil.getCurrentSession()) {
             session.beginTransaction();
             return orderDao.calculateCompletedOrdersNumberBetweenDates(startDate, endDate);
         } catch (Throwable e) {
@@ -178,7 +180,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDetails showOrderDetails(Long orderId) {
-        try (Session session = HibernateUtil.getCurrentSession()) {
+        try (Session session = hibernateUtil.getCurrentSession()) {
             session.beginTransaction();
             Order order = orderDao.findById(orderId)
                     .orElseThrow(() -> new BusinessException(MessageConstant.ORDER_NOT_EXIST.getMessage()));
@@ -199,7 +201,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public int exportAllOrders(String fileName) {
-        try (Session session = HibernateUtil.getCurrentSession()) {
+        try (Session session = hibernateUtil.getCurrentSession()) {
             session.beginTransaction();
             String path = cvsDirectoryPath
                     + fileName + ApplicationConstant.CVS_FORMAT_TYPE;
@@ -212,7 +214,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void exportOrder(Long id, String fileName) {
-        try (Session session = HibernateUtil.getCurrentSession()) {
+        try (Session session = hibernateUtil.getCurrentSession()) {
             session.beginTransaction();
             String path = cvsDirectoryPath
                     + fileName + ApplicationConstant.CVS_FORMAT_TYPE;
@@ -239,7 +241,7 @@ public class OrderServiceImpl implements OrderService {
         List<String> orderStrings = readStringsFromFile(fileName);
         List<Order> importedOrders = entityCvsConverter.parseOrders(orderStrings);
         try {
-            Session session = HibernateUtil.getCurrentSession();
+            Session session = hibernateUtil.getCurrentSession();
             try {
                 session.beginTransaction();
                 List<Order> repoOrders = orderDao.findAll();

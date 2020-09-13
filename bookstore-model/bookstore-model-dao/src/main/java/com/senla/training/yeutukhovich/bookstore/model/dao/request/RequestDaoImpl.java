@@ -26,7 +26,7 @@ public class RequestDaoImpl extends HibernateAbstractDao<Request, Long> implemen
 
     @Override
     public Long closeRequestsByBookId(Long bookId) {
-        Session session = HibernateUtil.getCurrentSession();
+        Session session = hibernateUtil.getCurrentSession();
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaUpdate<Request> update = cb.createCriteriaUpdate(Request.class);
         Root<Request> requests = update.from(Request.class);
@@ -38,7 +38,7 @@ public class RequestDaoImpl extends HibernateAbstractDao<Request, Long> implemen
 
     @Override
     public List<Request> findSortedAllRequestsByBookTitle() {
-        Session session = HibernateUtil.getCurrentSession();
+        Session session = hibernateUtil.getCurrentSession();
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
         CriteriaQuery<Request> criteriaQuery = criteriaBuilder.createQuery(Request.class);
         Root<Request> requests = criteriaQuery.from(Request.class);
@@ -59,7 +59,7 @@ public class RequestDaoImpl extends HibernateAbstractDao<Request, Long> implemen
     }
 
     private List<Request> findAllSortedRequests(SingularAttribute<Request, ?> singularAttribute, boolean ascOrder) {
-        Session session = HibernateUtil.getCurrentSession();
+        Session session = hibernateUtil.getCurrentSession();
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
         CriteriaQuery<Request> criteriaQuery = criteriaBuilder.createQuery(Request.class);
         Root<Request> requests = criteriaQuery.from(Request.class);

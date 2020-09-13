@@ -27,7 +27,7 @@
 
     <logger name="com.senla.training.yeutukhovich.bookstore" level="debug" additivity="false">
         <appender-ref ref="FILE"/>
-        <!--        <appender-ref ref="STDOUT"/>-->
+                <appender-ref ref="STDOUT"/>
     </logger>
 
     <logger name="org.hibernate.SQL" level="debug" additivity="false">
@@ -37,6 +37,6 @@
 
     <root level="error">
         <appender-ref ref="FILE"/>
-        <!--        <appender-ref ref="STDOUT"/>-->
+                <appender-ref ref="STDOUT"/>
     </root>
 </configuration>
