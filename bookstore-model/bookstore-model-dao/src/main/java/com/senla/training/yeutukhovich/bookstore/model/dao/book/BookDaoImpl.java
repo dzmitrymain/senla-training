@@ -1,7 +1,6 @@
 package com.senla.training.yeutukhovich.bookstore.model.dao.book;
 
 import com.senla.training.yeutukhovich.bookstore.model.dao.HibernateAbstractDao;
-import com.senla.training.yeutukhovich.bookstore.model.dao.util.HibernateUtil;
 import com.senla.training.yeutukhovich.bookstore.model.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.model.domain.Book_;
 import com.senla.training.yeutukhovich.bookstore.model.domain.Order;
