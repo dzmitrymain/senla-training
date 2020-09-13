@@ -4,7 +4,6 @@
         "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
 
 <hibernate-configuration>
-
     <session-factory>
         <!-- Database connection settings -->
         <property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property>
@@ -20,6 +19,7 @@
 
         <!-- Enable Hibernate's automatic session context management -->
         <property name="current_session_context_class">thread</property>
+
         <mapping class="com.senla.training.yeutukhovich.bookstore.model.domain.Book"/>
         <mapping class="com.senla.training.yeutukhovich.bookstore.model.domain.Order"/>
         <mapping class="com.senla.training.yeutukhovich.bookstore.model.domain.Request"/>

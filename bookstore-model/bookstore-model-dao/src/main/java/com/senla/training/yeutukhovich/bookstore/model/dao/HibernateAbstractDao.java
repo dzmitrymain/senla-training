@@ -15,7 +15,7 @@ public abstract class HibernateAbstractDao<T extends AbstractEntity, PK extends 
 
     private Class<T> type;
 
-    protected void setType(Class<T> type) {
+    protected HibernateAbstractDao(Class<T> type) {
         this.type = type;
     }
 

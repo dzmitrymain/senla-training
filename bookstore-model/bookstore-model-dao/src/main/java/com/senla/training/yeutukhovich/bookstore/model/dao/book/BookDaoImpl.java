@@ -23,7 +23,7 @@ import java.util.List;
 public class BookDaoImpl extends HibernateAbstractDao<Book, Long> implements BookDao {
 
     public BookDaoImpl() {
-        setType(Book.class);
+        super(Book.class);
     }
 
     @Override

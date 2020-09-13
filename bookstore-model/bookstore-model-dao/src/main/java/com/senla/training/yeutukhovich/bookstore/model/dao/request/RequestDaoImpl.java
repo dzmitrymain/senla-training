@@ -21,7 +21,7 @@ import java.util.List;
 public class RequestDaoImpl extends HibernateAbstractDao<Request, Long> implements RequestDao {
 
     public RequestDaoImpl() {
-        setType(Request.class);
+        super(Request.class);
     }
 
     @Override

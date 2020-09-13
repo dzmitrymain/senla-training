@@ -20,7 +20,7 @@ import java.util.List;
 public class OrderDaoImpl extends HibernateAbstractDao<Order, Long> implements OrderDao {
 
     public OrderDaoImpl() {
-        setType(Order.class);
+        super(Order.class);
     }
 
     @Override

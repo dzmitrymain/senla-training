@@ -7,6 +7,9 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 public class MainApplication {
 
+    //TODO: properties in hibernate config
+
+
     public static void main(String[] args) {
         ApplicationContext context = new AnnotationConfigApplicationContext(
                 "com.senla.training.yeutukhovich.bookstore");
