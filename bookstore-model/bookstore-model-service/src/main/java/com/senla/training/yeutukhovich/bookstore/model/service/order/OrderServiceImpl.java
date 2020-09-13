@@ -1,7 +1,6 @@
 package com.senla.training.yeutukhovich.bookstore.model.service.order;
 
 import com.senla.training.yeutukhovich.bookstore.converter.EntityCvsConverter;
-import com.senla.training.yeutukhovich.bookstore.dependencyinjection.config.ConfigProperty;
 import com.senla.training.yeutukhovich.bookstore.exception.BusinessException;
 import com.senla.training.yeutukhovich.bookstore.exception.InternalException;
 import com.senla.training.yeutukhovich.bookstore.model.dao.book.BookDao;
@@ -20,6 +19,7 @@ import com.senla.training.yeutukhovich.bookstore.util.reader.FileDataReader;
 import com.senla.training.yeutukhovich.bookstore.util.writer.FileDataWriter;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -39,7 +39,7 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private EntityCvsConverter entityCvsConverter;
 
-    @ConfigProperty(propertyName = ApplicationConstant.CVS_DIRECTORY_PATH_PROPERTY_NAME)
+    @Value("${csv.directoryPath:resources/cvs/}")
     private String cvsDirectoryPath;
 
     @Override

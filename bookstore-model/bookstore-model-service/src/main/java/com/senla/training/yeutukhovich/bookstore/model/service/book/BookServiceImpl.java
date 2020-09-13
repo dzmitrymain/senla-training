@@ -1,7 +1,6 @@
 package com.senla.training.yeutukhovich.bookstore.model.service.book;
 
 import com.senla.training.yeutukhovich.bookstore.converter.EntityCvsConverter;
-import com.senla.training.yeutukhovich.bookstore.dependencyinjection.config.ConfigProperty;
 import com.senla.training.yeutukhovich.bookstore.exception.BusinessException;
 import com.senla.training.yeutukhovich.bookstore.exception.InternalException;
 import com.senla.training.yeutukhovich.bookstore.model.dao.book.BookDao;
@@ -16,13 +15,13 @@ import com.senla.training.yeutukhovich.bookstore.util.reader.FileDataReader;
 import com.senla.training.yeutukhovich.bookstore.util.writer.FileDataWriter;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-//TODO: domain spring??
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -36,13 +35,12 @@ public class BookServiceImpl implements BookService {
     @Autowired
     private EntityCvsConverter entityCvsConverter;
 
-    @ConfigProperty(propertyName = ApplicationConstant.CVS_DIRECTORY_PATH_PROPERTY_NAME)
+    @Value("${csv.directoryPath:resources/cvs/}")
     private String cvsDirectoryPath;
-    @ConfigProperty
+    @Value("${BookServiceImpl.requestAutoCloseEnabled:true}")
     private boolean requestAutoCloseEnabled;
-    @ConfigProperty
+    @Value("${BookServiceImpl.staleMonthNumber:6}")
     private byte staleMonthNumber;
-
 
     @Override
     public void replenishBook(Long id) {
