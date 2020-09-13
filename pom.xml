@@ -26,7 +26,6 @@
     <modules>
         <module>bookstore-controller</module>
         <module>bookstore-csvconverter</module>
-        <module>bookstore-dependencyinjection</module>
         <module>bookstore-exception</module>
         <module>bookstore-runner</module>
         <module>bookstore-ui</module>
