@@ -6,6 +6,7 @@ import com.senla.training.yeutukhovich.bookstore.model.domain.Order;
 import com.senla.training.yeutukhovich.bookstore.model.domain.Order_;
 import com.senla.training.yeutukhovich.bookstore.model.domain.state.OrderState;
 import org.hibernate.Session;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -15,6 +16,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+@Repository
 public class OrderDaoImpl extends HibernateAbstractDao<Order, Long> implements OrderDao {
 
     public OrderDaoImpl() {
