@@ -5,7 +5,6 @@ import com.senla.training.yeutukhovich.bookstore.exception.BusinessException;
 import com.senla.training.yeutukhovich.bookstore.model.dao.book.BookDao;
 import com.senla.training.yeutukhovich.bookstore.model.dao.order.OrderDao;
 import com.senla.training.yeutukhovich.bookstore.model.dao.request.RequestDao;
-import com.senla.training.yeutukhovich.bookstore.model.dao.util.HibernateUtil;
 import com.senla.training.yeutukhovich.bookstore.model.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.model.service.dto.BookDescription;
 import com.senla.training.yeutukhovich.bookstore.util.constant.ApplicationConstant;
@@ -31,8 +30,6 @@ public class BookServiceImpl implements BookService {
     private OrderDao orderDao;
     @Autowired
     private RequestDao requestDao;
-    @Autowired
-    private HibernateUtil hibernateUtil;
     @Autowired
     private EntityCvsConverter entityCvsConverter;
 
