@@ -5,7 +5,6 @@ import com.senla.training.yeutukhovich.bookstore.model.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.model.domain.Book_;
 import com.senla.training.yeutukhovich.bookstore.model.domain.Request;
 import com.senla.training.yeutukhovich.bookstore.model.domain.Request_;
-import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -25,26 +24,24 @@ public class RequestDaoImpl extends HibernateAbstractDao<Request, Long> implemen
 
     @Override
     public Long closeRequestsByBookId(Long bookId) {
-        Session session = hibernateUtil.getCurrentSession();
-        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaUpdate<Request> update = cb.createCriteriaUpdate(Request.class);
         Root<Request> requests = update.from(Request.class);
         update.set(Request_.isActive, false);
         update.where(cb.equal(requests.get(Request_.book).get(Book_.id), bookId),
                 cb.equal(requests.get(Request_.isActive), true));
-        return (long) session.createQuery(update).executeUpdate();
+        return (long) entityManager.createQuery(update).executeUpdate();
     }
 
     @Override
     public List<Request> findSortedAllRequestsByBookTitle() {
-        Session session = hibernateUtil.getCurrentSession();
-        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Request> criteriaQuery = criteriaBuilder.createQuery(Request.class);
         Root<Request> requests = criteriaQuery.from(Request.class);
         Join<Request, Book> books = requests.join(Request_.book);
         criteriaQuery.select(requests);
         criteriaQuery.orderBy(criteriaBuilder.asc(books.get(Book_.title)));
-        return session.createQuery(criteriaQuery).getResultList();
+        return entityManager.createQuery(criteriaQuery).getResultList();
     }
 
     @Override
@@ -58,8 +55,7 @@ public class RequestDaoImpl extends HibernateAbstractDao<Request, Long> implemen
     }
 
     private List<Request> findAllSortedRequests(SingularAttribute<Request, ?> singularAttribute, boolean ascOrder) {
-        Session session = hibernateUtil.getCurrentSession();
-        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Request> criteriaQuery = criteriaBuilder.createQuery(Request.class);
         Root<Request> requests = criteriaQuery.from(Request.class);
         criteriaQuery.select(requests);
@@ -68,6 +64,6 @@ public class RequestDaoImpl extends HibernateAbstractDao<Request, Long> implemen
         } else {
             criteriaQuery.orderBy(criteriaBuilder.desc(requests.get(singularAttribute)));
         }
-        return session.createQuery(criteriaQuery).getResultList();
+        return entityManager.createQuery(criteriaQuery).getResultList();
     }
 }

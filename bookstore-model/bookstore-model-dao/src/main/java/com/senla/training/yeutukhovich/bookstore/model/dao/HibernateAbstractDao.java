@@ -1,10 +1,9 @@
 package com.senla.training.yeutukhovich.bookstore.model.dao;
 
-import com.senla.training.yeutukhovich.bookstore.model.dao.util.HibernateUtil;
 import com.senla.training.yeutukhovich.bookstore.model.domain.AbstractEntity;
-import org.hibernate.Session;
-import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.io.Serializable;
@@ -14,8 +13,8 @@ import java.util.Optional;
 public abstract class HibernateAbstractDao<T extends AbstractEntity, PK extends Serializable>
         implements GenericDao<T, PK> {
 
-    @Autowired
-    protected HibernateUtil hibernateUtil;
+    @PersistenceContext
+    protected EntityManager entityManager;
 
     private Class<T> type;
 
@@ -25,26 +24,27 @@ public abstract class HibernateAbstractDao<T extends AbstractEntity, PK extends 
 
     @Override
     public List<T> findAll() {
-        Session session = hibernateUtil.getCurrentSession();
-        CriteriaQuery<T> criteriaQuery = session.getCriteriaBuilder().createQuery(type);
+        CriteriaQuery<T> criteriaQuery = entityManager.getCriteriaBuilder().createQuery(type);
         Root<T> entities = criteriaQuery.from(type);
         criteriaQuery.select(entities);
-        return session.createQuery(criteriaQuery).getResultList();
+        return entityManager.createQuery(criteriaQuery).getResultList();
     }
 
     @Override
     public Optional<T> findById(PK id) {
-        return Optional.ofNullable(hibernateUtil.getCurrentSession().get(type, id));
+        return Optional.ofNullable(entityManager.find(type, id));
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public PK add(T entity) {
-        return (PK) hibernateUtil.getCurrentSession().save(entity);
+        entityManager.persist(entity);
+        entityManager.flush();
+        return (PK) entity.getId();
     }
 
     @Override
     public void update(T entity) {
-        hibernateUtil.getCurrentSession().update(entity);
+        entityManager.merge(entity);
     }
 }
