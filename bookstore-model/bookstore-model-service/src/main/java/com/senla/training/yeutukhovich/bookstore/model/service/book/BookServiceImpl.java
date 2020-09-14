@@ -163,16 +163,10 @@ public class BookServiceImpl implements BookService {
         int importedBooksNumber = 0;
         List<String> dataStrings = readStringsFromFile(fileName);
         List<Book> importedBooks = entityCvsConverter.parseBooks(dataStrings);
-        List<Book> repoBooks = bookDao.findAll();
-//                session.clear();
         for (Book importedBook : importedBooks) {
-            if (repoBooks.contains(importedBook)) {
-                bookDao.update(importedBook);
-                if (importedBook.isAvailable()) {
-                    requestDao.closeRequestsByBookId(importedBook.getId());
-                }
-            } else {
-                bookDao.add(importedBook);
+            bookDao.update(importedBook);
+            if (importedBook.isAvailable()) {
+                requestDao.closeRequestsByBookId(importedBook.getId());
             }
             importedBooksNumber++;
         }

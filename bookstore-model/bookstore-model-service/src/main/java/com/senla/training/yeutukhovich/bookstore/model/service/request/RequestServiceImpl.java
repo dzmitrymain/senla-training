@@ -91,17 +91,11 @@ public class RequestServiceImpl implements RequestService {
         int importedRequestsNumber = 0;
         List<String> requestsStrings = readStringsFromFile(fileName);
         List<Request> importedRequests = entityCvsConverter.parseRequests(requestsStrings);
-        List<Request> repoRequests = requestDao.findAll();
-//        session.clear();
         for (Request importedRequest : importedRequests) {
             Book dependentBook = bookDao.findById(importedRequest.getBook().getId())
                     .orElseThrow(() -> new BusinessException("Book can't be null."));
             importedRequest.setBook(dependentBook);
-            if (repoRequests.contains(importedRequest)) {
-                requestDao.update(importedRequest);
-            } else {
-                requestDao.add(importedRequest);
-            }
+            requestDao.update(importedRequest);
             importedRequestsNumber++;
         }
         return importedRequestsNumber;

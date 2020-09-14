@@ -166,17 +166,11 @@ public class OrderServiceImpl implements OrderService {
         int importedOrdersNumber = 0;
         List<String> orderStrings = readStringsFromFile(fileName);
         List<Order> importedOrders = entityCvsConverter.parseOrders(orderStrings);
-        List<Order> repoOrders = orderDao.findAll();
-//        session.clear();
         for (Order importedOrder : importedOrders) {
             Book dependentBook = bookDao.findById(importedOrder.getBook().getId())
                     .orElseThrow(() -> new BusinessException("Book can't be null."));
             importedOrder.setBook(dependentBook);
-            if (repoOrders.contains(importedOrder)) {
-                orderDao.update(importedOrder);
-            } else {
-                orderDao.add(importedOrder);
-            }
+            orderDao.update(importedOrder);
             importedOrdersNumber++;
         }
         return importedOrdersNumber;
