@@ -1,13 +1,13 @@
 package com.senla.training.yeutukhovich.bookstore.ui.menu.navigator;
 
-import com.senla.training.yeutukhovich.bookstore.dependencyinjection.Singleton;
 import com.senla.training.yeutukhovich.bookstore.ui.menu.Menu;
 import com.senla.training.yeutukhovich.bookstore.ui.menu.MenuItem;
 import com.senla.training.yeutukhovich.bookstore.ui.util.printer.UiConsolePrinter;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
+import org.springframework.stereotype.Component;
 
 
-@Singleton
+@Component
 public class MenuNavigator {
 
     private Menu currentMenu;

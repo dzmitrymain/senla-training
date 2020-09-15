@@ -1,11 +1,10 @@
 package com.senla.training.yeutukhovich.bookstore.model.dao.order;
 
 import com.senla.training.yeutukhovich.bookstore.model.dao.HibernateAbstractDao;
-import com.senla.training.yeutukhovich.bookstore.model.dao.util.HibernateUtil;
 import com.senla.training.yeutukhovich.bookstore.model.domain.Order;
 import com.senla.training.yeutukhovich.bookstore.model.domain.Order_;
 import com.senla.training.yeutukhovich.bookstore.model.domain.state.OrderState;
-import org.hibernate.Session;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -15,45 +14,43 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+@Repository
 public class OrderDaoImpl extends HibernateAbstractDao<Order, Long> implements OrderDao {
 
     public OrderDaoImpl() {
-        setType(Order.class);
+        super(Order.class);
     }
 
     @Override
     public List<Order> findCompletedOrdersBetweenDates(Date startDate, Date endDate) {
-        Session session = HibernateUtil.getCurrentSession();
-        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Order> criteriaQuery = cb.createQuery(Order.class);
         Root<Order> orders = criteriaQuery.from(Order.class);
         criteriaQuery.where(cb.equal(orders.get(Order_.state), OrderState.COMPLETED.toString()),
                 cb.between(orders.get(Order_.completionDate), startDate, endDate));
         criteriaQuery.select(orders);
-        return session.createQuery(criteriaQuery).getResultList();
+        return entityManager.createQuery(criteriaQuery).getResultList();
     }
 
     public BigDecimal calculateProfitBetweenDates(Date startDate, Date endDate) {
-        Session session = HibernateUtil.getCurrentSession();
-        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<BigDecimal> criteriaQuery = cb.createQuery(BigDecimal.class);
         Root<Order> orders = criteriaQuery.from(Order.class);
         criteriaQuery.select(cb.sum(orders.get(Order_.currentBookPrice))).where(cb.equal(orders.get(Order_.state),
                 OrderState.COMPLETED.toString()),
                 cb.between(orders.get(Order_.completionDate), startDate, endDate));
-        return session.createQuery(criteriaQuery).getSingleResult();
+        return entityManager.createQuery(criteriaQuery).getSingleResult();
     }
 
     @Override
     public Long calculateCompletedOrdersNumberBetweenDates(Date startDate, Date endDate) {
-        Session session = HibernateUtil.getCurrentSession();
-        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Long> criteriaQuery = cb.createQuery(Long.class);
         Root<Order> orders = criteriaQuery.from(Order.class);
         criteriaQuery.select(cb.count(orders)).where(cb.equal(orders.get(Order_.state),
                 OrderState.COMPLETED.toString()),
                 cb.between(orders.get(Order_.completionDate), startDate, endDate));
-        return session.createQuery(criteriaQuery).getSingleResult();
+        return entityManager.createQuery(criteriaQuery).getSingleResult();
     }
 
     @Override
@@ -72,8 +69,7 @@ public class OrderDaoImpl extends HibernateAbstractDao<Order, Long> implements O
     }
 
     private List<Order> findAllSortedOrders(SingularAttribute<Order, ?> singularAttribute, boolean ascOrder) {
-        Session session = HibernateUtil.getCurrentSession();
-        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Order> criteriaQuery = criteriaBuilder.createQuery(Order.class);
         Root<Order> root = criteriaQuery.from(Order.class);
         criteriaQuery.select(root);
@@ -82,6 +78,6 @@ public class OrderDaoImpl extends HibernateAbstractDao<Order, Long> implements O
         } else {
             criteriaQuery.orderBy(criteriaBuilder.desc(root.get(singularAttribute)));
         }
-        return session.createQuery(criteriaQuery).getResultList();
+        return entityManager.createQuery(criteriaQuery).getResultList();
     }
 }

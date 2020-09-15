@@ -3,8 +3,6 @@ package com.senla.training.yeutukhovich.bookstore.ui.menu.builder;
 import com.senla.training.yeutukhovich.bookstore.controller.BookController;
 import com.senla.training.yeutukhovich.bookstore.controller.OrderController;
 import com.senla.training.yeutukhovich.bookstore.controller.RequestController;
-import com.senla.training.yeutukhovich.bookstore.dependencyinjection.Autowired;
-import com.senla.training.yeutukhovich.bookstore.dependencyinjection.Singleton;
 import com.senla.training.yeutukhovich.bookstore.ui.menu.Menu;
 import com.senla.training.yeutukhovich.bookstore.ui.menu.MenuItem;
 import com.senla.training.yeutukhovich.bookstore.ui.util.printer.UiConsolePrinter;
@@ -12,11 +10,13 @@ import com.senla.training.yeutukhovich.bookstore.ui.util.reader.UserInputReader;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MenuNameConstant;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 import com.senla.training.yeutukhovich.bookstore.util.converter.DateConverter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.Date;
 
-@Singleton
+@Component
 public class MenuBuilder {
 
     private Menu rootMenu;

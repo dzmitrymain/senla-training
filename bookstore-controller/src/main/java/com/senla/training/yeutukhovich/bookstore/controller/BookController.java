@@ -1,9 +1,6 @@
 package com.senla.training.yeutukhovich.bookstore.controller;
 
-import com.senla.training.yeutukhovich.bookstore.dependencyinjection.Autowired;
-import com.senla.training.yeutukhovich.bookstore.dependencyinjection.Singleton;
 import com.senla.training.yeutukhovich.bookstore.exception.BusinessException;
-import com.senla.training.yeutukhovich.bookstore.exception.InternalException;
 import com.senla.training.yeutukhovich.bookstore.model.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.model.service.book.BookService;
 import com.senla.training.yeutukhovich.bookstore.util.constant.LoggerConstant;
@@ -11,11 +8,13 @@ import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 import com.senla.training.yeutukhovich.bookstore.util.converter.DateConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 import java.util.Date;
 import java.util.stream.Collectors;
 
-@Singleton
+@Controller
 public class BookController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BookController.class);
@@ -33,7 +32,7 @@ public class BookController {
         } catch (BusinessException e) {
             LOGGER.warn(LoggerConstant.REPLENISH_BOOK_FAIL.getMessage(), id, e.getMessage());
             return e.getMessage();
-        } catch (InternalException e) {
+        } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
@@ -47,7 +46,7 @@ public class BookController {
         } catch (BusinessException e) {
             LOGGER.warn(LoggerConstant.WRITE_OFF_BOOK_FAIL.getMessage(), id, e.getMessage());
             return e.getMessage();
-        } catch (InternalException e) {
+        } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
@@ -60,7 +59,7 @@ public class BookController {
                     .collect(Collectors.joining(BOOKS_DELIMITER));
             LOGGER.info(LoggerConstant.FIND_ALL_BOOKS_SORTED_BY_AVAILABILITY.getMessage());
             return result;
-        } catch (InternalException e) {
+        } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
@@ -73,7 +72,7 @@ public class BookController {
                     .collect(Collectors.joining(BOOKS_DELIMITER));
             LOGGER.info(LoggerConstant.FIND_ALL_BOOKS_SORTED_BY_EDITION_YEAR.getMessage());
             return result;
-        } catch (InternalException e) {
+        } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
@@ -86,7 +85,7 @@ public class BookController {
                     .collect(Collectors.joining(BOOKS_DELIMITER));
             LOGGER.info(LoggerConstant.FIND_ALL_BOOKS_SORTED_BY_PRICE.getMessage());
             return result;
-        } catch (InternalException e) {
+        } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
@@ -99,7 +98,7 @@ public class BookController {
                     .collect(Collectors.joining(BOOKS_DELIMITER));
             LOGGER.info(LoggerConstant.FIND_ALL_BOOKS_SORTED_BY_REPLENISHMENT_DATE.getMessage());
             return result;
-        } catch (InternalException e) {
+        } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
@@ -112,7 +111,7 @@ public class BookController {
                     .collect(Collectors.joining(BOOKS_DELIMITER));
             LOGGER.info(LoggerConstant.FIND_ALL_BOOKS_SORTED_BY_TITLE.getMessage());
             return result;
-        } catch (InternalException e) {
+        } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
@@ -126,7 +125,7 @@ public class BookController {
             LOGGER.info(LoggerConstant.FIND_SOLD_BOOKS.getMessage(), DateConverter.formatDate(startDate,
                     DateConverter.DAY_DATE_FORMAT), DateConverter.formatDate(endDate, DateConverter.DAY_DATE_FORMAT));
             return result;
-        } catch (InternalException e) {
+        } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
@@ -140,7 +139,7 @@ public class BookController {
             LOGGER.info(LoggerConstant.FIND_UNSOLD_BOOKS.getMessage(), DateConverter.formatDate(startDate,
                     DateConverter.DAY_DATE_FORMAT), DateConverter.formatDate(endDate, DateConverter.DAY_DATE_FORMAT));
             return result;
-        } catch (InternalException e) {
+        } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
@@ -153,7 +152,7 @@ public class BookController {
                     .collect(Collectors.joining(BOOKS_DELIMITER));
             LOGGER.info(LoggerConstant.FIND_STALE_BOOKS.getMessage());
             return result;
-        } catch (InternalException e) {
+        } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
@@ -167,7 +166,7 @@ public class BookController {
         } catch (BusinessException e) {
             LOGGER.warn(LoggerConstant.SHOW_BOOK_DESCRIPTION_FAIL.getMessage(), id, e.getMessage());
             return e.getMessage();
-        } catch (InternalException e) {
+        } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
@@ -181,7 +180,7 @@ public class BookController {
         } catch (BusinessException e) {
             LOGGER.warn(LoggerConstant.IMPORT_BOOKS_FAIL.getMessage(), e.getMessage());
             return e.getMessage();
-        } catch (InternalException e) {
+        } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
@@ -193,7 +192,7 @@ public class BookController {
                     + bookService.exportAllBooks(fileName);
             LOGGER.info(LoggerConstant.EXPORT_ALL_BOOKS.getMessage(), fileName);
             return result;
-        } catch (InternalException e) {
+        } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
@@ -207,7 +206,7 @@ public class BookController {
         } catch (BusinessException e) {
             LOGGER.warn(LoggerConstant.EXPORT_BOOK_FAIL.getMessage(), bookId, e.getMessage());
             return e.getMessage();
-        } catch (InternalException e) {
+        } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }

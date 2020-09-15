@@ -1,19 +1,18 @@
 package com.senla.training.yeutukhovich.bookstore.controller;
 
-import com.senla.training.yeutukhovich.bookstore.dependencyinjection.Autowired;
-import com.senla.training.yeutukhovich.bookstore.dependencyinjection.Singleton;
 import com.senla.training.yeutukhovich.bookstore.exception.BusinessException;
-import com.senla.training.yeutukhovich.bookstore.exception.InternalException;
 import com.senla.training.yeutukhovich.bookstore.model.domain.Request;
 import com.senla.training.yeutukhovich.bookstore.model.service.request.RequestService;
 import com.senla.training.yeutukhovich.bookstore.util.constant.LoggerConstant;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 import java.util.stream.Collectors;
 
-@Singleton
+@Controller
 public class RequestController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RequestController.class);
@@ -31,7 +30,7 @@ public class RequestController {
         } catch (BusinessException e) {
             LOGGER.warn(LoggerConstant.CREATE_REQUEST_FAIL.getMessage(), bookId, e.getMessage());
             return e.getMessage();
-        } catch (InternalException e) {
+        } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
@@ -44,7 +43,7 @@ public class RequestController {
                     .collect(Collectors.joining(REQUEST_DELIMITER));
             LOGGER.info(LoggerConstant.FIND_ALL_REQUESTS_SORTED_BY_BOOK_TITLE.getMessage());
             return result;
-        } catch (InternalException e) {
+        } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
@@ -57,7 +56,7 @@ public class RequestController {
                     .collect(Collectors.joining(REQUEST_DELIMITER));
             LOGGER.info(LoggerConstant.FIND_ALL_REQUESTS_SORTED_BY_IS_ACTIVE.getMessage());
             return result;
-        } catch (InternalException e) {
+        } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
@@ -70,7 +69,7 @@ public class RequestController {
                     .collect(Collectors.joining(REQUEST_DELIMITER));
             LOGGER.info(LoggerConstant.FIND_ALL_REQUESTS_SORTED_BY_REQUESTER_DATA.getMessage());
             return result;
-        } catch (InternalException e) {
+        } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
@@ -82,7 +81,7 @@ public class RequestController {
                     + requestService.exportAllRequests(fileName);
             LOGGER.info(LoggerConstant.EXPORT_ALL_REQUESTS.getMessage(), fileName);
             return result;
-        } catch (InternalException e) {
+        } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
@@ -96,7 +95,7 @@ public class RequestController {
         } catch (BusinessException e) {
             LOGGER.warn(LoggerConstant.EXPORT_REQUEST_FAIL.getMessage(), requestId, e.getMessage());
             return e.getMessage();
-        } catch (InternalException e) {
+        } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }
@@ -111,7 +110,7 @@ public class RequestController {
         } catch (BusinessException e) {
             LOGGER.warn(LoggerConstant.IMPORT_REQUESTS_FAIL.getMessage(), e.getMessage());
             return e.getMessage();
-        } catch (InternalException e) {
+        } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
         }

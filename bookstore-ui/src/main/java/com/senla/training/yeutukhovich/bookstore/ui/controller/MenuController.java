@@ -1,13 +1,14 @@
 package com.senla.training.yeutukhovich.bookstore.ui.controller;
 
-import com.senla.training.yeutukhovich.bookstore.dependencyinjection.Autowired;
-import com.senla.training.yeutukhovich.bookstore.dependencyinjection.Singleton;
+
 import com.senla.training.yeutukhovich.bookstore.ui.menu.builder.MenuBuilder;
 import com.senla.training.yeutukhovich.bookstore.ui.menu.navigator.MenuNavigator;
 import com.senla.training.yeutukhovich.bookstore.ui.util.reader.UserInputReader;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 
-@Singleton
+@Component
 public class MenuController {
 
     @Autowired

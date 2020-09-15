@@ -1,13 +1,12 @@
 package com.senla.training.yeutukhovich.bookstore.model.dao.book;
 
 import com.senla.training.yeutukhovich.bookstore.model.dao.HibernateAbstractDao;
-import com.senla.training.yeutukhovich.bookstore.model.dao.util.HibernateUtil;
 import com.senla.training.yeutukhovich.bookstore.model.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.model.domain.Book_;
 import com.senla.training.yeutukhovich.bookstore.model.domain.Order;
 import com.senla.training.yeutukhovich.bookstore.model.domain.Order_;
 import com.senla.training.yeutukhovich.bookstore.model.domain.state.OrderState;
-import org.hibernate.Session;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -18,16 +17,16 @@ import javax.persistence.metamodel.SingularAttribute;
 import java.util.Date;
 import java.util.List;
 
+@Repository
 public class BookDaoImpl extends HibernateAbstractDao<Book, Long> implements BookDao {
 
     public BookDaoImpl() {
-        setType(Book.class);
+        super(Book.class);
     }
 
     @Override
     public List<Book> findSoldBooksBetweenDates(Date startDate, Date endDate) {
-        Session session = HibernateUtil.getCurrentSession();
-        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Book> criteriaQuery = cb.createQuery(Book.class);
         Root<Book> books = criteriaQuery.from(Book.class);
         Join<Book, Order> orders = books.join(Book_.orders);
@@ -35,13 +34,12 @@ public class BookDaoImpl extends HibernateAbstractDao<Book, Long> implements Boo
         criteriaQuery.distinct(true);
         criteriaQuery.where(cb.equal(orders.get(Order_.state), OrderState.COMPLETED.toString()),
                 cb.between(orders.get(Order_.completionDate), startDate, endDate));
-        return session.createQuery(criteriaQuery).getResultList();
+        return entityManager.createQuery(criteriaQuery).getResultList();
     }
 
     @Override
     public List<Book> findStaleBooksBetweenDates(Date startDate, Date endDate) {
-        Session session = HibernateUtil.getCurrentSession();
-        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Book> criteriaQuery = cb.createQuery(Book.class);
         Root<Book> books = criteriaQuery.from(Book.class);
 
@@ -55,13 +53,12 @@ public class BookDaoImpl extends HibernateAbstractDao<Book, Long> implements Boo
 
         criteriaQuery.where(cb.lessThanOrEqualTo(books.get(Book_.replenishmentDate), startDate),
                 books.get(Book_.id).in(criteriaSubquery).not());
-        return session.createQuery(criteriaQuery).getResultList();
+        return entityManager.createQuery(criteriaQuery).getResultList();
     }
 
     @Override
     public List<Book> findUnsoldBooksBetweenDates(Date startDate, Date endDate) {
-        Session session = HibernateUtil.getCurrentSession();
-        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Book> criteriaQuery = cb.createQuery(Book.class);
         Root<Book> books = criteriaQuery.from(Book.class);
 
@@ -74,7 +71,7 @@ public class BookDaoImpl extends HibernateAbstractDao<Book, Long> implements Boo
         criteriaSubquery.select(subqueryBooks.get(Book_.id));
 
         criteriaQuery.where(books.get(Book_.id).in(criteriaSubquery).not());
-        return session.createQuery(criteriaQuery).getResultList();
+        return entityManager.createQuery(criteriaQuery).getResultList();
     }
 
     @Override
@@ -103,8 +100,7 @@ public class BookDaoImpl extends HibernateAbstractDao<Book, Long> implements Boo
     }
 
     private List<Book> findAllSortedBooks(SingularAttribute<Book, ?> singularAttribute, boolean ascOrder) {
-        Session session = HibernateUtil.getCurrentSession();
-        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Book> criteriaQuery = criteriaBuilder.createQuery(Book.class);
         Root<Book> books = criteriaQuery.from(Book.class);
         criteriaQuery.select(books);
@@ -113,7 +109,6 @@ public class BookDaoImpl extends HibernateAbstractDao<Book, Long> implements Boo
         } else {
             criteriaQuery.orderBy(criteriaBuilder.desc(books.get(singularAttribute)));
         }
-
-        return session.createQuery(criteriaQuery).getResultList();
+        return entityManager.createQuery(criteriaQuery).getResultList();
     }
 }
