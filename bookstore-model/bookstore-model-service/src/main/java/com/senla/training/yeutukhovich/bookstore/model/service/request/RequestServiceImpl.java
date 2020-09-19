@@ -31,8 +31,8 @@ public class RequestServiceImpl implements RequestService {
     @Value("${csv.directoryPath:resources/cvs/}")
     private String cvsDirectoryPath;
 
-    @Transactional
     @Override
+    @Transactional
     public void createRequest(Long bookId, String requesterData) {
         Book book = bookDao.findById(bookId)
                 .orElseThrow(() -> new BusinessException(MessageConstant.BOOK_NOT_EXIST.getMessage()));
@@ -42,25 +42,21 @@ public class RequestServiceImpl implements RequestService {
         requestDao.add(new Request(book, requesterData));
     }
 
-    @Transactional(readOnly = true)
     @Override
     public List<Request> findSortedAllRequestsByBookTitle() {
         return requestDao.findSortedAllRequestsByBookTitle();
     }
 
-    @Transactional(readOnly = true)
     @Override
     public List<Request> findSortedAllRequestsByIsActive() {
         return requestDao.findSortedAllRequestsByIsActive();
     }
 
-    @Transactional(readOnly = true)
     @Override
     public List<Request> findSortedAllRequestsByRequesterData() {
         return requestDao.findSortedAllRequestsByRequesterData();
     }
 
-    @Transactional(readOnly = true)
     @Override
     public int exportAllRequests(String fileName) {
         String path = cvsDirectoryPath
@@ -69,7 +65,6 @@ public class RequestServiceImpl implements RequestService {
         return FileDataWriter.writeData(path, requestStrings);
     }
 
-    @Transactional(readOnly = true)
     @Override
     public void exportRequest(Long requestId, String fileName) {
         String path = cvsDirectoryPath
@@ -82,8 +77,8 @@ public class RequestServiceImpl implements RequestService {
         FileDataWriter.writeData(path, requestStrings);
     }
 
-    @Transactional
     @Override
+    @Transactional
     public int importRequests(String fileName) {
         if (fileName == null) {
             return 0;

@@ -3,7 +3,6 @@ package com.senla.training.yeutukhovich.bookstore.model.service.book;
 import com.senla.training.yeutukhovich.bookstore.converter.EntityCvsConverter;
 import com.senla.training.yeutukhovich.bookstore.exception.BusinessException;
 import com.senla.training.yeutukhovich.bookstore.model.dao.book.BookDao;
-import com.senla.training.yeutukhovich.bookstore.model.dao.order.OrderDao;
 import com.senla.training.yeutukhovich.bookstore.model.dao.request.RequestDao;
 import com.senla.training.yeutukhovich.bookstore.model.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.model.service.dto.BookDescription;
@@ -27,8 +26,6 @@ public class BookServiceImpl implements BookService {
     @Autowired
     private BookDao bookDao;
     @Autowired
-    private OrderDao orderDao;
-    @Autowired
     private RequestDao requestDao;
     @Autowired
     private EntityCvsConverter entityCvsConverter;
@@ -40,8 +37,8 @@ public class BookServiceImpl implements BookService {
     @Value("${BookServiceImpl.staleMonthNumber:6}")
     private byte staleMonthNumber;
 
-    @Transactional
     @Override
+    @Transactional
     public void replenishBook(Long id) {
         Book book = bookDao.findById(id)
                 .orElseThrow(() -> new BusinessException(MessageConstant.BOOK_NOT_EXIST.getMessage()));
@@ -56,8 +53,8 @@ public class BookServiceImpl implements BookService {
         }
     }
 
-    @Transactional
     @Override
+    @Transactional
     public void writeOffBook(Long id) {
         Book book = bookDao.findById(id)
                 .orElseThrow(() -> new BusinessException(MessageConstant.BOOK_NOT_EXIST.getMessage()));
@@ -68,49 +65,41 @@ public class BookServiceImpl implements BookService {
         bookDao.update(book);
     }
 
-    @Transactional(readOnly = true)
     @Override
     public List<Book> findSortedAllBooksByAvailability() {
         return bookDao.findSortedAllBooksByAvailability();
     }
 
-    @Transactional(readOnly = true)
     @Override
     public List<Book> findSortedAllBooksByEditionYear() {
         return bookDao.findSortedAllBooksByEditionYear();
     }
 
-    @Transactional(readOnly = true)
     @Override
     public List<Book> findSortedAllBooksByPrice() {
         return bookDao.findSortedAllBooksByPrice();
     }
 
-    @Transactional(readOnly = true)
     @Override
     public List<Book> findSortedAllBooksByReplenishmentDate() {
         return bookDao.findSortedAllBooksByReplenishmentDate();
     }
 
-    @Transactional(readOnly = true)
     @Override
     public List<Book> findSortedAllBooksByTitle() {
         return bookDao.findSortedAllBooksByTitle();
     }
 
-    @Transactional(readOnly = true)
     @Override
     public List<Book> findSoldBooksBetweenDates(Date startDate, Date endDate) {
         return bookDao.findSoldBooksBetweenDates(startDate, endDate);
     }
 
-    @Transactional(readOnly = true)
     @Override
     public List<Book> findUnsoldBooksBetweenDates(Date startDate, Date endDate) {
         return bookDao.findUnsoldBooksBetweenDates(startDate, endDate);
     }
 
-    @Transactional(readOnly = true)
     @Override
     public List<Book> findStaleBooks() {
         Calendar calendar = Calendar.getInstance();
@@ -119,7 +108,6 @@ public class BookServiceImpl implements BookService {
         return bookDao.findStaleBooksBetweenDates(staleDate, new Date());
     }
 
-    @Transactional(readOnly = true)
     @Override
     public BookDescription showBookDescription(Long id) {
         Book book = bookDao.findById(id)
@@ -131,7 +119,6 @@ public class BookServiceImpl implements BookService {
         return bookDescription;
     }
 
-    @Transactional(readOnly = true)
     @Override
     public int exportAllBooks(String fileName) {
         String path = cvsDirectoryPath
@@ -140,7 +127,6 @@ public class BookServiceImpl implements BookService {
         return FileDataWriter.writeData(path, bookStrings);
     }
 
-    @Transactional(readOnly = true)
     @Override
     public void exportBook(Long bookId, String fileName) {
         String path = cvsDirectoryPath
@@ -154,8 +140,8 @@ public class BookServiceImpl implements BookService {
         FileDataWriter.writeData(path, bookStrings);
     }
 
-    @Transactional
     @Override
+    @Transactional
     public int importBooks(String fileName) {
         if (fileName == null) {
             return 0;
