@@ -32,7 +32,7 @@
 
     <logger name="org.hibernate.SQL" level="debug" additivity="false">
         <appender-ref ref="FILE-SQL"/>
-        <!--        <appender-ref ref="STDOUT"/>-->
+<!--        <appender-ref ref="STDOUT"/>-->
     </logger>
 
     <root level="error">
