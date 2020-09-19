@@ -30,12 +30,11 @@ public class BookServiceImpl implements BookService {
     @Autowired
     private EntityCvsConverter entityCvsConverter;
 
-    @Value("${csv.directoryPath:resources/cvs/}")
-    private String cvsDirectoryPath;
     @Value("${BookServiceImpl.requestAutoCloseEnabled:true}")
     private boolean requestAutoCloseEnabled;
     @Value("${BookServiceImpl.staleMonthNumber:6}")
     private byte staleMonthNumber;
+    private String cvsDirectoryPath = ApplicationConstant.CVS_DIRECTORY_PATH;
 
     @Override
     @Transactional

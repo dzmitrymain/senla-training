@@ -11,7 +11,6 @@ import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 import com.senla.training.yeutukhovich.bookstore.util.reader.FileDataReader;
 import com.senla.training.yeutukhovich.bookstore.util.writer.FileDataWriter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,8 +27,7 @@ public class RequestServiceImpl implements RequestService {
     @Autowired
     private EntityCvsConverter entityCvsConverter;
 
-    @Value("${csv.directoryPath:resources/cvs/}")
-    private String cvsDirectoryPath;
+    private String cvsDirectoryPath = ApplicationConstant.CVS_DIRECTORY_PATH;
 
     @Override
     @Transactional
