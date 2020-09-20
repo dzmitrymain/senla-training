@@ -6,6 +6,8 @@ import com.senla.training.yeutukhovich.bookstore.model.dao.order.OrderDao;
 import com.senla.training.yeutukhovich.bookstore.model.dao.request.RequestDao;
 import com.senla.training.yeutukhovich.bookstore.model.service.book.BookService;
 import com.senla.training.yeutukhovich.bookstore.model.service.book.BookServiceImpl;
+import com.senla.training.yeutukhovich.bookstore.model.service.order.OrderService;
+import com.senla.training.yeutukhovich.bookstore.model.service.order.OrderServiceImpl;
 import org.mockito.Mockito;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +20,11 @@ public class TestConfig {
     @Bean
     public BookService bookService() {
         return new BookServiceImpl();
+    }
+
+    @Bean
+    public OrderService orderService() {
+        return new OrderServiceImpl();
     }
 
     @Bean
