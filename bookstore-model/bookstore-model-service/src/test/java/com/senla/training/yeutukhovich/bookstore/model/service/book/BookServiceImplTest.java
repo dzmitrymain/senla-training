@@ -60,7 +60,7 @@ class BookServiceImplTest {
     }
 
     @Test
-    void replenishBookShouldReplenishNotAvailableBookAndCloseRequests() {
+    void BookServiceImpl_replenishBook_shouldUpdateNotAvailableBookAndCloseRequests() {
         Assumptions.assumeTrue(requestAutoCloseEnabled);
         Mockito.when(bookDao.findById(bookId)).thenReturn(Optional.of(book));
         Mockito.when(book.isAvailable()).thenReturn(false);
@@ -70,7 +70,7 @@ class BookServiceImplTest {
     }
 
     @Test
-    void replenishBookShouldReplenishNotAvailableBookAndDontCloseRequests() {
+    void BookServiceImpl_replenishBook_shouldUpdateNotAvailableBookAndDontCloseRequests() {
         Assumptions.assumeFalse(requestAutoCloseEnabled);
         Mockito.when(bookDao.findById(bookId)).thenReturn(Optional.of(book));
         Mockito.when(book.isAvailable()).thenReturn(false);
@@ -80,14 +80,14 @@ class BookServiceImplTest {
     }
 
     @Test
-    void replenishBookShouldThrowExceptionIfBookNotExist() {
+    void BookServiceImpl_replenishBook_shouldThrowExceptionIfBookNotExist() {
         Mockito.when(bookDao.findById(bookId)).thenReturn(Optional.empty());
         Throwable exception = Assertions.assertThrows(BusinessException.class, () -> bookService.replenishBook(bookId));
         Assertions.assertEquals(MessageConstant.BOOK_NOT_EXIST.getMessage(), exception.getMessage());
     }
 
     @Test
-    void replenishBookShouldThrowExceptionIfBookAvailable() {
+    void BookServiceImpl_replenishBook_shouldThrowExceptionIfBookAvailable() {
         Mockito.when(bookDao.findById(bookId)).thenReturn(Optional.of(book));
         Mockito.when(book.isAvailable()).thenReturn(true);
         Throwable exception = Assertions.assertThrows(BusinessException.class, () -> bookService.replenishBook(bookId));
@@ -95,7 +95,7 @@ class BookServiceImplTest {
     }
 
     @Test
-    void writeOffBookShouldWriteOffAvailableBook() {
+    void BookServiceImpl_writeOffBook_shouldUpdateAvailableBook() {
         Mockito.reset(book);
         Mockito.when(bookDao.findById(bookId)).thenReturn(Optional.of(book));
         Mockito.when(book.isAvailable()).thenReturn(true);
@@ -104,14 +104,14 @@ class BookServiceImplTest {
     }
 
     @Test
-    void writeOffBookShouldThrowExceptionIfBookNotExist() {
+    void BookServiceImpl_writeOffBook_shouldThrowExceptionIfBookNotExist() {
         Mockito.when(bookDao.findById(bookId)).thenReturn(Optional.empty());
         Throwable exception = Assertions.assertThrows(BusinessException.class, () -> bookService.writeOffBook(bookId));
         Assertions.assertEquals(MessageConstant.BOOK_NOT_EXIST.getMessage(), exception.getMessage());
     }
 
     @Test
-    void writeOffBookShouldThrowExceptionIfBookNotAvailable() {
+    void BookServiceImpl_writeOffBook_shouldThrowExceptionIfBookNotAvailable() {
         Mockito.when(bookDao.findById(bookId)).thenReturn(Optional.of(book));
         Mockito.when(book.isAvailable()).thenReturn(false);
         Throwable exception = Assertions.assertThrows(BusinessException.class, () -> bookService.writeOffBook(bookId));
@@ -119,72 +119,72 @@ class BookServiceImplTest {
     }
 
     @Test
-    void findSortedAllBooksByAvailabilityShouldCallBookDao() {
+    void BookServiceImpl_findSortedAllBooksByAvailability() {
         bookService.findSortedAllBooksByAvailability();
         Mockito.verify(bookDao, Mockito.times(1)).findSortedAllBooksByAvailability();
     }
 
     @Test
-    void findSortedAllBooksByEditionYearShouldCallBookDao() {
+    void BookServiceImpl_findSortedAllBooksByEditionYear() {
         bookService.findSortedAllBooksByEditionYear();
         Mockito.verify(bookDao, Mockito.times(1)).findSortedAllBooksByEditionYear();
     }
 
     @Test
-    void findSortedAllBooksByPriceShouldCallBookDao() {
+    void BookServiceImpl_findSortedAllBooksByPrice() {
         bookService.findSortedAllBooksByPrice();
         Mockito.verify(bookDao, Mockito.times(1)).findSortedAllBooksByPrice();
     }
 
     @Test
-    void findSortedAllBooksByReplenishmentDateShouldCallBookDao() {
+    void BookServiceImpl_findSortedAllBooksByReplenishmentDate() {
         bookService.findSortedAllBooksByReplenishmentDate();
         Mockito.verify(bookDao, Mockito.times(1)).findSortedAllBooksByReplenishmentDate();
     }
 
     @Test
-    void findSortedAllBooksByTitleShouldCallBookDao() {
+    void BookServiceImpl_findSortedAllBooksByTitle() {
         bookService.findSortedAllBooksByTitle();
         Mockito.verify(bookDao, Mockito.times(1)).findSortedAllBooksByTitle();
     }
 
     @Test
-    void findSoldBooksBetweenDatesShouldCallBookDao() {
+    void BookServiceImpl_findSoldBooksBetweenDates() {
         bookService.findSoldBooksBetweenDates(new Date(), new Date());
         Mockito.verify(bookDao, Mockito.times(1))
                 .findSoldBooksBetweenDates(Mockito.any(), Mockito.any());
     }
 
     @Test
-    void findUnsoldBooksBetweenDates() {
+    void BookServiceImpl_findUnsoldBooksBetweenDates() {
         bookService.findUnsoldBooksBetweenDates(new Date(), new Date());
         Mockito.verify(bookDao, Mockito.times(1))
                 .findUnsoldBooksBetweenDates(Mockito.any(), Mockito.any());
     }
 
     @Test
-    void findStaleBooks() {
+    void BookServiceImpl_findStaleBooks() {
         bookService.findStaleBooks();
         Mockito.verify(bookDao, Mockito.times(1))
                 .findStaleBooksBetweenDates(Mockito.any(), Mockito.any());
     }
 
     @Test
-    void showBookDescriptionShouldReturnNotNull() {
+    void BookServiceImpl_showBookDescription_shouldReturnNotNull() {
         Mockito.when(bookDao.findById(bookId)).thenReturn(Optional.of(book));
         BookDescription bookDescription = bookService.showBookDescription(bookId);
         Assertions.assertNotNull(bookDescription);
     }
 
     @Test
-    void showBookDescriptionShouldThrowExceptionIfBookNotExist() {
+    void BookServiceImpl_showBookDescription_shouldThrowExceptionIfBookNotExist() {
         Mockito.when(bookDao.findById(bookId)).thenReturn(Optional.empty());
         Throwable exception = Assertions.assertThrows(BusinessException.class, () -> bookService.showBookDescription(bookId));
         Assertions.assertEquals(MessageConstant.BOOK_NOT_EXIST.getMessage(), exception.getMessage());
     }
 
     @Test
-    void exportAllBooksShouldWriteData() {
+    void BookServiceImpl_exportAllBooks() {
         try (MockedStatic<FileDataWriter> mockedFileDataWriter = Mockito.mockStatic(FileDataWriter.class)) {
             mockedFileDataWriter.when(() -> FileDataWriter.writeData(Mockito.anyString(), Mockito.anyList())).thenReturn(1);
             Assertions.assertEquals(1, bookService.exportAllBooks(""));
@@ -194,7 +194,7 @@ class BookServiceImplTest {
     }
 
     @Test
-    void exportBookShouldCallAllMethodsIfBookExist() {
+    void BookServiceImpl_exportBook() {
         Mockito.when(bookDao.findById(bookId)).thenReturn(Optional.of(book));
         try (MockedStatic<FileDataWriter> mockedFileDataWriter = Mockito.mockStatic(FileDataWriter.class)) {
             bookService.exportBook(bookId, "");
@@ -204,7 +204,7 @@ class BookServiceImplTest {
     }
 
     @Test
-    void exportBookShouldThrowExceptionIfBookNotExist() {
+    void BookServiceImpl_exportBook_shouldThrowExceptionIfBookNotExist() {
         Mockito.when(bookDao.findById(bookId)).thenReturn(Optional.empty());
         try (MockedStatic<FileDataWriter> mockedFileDataWriter = Mockito.mockStatic(FileDataWriter.class)) {
             Throwable exception = Assertions.assertThrows(BusinessException.class,
@@ -214,7 +214,7 @@ class BookServiceImplTest {
     }
 
     @Test
-    void importBooksShouldCallAllMethods() {
+    void BookServiceImpl_importBooks() {
         Mockito.when(entityCvsConverter.parseBooks(Mockito.anyList())).thenReturn(List.of(book));
         Mockito.when(book.isAvailable()).thenReturn(true);
         try (MockedStatic<FileDataReader> mockedFileDataReader = Mockito.mockStatic(FileDataReader.class)) {
