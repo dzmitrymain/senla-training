@@ -281,6 +281,7 @@ class OrderServiceImplTest {
     @Test
     void OrderServiceImpl_importOrders_shouldThrowExceptionIfBookNotExist() {
         Mockito.when(entityCvsConverter.parseOrders(Mockito.anyList())).thenReturn(List.of(order));
+        Mockito.when(bookDao.findById(bookId)).thenReturn(Optional.empty());
 
         try (MockedStatic<FileDataReader> mockedFileDataReader = Mockito.mockStatic(FileDataReader.class)) {
             Assertions.assertThrows(BusinessException.class, () -> orderService.importOrders(""));

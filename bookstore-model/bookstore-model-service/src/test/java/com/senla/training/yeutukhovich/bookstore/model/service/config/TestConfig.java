@@ -8,6 +8,8 @@ import com.senla.training.yeutukhovich.bookstore.model.service.book.BookService;
 import com.senla.training.yeutukhovich.bookstore.model.service.book.BookServiceImpl;
 import com.senla.training.yeutukhovich.bookstore.model.service.order.OrderService;
 import com.senla.training.yeutukhovich.bookstore.model.service.order.OrderServiceImpl;
+import com.senla.training.yeutukhovich.bookstore.model.service.request.RequestService;
+import com.senla.training.yeutukhovich.bookstore.model.service.request.RequestServiceImpl;
 import org.mockito.Mockito;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +27,11 @@ public class TestConfig {
     @Bean
     public OrderService orderService() {
         return new OrderServiceImpl();
+    }
+
+    @Bean
+    public RequestService requestService() {
+        return new RequestServiceImpl();
     }
 
     @Bean
