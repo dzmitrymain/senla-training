@@ -17,7 +17,7 @@ import java.util.Properties;
 
 @Configuration
 @EnableTransactionManagement
-public class PersistenceJPAConfig {
+public class PersistenceJpaConfig {
 
     @Value("${spring.datasource.driver-class-name}")
     private String driverClassName;
