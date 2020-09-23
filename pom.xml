@@ -16,10 +16,35 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <servlet.version>4.0.1</servlet.version>
+        <tomcat.plugin.version>2.2</tomcat.plugin.version>
     </properties>
 
     <build>
         <finalName>yeutukhovich-helloworld</finalName>
+
+        <plugins>
+            <!-- Tomcat plugin -->
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>${tomcat.plugin.version}</version>
+                <configuration>
+                    <url>http://localhost:8080/manager/text</url>
+                    <path>/yeutukhovich-helloworld</path>
+                    <server>war-deployment-server</server>
+                    <username>war-deployer</username>
+                    <password>maven-tomcat</password>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>redeploy</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 
     <dependencies>
@@ -31,4 +56,5 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
+
 </project>

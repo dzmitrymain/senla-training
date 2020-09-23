@@ -4,5 +4,6 @@
     <title>HelloWorld</title>
 </head>
 <body>
+<a href="hello">Go to HelloWorldServlet(/hello)</a>
 </body>
 </html>
