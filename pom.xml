@@ -35,14 +35,14 @@
                     <username>war-deployer</username>
                     <password>maven-tomcat</password>
                 </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>redeploy</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <!--                <executions>-->
+                <!--                    <execution>-->
+                <!--                        <phase>package</phase>-->
+                <!--                        <goals>-->
+                <!--                            <goal>redeploy</goal>-->
+                <!--                        </goals>-->
+                <!--                    </execution>-->
+                <!--                </executions>-->
             </plugin>
         </plugins>
     </build>
