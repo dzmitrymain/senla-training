@@ -1,4 +1,4 @@
-# Bookstore
+# HelloWorld
 ## Information
 
 *This is a training project at Senla training courses*
