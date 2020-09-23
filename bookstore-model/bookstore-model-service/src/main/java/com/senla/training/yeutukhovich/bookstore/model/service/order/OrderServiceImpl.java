@@ -16,7 +16,6 @@ import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 import com.senla.training.yeutukhovich.bookstore.util.reader.FileDataReader;
 import com.senla.training.yeutukhovich.bookstore.util.writer.FileDataWriter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,11 +36,10 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private EntityCvsConverter entityCvsConverter;
 
-    @Value("${csv.directoryPath:resources/cvs/}")
-    private String cvsDirectoryPath;
+    private String cvsDirectoryPath = ApplicationConstant.CVS_DIRECTORY_PATH;
 
-    @Transactional
     @Override
+    @Transactional
     public CreationOrderResult createOrder(Long bookId, String customerData) {
         CreationOrderResult result = new CreationOrderResult();
         Book book = bookDao.findById(bookId)
@@ -54,8 +52,8 @@ public class OrderServiceImpl implements OrderService {
         return result;
     }
 
-    @Transactional
     @Override
+    @Transactional
     public void cancelOrder(Long orderId) {
         Order order = orderDao.findById(orderId)
                 .orElseThrow(() -> new BusinessException(MessageConstant.ORDER_NOT_EXIST.getMessage()));
@@ -67,8 +65,8 @@ public class OrderServiceImpl implements OrderService {
         orderDao.update(order);
     }
 
-    @Transactional
     @Override
+    @Transactional
     public void completeOrder(Long orderId) {
         Order order = orderDao.findById(orderId)
                 .orElseThrow(() -> new BusinessException(MessageConstant.ORDER_NOT_EXIST.getMessage()));
@@ -83,43 +81,36 @@ public class OrderServiceImpl implements OrderService {
         orderDao.update(order);
     }
 
-    @Transactional(readOnly = true)
     @Override
     public List<Order> findSortedAllOrdersByCompletionDate() {
         return orderDao.findSortedAllOrdersByCompletionDate();
     }
 
-    @Transactional(readOnly = true)
     @Override
     public List<Order> findSortedAllOrdersByPrice() {
         return orderDao.findSortedAllOrdersByPrice();
     }
 
-    @Transactional(readOnly = true)
     @Override
     public List<Order> findSortedAllOrdersByState() {
         return orderDao.findSortedAllOrdersByState();
     }
 
-    @Transactional(readOnly = true)
     @Override
     public List<Order> findCompletedOrdersBetweenDates(Date startDate, Date endDate) {
         return orderDao.findCompletedOrdersBetweenDates(startDate, endDate);
     }
 
-    @Transactional(readOnly = true)
     @Override
     public BigDecimal calculateProfitBetweenDates(Date startDate, Date endDate) {
         return orderDao.calculateProfitBetweenDates(startDate, endDate);
     }
 
-    @Transactional(readOnly = true)
     @Override
     public Long calculateCompletedOrdersNumberBetweenDates(Date startDate, Date endDate) {
         return orderDao.calculateCompletedOrdersNumberBetweenDates(startDate, endDate);
     }
 
-    @Transactional(readOnly = true)
     @Override
     public OrderDetails showOrderDetails(Long orderId) {
         Order order = orderDao.findById(orderId)
@@ -134,7 +125,6 @@ public class OrderServiceImpl implements OrderService {
         return orderDetails;
     }
 
-    @Transactional(readOnly = true)
     @Override
     public int exportAllOrders(String fileName) {
         String path = cvsDirectoryPath
@@ -143,7 +133,6 @@ public class OrderServiceImpl implements OrderService {
         return FileDataWriter.writeData(path, orderStrings);
     }
 
-    @Transactional(readOnly = true)
     @Override
     public void exportOrder(Long id, String fileName) {
         String path = cvsDirectoryPath
@@ -157,8 +146,8 @@ public class OrderServiceImpl implements OrderService {
         FileDataWriter.writeData(path, orderStrings);
     }
 
-    @Transactional
     @Override
+    @Transactional
     public int importOrders(String fileName) {
         if (fileName == null) {
             return 0;
