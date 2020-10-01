@@ -1,4 +1,4 @@
-package com.senla.training.yeutukhovich.bookstore.model.dao.util;
+package com.senla.training.yeutukhovich.bookstore.model.dao.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
