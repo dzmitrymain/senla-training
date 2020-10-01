@@ -82,36 +82,43 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public List<Order> findSortedAllOrdersByCompletionDate() {
         return orderDao.findSortedAllOrdersByCompletionDate();
     }
 
     @Override
+    @Transactional
     public List<Order> findSortedAllOrdersByPrice() {
         return orderDao.findSortedAllOrdersByPrice();
     }
 
     @Override
+    @Transactional
     public List<Order> findSortedAllOrdersByState() {
         return orderDao.findSortedAllOrdersByState();
     }
 
     @Override
+    @Transactional
     public List<Order> findCompletedOrdersBetweenDates(Date startDate, Date endDate) {
         return orderDao.findCompletedOrdersBetweenDates(startDate, endDate);
     }
 
     @Override
+    @Transactional
     public BigDecimal calculateProfitBetweenDates(Date startDate, Date endDate) {
         return orderDao.calculateProfitBetweenDates(startDate, endDate);
     }
 
     @Override
+    @Transactional
     public Long calculateCompletedOrdersNumberBetweenDates(Date startDate, Date endDate) {
         return orderDao.calculateCompletedOrdersNumberBetweenDates(startDate, endDate);
     }
 
     @Override
+    @Transactional
     public OrderDetails showOrderDetails(Long orderId) {
         Order order = orderDao.findById(orderId)
                 .orElseThrow(() -> new BusinessException(MessageConstant.ORDER_NOT_EXIST.getMessage()));
@@ -126,6 +133,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public int exportAllOrders(String fileName) {
         String path = cvsDirectoryPath
                 + fileName + ApplicationConstant.CVS_FORMAT_TYPE;
@@ -134,6 +142,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public void exportOrder(Long id, String fileName) {
         String path = cvsDirectoryPath
                 + fileName + ApplicationConstant.CVS_FORMAT_TYPE;

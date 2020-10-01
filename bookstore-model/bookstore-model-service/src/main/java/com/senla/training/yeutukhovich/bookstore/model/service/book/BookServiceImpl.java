@@ -65,41 +65,49 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Transactional
     public List<Book> findSortedAllBooksByAvailability() {
         return bookDao.findSortedAllBooksByAvailability();
     }
 
     @Override
+    @Transactional
     public List<Book> findSortedAllBooksByEditionYear() {
         return bookDao.findSortedAllBooksByEditionYear();
     }
 
     @Override
+    @Transactional
     public List<Book> findSortedAllBooksByPrice() {
         return bookDao.findSortedAllBooksByPrice();
     }
 
     @Override
+    @Transactional
     public List<Book> findSortedAllBooksByReplenishmentDate() {
         return bookDao.findSortedAllBooksByReplenishmentDate();
     }
 
     @Override
+    @Transactional
     public List<Book> findSortedAllBooksByTitle() {
         return bookDao.findSortedAllBooksByTitle();
     }
 
     @Override
+    @Transactional
     public List<Book> findSoldBooksBetweenDates(Date startDate, Date endDate) {
         return bookDao.findSoldBooksBetweenDates(startDate, endDate);
     }
 
     @Override
+    @Transactional
     public List<Book> findUnsoldBooksBetweenDates(Date startDate, Date endDate) {
         return bookDao.findUnsoldBooksBetweenDates(startDate, endDate);
     }
 
     @Override
+    @Transactional
     public List<Book> findStaleBooks() {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MONTH, -staleMonthNumber);
@@ -108,6 +116,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Transactional
     public BookDescription showBookDescription(Long id) {
         Book book = bookDao.findById(id)
                 .orElseThrow(() -> new BusinessException(MessageConstant.BOOK_NOT_EXIST.getMessage()));
@@ -119,6 +128,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Transactional
     public int exportAllBooks(String fileName) {
         String path = cvsDirectoryPath
                 + fileName + ApplicationConstant.CVS_FORMAT_TYPE;
@@ -127,6 +137,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Transactional
     public void exportBook(Long bookId, String fileName) {
         String path = cvsDirectoryPath
                 + fileName + ApplicationConstant.CVS_FORMAT_TYPE;

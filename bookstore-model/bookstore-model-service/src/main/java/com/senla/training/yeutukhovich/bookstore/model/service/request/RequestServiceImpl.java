@@ -41,21 +41,25 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
+    @Transactional
     public List<Request> findSortedAllRequestsByBookTitle() {
         return requestDao.findSortedAllRequestsByBookTitle();
     }
 
     @Override
+    @Transactional
     public List<Request> findSortedAllRequestsByIsActive() {
         return requestDao.findSortedAllRequestsByIsActive();
     }
 
     @Override
+    @Transactional
     public List<Request> findSortedAllRequestsByRequesterData() {
         return requestDao.findSortedAllRequestsByRequesterData();
     }
 
     @Override
+    @Transactional
     public int exportAllRequests(String fileName) {
         String path = cvsDirectoryPath
                 + fileName + ApplicationConstant.CVS_FORMAT_TYPE;
@@ -64,6 +68,7 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
+    @Transactional
     public void exportRequest(Long requestId, String fileName) {
         String path = cvsDirectoryPath
                 + fileName + ApplicationConstant.CVS_FORMAT_TYPE;
