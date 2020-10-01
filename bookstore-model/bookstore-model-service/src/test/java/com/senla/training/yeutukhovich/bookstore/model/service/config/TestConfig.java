@@ -12,27 +12,14 @@ import com.senla.training.yeutukhovich.bookstore.model.service.request.RequestSe
 import com.senla.training.yeutukhovich.bookstore.model.service.request.RequestServiceImpl;
 import org.mockito.Mockito;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.ClassPathResource;
 
 @Configuration
+@ComponentScan("com.senla.training.yeutukhovich.bookstore.model.service")
 public class TestConfig {
-
-    @Bean
-    public BookService bookService() {
-        return new BookServiceImpl();
-    }
-
-    @Bean
-    public OrderService orderService() {
-        return new OrderServiceImpl();
-    }
-
-    @Bean
-    public RequestService requestService() {
-        return new RequestServiceImpl();
-    }
 
     @Bean
     public BookDao bookDao() {
