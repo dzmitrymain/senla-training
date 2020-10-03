@@ -54,7 +54,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional
-    public void writeOffBook(Long id) {
+    public Book writeOffBook(Long id) {
         Book book = bookDao.findById(id)
                 .orElseThrow(() -> new BusinessException(MessageConstant.BOOK_NOT_EXIST.getMessage()));
         if (!book.isAvailable()) {
@@ -62,6 +62,7 @@ public class BookServiceImpl implements BookService {
         }
         book.setAvailable(false);
         bookDao.update(book);
+        return book;
     }
 
     @Override

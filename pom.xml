@@ -40,6 +40,7 @@
         <module>bookstore-util</module>
         <module>bookstore-model</module>
         <module>bookstore-web</module>
+        <module>bookstore-dto</module>
     </modules>
 
     <dependencies>

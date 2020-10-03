@@ -1,5 +1,6 @@
 package com.senla.training.yeutukhovich.bookstore.controller;
 
+import com.senla.training.yeutukhovich.bookstore.dto.BookDto;
 import com.senla.training.yeutukhovich.bookstore.exception.BusinessException;
 import com.senla.training.yeutukhovich.bookstore.model.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.model.service.book.BookService;
@@ -10,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,7 +21,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/books")
 public class BookController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BookController.class);
@@ -42,25 +45,31 @@ public class BookController {
         }
     }
 
-    public String writeOffBook(Long id) {
-        try {
-            bookService.writeOffBook(id);
-            LOGGER.info(LoggerConstant.WRITE_OFF_BOOK_SUCCESS.getMessage(), id);
-            return MessageConstant.BOOK_HAS_BEEN_WRITTEN_OFF.getMessage();
-        } catch (BusinessException e) {
-            LOGGER.warn(LoggerConstant.WRITE_OFF_BOOK_FAIL.getMessage(), id, e.getMessage());
-            return e.getMessage();
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
-        }
+    @PutMapping("/write_off/{id}")
+    public BookDto writeOffBook(@PathVariable("id") Long id) {
+        return new BookDto(bookService.writeOffBook(id));
     }
 
-    @GetMapping("/books")
-    public List<Book> findSortedAllBooksByAvailability() {
-        List<Book> result = bookService.findSortedAllBooksByAvailability();
-        System.out.println();
-        return result;
+//    public String writeOffBook(Long id) {
+//        try {
+//            bookService.writeOffBook(id);
+//            LOGGER.info(LoggerConstant.WRITE_OFF_BOOK_SUCCESS.getMessage(), id);
+//            return MessageConstant.BOOK_HAS_BEEN_WRITTEN_OFF.getMessage();
+//        } catch (BusinessException e) {
+//            LOGGER.warn(LoggerConstant.WRITE_OFF_BOOK_FAIL.getMessage(), id, e.getMessage());
+//            return e.getMessage();
+//        } catch (Exception e) {
+//            LOGGER.error(e.getMessage(), e);
+//            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
+//        }
+//    }
+
+
+
+    @GetMapping("/allBooksByAvailability")
+    public List<BookDto> findSortedAllBooksByAvailability() {
+        return bookService.findSortedAllBooksByAvailability().stream()
+                .map(BookDto::new).collect(Collectors.toList());
     }
 
 //    public String findSortedAllBooksByAvailability() {

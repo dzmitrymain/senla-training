@@ -10,7 +10,7 @@ public interface BookService {
 
     void replenishBook(Long id);
 
-    void writeOffBook(Long id);
+    Book writeOffBook(Long id);
 
     List<Book> findSortedAllBooksByAvailability();
 

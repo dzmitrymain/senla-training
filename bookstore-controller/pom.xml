@@ -36,5 +36,10 @@
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>com.senla.training.yeutukhovich.bookstore</groupId>
+            <artifactId>bookstore-dto</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>

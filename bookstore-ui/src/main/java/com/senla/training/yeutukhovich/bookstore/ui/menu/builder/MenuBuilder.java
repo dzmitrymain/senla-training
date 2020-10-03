@@ -73,7 +73,8 @@ public class MenuBuilder {
                 () -> {
                     System.out.println(MessageConstant.ENTER_BOOK_ID.getMessage());
                     Long id = UserInputReader.readInputLong();
-                    UiConsolePrinter.printMessage(bookController.writeOffBook(id));
+                    //TODO: smth
+//                    UiConsolePrinter.printMessage(bookController.writeOffBook(id));
                 }, bookMenu);
         MenuItem findStaleBooksMenuItem = new MenuItem(MenuNameConstant.SHOW_STALE_BOOKS.getMenuName(),
                 () -> UiConsolePrinter.printMessage(bookController.findStaleBooks()),
