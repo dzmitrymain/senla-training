@@ -160,8 +160,9 @@ public class MenuBuilder {
         MenuItem allBooksSortByPrice = new MenuItem(MenuNameConstant.SORT_BY_PRICE.getMenuName(),
                 () -> UiConsolePrinter.printMessage(bookController.findSortedAllBooksByPrice()),
                 showAllBooksMenu);
+        //TODO: rest
         MenuItem allBooksSortByAvailability = new MenuItem(MenuNameConstant.SORT_BY_AVAILABILITY.getMenuName(),
-                () -> UiConsolePrinter.printMessage(bookController.findSortedAllBooksByAvailability()),
+                () -> UiConsolePrinter.printMessage(bookController.findSortedAllBooksByAvailability().toString()),
                 showAllBooksMenu);
         MenuItem allBooksSortByEditionYear = new MenuItem(MenuNameConstant.SORT_BY_EDITION_YEAR.getMenuName(),
                 () -> UiConsolePrinter.printMessage(bookController.findSortedAllBooksByEditionYear()),

@@ -9,12 +9,16 @@ import com.senla.training.yeutukhovich.bookstore.util.converter.DateConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
-@Controller
+@RestController
+@RequestMapping("/")
 public class BookController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BookController.class);
@@ -52,18 +56,25 @@ public class BookController {
         }
     }
 
-    public String findSortedAllBooksByAvailability() {
-        try {
-            String result = bookService.findSortedAllBooksByAvailability().stream()
-                    .map(Book::toString)
-                    .collect(Collectors.joining(BOOKS_DELIMITER));
-            LOGGER.info(LoggerConstant.FIND_ALL_BOOKS_SORTED_BY_AVAILABILITY.getMessage());
-            return result;
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
-        }
+    @GetMapping("/books")
+    public List<Book> findSortedAllBooksByAvailability() {
+        List<Book> result = bookService.findSortedAllBooksByAvailability();
+        System.out.println();
+        return result;
     }
+
+//    public String findSortedAllBooksByAvailability() {
+//        try {
+//            String result = bookService.findSortedAllBooksByAvailability().stream()
+//                    .map(Book::toString)
+//                    .collect(Collectors.joining(BOOKS_DELIMITER));
+//            LOGGER.info(LoggerConstant.FIND_ALL_BOOKS_SORTED_BY_AVAILABILITY.getMessage());
+//            return result;
+//        } catch (Exception e) {
+//            LOGGER.error(e.getMessage(), e);
+//            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
+//        }
+//    }
 
     public String findSortedAllBooksByEditionYear() {
         try {
