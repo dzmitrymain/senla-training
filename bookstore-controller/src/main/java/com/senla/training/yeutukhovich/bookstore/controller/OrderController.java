@@ -1,207 +1,105 @@
 package com.senla.training.yeutukhovich.bookstore.controller;
 
-import com.senla.training.yeutukhovich.bookstore.exception.BusinessException;
-import com.senla.training.yeutukhovich.bookstore.model.domain.Order;
-import com.senla.training.yeutukhovich.bookstore.model.service.dto.CreationOrderResult;
+import com.senla.training.yeutukhovich.bookstore.dto.OrderDto;
+import com.senla.training.yeutukhovich.bookstore.model.service.dto.OrderDetails;
 import com.senla.training.yeutukhovich.bookstore.model.service.order.OrderService;
-import com.senla.training.yeutukhovich.bookstore.util.constant.LoggerConstant;
-import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
-import com.senla.training.yeutukhovich.bookstore.util.converter.DateConverter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-@Controller
+@RestController
+@RequestMapping("/orders")
 public class OrderController {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(OrderController.class);
-
-    private static final String ORDER_DELIMITER = "\n";
 
     @Autowired
     private OrderService orderService;
 
-    public String createOrder(Long bookId, String customerData) {
-        try {
-            CreationOrderResult creationOrderResult = orderService.createOrder(bookId, customerData);
-            LOGGER.info(LoggerConstant.CREATE_ORDER_SUCCESS.getMessage(), creationOrderResult.getOrderId(), bookId);
-            if (creationOrderResult.getRequestId() == null) {
-                return MessageConstant.ORDER_HAS_BEEN_CREATED.getMessage();
-            }
-            return MessageConstant.ORDER_HAS_BEEN_CREATED.getMessage() + "\n"
-                    + MessageConstant.REQUEST_HAS_BEEN_CREATED.getMessage();
-        } catch (BusinessException e) {
-            LOGGER.warn(LoggerConstant.CREATE_ORDER_FAIL.getMessage(), bookId);
-            return e.getMessage();
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
-        }
+    @PostMapping("/create/{bookId}&{customerData}")
+    public OrderDto createOrder(@PathVariable("bookId") Long bookId, @PathVariable("customerData") String customerData) {
+        return new OrderDto(orderService.createOrder(bookId, customerData));
     }
 
-    public String cancelOrder(Long orderId) {
-        try {
-            orderService.cancelOrder(orderId);
-            LOGGER.info(LoggerConstant.CANCEL_ORDER_SUCCESS.getMessage(), orderId);
-            return MessageConstant.ORDER_HAS_BEEN_CANCELED.getMessage();
-        } catch (BusinessException e) {
-            LOGGER.warn(LoggerConstant.CANCEL_ORDER_FAIL.getMessage(), orderId, e.getMessage());
-            return e.getMessage();
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
-        }
+    @PutMapping("/cancel/{id}")
+    public OrderDto cancelOrder(@PathVariable("id") Long orderId) {
+        return new OrderDto(orderService.cancelOrder(orderId));
     }
 
-    public String completeOrder(Long orderId) {
-        try {
-            orderService.completeOrder(orderId);
-            LOGGER.info(LoggerConstant.COMPLETE_ORDER_SUCCESS.getMessage(), orderId);
-            return MessageConstant.ORDER_HAS_BEEN_COMPLETED.getMessage();
-        } catch (BusinessException e) {
-            LOGGER.warn(LoggerConstant.COMPLETE_ORDER_FAIL.getMessage(), orderId, e.getMessage());
-            return e.getMessage();
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
-        }
+    @PutMapping("/complete/{id}")
+    public OrderDto completeOrder(@PathVariable("id") Long orderId) {
+        return new OrderDto(orderService.completeOrder(orderId));
     }
 
-    public String findSortedAllOrdersByCompletionDate() {
-        try {
-            String result = orderService.findSortedAllOrdersByCompletionDate().stream()
-                    .map(Order::toString)
-                    .collect(Collectors.joining(ORDER_DELIMITER));
-            LOGGER.info(LoggerConstant.FIND_ALL_ORDERS_SORTED_BY_COMPLETION_DATE.getMessage());
-            return result;
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
-        }
+    @GetMapping("allOrdersByCompletionDate")
+    public List<OrderDto> findSortedAllOrdersByCompletionDate() {
+        return orderService.findSortedAllOrdersByCompletionDate().stream()
+                .map(OrderDto::new)
+                .collect(Collectors.toList());
     }
 
-    public String findSortedAllOrdersByPrice() {
-        try {
-            String result = orderService.findSortedAllOrdersByPrice().stream()
-                    .map(Order::toString)
-                    .collect(Collectors.joining(ORDER_DELIMITER));
-            LOGGER.info(LoggerConstant.FIND_ALL_ORDERS_SORTED_BY_PRICE.getMessage());
-            return result;
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
-        }
+    @GetMapping("allOrdersByPrice")
+    public List<OrderDto> findSortedAllOrdersByPrice() {
+        return orderService.findSortedAllOrdersByPrice().stream()
+                .map(OrderDto::new)
+                .collect(Collectors.toList());
     }
 
-    public String findSortedAllOrdersByState() {
-        try {
-            String result = orderService.findSortedAllOrdersByState().stream()
-                    .map(Order::toString)
-                    .collect(Collectors.joining(ORDER_DELIMITER));
-            LOGGER.info(LoggerConstant.FIND_ALL_ORDERS_SORTED_BY_STATE.getMessage());
-            return result;
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
-        }
+    @GetMapping("allOrdersByState")
+    public List<OrderDto> findSortedAllOrdersByState() {
+        return orderService.findSortedAllOrdersByState().stream()
+                .map(OrderDto::new)
+                .collect(Collectors.toList());
     }
 
-    public String findCompletedOrdersBetweenDates(Date startDate, Date endDate) {
-        try {
-            String result = orderService.findCompletedOrdersBetweenDates(startDate, endDate).stream()
-                    .map(Order::toString)
-                    .collect(Collectors.joining(ORDER_DELIMITER));
-            LOGGER.info(LoggerConstant.FIND_COMPLETED_ORDERS_BETWEEN_DATES.getMessage(),
-                    DateConverter.formatDate(startDate, DateConverter.DAY_DATE_FORMAT),
-                    DateConverter.formatDate(endDate, DateConverter.DAY_DATE_FORMAT));
-            return result;
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
-        }
+    @GetMapping("completedBetweenDates")
+    public List<OrderDto> findCompletedOrdersBetweenDates(@RequestParam Date startDate, @RequestParam Date endDate) {
+        return orderService.findCompletedOrdersBetweenDates(startDate, endDate).stream()
+                .map(OrderDto::new)
+                .collect(Collectors.toList());
     }
 
-    public String calculateProfitBetweenDates(Date startDate, Date endDate) {
-        try {
-            String result = orderService.calculateProfitBetweenDates(startDate, endDate).toString();
-            LOGGER.info(LoggerConstant.SHOW_PROFIT_BETWEEN_DATES.getMessage(),
-                    DateConverter.formatDate(startDate, DateConverter.DAY_DATE_FORMAT),
-                    DateConverter.formatDate(endDate, DateConverter.DAY_DATE_FORMAT));
-            return result;
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
-        }
+    @GetMapping("profitBetweenDates")
+    public Map calculateProfitBetweenDates(@RequestParam Date startDate, @RequestParam Date endDate) {
+        return Collections.singletonMap("profit", orderService.calculateProfitBetweenDates(startDate, endDate));
     }
 
-    public String calculateCompletedOrdersNumberBetweenDates(Date startDate, Date endDate) {
-        try {
-            String result = String.valueOf(orderService.calculateCompletedOrdersNumberBetweenDates(startDate, endDate));
-            LOGGER.info(LoggerConstant.SHOW_COMPLETE_ORDERS_NUMBER_BETWEEN_DATES.getMessage(),
-                    DateConverter.formatDate(startDate, DateConverter.DAY_DATE_FORMAT),
-                    DateConverter.formatDate(endDate, DateConverter.DAY_DATE_FORMAT));
-            return result;
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
-        }
+    @GetMapping("ordersNumberBetweenDates")
+    public Map calculateCompletedOrdersNumberBetweenDates(@RequestParam Date startDate, @RequestParam Date endDate) {
+        return Collections.singletonMap("ordersNumber",
+                orderService.calculateCompletedOrdersNumberBetweenDates(startDate, endDate));
     }
 
-    public String showOrderDetails(Long orderId) {
-        try {
-            String result = orderService.showOrderDetails(orderId).toString();
-            LOGGER.info(LoggerConstant.SHOW_ORDER_DETAILS_SUCCESS.getMessage(), orderId);
-            return result;
-        } catch (BusinessException e) {
-            LOGGER.warn(LoggerConstant.SHOW_ORDER_DETAILS_FAIL.getMessage(), orderId, e.getMessage());
-            return e.getMessage();
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
-        }
+    @GetMapping("/details/{id}")
+    public OrderDetails showOrderDetails(@PathVariable("id") Long orderId) {
+        return orderService.showOrderDetails(orderId);
     }
 
-    public String importOrders(String fileName) {
-        try {
-            String result = MessageConstant.IMPORTED_ENTITIES.getMessage() + orderService.importOrders(fileName);
-            LOGGER.info(LoggerConstant.IMPORT_ORDERS_SUCCESS.getMessage(), fileName);
-            return result;
-        } catch (BusinessException e) {
-            LOGGER.warn(LoggerConstant.IMPORT_ORDERS_FAIL.getMessage(), e.getMessage());
-            return e.getMessage();
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
-        }
+    @PutMapping("/import/{fileName}")
+    public List<OrderDto> importOrders(@PathVariable("fileName") String fileName) {
+        return orderService.importOrders(fileName).stream()
+                .map(OrderDto::new)
+                .collect(Collectors.toList());
     }
 
-    public String exportAllOrders(String fileName) {
-        try {
-            String result = MessageConstant.EXPORTED_ENTITIES.getMessage()
-                    + orderService.exportAllOrders(fileName);
-            LOGGER.info(LoggerConstant.EXPORT_ALL_ORDERS.getMessage(), fileName);
-            return result;
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
-        }
+    @GetMapping("/exportAll")
+    public List<OrderDto> exportAllOrders(@RequestParam String fileName) {
+        return orderService.exportAllOrders(fileName).stream()
+                .map(OrderDto::new)
+                .collect(Collectors.toList());
     }
 
-    public String exportOrder(Long orderId, String fileName) {
-        try {
-            orderService.exportOrder(orderId, fileName);
-            LOGGER.info(LoggerConstant.EXPORT_ORDER_SUCCESS.getMessage(), orderId, fileName);
-            return MessageConstant.ENTITY_EXPORTED.getMessage();
-        } catch (BusinessException e) {
-            LOGGER.warn(LoggerConstant.EXPORT_ORDER_FAIL.getMessage(), orderId, e.getMessage());
-            return e.getMessage();
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
-        }
+    @GetMapping("/export")
+    public OrderDto exportOrder(@RequestParam Long orderId, @RequestParam String fileName) {
+        return new OrderDto(orderService.exportOrder(orderId, fileName));
     }
 }

@@ -12,6 +12,7 @@ public enum MessageConstant {
     STRING_FORMAT_UNPARSEABLE_BOOLEAN("Unparseable boolean: '%s'"),
 
     BOOK_NOT_EXIST("Book not exist."),
+    BOOK_CANT_NULL("Book can't be null."),
     BOOK_ALREADY_REPLENISHED("Book already replenished."),
     BOOK_ALREADY_WRITTEN_OFF("Book already written off."),
     CREATION_NOT_NULL("Creation date can't be null."),

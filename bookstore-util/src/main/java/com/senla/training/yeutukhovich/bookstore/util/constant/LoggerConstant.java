@@ -42,7 +42,7 @@ public enum LoggerConstant {
     EXPORT_ORDER_SUCCESS("Order[id={}] was exported. File name: {}"),
     EXPORT_ORDER_FAIL("Order[id={}] wasn't exported. Cause: {}"),
 
-    CREATE_REQUEST_SUCCESS("Request on Book[id={}] has been created."),
+    CREATE_REQUEST_SUCCESS("Request[id={}] on Book[id={}] has been created."),
     CREATE_REQUEST_FAIL("Request on Book[id={}] has not been created. Cause: {}"),
     REQUESTS_CLOSED("Requests on Book[id={}] has been closed."),
     FIND_ALL_REQUESTS_SORTED_BY_BOOK_TITLE("Requests searched. Sorted by book's title"),

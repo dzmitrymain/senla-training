@@ -70,7 +70,7 @@ class OrderServiceImplTest {
         Mockito.when(book.isAvailable()).thenReturn(false);
         Mockito.when(bookDao.findById(bookId)).thenReturn(Optional.of(book));
 
-        CreationOrderResult result = orderService.createOrder(bookId, "");
+        Order result = orderService.createOrder(bookId, "");
 
         Mockito.verify(requestDao, Mockito.times(1)).add(Mockito.any());
         Mockito.verify(orderDao, Mockito.times(1)).add(Mockito.any());
@@ -82,7 +82,7 @@ class OrderServiceImplTest {
         Mockito.when(book.isAvailable()).thenReturn(true);
         Mockito.when(bookDao.findById(bookId)).thenReturn(Optional.of(book));
 
-        CreationOrderResult result = orderService.createOrder(bookId, "");
+        Order result = orderService.createOrder(bookId, "");
 
         Mockito.verify(requestDao, Mockito.never()).add(Mockito.any());
         Mockito.verify(orderDao, Mockito.times(1)).add(Mockito.any());

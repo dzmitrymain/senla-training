@@ -10,11 +10,11 @@ import java.util.List;
 
 public interface OrderService {
 
-    CreationOrderResult createOrder(Long bookId, String customerData);
+    Order createOrder(Long bookId, String customerData);
 
-    void cancelOrder(Long orderId);
+    Order cancelOrder(Long orderId);
 
-    void completeOrder(Long orderId);
+    Order completeOrder(Long orderId);
 
     List<Order> findSortedAllOrdersByCompletionDate();
 
@@ -30,9 +30,9 @@ public interface OrderService {
 
     OrderDetails showOrderDetails(Long orderId);
 
-    int exportAllOrders(String fileName);
+    List<Order> exportAllOrders(String fileName);
 
-    void exportOrder(Long id, String fileName);
+    Order exportOrder(Long id, String fileName);
 
-    int importOrders(String fileName);
+    List<Order> importOrders(String fileName);
 }
