@@ -1,7 +1,6 @@
 package com.senla.training.yeutukhovich.bookstore.config;
 
 import com.senla.training.yeutukhovich.bookstore.model.dao.config.PersistenceJpaConfig;
-import com.senla.training.yeutukhovich.bookstore.runner.AppConfig;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {

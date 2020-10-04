@@ -1,6 +1,8 @@
 package com.senla.training.yeutukhovich.bookstore.model.service.dto;
 
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.senla.training.yeutukhovich.bookstore.util.converter.DateConverter;
 
 import java.util.Date;
@@ -9,6 +11,8 @@ public class BookDescription {
 
     private String title;
     private int editionYear;
+    @JsonSerialize(using = DateConverter.Serialize.class)
+    @JsonDeserialize(using = DateConverter.Deserializer.class)
     private Date replenishmentDate;
 
     public String getTitle() {
