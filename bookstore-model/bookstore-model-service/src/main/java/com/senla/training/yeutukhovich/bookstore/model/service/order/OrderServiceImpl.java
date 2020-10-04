@@ -1,6 +1,7 @@
 package com.senla.training.yeutukhovich.bookstore.model.service.order;
 
 import com.senla.training.yeutukhovich.bookstore.converter.EntityCvsConverter;
+import com.senla.training.yeutukhovich.bookstore.dto.OrderDetailsDto;
 import com.senla.training.yeutukhovich.bookstore.exception.BusinessException;
 import com.senla.training.yeutukhovich.bookstore.model.dao.book.BookDao;
 import com.senla.training.yeutukhovich.bookstore.model.dao.order.OrderDao;
@@ -9,7 +10,6 @@ import com.senla.training.yeutukhovich.bookstore.model.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.model.domain.Order;
 import com.senla.training.yeutukhovich.bookstore.model.domain.Request;
 import com.senla.training.yeutukhovich.bookstore.model.domain.state.OrderState;
-import com.senla.training.yeutukhovich.bookstore.model.service.dto.OrderDetails;
 import com.senla.training.yeutukhovich.bookstore.util.constant.ApplicationConstant;
 import com.senla.training.yeutukhovich.bookstore.util.constant.LoggerConstant;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
@@ -158,22 +158,22 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public OrderDetails showOrderDetails(Long orderId) {
+    public OrderDetailsDto showOrderDetails(Long orderId) {
         Order order = orderDao.findById(orderId)
                 .orElseThrow(() -> {
                     LOGGER.warn(LoggerConstant.SHOW_ORDER_DETAILS_FAIL.getMessage(), orderId,
                             MessageConstant.ORDER_NOT_EXIST.getMessage());
                     return new BusinessException(MessageConstant.ORDER_NOT_EXIST.getMessage());
                 });
-        OrderDetails orderDetails = new OrderDetails();
-        orderDetails.setCustomerData(order.getCustomerData());
-        orderDetails.setBookTitle(order.getBook().getTitle());
-        orderDetails.setPrice(order.getCurrentBookPrice());
-        orderDetails.setState(order.getState());
-        orderDetails.setCreationDate(order.getCreationDate());
-        orderDetails.setCompletionDate(order.getCompletionDate());
+        OrderDetailsDto orderDetailsDto = new OrderDetailsDto();
+        orderDetailsDto.setCustomerData(order.getCustomerData());
+        orderDetailsDto.setBookTitle(order.getBook().getTitle());
+        orderDetailsDto.setPrice(order.getCurrentBookPrice());
+        orderDetailsDto.setState(order.getState());
+        orderDetailsDto.setCreationDate(order.getCreationDate());
+        orderDetailsDto.setCompletionDate(order.getCompletionDate());
         LOGGER.info(LoggerConstant.SHOW_ORDER_DETAILS_SUCCESS.getMessage(), orderId);
-        return orderDetails;
+        return orderDetailsDto;
     }
 
     @Override

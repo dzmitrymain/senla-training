@@ -7,18 +7,22 @@ import com.senla.training.yeutukhovich.bookstore.model.dao.request.RequestDao;
 import com.senla.training.yeutukhovich.bookstore.model.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.model.domain.Request;
 import com.senla.training.yeutukhovich.bookstore.util.constant.ApplicationConstant;
+import com.senla.training.yeutukhovich.bookstore.util.constant.LoggerConstant;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 import com.senla.training.yeutukhovich.bookstore.util.reader.FileDataReader;
 import com.senla.training.yeutukhovich.bookstore.util.writer.FileDataWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class RequestServiceImpl implements RequestService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(RequestServiceImpl.class);
 
     @Autowired
     private BookDao bookDao;
@@ -31,72 +35,90 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     @Transactional
-    public void createRequest(Long bookId, String requesterData) {
+    public Request createRequest(Long bookId, String requesterData) {
         Book book = bookDao.findById(bookId)
-                .orElseThrow(() -> new BusinessException(MessageConstant.BOOK_NOT_EXIST.getMessage()));
+                .orElseThrow(() -> {
+                    LOGGER.warn(LoggerConstant.CREATE_REQUEST_FAIL.getMessage(), bookId,
+                            MessageConstant.BOOK_NOT_EXIST.getMessage());
+                    return new BusinessException(MessageConstant.BOOK_NOT_EXIST.getMessage());
+                });
         if (book.isAvailable()) {
+            LOGGER.warn(LoggerConstant.CREATE_REQUEST_FAIL.getMessage(), bookId,
+                    MessageConstant.BOOK_ALREADY_REPLENISHED.getMessage());
             throw new BusinessException(MessageConstant.BOOK_ALREADY_REPLENISHED.getMessage());
         }
-        requestDao.add(new Request(book, requesterData));
+        Request request = new Request(book, requesterData);
+        requestDao.add(request);
+        LOGGER.info(LoggerConstant.CREATE_REQUEST_SUCCESS.getMessage(), bookId);
+        return request;
     }
 
     @Override
     @Transactional
     public List<Request> findSortedAllRequestsByBookTitle() {
+        LOGGER.info(LoggerConstant.FIND_ALL_REQUESTS_SORTED_BY_BOOK_TITLE.getMessage());
         return requestDao.findSortedAllRequestsByBookTitle();
     }
 
     @Override
     @Transactional
     public List<Request> findSortedAllRequestsByIsActive() {
+        LOGGER.info(LoggerConstant.FIND_ALL_REQUESTS_SORTED_BY_IS_ACTIVE.getMessage());
         return requestDao.findSortedAllRequestsByIsActive();
     }
 
     @Override
     @Transactional
     public List<Request> findSortedAllRequestsByRequesterData() {
+        LOGGER.info(LoggerConstant.FIND_ALL_REQUESTS_SORTED_BY_REQUESTER_DATA.getMessage());
         return requestDao.findSortedAllRequestsByRequesterData();
     }
 
     @Override
     @Transactional
-    public int exportAllRequests(String fileName) {
+    public List<Request> exportAllRequests(String fileName) {
         String path = cvsDirectoryPath
                 + fileName + ApplicationConstant.CVS_FORMAT_TYPE;
-        List<String> requestStrings = entityCvsConverter.convertRequests(requestDao.findAll());
-        return FileDataWriter.writeData(path, requestStrings);
-    }
-
-    @Override
-    @Transactional
-    public void exportRequest(Long requestId, String fileName) {
-        String path = cvsDirectoryPath
-                + fileName + ApplicationConstant.CVS_FORMAT_TYPE;
-        Optional<Request> requestOptional = requestDao.findById(requestId);
-        if (requestOptional.isEmpty()) {
-            throw new BusinessException(MessageConstant.REQUEST_NOT_EXIST.getMessage());
-        }
-        List<String> requestStrings = entityCvsConverter.convertRequests(List.of(requestOptional.get()));
+        List<Request> requests = requestDao.findAll();
+        List<String> requestStrings = entityCvsConverter.convertRequests(requests);
         FileDataWriter.writeData(path, requestStrings);
+        LOGGER.info(LoggerConstant.EXPORT_ALL_REQUESTS.getMessage(), fileName);
+        return requests;
     }
 
     @Override
     @Transactional
-    public int importRequests(String fileName) {
-        if (fileName == null) {
-            return 0;
-        }
-        int importedRequestsNumber = 0;
+    public Request exportRequest(Long requestId, String fileName) {
+        String path = cvsDirectoryPath
+                + fileName + ApplicationConstant.CVS_FORMAT_TYPE;
+        Request request = requestDao.findById(requestId).orElseThrow(() -> {
+            LOGGER.warn(LoggerConstant.EXPORT_REQUEST_FAIL.getMessage(), requestId,
+                    MessageConstant.REQUEST_NOT_EXIST.getMessage());
+            return new BusinessException(MessageConstant.REQUEST_NOT_EXIST.getMessage());
+        });
+        List<String> requestStrings = entityCvsConverter.convertRequests(List.of(request));
+        FileDataWriter.writeData(path, requestStrings);
+        LOGGER.info(LoggerConstant.EXPORT_REQUEST_SUCCESS.getMessage(), requestId, fileName);
+        return request;
+    }
+
+    @Override
+    @Transactional
+    public List<Request> importRequests(String fileName) {
         List<String> requestsStrings = readStringsFromFile(fileName);
         List<Request> importedRequests = entityCvsConverter.parseRequests(requestsStrings);
         for (Request importedRequest : importedRequests) {
             Book dependentBook = bookDao.findById(importedRequest.getBook().getId())
-                    .orElseThrow(() -> new BusinessException("Book can't be null."));
+                    .orElseThrow(() -> {
+                        LOGGER.warn(LoggerConstant.IMPORT_REQUESTS_FAIL.getMessage(),
+                                MessageConstant.BOOK_CANT_NULL.getMessage());
+                        return new BusinessException(MessageConstant.BOOK_CANT_NULL.getMessage());
+                    });
             importedRequest.setBook(dependentBook);
             requestDao.update(importedRequest);
-            importedRequestsNumber++;
         }
-        return importedRequestsNumber;
+        LOGGER.info(LoggerConstant.IMPORT_REQUESTS_SUCCESS.getMessage(), fileName);
+        return importedRequests;
     }
 
     private List<String> readStringsFromFile(String fileName) {

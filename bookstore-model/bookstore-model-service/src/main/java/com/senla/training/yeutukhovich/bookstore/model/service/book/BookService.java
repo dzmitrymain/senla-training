@@ -1,7 +1,8 @@
 package com.senla.training.yeutukhovich.bookstore.model.service.book;
 
+import com.senla.training.yeutukhovich.bookstore.dto.BookDescriptionDto;
 import com.senla.training.yeutukhovich.bookstore.model.domain.Book;
-import com.senla.training.yeutukhovich.bookstore.model.service.dto.BookDescription;
+
 
 import java.util.Date;
 import java.util.List;
@@ -28,7 +29,7 @@ public interface BookService {
 
     List<Book> findStaleBooks();
 
-    BookDescription showBookDescription(Long id);
+    BookDescriptionDto showBookDescription(Long id);
 
     List<Book> exportAllBooks(String fileName);
 

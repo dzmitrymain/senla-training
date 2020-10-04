@@ -2,12 +2,12 @@ package com.senla.training.yeutukhovich.bookstore.controller;
 
 import com.senla.training.yeutukhovich.bookstore.dto.BookDto;
 import com.senla.training.yeutukhovich.bookstore.model.service.book.BookService;
-import com.senla.training.yeutukhovich.bookstore.model.service.dto.BookDescription;
+import com.senla.training.yeutukhovich.bookstore.dto.BookDescriptionDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -90,26 +90,26 @@ public class BookController {
     }
 
     @GetMapping("/description/{id}")
-    public BookDescription showBookDescription(@PathVariable("id") Long id) {
+    public BookDescriptionDto showBookDescription(@PathVariable("id") Long id) {
         return bookService.showBookDescription(id);
     }
 
-    @PostMapping("/import/{fileName}")
-    public List<BookDto> importBooks(@PathVariable("fileName") String fileName) {
+    @PutMapping("/import")
+    public List<BookDto> importBooks(@RequestHeader String fileName) {
         return bookService.importBooks(fileName).stream()
                 .map(BookDto::new)
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/exportAll/{fileName}")
-    public List<BookDto> exportAllBooks(@PathVariable("fileName") String fileName) {
+    @GetMapping("/exportAll")
+    public List<BookDto> exportAllBooks(@RequestHeader String fileName) {
         return bookService.exportAllBooks(fileName).stream()
                 .map(BookDto::new)
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/export/{fileName}&{id}")
-    public BookDto exportBook(@PathVariable("id") Long bookId, @PathVariable("fileName") String fileName) {
+    @GetMapping("/export/{id}")
+    public BookDto exportBook(@PathVariable("id") Long bookId, @RequestHeader String fileName) {
         return new BookDto(bookService.exportBook(bookId, fileName));
     }
 }

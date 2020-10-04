@@ -1,8 +1,8 @@
 package com.senla.training.yeutukhovich.bookstore.model.service.order;
 
+import com.senla.training.yeutukhovich.bookstore.dto.OrderDetailsDto;
 import com.senla.training.yeutukhovich.bookstore.model.domain.Order;
-import com.senla.training.yeutukhovich.bookstore.model.service.dto.CreationOrderResult;
-import com.senla.training.yeutukhovich.bookstore.model.service.dto.OrderDetails;
+
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -28,7 +28,7 @@ public interface OrderService {
 
     Long calculateCompletedOrdersNumberBetweenDates(Date startDate, Date endDate);
 
-    OrderDetails showOrderDetails(Long orderId);
+    OrderDetailsDto showOrderDetails(Long orderId);
 
     List<Order> exportAllOrders(String fileName);
 

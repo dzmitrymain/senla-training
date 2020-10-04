@@ -11,7 +11,7 @@ import javax.persistence.Table;
 @Table(name = "requests")
 public class Request extends AbstractEntity {
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "book_id")
     private Book book;
     @Column(name = "is_active")

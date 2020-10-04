@@ -1,4 +1,4 @@
-package com.senla.training.yeutukhovich.bookstore.model.service.dto;
+package com.senla.training.yeutukhovich.bookstore.dto;
 
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -7,7 +7,7 @@ import com.senla.training.yeutukhovich.bookstore.util.converter.DateConverter;
 
 import java.util.Date;
 
-public class BookDescription {
+public class BookDescriptionDto {
 
     private String title;
     private int editionYear;

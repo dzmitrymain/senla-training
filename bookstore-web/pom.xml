@@ -28,7 +28,7 @@
                 <version>${tomcat.plugin.version}</version>
                 <configuration>
                     <url>http://localhost:8080/manager/text</url>
-                    <path>/bookstore</path>
+                    <path>/yeutukhovich-bookstore</path>
                     <server>war-deployment-server</server>
                     <username>war-deployer</username>
                     <password>maven-tomcat</password>

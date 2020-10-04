@@ -1,11 +1,11 @@
 package com.senla.training.yeutukhovich.bookstore.model.service.book;
 
 import com.senla.training.yeutukhovich.bookstore.converter.EntityCvsConverter;
+import com.senla.training.yeutukhovich.bookstore.dto.BookDescriptionDto;
 import com.senla.training.yeutukhovich.bookstore.exception.BusinessException;
 import com.senla.training.yeutukhovich.bookstore.model.dao.book.BookDao;
 import com.senla.training.yeutukhovich.bookstore.model.dao.request.RequestDao;
 import com.senla.training.yeutukhovich.bookstore.model.domain.Book;
-import com.senla.training.yeutukhovich.bookstore.model.service.dto.BookDescription;
 import com.senla.training.yeutukhovich.bookstore.util.constant.ApplicationConstant;
 import com.senla.training.yeutukhovich.bookstore.util.constant.LoggerConstant;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
@@ -149,19 +149,19 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional
-    public BookDescription showBookDescription(Long id) {
+    public BookDescriptionDto showBookDescription(Long id) {
         Book book = bookDao.findById(id)
                 .orElseThrow(() -> {
                     LOGGER.warn(LoggerConstant.SHOW_BOOK_DESCRIPTION_FAIL.getMessage(), id,
                             MessageConstant.BOOK_NOT_EXIST.getMessage());
                     return new BusinessException(MessageConstant.BOOK_NOT_EXIST.getMessage());
                 });
-        BookDescription bookDescription = new BookDescription();
-        bookDescription.setTitle(book.getTitle());
-        bookDescription.setEditionYear(book.getEditionYear());
-        bookDescription.setReplenishmentDate(book.getReplenishmentDate());
+        BookDescriptionDto bookDescriptionDto = new BookDescriptionDto();
+        bookDescriptionDto.setTitle(book.getTitle());
+        bookDescriptionDto.setEditionYear(book.getEditionYear());
+        bookDescriptionDto.setReplenishmentDate(book.getReplenishmentDate());
         LOGGER.info(LoggerConstant.SHOW_BOOK_DESCRIPTION_SUCCESS.getMessage(), id);
-        return bookDescription;
+        return bookDescriptionDto;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.senla.training.yeutukhovich.bookstore.model.service.order;
 
 import com.senla.training.yeutukhovich.bookstore.converter.EntityCvsConverter;
+import com.senla.training.yeutukhovich.bookstore.dto.OrderDetailsDto;
 import com.senla.training.yeutukhovich.bookstore.exception.BusinessException;
 import com.senla.training.yeutukhovich.bookstore.model.dao.book.BookDao;
 import com.senla.training.yeutukhovich.bookstore.model.dao.order.OrderDao;
@@ -9,8 +10,6 @@ import com.senla.training.yeutukhovich.bookstore.model.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.model.domain.Order;
 import com.senla.training.yeutukhovich.bookstore.model.domain.state.OrderState;
 import com.senla.training.yeutukhovich.bookstore.model.service.config.TestConfig;
-import com.senla.training.yeutukhovich.bookstore.model.service.dto.CreationOrderResult;
-import com.senla.training.yeutukhovich.bookstore.model.service.dto.OrderDetails;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 import com.senla.training.yeutukhovich.bookstore.util.reader.FileDataReader;
 import com.senla.training.yeutukhovich.bookstore.util.writer.FileDataWriter;
@@ -218,7 +217,7 @@ class OrderServiceImplTest {
     void OrderServiceImpl_showOrderDetails_shouldReturnNotNull() {
         Mockito.when(orderDao.findById(orderId)).thenReturn(Optional.of(order));
 
-        OrderDetails result = orderService.showOrderDetails(orderId);
+        OrderDetailsDto result = orderService.showOrderDetails(orderId);
 
         Assertions.assertNotNull(result);
     }
@@ -236,9 +235,7 @@ class OrderServiceImplTest {
     @Test
     void OrderServiceImpl_exportAllOrders() {
         try (MockedStatic<FileDataWriter> mockedFileDataWriter = Mockito.mockStatic(FileDataWriter.class)) {
-            mockedFileDataWriter.when(() -> FileDataWriter.writeData(Mockito.anyString(), Mockito.anyList())).thenReturn(1);
-
-            Assertions.assertEquals(1, orderService.exportAllOrders(""));
+            Assertions.assertNotNull(orderService.exportAllOrders(""));
         }
         Mockito.verify(entityCvsConverter, Mockito.times(1)).convertOrders(Mockito.anyList());
         Mockito.verify(orderDao, Mockito.times(1)).findAll();
