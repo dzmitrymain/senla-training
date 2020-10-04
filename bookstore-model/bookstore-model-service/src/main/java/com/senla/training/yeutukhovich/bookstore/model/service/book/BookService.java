@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface BookService {
 
-    void replenishBook(Long id);
+    Book replenishBook(Long id);
 
     Book writeOffBook(Long id);
 
@@ -30,9 +30,9 @@ public interface BookService {
 
     BookDescription showBookDescription(Long id);
 
-    int exportAllBooks(String fileName);
+    List<Book> exportAllBooks(String fileName);
 
-    void exportBook(Long bookId, String fileName);
+    Book exportBook(Long bookId, String fileName);
 
-    int importBooks(String fileName);
+    List<Book> importBooks(String fileName);
 }
