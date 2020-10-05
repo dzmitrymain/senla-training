@@ -28,6 +28,12 @@
         <logback.version>1.2.3</logback.version>
         <jackson.databind.version>2.11.3</jackson.databind.version>
         <servlet.version>4.0.1</servlet.version>
+        <!-- bookstore-model -->
+        <hibernate.version>5.4.21.Final</hibernate.version>
+        <persistence.api.version>2.2</persistence.api.version>
+        <!-- bookstore-model-dao -->
+        <mysql.connector.version>8.0.21</mysql.connector.version>
+        <!-- bookstore-web -->
         <tomcat.plugin.version>2.2</tomcat.plugin.version>
     </properties>
 
@@ -35,7 +41,6 @@
         <module>bookstore-controller</module>
         <module>bookstore-csvconverter</module>
         <module>bookstore-exception</module>
-        <module>bookstore-runner</module>
         <module>bookstore-ui</module>
         <module>bookstore-util</module>
         <module>bookstore-model</module>
@@ -170,4 +175,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>

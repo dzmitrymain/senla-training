@@ -51,4 +51,12 @@ public class RequestDto {
     public void setRequesterData(String requesterData) {
         this.requesterData = requesterData;
     }
+
+    @Override
+    public String toString() {
+        return "Request [id=" + id +
+                ", is active=" + isActive +
+                ", requester data='" + requesterData +
+                "']";
+    }
 }

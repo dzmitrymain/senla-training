@@ -73,19 +73,6 @@ class BookServiceImplTest {
     }
 
     @Test
-    void BookServiceImpl_replenishBook_shouldUpdateNotAvailableBookAndDontCloseRequests() {
-        Assumptions.assumeFalse(requestAutoCloseEnabled);
-
-        Mockito.when(bookDao.findById(bookId)).thenReturn(Optional.of(book));
-        Mockito.when(book.isAvailable()).thenReturn(false);
-
-        bookService.replenishBook(bookId);
-
-        Mockito.verify(bookDao, Mockito.times(1)).update(book);
-        Mockito.verify(requestDao, Mockito.never()).closeRequestsByBookId(bookId);
-    }
-
-    @Test
     void BookServiceImpl_replenishBook_shouldThrowExceptionIfBookNotExist() {
         Mockito.when(bookDao.findById(bookId)).thenReturn(Optional.empty());
 

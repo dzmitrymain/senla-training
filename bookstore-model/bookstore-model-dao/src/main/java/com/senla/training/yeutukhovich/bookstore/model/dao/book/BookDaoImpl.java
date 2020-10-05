@@ -50,7 +50,6 @@ public class BookDaoImpl extends HibernateAbstractDao<Book, Long> implements Boo
                 cb.equal(subqueryOrders.get(Order_.state), OrderState.COMPLETED.toString()));
         criteriaSubquery.distinct(true);
         criteriaSubquery.select(subqueryBooks.get(Book_.id));
-        
         criteriaQuery.where(cb.lessThanOrEqualTo(books.get(Book_.replenishmentDate), startDate),
                 books.get(Book_.id).in(criteriaSubquery).not(), cb.equal(books.get(Book_.isAvailable), true));
         return entityManager.createQuery(criteriaQuery).getResultList();

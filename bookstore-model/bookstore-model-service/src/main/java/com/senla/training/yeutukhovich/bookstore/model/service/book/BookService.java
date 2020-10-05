@@ -3,7 +3,6 @@ package com.senla.training.yeutukhovich.bookstore.model.service.book;
 import com.senla.training.yeutukhovich.bookstore.dto.BookDescriptionDto;
 import com.senla.training.yeutukhovich.bookstore.model.domain.Book;
 
-
 import java.util.Date;
 import java.util.List;
 

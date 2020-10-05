@@ -1,9 +1,9 @@
 package com.senla.training.yeutukhovich.bookstore.controller;
 
 import com.senla.training.yeutukhovich.bookstore.exception.BusinessException;
-import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.util.LinkedHashMap;
+import java.util.Collections;
 import java.util.Map;
 
 @ControllerAdvice
@@ -22,16 +22,18 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<Object> handleBusinessException(
             BusinessException exception, WebRequest request) {
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("message", exception.getMessage());
-        return new ResponseEntity<>(body, HttpStatus.OK);
+        Map<String, String> body = Collections.singletonMap("message", exception.getMessage());
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("message", exception.getMessage());
+        return new ResponseEntity<>(body, headers, HttpStatus.OK);
     }
 
     @ExceptionHandler(Exception.class)
     public final ResponseEntity<Object> handleAllExceptions(Exception exception, WebRequest request) {
-        Map<String, Object> body = new LinkedHashMap<>();
+        HttpHeaders headers = new HttpHeaders();
         LOGGER.error(exception.getMessage(), exception);
-        body.put("message", MessageConstant.SOMETHING_WENT_WRONG.getMessage());
-        return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
+        Map<String, String> body = Collections.singletonMap("message", exception.getMessage());
+        headers.set("message", exception.getMessage());
+        return new ResponseEntity<>(body, headers, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

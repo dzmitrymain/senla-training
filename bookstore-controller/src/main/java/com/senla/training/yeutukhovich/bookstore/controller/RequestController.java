@@ -6,9 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -22,7 +21,7 @@ public class RequestController {
     private RequestService requestService;
 
     @PostMapping("/create/{id}")
-    public RequestDto createRequest(@PathVariable("id") Long bookId, @RequestHeader String requesterData) {
+    public RequestDto createRequest(@PathVariable("id") Long bookId, @RequestParam String requesterData) {
         return new RequestDto(requestService.createRequest(bookId, requesterData));
     }
 
@@ -33,7 +32,7 @@ public class RequestController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/allRequestsByIsActive")
+    @GetMapping("/allRequestsByState")
     public List<RequestDto> findSortedAllRequestsByIsActive() {
         return requestService.findSortedAllRequestsByIsActive().stream()
                 .map(RequestDto::new)
@@ -48,19 +47,19 @@ public class RequestController {
     }
 
     @GetMapping("/exportAll")
-    public List<RequestDto> exportAllRequests(@RequestHeader String fileName) {
+    public List<RequestDto> exportAllRequests(@RequestParam String fileName) {
         return requestService.exportAllRequests(fileName).stream()
                 .map(RequestDto::new)
                 .collect(Collectors.toList());
     }
 
     @GetMapping("/export/{id}")
-    public RequestDto exportRequest(@PathVariable("id") Long requestId, @RequestHeader String fileName) {
+    public RequestDto exportRequest(@PathVariable("id") Long requestId, @RequestParam String fileName) {
         return new RequestDto(requestService.exportRequest(requestId, fileName));
     }
 
-    @PutMapping("/import")
-    public List<RequestDto> importRequests(@RequestHeader String fileName) {
+    @PostMapping("/import")
+    public List<RequestDto> importRequests(@RequestParam String fileName) {
         return requestService.importRequests(fileName).stream()
                 .map(RequestDto::new)
                 .collect(Collectors.toList());

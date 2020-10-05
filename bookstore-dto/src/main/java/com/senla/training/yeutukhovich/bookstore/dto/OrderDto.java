@@ -91,4 +91,11 @@ public class OrderDto {
     public void setCustomerData(String customerData) {
         this.customerData = customerData;
     }
+
+    @Override
+    public String toString() {
+        return "Order [id=" + id +
+                ", state=" + state +
+                ", customer data='" + customerData + "']";
+    }
 }

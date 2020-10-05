@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,16 +25,16 @@ public class OrderController {
     private OrderService orderService;
 
     @PostMapping("/create/{id}")
-    public OrderDto createOrder(@PathVariable("id") Long bookId, @RequestHeader String customerData) {
+    public OrderDto createOrder(@PathVariable("id") Long bookId, @RequestParam String customerData) {
         return new OrderDto(orderService.createOrder(bookId, customerData));
     }
 
-    @PutMapping("/cancel/{id}")
+    @PostMapping("/cancel/{id}")
     public OrderDto cancelOrder(@PathVariable("id") Long orderId) {
         return new OrderDto(orderService.cancelOrder(orderId));
     }
 
-    @PutMapping("/complete/{id}")
+    @PostMapping("/complete/{id}")
     public OrderDto completeOrder(@PathVariable("id") Long orderId) {
         return new OrderDto(orderService.completeOrder(orderId));
     }
@@ -85,22 +83,22 @@ public class OrderController {
         return orderService.showOrderDetails(orderId);
     }
 
-    @PutMapping("/import")
-    public List<OrderDto> importOrders(@RequestHeader String fileName) {
+    @PostMapping("/import")
+    public List<OrderDto> importOrders(@RequestParam String fileName) {
         return orderService.importOrders(fileName).stream()
                 .map(OrderDto::new)
                 .collect(Collectors.toList());
     }
 
     @GetMapping("/exportAll")
-    public List<OrderDto> exportAllOrders(@RequestHeader String fileName) {
+    public List<OrderDto> exportAllOrders(@RequestParam String fileName) {
         return orderService.exportAllOrders(fileName).stream()
                 .map(OrderDto::new)
                 .collect(Collectors.toList());
     }
 
     @GetMapping("/export/{id}")
-    public OrderDto exportOrder(@PathVariable("id") Long orderId, @RequestHeader String fileName) {
+    public OrderDto exportOrder(@PathVariable("id") Long orderId, @RequestParam String fileName) {
         return new OrderDto(orderService.exportOrder(orderId, fileName));
     }
 }

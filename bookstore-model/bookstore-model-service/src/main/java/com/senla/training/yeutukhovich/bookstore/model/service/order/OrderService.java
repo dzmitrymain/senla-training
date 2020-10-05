@@ -3,7 +3,6 @@ package com.senla.training.yeutukhovich.bookstore.model.service.order;
 import com.senla.training.yeutukhovich.bookstore.dto.OrderDetailsDto;
 import com.senla.training.yeutukhovich.bookstore.model.domain.Order;
 
-
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
