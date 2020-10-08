@@ -2,7 +2,6 @@ package com.senla.training.yeutukhovich.bookstore.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.senla.training.yeutukhovich.bookstore.model.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.util.converter.DateConverter;
 
 import java.math.BigDecimal;
@@ -14,23 +13,10 @@ public class BookDto {
     private String title;
     private Boolean isAvailable;
     private Integer editionYear;
-    @JsonSerialize(using = DateConverter.Serialize.class)
+    @JsonSerialize(using = DateConverter.Serializer.class)
     @JsonDeserialize(using = DateConverter.Deserializer.class)
     private Date replenishmentDate;
     private BigDecimal price;
-
-    public BookDto() {
-
-    }
-
-    public BookDto(Book book) {
-        this.id = book.getId();
-        this.title = book.getTitle();
-        this.isAvailable = book.isAvailable();
-        this.editionYear = book.getEditionYear();
-        this.replenishmentDate = book.getReplenishmentDate();
-        this.price = book.getPrice();
-    }
 
     public Long getId() {
         return id;

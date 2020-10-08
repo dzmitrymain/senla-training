@@ -2,10 +2,12 @@ package com.senla.training.yeutukhovich.bookstore.model.service.book;
 
 import com.senla.training.yeutukhovich.bookstore.converter.EntityCvsConverter;
 import com.senla.training.yeutukhovich.bookstore.dto.BookDescriptionDto;
+import com.senla.training.yeutukhovich.bookstore.dto.BookDto;
 import com.senla.training.yeutukhovich.bookstore.exception.BusinessException;
 import com.senla.training.yeutukhovich.bookstore.model.dao.book.BookDao;
 import com.senla.training.yeutukhovich.bookstore.model.dao.request.RequestDao;
 import com.senla.training.yeutukhovich.bookstore.model.domain.Book;
+import com.senla.training.yeutukhovich.bookstore.model.service.dto.DtoMapper;
 import com.senla.training.yeutukhovich.bookstore.util.constant.ApplicationConstant;
 import com.senla.training.yeutukhovich.bookstore.util.constant.LoggerConstant;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
@@ -22,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -43,7 +46,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional
-    public Book replenishBook(Long id) {
+    public BookDto replenishBook(Long id) {
         Book book = bookDao.findById(id)
                 .orElseThrow(() -> {
                     LOGGER.warn(LoggerConstant.REPLENISH_BOOK_FAIL.getMessage(), id,
@@ -63,12 +66,12 @@ public class BookServiceImpl implements BookService {
             requestDao.closeRequestsByBookId(book.getId());
             LOGGER.info(LoggerConstant.REQUESTS_CLOSED.getMessage(), id);
         }
-        return book;
+        return DtoMapper.mapBook(book);
     }
 
     @Override
     @Transactional
-    public Book writeOffBook(Long id) {
+    public BookDto writeOffBook(Long id) {
         Book book = bookDao.findById(id)
                 .orElseThrow(() -> {
                     LOGGER.warn(LoggerConstant.WRITE_OFF_BOOK_FAIL.getMessage(), id,
@@ -83,68 +86,84 @@ public class BookServiceImpl implements BookService {
         book.setAvailable(false);
         bookDao.update(book);
         LOGGER.info(LoggerConstant.WRITE_OFF_BOOK_SUCCESS.getMessage(), id);
-        return book;
+        return DtoMapper.mapBook(book);
     }
 
     @Override
     @Transactional
-    public List<Book> findSortedAllBooksByAvailability() {
+    public List<BookDto> findSortedAllBooksByAvailability() {
         LOGGER.info(LoggerConstant.FIND_ALL_BOOKS_SORTED_BY_AVAILABILITY.getMessage());
-        return bookDao.findSortedAllBooksByAvailability();
+        return bookDao.findSortedAllBooksByAvailability().stream()
+                .map(DtoMapper::mapBook)
+                .collect(Collectors.toList());
     }
 
     @Override
     @Transactional
-    public List<Book> findSortedAllBooksByEditionYear() {
+    public List<BookDto> findSortedAllBooksByEditionYear() {
         LOGGER.info(LoggerConstant.FIND_ALL_BOOKS_SORTED_BY_EDITION_YEAR.getMessage());
-        return bookDao.findSortedAllBooksByEditionYear();
+        return bookDao.findSortedAllBooksByEditionYear().stream()
+                .map(DtoMapper::mapBook)
+                .collect(Collectors.toList());
     }
 
     @Override
     @Transactional
-    public List<Book> findSortedAllBooksByPrice() {
+    public List<BookDto> findSortedAllBooksByPrice() {
         LOGGER.info(LoggerConstant.FIND_ALL_BOOKS_SORTED_BY_PRICE.getMessage());
-        return bookDao.findSortedAllBooksByPrice();
+        return bookDao.findSortedAllBooksByPrice().stream()
+                .map(DtoMapper::mapBook)
+                .collect(Collectors.toList());
     }
 
     @Override
     @Transactional
-    public List<Book> findSortedAllBooksByReplenishmentDate() {
+    public List<BookDto> findSortedAllBooksByReplenishmentDate() {
         LOGGER.info(LoggerConstant.FIND_ALL_BOOKS_SORTED_BY_REPLENISHMENT_DATE.getMessage());
-        return bookDao.findSortedAllBooksByReplenishmentDate();
+        return bookDao.findSortedAllBooksByReplenishmentDate().stream()
+                .map(DtoMapper::mapBook)
+                .collect(Collectors.toList());
     }
 
     @Override
     @Transactional
-    public List<Book> findSortedAllBooksByTitle() {
+    public List<BookDto> findSortedAllBooksByTitle() {
         LOGGER.info(LoggerConstant.FIND_ALL_BOOKS_SORTED_BY_TITLE.getMessage());
-        return bookDao.findSortedAllBooksByTitle();
+        return bookDao.findSortedAllBooksByTitle().stream()
+                .map(DtoMapper::mapBook)
+                .collect(Collectors.toList());
     }
 
     @Override
     @Transactional
-    public List<Book> findSoldBooksBetweenDates(Date startDate, Date endDate) {
+    public List<BookDto> findSoldBooksBetweenDates(Date startDate, Date endDate) {
         LOGGER.info(LoggerConstant.FIND_SOLD_BOOKS.getMessage(), DateConverter.formatDate(startDate,
                 DateConverter.DAY_DATE_FORMAT), DateConverter.formatDate(endDate, DateConverter.DAY_DATE_FORMAT));
-        return bookDao.findSoldBooksBetweenDates(startDate, endDate);
+        return bookDao.findSoldBooksBetweenDates(startDate, endDate).stream()
+                .map(DtoMapper::mapBook)
+                .collect(Collectors.toList());
     }
 
     @Override
     @Transactional
-    public List<Book> findUnsoldBooksBetweenDates(Date startDate, Date endDate) {
+    public List<BookDto> findUnsoldBooksBetweenDates(Date startDate, Date endDate) {
         LOGGER.info(LoggerConstant.FIND_UNSOLD_BOOKS.getMessage(), DateConverter.formatDate(startDate,
                 DateConverter.DAY_DATE_FORMAT), DateConverter.formatDate(endDate, DateConverter.DAY_DATE_FORMAT));
-        return bookDao.findUnsoldBooksBetweenDates(startDate, endDate);
+        return bookDao.findUnsoldBooksBetweenDates(startDate, endDate).stream()
+                .map(DtoMapper::mapBook)
+                .collect(Collectors.toList());
     }
 
     @Override
     @Transactional
-    public List<Book> findStaleBooks() {
+    public List<BookDto> findStaleBooks() {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MONTH, -staleMonthNumber);
         Date staleDate = new Date(calendar.getTimeInMillis());
         LOGGER.info(LoggerConstant.FIND_STALE_BOOKS.getMessage());
-        return bookDao.findStaleBooksBetweenDates(staleDate, new Date());
+        return bookDao.findStaleBooksBetweenDates(staleDate, new Date()).stream()
+                .map(DtoMapper::mapBook)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -166,19 +185,21 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional
-    public List<Book> exportAllBooks(String fileName) {
+    public List<BookDto> exportAllBooks(String fileName) {
         String path = cvsDirectoryPath
                 + fileName + ApplicationConstant.CVS_FORMAT_TYPE;
         List<Book> books = bookDao.findAll();
         List<String> bookStrings = entityCvsConverter.convertBooks(books);
         FileDataWriter.writeData(path, bookStrings);
         LOGGER.info(LoggerConstant.EXPORT_ALL_BOOKS.getMessage(), fileName);
-        return books;
+        return books.stream()
+                .map(DtoMapper::mapBook)
+                .collect(Collectors.toList());
     }
 
     @Override
     @Transactional
-    public Book exportBook(Long bookId, String fileName) {
+    public BookDto exportBook(Long bookId, String fileName) {
         String path = cvsDirectoryPath
                 + fileName + ApplicationConstant.CVS_FORMAT_TYPE;
         Book book = bookDao.findById(bookId).orElseThrow(() -> {
@@ -188,12 +209,12 @@ public class BookServiceImpl implements BookService {
         List<String> bookStrings = entityCvsConverter.convertBooks(List.of(book));
         FileDataWriter.writeData(path, bookStrings);
         LOGGER.info(LoggerConstant.EXPORT_BOOK_SUCCESS.getMessage(), bookId, fileName);
-        return book;
+        return DtoMapper.mapBook(book);
     }
 
     @Override
     @Transactional
-    public List<Book> importBooks(String fileName) {
+    public List<BookDto> importBooks(String fileName) {
         List<String> dataStrings = readStringsFromFile(fileName);
         List<Book> importedBooks = entityCvsConverter.parseBooks(dataStrings);
         for (Book importedBook : importedBooks) {
@@ -203,7 +224,9 @@ public class BookServiceImpl implements BookService {
             }
         }
         LOGGER.info(LoggerConstant.IMPORT_BOOKS_SUCCESS.getMessage(), fileName);
-        return importedBooks;
+        return importedBooks.stream()
+                .map(DtoMapper::mapBook)
+                .collect(Collectors.toList());
     }
 
     private List<String> readStringsFromFile(String fileName) {

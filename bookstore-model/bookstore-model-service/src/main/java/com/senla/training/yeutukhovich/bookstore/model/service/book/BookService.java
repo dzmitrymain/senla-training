@@ -1,6 +1,7 @@
 package com.senla.training.yeutukhovich.bookstore.model.service.book;
 
 import com.senla.training.yeutukhovich.bookstore.dto.BookDescriptionDto;
+import com.senla.training.yeutukhovich.bookstore.dto.BookDto;
 import com.senla.training.yeutukhovich.bookstore.model.domain.Book;
 
 import java.util.Date;
@@ -8,31 +9,31 @@ import java.util.List;
 
 public interface BookService {
 
-    Book replenishBook(Long id);
+    BookDto replenishBook(Long id);
 
-    Book writeOffBook(Long id);
+    BookDto writeOffBook(Long id);
 
-    List<Book> findSortedAllBooksByAvailability();
+    List<BookDto> findSortedAllBooksByAvailability();
 
-    List<Book> findSortedAllBooksByEditionYear();
+    List<BookDto> findSortedAllBooksByEditionYear();
 
-    List<Book> findSortedAllBooksByPrice();
+    List<BookDto> findSortedAllBooksByPrice();
 
-    List<Book> findSortedAllBooksByReplenishmentDate();
+    List<BookDto> findSortedAllBooksByReplenishmentDate();
 
-    List<Book> findSortedAllBooksByTitle();
+    List<BookDto> findSortedAllBooksByTitle();
 
-    List<Book> findSoldBooksBetweenDates(Date startDate, Date endDate);
+    List<BookDto> findSoldBooksBetweenDates(Date startDate, Date endDate);
 
-    List<Book> findUnsoldBooksBetweenDates(Date startDate, Date endDate);
+    List<BookDto> findUnsoldBooksBetweenDates(Date startDate, Date endDate);
 
-    List<Book> findStaleBooks();
+    List<BookDto> findStaleBooks();
 
     BookDescriptionDto showBookDescription(Long id);
 
-    List<Book> exportAllBooks(String fileName);
+    List<BookDto> exportAllBooks(String fileName);
 
-    Book exportBook(Long bookId, String fileName);
+    BookDto exportBook(Long bookId, String fileName);
 
-    List<Book> importBooks(String fileName);
+    List<BookDto> importBooks(String fileName);
 }

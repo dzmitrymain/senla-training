@@ -2,6 +2,7 @@ package com.senla.training.yeutukhovich.bookstore.model.service.order;
 
 import com.senla.training.yeutukhovich.bookstore.converter.EntityCvsConverter;
 import com.senla.training.yeutukhovich.bookstore.dto.OrderDetailsDto;
+import com.senla.training.yeutukhovich.bookstore.dto.OrderDto;
 import com.senla.training.yeutukhovich.bookstore.exception.BusinessException;
 import com.senla.training.yeutukhovich.bookstore.model.dao.book.BookDao;
 import com.senla.training.yeutukhovich.bookstore.model.dao.order.OrderDao;
@@ -69,7 +70,7 @@ class OrderServiceImplTest {
         Mockito.when(book.isAvailable()).thenReturn(false);
         Mockito.when(bookDao.findById(bookId)).thenReturn(Optional.of(book));
 
-        Order result = orderService.createOrder(bookId, "");
+        OrderDto result = orderService.createOrder(bookId, "");
 
         Mockito.verify(requestDao, Mockito.times(1)).add(Mockito.any());
         Mockito.verify(orderDao, Mockito.times(1)).add(Mockito.any());
@@ -81,7 +82,7 @@ class OrderServiceImplTest {
         Mockito.when(book.isAvailable()).thenReturn(true);
         Mockito.when(bookDao.findById(bookId)).thenReturn(Optional.of(book));
 
-        Order result = orderService.createOrder(bookId, "");
+        OrderDto result = orderService.createOrder(bookId, "");
 
         Mockito.verify(requestDao, Mockito.never()).add(Mockito.any());
         Mockito.verify(orderDao, Mockito.times(1)).add(Mockito.any());

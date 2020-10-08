@@ -2,7 +2,6 @@ package com.senla.training.yeutukhovich.bookstore.util.converter;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonSerializer;
@@ -38,7 +37,7 @@ public final class DateConverter {
         return "";
     }
 
-    public static class Serialize extends JsonSerializer<Date> {
+    public static class Serializer extends JsonSerializer<Date> {
 
         @Override
         public void serialize(Date date, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
@@ -53,7 +52,7 @@ public final class DateConverter {
     public static class Deserializer extends JsonDeserializer<Date> {
 
         @Override
-        public Date deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+        public Date deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
             try {
                 return STANDARD_DATE_FORMAT.parse(jsonParser.getText());
             } catch (ParseException e) {

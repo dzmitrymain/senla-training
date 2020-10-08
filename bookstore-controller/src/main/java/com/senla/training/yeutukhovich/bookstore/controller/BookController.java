@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/books")
@@ -24,68 +23,52 @@ public class BookController {
 
     @PostMapping("/replenish/{id}")
     public BookDto replenishBook(@PathVariable("id") Long id) {
-        return new BookDto(bookService.replenishBook(id));
+        return bookService.replenishBook(id);
     }
 
     @PostMapping("/writeOff/{id}")
     public BookDto writeOffBook(@PathVariable("id") Long id) {
-        return new BookDto(bookService.writeOffBook(id));
+        return bookService.writeOffBook(id);
     }
 
     @GetMapping("/allBooksByAvailability")
     public List<BookDto> findSortedAllBooksByAvailability() {
-        return bookService.findSortedAllBooksByAvailability().stream()
-                .map(BookDto::new)
-                .collect(Collectors.toList());
+        return bookService.findSortedAllBooksByAvailability();
     }
 
     @GetMapping("/allBooksByEditionYear")
     public List<BookDto> findSortedAllBooksByEditionYear() {
-        return bookService.findSortedAllBooksByEditionYear().stream()
-                .map(BookDto::new)
-                .collect(Collectors.toList());
+        return bookService.findSortedAllBooksByEditionYear();
     }
 
     @GetMapping("/allBooksByPrice")
     public List<BookDto> findSortedAllBooksByPrice() {
-        return bookService.findSortedAllBooksByPrice().stream()
-                .map(BookDto::new)
-                .collect(Collectors.toList());
+        return bookService.findSortedAllBooksByPrice();
     }
 
     @GetMapping("/allBooksByReplenishmentDate")
     public List<BookDto> findSortedAllBooksByReplenishmentDate() {
-        return bookService.findSortedAllBooksByReplenishmentDate().stream()
-                .map(BookDto::new)
-                .collect(Collectors.toList());
+        return bookService.findSortedAllBooksByReplenishmentDate();
     }
 
     @GetMapping("/allBooksByTitle")
     public List<BookDto> findSortedAllBooksByTitle() {
-        return bookService.findSortedAllBooksByTitle().stream()
-                .map(BookDto::new)
-                .collect(Collectors.toList());
+        return bookService.findSortedAllBooksByTitle();
     }
 
     @GetMapping("/soldBetweenDates")
     public List<BookDto> findSoldBooksBetweenDates(@RequestParam Date startDate, @RequestParam Date endDate) {
-        return bookService.findSoldBooksBetweenDates(startDate, endDate).stream()
-                .map(BookDto::new)
-                .collect(Collectors.toList());
+        return bookService.findSoldBooksBetweenDates(startDate, endDate);
     }
 
     @GetMapping("/unsoldBetweenDates")
     public List<BookDto> findUnsoldBooksBetweenDates(@RequestParam Date startDate, @RequestParam Date endDate) {
-        return bookService.findUnsoldBooksBetweenDates(startDate, endDate).stream()
-                .map(BookDto::new)
-                .collect(Collectors.toList());
+        return bookService.findUnsoldBooksBetweenDates(startDate, endDate);
     }
 
     @GetMapping("/stale")
     public List<BookDto> findStaleBooks() {
-        return bookService.findStaleBooks().stream()
-                .map(BookDto::new)
-                .collect(Collectors.toList());
+        return bookService.findStaleBooks();
     }
 
     @GetMapping("/description/{id}")
@@ -95,20 +78,16 @@ public class BookController {
 
     @PostMapping("/import")
     public List<BookDto> importBooks(@RequestParam String fileName) {
-        return bookService.importBooks(fileName).stream()
-                .map(BookDto::new)
-                .collect(Collectors.toList());
+        return bookService.importBooks(fileName);
     }
 
     @GetMapping("/exportAll")
     public List<BookDto> exportAllBooks(@RequestParam String fileName) {
-        return bookService.exportAllBooks(fileName).stream()
-                .map(BookDto::new)
-                .collect(Collectors.toList());
+        return bookService.exportAllBooks(fileName);
     }
 
     @GetMapping("/export/{id}")
     public BookDto exportBook(@PathVariable("id") Long bookId, @RequestParam String fileName) {
-        return new BookDto(bookService.exportBook(bookId, fileName));
+        return bookService.exportBook(bookId, fileName);
     }
 }

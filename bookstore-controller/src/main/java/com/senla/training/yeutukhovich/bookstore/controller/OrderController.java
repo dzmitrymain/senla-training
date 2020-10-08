@@ -15,7 +15,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/orders")
@@ -26,45 +25,37 @@ public class OrderController {
 
     @PostMapping("/create/{id}")
     public OrderDto createOrder(@PathVariable("id") Long bookId, @RequestParam String customerData) {
-        return new OrderDto(orderService.createOrder(bookId, customerData));
+        return orderService.createOrder(bookId, customerData);
     }
 
     @PostMapping("/cancel/{id}")
     public OrderDto cancelOrder(@PathVariable("id") Long orderId) {
-        return new OrderDto(orderService.cancelOrder(orderId));
+        return orderService.cancelOrder(orderId);
     }
 
     @PostMapping("/complete/{id}")
     public OrderDto completeOrder(@PathVariable("id") Long orderId) {
-        return new OrderDto(orderService.completeOrder(orderId));
+        return orderService.completeOrder(orderId);
     }
 
     @GetMapping("/allOrdersByCompletionDate")
     public List<OrderDto> findSortedAllOrdersByCompletionDate() {
-        return orderService.findSortedAllOrdersByCompletionDate().stream()
-                .map(OrderDto::new)
-                .collect(Collectors.toList());
+        return orderService.findSortedAllOrdersByCompletionDate();
     }
 
     @GetMapping("/allOrdersByPrice")
     public List<OrderDto> findSortedAllOrdersByPrice() {
-        return orderService.findSortedAllOrdersByPrice().stream()
-                .map(OrderDto::new)
-                .collect(Collectors.toList());
+        return orderService.findSortedAllOrdersByPrice();
     }
 
     @GetMapping("/allOrdersByState")
     public List<OrderDto> findSortedAllOrdersByState() {
-        return orderService.findSortedAllOrdersByState().stream()
-                .map(OrderDto::new)
-                .collect(Collectors.toList());
+        return orderService.findSortedAllOrdersByState();
     }
 
     @GetMapping("/completedBetweenDates")
     public List<OrderDto> findCompletedOrdersBetweenDates(@RequestParam Date startDate, @RequestParam Date endDate) {
-        return orderService.findCompletedOrdersBetweenDates(startDate, endDate).stream()
-                .map(OrderDto::new)
-                .collect(Collectors.toList());
+        return orderService.findCompletedOrdersBetweenDates(startDate, endDate);
     }
 
     @GetMapping("/profitBetweenDates")
@@ -85,20 +76,16 @@ public class OrderController {
 
     @PostMapping("/import")
     public List<OrderDto> importOrders(@RequestParam String fileName) {
-        return orderService.importOrders(fileName).stream()
-                .map(OrderDto::new)
-                .collect(Collectors.toList());
+        return orderService.importOrders(fileName);
     }
 
     @GetMapping("/exportAll")
     public List<OrderDto> exportAllOrders(@RequestParam String fileName) {
-        return orderService.exportAllOrders(fileName).stream()
-                .map(OrderDto::new)
-                .collect(Collectors.toList());
+        return orderService.exportAllOrders(fileName);
     }
 
     @GetMapping("/export/{id}")
     public OrderDto exportOrder(@PathVariable("id") Long orderId, @RequestParam String fileName) {
-        return new OrderDto(orderService.exportOrder(orderId, fileName));
+        return orderService.exportOrder(orderId, fileName);
     }
 }

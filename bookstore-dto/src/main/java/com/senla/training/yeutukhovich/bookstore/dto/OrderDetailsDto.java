@@ -2,7 +2,6 @@ package com.senla.training.yeutukhovich.bookstore.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.senla.training.yeutukhovich.bookstore.model.domain.state.OrderState;
 import com.senla.training.yeutukhovich.bookstore.util.converter.DateConverter;
 
 import java.math.BigDecimal;
@@ -12,12 +11,12 @@ public class OrderDetailsDto {
 
     private String customerData;
     private String bookTitle;
-    private OrderState state;
+    private String state;
     private BigDecimal price;
-    @JsonSerialize(using = DateConverter.Serialize.class)
+    @JsonSerialize(using = DateConverter.Serializer.class)
     @JsonDeserialize(using = DateConverter.Deserializer.class)
     private Date creationDate;
-    @JsonSerialize(using = DateConverter.Serialize.class)
+    @JsonSerialize(using = DateConverter.Serializer.class)
     @JsonDeserialize(using = DateConverter.Deserializer.class)
     private Date completionDate;
 
@@ -45,11 +44,11 @@ public class OrderDetailsDto {
         this.price = price;
     }
 
-    public OrderState getState() {
+    public String getState() {
         return state;
     }
 
-    public void setState(OrderState state) {
+    public void setState(String state) {
         this.state = state;
     }
 

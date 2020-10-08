@@ -2,6 +2,7 @@ package com.senla.training.yeutukhovich.bookstore.model.service.order;
 
 import com.senla.training.yeutukhovich.bookstore.converter.EntityCvsConverter;
 import com.senla.training.yeutukhovich.bookstore.dto.OrderDetailsDto;
+import com.senla.training.yeutukhovich.bookstore.dto.OrderDto;
 import com.senla.training.yeutukhovich.bookstore.exception.BusinessException;
 import com.senla.training.yeutukhovich.bookstore.model.dao.book.BookDao;
 import com.senla.training.yeutukhovich.bookstore.model.dao.order.OrderDao;
@@ -10,6 +11,7 @@ import com.senla.training.yeutukhovich.bookstore.model.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.model.domain.Order;
 import com.senla.training.yeutukhovich.bookstore.model.domain.Request;
 import com.senla.training.yeutukhovich.bookstore.model.domain.state.OrderState;
+import com.senla.training.yeutukhovich.bookstore.model.service.dto.DtoMapper;
 import com.senla.training.yeutukhovich.bookstore.util.constant.ApplicationConstant;
 import com.senla.training.yeutukhovich.bookstore.util.constant.LoggerConstant;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
@@ -25,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -44,7 +47,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public Order createOrder(Long bookId, String customerData) {
+    public OrderDto createOrder(Long bookId, String customerData) {
         Book book = bookDao.findById(bookId)
                 .orElseThrow(() -> {
                     LOGGER.warn(LoggerConstant.CREATE_ORDER_FAIL.getMessage(), bookId,
@@ -58,12 +61,12 @@ public class OrderServiceImpl implements OrderService {
         Order order = new Order(book, customerData);
         orderDao.add(order);
         LOGGER.info(LoggerConstant.CREATE_ORDER_SUCCESS.getMessage(), order.getId(), bookId);
-        return order;
+        return DtoMapper.mapOrder(order);
     }
 
     @Override
     @Transactional
-    public Order cancelOrder(Long orderId) {
+    public OrderDto cancelOrder(Long orderId) {
         Order order = orderDao.findById(orderId)
                 .orElseThrow(() -> {
                     LOGGER.warn(LoggerConstant.CANCEL_ORDER_FAIL.getMessage(), orderId,
@@ -79,12 +82,12 @@ public class OrderServiceImpl implements OrderService {
         order.setCompletionDate(new Date());
         orderDao.update(order);
         LOGGER.info(LoggerConstant.CANCEL_ORDER_SUCCESS.getMessage(), orderId);
-        return order;
+        return DtoMapper.mapOrder(order);
     }
 
     @Override
     @Transactional
-    public Order completeOrder(Long orderId) {
+    public OrderDto completeOrder(Long orderId) {
         Order order = orderDao.findById(orderId)
                 .orElseThrow(() -> {
                     LOGGER.warn(LoggerConstant.COMPLETE_ORDER_FAIL.getMessage(), orderId,
@@ -105,37 +108,45 @@ public class OrderServiceImpl implements OrderService {
         order.setCompletionDate(new Date());
         orderDao.update(order);
         LOGGER.info(LoggerConstant.COMPLETE_ORDER_SUCCESS.getMessage(), orderId);
-        return order;
+        return DtoMapper.mapOrder(order);
     }
 
     @Override
     @Transactional
-    public List<Order> findSortedAllOrdersByCompletionDate() {
+    public List<OrderDto> findSortedAllOrdersByCompletionDate() {
         LOGGER.info(LoggerConstant.FIND_ALL_ORDERS_SORTED_BY_COMPLETION_DATE.getMessage());
-        return orderDao.findSortedAllOrdersByCompletionDate();
+        return orderDao.findSortedAllOrdersByCompletionDate().stream()
+                .map(DtoMapper::mapOrder)
+                .collect(Collectors.toList());
     }
 
     @Override
     @Transactional
-    public List<Order> findSortedAllOrdersByPrice() {
+    public List<OrderDto> findSortedAllOrdersByPrice() {
         LOGGER.info(LoggerConstant.FIND_ALL_ORDERS_SORTED_BY_PRICE.getMessage());
-        return orderDao.findSortedAllOrdersByPrice();
+        return orderDao.findSortedAllOrdersByPrice().stream()
+                .map(DtoMapper::mapOrder)
+                .collect(Collectors.toList());
     }
 
     @Override
     @Transactional
-    public List<Order> findSortedAllOrdersByState() {
+    public List<OrderDto> findSortedAllOrdersByState() {
         LOGGER.info(LoggerConstant.FIND_ALL_ORDERS_SORTED_BY_STATE.getMessage());
-        return orderDao.findSortedAllOrdersByState();
+        return orderDao.findSortedAllOrdersByState().stream()
+                .map(DtoMapper::mapOrder)
+                .collect(Collectors.toList());
     }
 
     @Override
     @Transactional
-    public List<Order> findCompletedOrdersBetweenDates(Date startDate, Date endDate) {
+    public List<OrderDto> findCompletedOrdersBetweenDates(Date startDate, Date endDate) {
         LOGGER.info(LoggerConstant.FIND_COMPLETED_ORDERS_BETWEEN_DATES.getMessage(),
                 DateConverter.formatDate(startDate, DateConverter.DAY_DATE_FORMAT),
                 DateConverter.formatDate(endDate, DateConverter.DAY_DATE_FORMAT));
-        return orderDao.findCompletedOrdersBetweenDates(startDate, endDate);
+        return orderDao.findCompletedOrdersBetweenDates(startDate, endDate).stream()
+                .map(DtoMapper::mapOrder)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -169,7 +180,7 @@ public class OrderServiceImpl implements OrderService {
         orderDetailsDto.setCustomerData(order.getCustomerData());
         orderDetailsDto.setBookTitle(order.getBook().getTitle());
         orderDetailsDto.setPrice(order.getCurrentBookPrice());
-        orderDetailsDto.setState(order.getState());
+        orderDetailsDto.setState(order.getState().toString());
         orderDetailsDto.setCreationDate(order.getCreationDate());
         orderDetailsDto.setCompletionDate(order.getCompletionDate());
         LOGGER.info(LoggerConstant.SHOW_ORDER_DETAILS_SUCCESS.getMessage(), orderId);
@@ -178,19 +189,21 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public List<Order> exportAllOrders(String fileName) {
+    public List<OrderDto> exportAllOrders(String fileName) {
         String path = cvsDirectoryPath
                 + fileName + ApplicationConstant.CVS_FORMAT_TYPE;
         List<Order> orders = orderDao.findAll();
         List<String> orderStrings = entityCvsConverter.convertOrders(orders);
         FileDataWriter.writeData(path, orderStrings);
         LOGGER.info(LoggerConstant.EXPORT_ALL_ORDERS.getMessage(), fileName);
-        return orders;
+        return orders.stream()
+                .map(DtoMapper::mapOrder)
+                .collect(Collectors.toList());
     }
 
     @Override
     @Transactional
-    public Order exportOrder(Long id, String fileName) {
+    public OrderDto exportOrder(Long id, String fileName) {
         String path = cvsDirectoryPath
                 + fileName + ApplicationConstant.CVS_FORMAT_TYPE;
         Order order = orderDao.findById(id).orElseThrow(() -> {
@@ -201,12 +214,12 @@ public class OrderServiceImpl implements OrderService {
         List<String> orderStrings = entityCvsConverter.convertOrders(List.of(order));
         FileDataWriter.writeData(path, orderStrings);
         LOGGER.info(LoggerConstant.EXPORT_ORDER_SUCCESS.getMessage(), id, fileName);
-        return order;
+        return DtoMapper.mapOrder(order);
     }
 
     @Override
     @Transactional
-    public List<Order> importOrders(String fileName) {
+    public List<OrderDto> importOrders(String fileName) {
         List<String> orderStrings = readStringsFromFile(fileName);
         List<Order> importedOrders = entityCvsConverter.parseOrders(orderStrings);
         for (Order importedOrder : importedOrders) {
@@ -220,7 +233,9 @@ public class OrderServiceImpl implements OrderService {
             orderDao.update(importedOrder);
         }
         LOGGER.info(LoggerConstant.IMPORT_ORDERS_SUCCESS.getMessage(), fileName);
-        return importedOrders;
+        return importedOrders.stream()
+                .map(DtoMapper::mapOrder)
+                .collect(Collectors.toList());
     }
 
     private List<String> readStringsFromFile(String fileName) {

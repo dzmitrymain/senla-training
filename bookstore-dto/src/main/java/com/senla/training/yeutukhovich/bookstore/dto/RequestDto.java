@@ -1,24 +1,11 @@
 package com.senla.training.yeutukhovich.bookstore.dto;
 
-import com.senla.training.yeutukhovich.bookstore.model.domain.Request;
-
 public class RequestDto {
 
     private Long id;
     private BookDto bookDto;
     private Boolean isActive;
     private String requesterData;
-
-    public RequestDto() {
-
-    }
-
-    public RequestDto(Request request) {
-        this.id = request.getId();
-        this.bookDto = new BookDto(request.getBook());
-        this.isActive = request.isActive();
-        this.requesterData = request.getRequesterData();
-    }
 
     public Long getId() {
         return id;

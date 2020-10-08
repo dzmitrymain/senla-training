@@ -11,7 +11,7 @@ public class BookDescriptionDto {
 
     private String title;
     private int editionYear;
-    @JsonSerialize(using = DateConverter.Serialize.class)
+    @JsonSerialize(using = DateConverter.Serializer.class)
     @JsonDeserialize(using = DateConverter.Deserializer.class)
     private Date replenishmentDate;
 

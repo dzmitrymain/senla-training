@@ -19,7 +19,7 @@ public class Order extends AbstractEntity {
 
     @Column(name = "state")
     private String state;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "book_id")
     private Book book;
     @Column(name = "price")
