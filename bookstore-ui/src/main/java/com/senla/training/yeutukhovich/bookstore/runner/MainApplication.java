@@ -13,8 +13,8 @@ public class MainApplication {
         menuController.run();
 
         UserInputReader.closeReader();
-        //TODO: fix csv!
         //TODO: endpoints constant and naming
+
         //TODO: controller tests
         //TODO: think about errors
     }
