@@ -13,7 +13,7 @@ public class MainApplication {
         menuController.run();
 
         UserInputReader.closeReader();
-        //TODO: endpoints constant and naming
+        //TODO: endpoints constant
 
         //TODO: controller tests
         //TODO: think about errors

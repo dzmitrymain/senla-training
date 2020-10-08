@@ -23,32 +23,32 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    @PostMapping("/create/{id}")
-    public OrderDto createOrder(@PathVariable("id") Long bookId, @RequestParam String customerData) {
+    @PostMapping()
+    public OrderDto createOrder(@RequestParam Long bookId, @RequestParam String customerData) {
         return orderService.createOrder(bookId, customerData);
     }
 
-    @PostMapping("/cancel/{id}")
+    @PostMapping("/{id}/cancel")
     public OrderDto cancelOrder(@PathVariable("id") Long orderId) {
         return orderService.cancelOrder(orderId);
     }
 
-    @PostMapping("/complete/{id}")
+    @PostMapping("/{id}/complete")
     public OrderDto completeOrder(@PathVariable("id") Long orderId) {
         return orderService.completeOrder(orderId);
     }
 
-    @GetMapping("/allOrdersByCompletionDate")
+    @GetMapping("/byCompletionDate")
     public List<OrderDto> findSortedAllOrdersByCompletionDate() {
         return orderService.findSortedAllOrdersByCompletionDate();
     }
 
-    @GetMapping("/allOrdersByPrice")
+    @GetMapping("/byPrice")
     public List<OrderDto> findSortedAllOrdersByPrice() {
         return orderService.findSortedAllOrdersByPrice();
     }
 
-    @GetMapping("/allOrdersByState")
+    @GetMapping("/byState")
     public List<OrderDto> findSortedAllOrdersByState() {
         return orderService.findSortedAllOrdersByState();
     }
@@ -69,7 +69,7 @@ public class OrderController {
                 orderService.calculateCompletedOrdersNumberBetweenDates(startDate, endDate));
     }
 
-    @GetMapping("/details/{id}")
+    @GetMapping("/{id}/details")
     public OrderDetailsDto showOrderDetails(@PathVariable("id") Long orderId) {
         return orderService.showOrderDetails(orderId);
     }
@@ -79,12 +79,12 @@ public class OrderController {
         return orderService.importOrders(fileName);
     }
 
-    @GetMapping("/exportAll")
+    @PostMapping("/export")
     public List<OrderDto> exportAllOrders(@RequestParam String fileName) {
         return orderService.exportAllOrders(fileName);
     }
 
-    @GetMapping("/export/{id}")
+    @PostMapping("/{id}/export")
     public OrderDto exportOrder(@PathVariable("id") Long orderId, @RequestParam String fileName) {
         return orderService.exportOrder(orderId, fileName);
     }

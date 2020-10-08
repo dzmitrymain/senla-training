@@ -21,37 +21,37 @@ public class BookController {
     @Autowired
     private BookService bookService;
 
-    @PostMapping("/replenish/{id}")
+    @PostMapping("/{id}/replenish")
     public BookDto replenishBook(@PathVariable("id") Long id) {
         return bookService.replenishBook(id);
     }
 
-    @PostMapping("/writeOff/{id}")
+    @PostMapping("/{id}/writeOff")
     public BookDto writeOffBook(@PathVariable("id") Long id) {
         return bookService.writeOffBook(id);
     }
 
-    @GetMapping("/allBooksByAvailability")
+    @GetMapping("/byAvailability")
     public List<BookDto> findSortedAllBooksByAvailability() {
         return bookService.findSortedAllBooksByAvailability();
     }
 
-    @GetMapping("/allBooksByEditionYear")
+    @GetMapping("/byEditionYear")
     public List<BookDto> findSortedAllBooksByEditionYear() {
         return bookService.findSortedAllBooksByEditionYear();
     }
 
-    @GetMapping("/allBooksByPrice")
+    @GetMapping("/byPrice")
     public List<BookDto> findSortedAllBooksByPrice() {
         return bookService.findSortedAllBooksByPrice();
     }
 
-    @GetMapping("/allBooksByReplenishmentDate")
+    @GetMapping("/byReplenishmentDate")
     public List<BookDto> findSortedAllBooksByReplenishmentDate() {
         return bookService.findSortedAllBooksByReplenishmentDate();
     }
 
-    @GetMapping("/allBooksByTitle")
+    @GetMapping("/byTitle")
     public List<BookDto> findSortedAllBooksByTitle() {
         return bookService.findSortedAllBooksByTitle();
     }
@@ -71,7 +71,7 @@ public class BookController {
         return bookService.findStaleBooks();
     }
 
-    @GetMapping("/description/{id}")
+    @GetMapping("/{id}/description")
     public BookDescriptionDto showBookDescription(@PathVariable("id") Long id) {
         return bookService.showBookDescription(id);
     }
@@ -81,12 +81,12 @@ public class BookController {
         return bookService.importBooks(fileName);
     }
 
-    @GetMapping("/exportAll")
+    @PostMapping("/export")
     public List<BookDto> exportAllBooks(@RequestParam String fileName) {
         return bookService.exportAllBooks(fileName);
     }
 
-    @GetMapping("/export/{id}")
+    @PostMapping("/{id}/export")
     public BookDto exportBook(@PathVariable("id") Long bookId, @RequestParam String fileName) {
         return bookService.exportBook(bookId, fileName);
     }

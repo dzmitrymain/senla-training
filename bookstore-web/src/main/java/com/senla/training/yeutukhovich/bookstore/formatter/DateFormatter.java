@@ -1,4 +1,4 @@
-package com.senla.training.yeutukhovich.bookstore.util.formatter;
+package com.senla.training.yeutukhovich.bookstore.formatter;
 
 import com.senla.training.yeutukhovich.bookstore.util.converter.DateConverter;
 import org.springframework.format.Formatter;

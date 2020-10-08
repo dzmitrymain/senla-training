@@ -1,6 +1,6 @@
 package com.senla.training.yeutukhovich.bookstore.config;
 
-import com.senla.training.yeutukhovich.bookstore.util.formatter.DateFormatter;
+import com.senla.training.yeutukhovich.bookstore.formatter.DateFormatter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
