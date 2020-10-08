@@ -1,6 +1,6 @@
 package com.senla.training.yeutukhovich.bookstore.model.service.order;
 
-import com.senla.training.yeutukhovich.bookstore.converter.EntityCvsConverter;
+import com.senla.training.yeutukhovich.bookstore.converter.EntityCsvConverter;
 import com.senla.training.yeutukhovich.bookstore.dto.OrderDetailsDto;
 import com.senla.training.yeutukhovich.bookstore.dto.OrderDto;
 import com.senla.training.yeutukhovich.bookstore.exception.BusinessException;
@@ -41,9 +41,9 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private RequestDao requestDao;
     @Autowired
-    private EntityCvsConverter entityCvsConverter;
+    private EntityCsvConverter entityCsvConverter;
 
-    private String cvsDirectoryPath = ApplicationConstant.CVS_DIRECTORY_PATH;
+    private String csvDirectoryPath = ApplicationConstant.CSV_DIRECTORY_PATH;
 
     @Override
     @Transactional
@@ -190,10 +190,10 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public List<OrderDto> exportAllOrders(String fileName) {
-        String path = cvsDirectoryPath
-                + fileName + ApplicationConstant.CVS_FORMAT_TYPE;
+        String path = csvDirectoryPath
+                + fileName + ApplicationConstant.CSV_FORMAT_TYPE;
         List<Order> orders = orderDao.findAll();
-        List<String> orderStrings = entityCvsConverter.convertOrders(orders);
+        List<String> orderStrings = entityCsvConverter.convertOrders(orders);
         FileDataWriter.writeData(path, orderStrings);
         LOGGER.info(LoggerConstant.EXPORT_ALL_ORDERS.getMessage(), fileName);
         return orders.stream()
@@ -204,14 +204,14 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public OrderDto exportOrder(Long id, String fileName) {
-        String path = cvsDirectoryPath
-                + fileName + ApplicationConstant.CVS_FORMAT_TYPE;
+        String path = csvDirectoryPath
+                + fileName + ApplicationConstant.CSV_FORMAT_TYPE;
         Order order = orderDao.findById(id).orElseThrow(() -> {
             LOGGER.warn(LoggerConstant.EXPORT_ORDER_FAIL.getMessage(), id,
                     MessageConstant.ORDER_NOT_EXIST.getMessage());
             return new BusinessException(MessageConstant.ORDER_NOT_EXIST.getMessage());
         });
-        List<String> orderStrings = entityCvsConverter.convertOrders(List.of(order));
+        List<String> orderStrings = entityCsvConverter.convertOrders(List.of(order));
         FileDataWriter.writeData(path, orderStrings);
         LOGGER.info(LoggerConstant.EXPORT_ORDER_SUCCESS.getMessage(), id, fileName);
         return DtoMapper.mapOrder(order);
@@ -221,7 +221,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public List<OrderDto> importOrders(String fileName) {
         List<String> orderStrings = readStringsFromFile(fileName);
-        List<Order> importedOrders = entityCvsConverter.parseOrders(orderStrings);
+        List<Order> importedOrders = entityCsvConverter.parseOrders(orderStrings);
         for (Order importedOrder : importedOrders) {
             Book dependentBook = bookDao.findById(importedOrder.getBook().getId())
                     .orElseThrow(() -> {
@@ -239,8 +239,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private List<String> readStringsFromFile(String fileName) {
-        String path = cvsDirectoryPath
-                + fileName + ApplicationConstant.CVS_FORMAT_TYPE;
+        String path = csvDirectoryPath
+                + fileName + ApplicationConstant.CSV_FORMAT_TYPE;
         return FileDataReader.readData(path);
     }
 }

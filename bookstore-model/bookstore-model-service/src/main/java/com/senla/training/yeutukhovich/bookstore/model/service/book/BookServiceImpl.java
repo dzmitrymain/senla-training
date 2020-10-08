@@ -1,6 +1,6 @@
 package com.senla.training.yeutukhovich.bookstore.model.service.book;
 
-import com.senla.training.yeutukhovich.bookstore.converter.EntityCvsConverter;
+import com.senla.training.yeutukhovich.bookstore.converter.EntityCsvConverter;
 import com.senla.training.yeutukhovich.bookstore.dto.BookDescriptionDto;
 import com.senla.training.yeutukhovich.bookstore.dto.BookDto;
 import com.senla.training.yeutukhovich.bookstore.exception.BusinessException;
@@ -36,13 +36,13 @@ public class BookServiceImpl implements BookService {
     @Autowired
     private RequestDao requestDao;
     @Autowired
-    private EntityCvsConverter entityCvsConverter;
+    private EntityCsvConverter entityCsvConverter;
 
     @Value("${BookServiceImpl.requestAutoCloseEnabled:true}")
     private boolean requestAutoCloseEnabled;
     @Value("${BookServiceImpl.staleMonthNumber:6}")
     private byte staleMonthNumber;
-    private String cvsDirectoryPath = ApplicationConstant.CVS_DIRECTORY_PATH;
+    private String csvDirectoryPath = ApplicationConstant.CSV_DIRECTORY_PATH;
 
     @Override
     @Transactional
@@ -186,10 +186,10 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional
     public List<BookDto> exportAllBooks(String fileName) {
-        String path = cvsDirectoryPath
-                + fileName + ApplicationConstant.CVS_FORMAT_TYPE;
+        String path = csvDirectoryPath
+                + fileName + ApplicationConstant.CSV_FORMAT_TYPE;
         List<Book> books = bookDao.findAll();
-        List<String> bookStrings = entityCvsConverter.convertBooks(books);
+        List<String> bookStrings = entityCsvConverter.convertBooks(books);
         FileDataWriter.writeData(path, bookStrings);
         LOGGER.info(LoggerConstant.EXPORT_ALL_BOOKS.getMessage(), fileName);
         return books.stream()
@@ -200,13 +200,13 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional
     public BookDto exportBook(Long bookId, String fileName) {
-        String path = cvsDirectoryPath
-                + fileName + ApplicationConstant.CVS_FORMAT_TYPE;
+        String path = csvDirectoryPath
+                + fileName + ApplicationConstant.CSV_FORMAT_TYPE;
         Book book = bookDao.findById(bookId).orElseThrow(() -> {
             LOGGER.warn(LoggerConstant.EXPORT_BOOK_FAIL.getMessage(), bookId, MessageConstant.BOOK_NOT_EXIST.getMessage());
             return new BusinessException(MessageConstant.BOOK_NOT_EXIST.getMessage());
         });
-        List<String> bookStrings = entityCvsConverter.convertBooks(List.of(book));
+        List<String> bookStrings = entityCsvConverter.convertBooks(List.of(book));
         FileDataWriter.writeData(path, bookStrings);
         LOGGER.info(LoggerConstant.EXPORT_BOOK_SUCCESS.getMessage(), bookId, fileName);
         return DtoMapper.mapBook(book);
@@ -216,7 +216,7 @@ public class BookServiceImpl implements BookService {
     @Transactional
     public List<BookDto> importBooks(String fileName) {
         List<String> dataStrings = readStringsFromFile(fileName);
-        List<Book> importedBooks = entityCvsConverter.parseBooks(dataStrings);
+        List<Book> importedBooks = entityCsvConverter.parseBooks(dataStrings);
         for (Book importedBook : importedBooks) {
             bookDao.update(importedBook);
             if (importedBook.isAvailable()) {
@@ -230,8 +230,8 @@ public class BookServiceImpl implements BookService {
     }
 
     private List<String> readStringsFromFile(String fileName) {
-        String path = cvsDirectoryPath
-                + fileName + ApplicationConstant.CVS_FORMAT_TYPE;
+        String path = csvDirectoryPath
+                + fileName + ApplicationConstant.CSV_FORMAT_TYPE;
         return FileDataReader.readData(path);
     }
 }

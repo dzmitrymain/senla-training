@@ -16,7 +16,7 @@ import java.util.Date;
 import java.util.List;
 
 @Component
-public class EntityCvsConverter {
+public class EntityCsvConverter {
 
     private static final String DELIMITER = ";";
 

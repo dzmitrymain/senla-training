@@ -1,6 +1,6 @@
 package com.senla.training.yeutukhovich.bookstore.model.service.order;
 
-import com.senla.training.yeutukhovich.bookstore.converter.EntityCvsConverter;
+import com.senla.training.yeutukhovich.bookstore.converter.EntityCsvConverter;
 import com.senla.training.yeutukhovich.bookstore.dto.OrderDetailsDto;
 import com.senla.training.yeutukhovich.bookstore.dto.OrderDto;
 import com.senla.training.yeutukhovich.bookstore.exception.BusinessException;
@@ -48,7 +48,7 @@ class OrderServiceImplTest {
     @Autowired
     private RequestDao requestDao;
     @Autowired
-    private EntityCvsConverter entityCvsConverter;
+    private EntityCsvConverter entityCsvConverter;
 
     @BeforeAll
     static void setup() {
@@ -62,7 +62,7 @@ class OrderServiceImplTest {
         Mockito.reset(bookDao);
         Mockito.reset(orderDao);
         Mockito.reset(requestDao);
-        Mockito.reset(entityCvsConverter);
+        Mockito.reset(entityCsvConverter);
     }
 
     @Test
@@ -238,7 +238,7 @@ class OrderServiceImplTest {
         try (MockedStatic<FileDataWriter> mockedFileDataWriter = Mockito.mockStatic(FileDataWriter.class)) {
             Assertions.assertNotNull(orderService.exportAllOrders(""));
         }
-        Mockito.verify(entityCvsConverter, Mockito.times(1)).convertOrders(Mockito.anyList());
+        Mockito.verify(entityCsvConverter, Mockito.times(1)).convertOrders(Mockito.anyList());
         Mockito.verify(orderDao, Mockito.times(1)).findAll();
     }
 
@@ -249,7 +249,7 @@ class OrderServiceImplTest {
         try (MockedStatic<FileDataWriter> mockedFileDataWriter = Mockito.mockStatic(FileDataWriter.class)) {
             orderService.exportOrder(orderId, "");
         }
-        Mockito.verify(entityCvsConverter, Mockito.times(1)).convertOrders(Mockito.anyList());
+        Mockito.verify(entityCsvConverter, Mockito.times(1)).convertOrders(Mockito.anyList());
         Mockito.verify(orderDao, Mockito.times(1)).findById(Mockito.anyLong());
     }
 
@@ -267,7 +267,7 @@ class OrderServiceImplTest {
 
     @Test
     void OrderServiceImpl_importOrders() {
-        Mockito.when(entityCvsConverter.parseOrders(Mockito.anyList())).thenReturn(List.of(order));
+        Mockito.when(entityCsvConverter.parseOrders(Mockito.anyList())).thenReturn(List.of(order));
         Mockito.when(bookDao.findById(bookId)).thenReturn(Optional.of(book));
 
         try (MockedStatic<FileDataReader> mockedFileDataReader = Mockito.mockStatic(FileDataReader.class)) {
@@ -278,7 +278,7 @@ class OrderServiceImplTest {
 
     @Test
     void OrderServiceImpl_importOrders_shouldThrowExceptionIfBookNotExist() {
-        Mockito.when(entityCvsConverter.parseOrders(Mockito.anyList())).thenReturn(List.of(order));
+        Mockito.when(entityCsvConverter.parseOrders(Mockito.anyList())).thenReturn(List.of(order));
         Mockito.when(bookDao.findById(bookId)).thenReturn(Optional.empty());
 
         try (MockedStatic<FileDataReader> mockedFileDataReader = Mockito.mockStatic(FileDataReader.class)) {

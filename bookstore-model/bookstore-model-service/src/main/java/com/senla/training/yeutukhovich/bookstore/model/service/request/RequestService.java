@@ -1,7 +1,6 @@
 package com.senla.training.yeutukhovich.bookstore.model.service.request;
 
 import com.senla.training.yeutukhovich.bookstore.dto.RequestDto;
-import com.senla.training.yeutukhovich.bookstore.model.domain.Request;
 
 import java.util.List;
 

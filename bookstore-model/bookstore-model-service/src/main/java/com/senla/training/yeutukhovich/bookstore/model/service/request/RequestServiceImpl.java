@@ -1,6 +1,6 @@
 package com.senla.training.yeutukhovich.bookstore.model.service.request;
 
-import com.senla.training.yeutukhovich.bookstore.converter.EntityCvsConverter;
+import com.senla.training.yeutukhovich.bookstore.converter.EntityCsvConverter;
 import com.senla.training.yeutukhovich.bookstore.dto.RequestDto;
 import com.senla.training.yeutukhovich.bookstore.exception.BusinessException;
 import com.senla.training.yeutukhovich.bookstore.model.dao.book.BookDao;
@@ -32,9 +32,9 @@ public class RequestServiceImpl implements RequestService {
     @Autowired
     private RequestDao requestDao;
     @Autowired
-    private EntityCvsConverter entityCvsConverter;
+    private EntityCsvConverter entityCsvConverter;
 
-    private String cvsDirectoryPath = ApplicationConstant.CVS_DIRECTORY_PATH;
+    private String csvDirectoryPath = ApplicationConstant.CSV_DIRECTORY_PATH;
 
     @Override
     @Transactional
@@ -86,10 +86,10 @@ public class RequestServiceImpl implements RequestService {
     @Override
     @Transactional
     public List<RequestDto> exportAllRequests(String fileName) {
-        String path = cvsDirectoryPath
-                + fileName + ApplicationConstant.CVS_FORMAT_TYPE;
+        String path = csvDirectoryPath
+                + fileName + ApplicationConstant.CSV_FORMAT_TYPE;
         List<Request> requests = requestDao.findAll();
-        List<String> requestStrings = entityCvsConverter.convertRequests(requests);
+        List<String> requestStrings = entityCsvConverter.convertRequests(requests);
         FileDataWriter.writeData(path, requestStrings);
         LOGGER.info(LoggerConstant.EXPORT_ALL_REQUESTS.getMessage(), fileName);
         return requests.stream()
@@ -100,14 +100,14 @@ public class RequestServiceImpl implements RequestService {
     @Override
     @Transactional
     public RequestDto exportRequest(Long requestId, String fileName) {
-        String path = cvsDirectoryPath
-                + fileName + ApplicationConstant.CVS_FORMAT_TYPE;
+        String path = csvDirectoryPath
+                + fileName + ApplicationConstant.CSV_FORMAT_TYPE;
         Request request = requestDao.findById(requestId).orElseThrow(() -> {
             LOGGER.warn(LoggerConstant.EXPORT_REQUEST_FAIL.getMessage(), requestId,
                     MessageConstant.REQUEST_NOT_EXIST.getMessage());
             return new BusinessException(MessageConstant.REQUEST_NOT_EXIST.getMessage());
         });
-        List<String> requestStrings = entityCvsConverter.convertRequests(List.of(request));
+        List<String> requestStrings = entityCsvConverter.convertRequests(List.of(request));
         FileDataWriter.writeData(path, requestStrings);
         LOGGER.info(LoggerConstant.EXPORT_REQUEST_SUCCESS.getMessage(), requestId, fileName);
         return DtoMapper.mapRequest(request);
@@ -117,7 +117,7 @@ public class RequestServiceImpl implements RequestService {
     @Transactional
     public List<RequestDto> importRequests(String fileName) {
         List<String> requestsStrings = readStringsFromFile(fileName);
-        List<Request> importedRequests = entityCvsConverter.parseRequests(requestsStrings);
+        List<Request> importedRequests = entityCsvConverter.parseRequests(requestsStrings);
         for (Request importedRequest : importedRequests) {
             Book dependentBook = bookDao.findById(importedRequest.getBook().getId())
                     .orElseThrow(() -> {
@@ -135,8 +135,8 @@ public class RequestServiceImpl implements RequestService {
     }
 
     private List<String> readStringsFromFile(String fileName) {
-        String path = cvsDirectoryPath
-                + fileName + ApplicationConstant.CVS_FORMAT_TYPE;
+        String path = csvDirectoryPath
+                + fileName + ApplicationConstant.CSV_FORMAT_TYPE;
         return FileDataReader.readData(path);
     }
 }

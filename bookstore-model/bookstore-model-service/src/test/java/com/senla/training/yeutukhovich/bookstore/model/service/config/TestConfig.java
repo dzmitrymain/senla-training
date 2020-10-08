@@ -1,6 +1,6 @@
 package com.senla.training.yeutukhovich.bookstore.model.service.config;
 
-import com.senla.training.yeutukhovich.bookstore.converter.EntityCvsConverter;
+import com.senla.training.yeutukhovich.bookstore.converter.EntityCsvConverter;
 import com.senla.training.yeutukhovich.bookstore.model.dao.book.BookDao;
 import com.senla.training.yeutukhovich.bookstore.model.dao.order.OrderDao;
 import com.senla.training.yeutukhovich.bookstore.model.dao.request.RequestDao;
@@ -31,8 +31,8 @@ public class TestConfig {
     }
 
     @Bean
-    public EntityCvsConverter entityCvsConverter() {
-        return Mockito.mock(EntityCvsConverter.class);
+    public EntityCsvConverter entityCvsConverter() {
+        return Mockito.mock(EntityCsvConverter.class);
     }
 
     @Bean

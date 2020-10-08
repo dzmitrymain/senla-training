@@ -1,6 +1,6 @@
 package com.senla.training.yeutukhovich.bookstore.model.service.book;
 
-import com.senla.training.yeutukhovich.bookstore.converter.EntityCvsConverter;
+import com.senla.training.yeutukhovich.bookstore.converter.EntityCsvConverter;
 import com.senla.training.yeutukhovich.bookstore.dto.BookDescriptionDto;
 import com.senla.training.yeutukhovich.bookstore.exception.BusinessException;
 import com.senla.training.yeutukhovich.bookstore.model.dao.book.BookDao;
@@ -42,7 +42,7 @@ class BookServiceImplTest {
     @Autowired
     private RequestDao requestDao;
     @Autowired
-    private EntityCvsConverter entityCvsConverter;
+    private EntityCsvConverter entityCsvConverter;
 
     @Value("${BookServiceImpl.requestAutoCloseEnabled:true}")
     private boolean requestAutoCloseEnabled;
@@ -56,7 +56,7 @@ class BookServiceImplTest {
     void setUp() {
         Mockito.reset(bookDao);
         Mockito.reset(requestDao);
-        Mockito.reset(entityCvsConverter);
+        Mockito.reset(entityCsvConverter);
     }
 
     @Test
@@ -203,7 +203,7 @@ class BookServiceImplTest {
         try (MockedStatic<FileDataWriter> mockedFileDataWriter = Mockito.mockStatic(FileDataWriter.class)) {
             Assertions.assertNotNull(bookService.exportAllBooks(""));
         }
-        Mockito.verify(entityCvsConverter, Mockito.times(1)).convertBooks(Mockito.anyList());
+        Mockito.verify(entityCsvConverter, Mockito.times(1)).convertBooks(Mockito.anyList());
         Mockito.verify(bookDao, Mockito.times(1)).findAll();
     }
 
@@ -214,7 +214,7 @@ class BookServiceImplTest {
         try (MockedStatic<FileDataWriter> mockedFileDataWriter = Mockito.mockStatic(FileDataWriter.class)) {
             bookService.exportBook(bookId, "");
         }
-        Mockito.verify(entityCvsConverter, Mockito.times(1)).convertBooks(Mockito.anyList());
+        Mockito.verify(entityCsvConverter, Mockito.times(1)).convertBooks(Mockito.anyList());
         Mockito.verify(bookDao, Mockito.times(1)).findById(Mockito.anyLong());
     }
 
@@ -232,7 +232,7 @@ class BookServiceImplTest {
 
     @Test
     void BookServiceImpl_importBooks() {
-        Mockito.when(entityCvsConverter.parseBooks(Mockito.anyList())).thenReturn(List.of(book));
+        Mockito.when(entityCsvConverter.parseBooks(Mockito.anyList())).thenReturn(List.of(book));
         Mockito.when(book.isAvailable()).thenReturn(true);
 
         try (MockedStatic<FileDataReader> mockedFileDataReader = Mockito.mockStatic(FileDataReader.class)) {
