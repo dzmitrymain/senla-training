@@ -13,6 +13,14 @@
     <artifactId>bookstore-web</artifactId>
 
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/javax/javaee-api -->
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>${javaee.api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
         <dependency>
             <groupId>com.senla.training.yeutukhovich.bookstore</groupId>
             <artifactId>bookstore-controller</artifactId>
@@ -66,5 +74,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
