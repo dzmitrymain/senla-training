@@ -6,6 +6,7 @@ import com.senla.training.yeutukhovich.bookstore.model.domain.Book_;
 import com.senla.training.yeutukhovich.bookstore.model.domain.Order;
 import com.senla.training.yeutukhovich.bookstore.model.domain.Order_;
 import com.senla.training.yeutukhovich.bookstore.model.domain.state.OrderState;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -17,7 +18,7 @@ import javax.persistence.metamodel.SingularAttribute;
 import java.util.Date;
 import java.util.List;
 
-@Repository
+@Component
 public class BookDaoImpl extends HibernateAbstractDao<Book, Long> implements BookDao {
 
     public BookDaoImpl() {

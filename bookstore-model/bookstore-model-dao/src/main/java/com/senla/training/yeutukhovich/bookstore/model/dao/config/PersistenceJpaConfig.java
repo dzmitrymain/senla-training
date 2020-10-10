@@ -19,20 +19,14 @@ import java.util.Properties;
 @EnableTransactionManagement
 public class PersistenceJpaConfig {
 
-    @Value("${spring.datasource.driver-class-name}")
-    private String driverClassName;
-    @Value("${spring.datasource.url}")
-    private String url;
-    @Value("${spring.datasource.username}")
-    private String username;
-    @Value("${spring.datasource.password}")
-    private String password;
-
     @Value("${hibernate.dialect}")
     private String hibernateDialect;
 
     @Bean
-    public DataSource dataSource() {
+    public DataSource dataSource(@Value("${spring.datasource.driver-class-name}") String driverClassName,
+                                 @Value("${spring.datasource.url}") String url,
+                                 @Value("${spring.datasource.username}") String username,
+                                 @Value("${spring.datasource.password}") String password) {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName(driverClassName);
         dataSource.setUrl(url);
@@ -42,23 +36,21 @@ public class PersistenceJpaConfig {
     }
 
     @Bean
-    public LocalContainerEntityManagerFactoryBean entityManagerFactoryBean() {
-        LocalContainerEntityManagerFactoryBean em
+    public LocalContainerEntityManagerFactoryBean entityManagerFactoryBean(DataSource dataSource) {
+        LocalContainerEntityManagerFactoryBean entityManagerFactoryBean
                 = new LocalContainerEntityManagerFactoryBean();
-        em.setDataSource(dataSource());
-        em.setPackagesToScan("com.senla.training.yeutukhovich.bookstore.model.domain");
+        entityManagerFactoryBean.setDataSource(dataSource);
+        entityManagerFactoryBean.setPackagesToScan("com.senla.training.yeutukhovich.bookstore.model.domain");
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
-        em.setJpaVendorAdapter(vendorAdapter);
-        em.setJpaProperties(additionalProperties());
-        return em;
+        entityManagerFactoryBean.setJpaVendorAdapter(vendorAdapter);
+        entityManagerFactoryBean.setJpaProperties(additionalProperties());
+        return entityManagerFactoryBean;
     }
 
     @Bean
-    public PlatformTransactionManager transactionManager() {
-        JpaTransactionManager transactionManager
-                = new JpaTransactionManager();
-        transactionManager.setEntityManagerFactory(
-                entityManagerFactoryBean().getObject());
+    public PlatformTransactionManager transactionManager(LocalContainerEntityManagerFactoryBean entityManagerFactoryBean) {
+        JpaTransactionManager transactionManager = new JpaTransactionManager();
+        transactionManager.setEntityManagerFactory(entityManagerFactoryBean.getObject());
         return transactionManager;
     }
 
