@@ -1,4 +1,4 @@
-package com.senla.training.yeutukhovich.bookstore.ui.util.constant;
+package com.senla.training.yeutukhovich.bookstore.util.constant;
 
 public enum RequestParameterConstant {
 

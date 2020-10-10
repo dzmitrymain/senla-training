@@ -74,7 +74,6 @@ public class RequestExecutor {
         }
         try {
             return MAPPER.readValue(json, clazz).toString();
-
         } catch (JsonProcessingException e) {
             return readErrorDtoMessage(json);
         }
