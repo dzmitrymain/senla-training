@@ -59,10 +59,7 @@ class OrderServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        Mockito.reset(bookDao);
-        Mockito.reset(orderDao);
-        Mockito.reset(requestDao);
-        Mockito.reset(entityCsvConverter);
+        Mockito.clearInvocations(bookDao, orderDao, requestDao, entityCsvConverter);
     }
 
     @Test

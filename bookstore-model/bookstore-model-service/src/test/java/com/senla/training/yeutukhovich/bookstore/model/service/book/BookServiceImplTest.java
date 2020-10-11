@@ -54,9 +54,7 @@ class BookServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        Mockito.reset(bookDao);
-        Mockito.reset(requestDao);
-        Mockito.reset(entityCsvConverter);
+        Mockito.clearInvocations(bookDao, requestDao, entityCsvConverter);
     }
 
     @Test
@@ -221,7 +219,6 @@ class BookServiceImplTest {
     @Test
     void BookServiceImpl_exportBook_shouldThrowExceptionIfBookNotExist() {
         Mockito.when(bookDao.findById(bookId)).thenReturn(Optional.empty());
-
         try (MockedStatic<FileDataWriter> mockedFileDataWriter = Mockito.mockStatic(FileDataWriter.class)) {
             Throwable exception = Assertions.assertThrows(BusinessException.class,
                     () -> bookService.exportBook(bookId, ""));

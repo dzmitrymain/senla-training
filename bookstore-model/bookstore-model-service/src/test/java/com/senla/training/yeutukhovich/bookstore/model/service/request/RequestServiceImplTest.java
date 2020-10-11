@@ -52,9 +52,7 @@ class RequestServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        Mockito.reset(bookDao);
-        Mockito.reset(requestDao);
-        Mockito.reset(entityCsvConverter);
+        Mockito.clearInvocations(bookDao, requestDao, entityCsvConverter);
     }
 
     @Test
