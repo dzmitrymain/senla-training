@@ -7,6 +7,17 @@ public class RequestDto {
     private Boolean isActive;
     private String requesterData;
 
+    public RequestDto() {
+
+    }
+
+    public RequestDto(Long id, BookDto bookDto, Boolean isActive, String requesterData) {
+        this.id = id;
+        this.bookDto = bookDto;
+        this.isActive = isActive;
+        this.requesterData = requesterData;
+    }
+
     public Long getId() {
         return id;
     }

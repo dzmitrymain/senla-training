@@ -21,6 +21,21 @@ public class OrderDto {
     private Date completionDate;
     private String customerData;
 
+    public OrderDto() {
+
+    }
+
+    public OrderDto(Long id, String state, BookDto bookDto, BigDecimal price, Date creationDate,
+                    Date completionDate, String customerData) {
+        this.id = id;
+        this.state = state;
+        this.bookDto = bookDto;
+        this.price = price;
+        this.creationDate = creationDate;
+        this.completionDate = completionDate;
+        this.customerData = customerData;
+    }
+
     public Long getId() {
         return id;
     }

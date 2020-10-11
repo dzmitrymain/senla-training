@@ -20,6 +20,19 @@ public class OrderDetailsDto {
     @JsonDeserialize(using = DateConverter.Deserializer.class)
     private Date completionDate;
 
+    public OrderDetailsDto() {
+
+    }
+
+    public OrderDetailsDto(String customerData, String bookTitle, String state, BigDecimal price, Date creationDate, Date completionDate) {
+        this.customerData = customerData;
+        this.bookTitle = bookTitle;
+        this.state = state;
+        this.price = price;
+        this.creationDate = creationDate;
+        this.completionDate = completionDate;
+    }
+
     public String getCustomerData() {
         return customerData;
     }

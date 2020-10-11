@@ -55,7 +55,6 @@ class BookControllerTest {
     private final String expectedErrorDtoJson = "{\"status\":\"OK\",\"message\":\"Exception message.\"}";
     private final BookDescriptionDto bookDescriptionDto = new BookDescriptionDto(
             "FirstTestBook", 1000, null);
-
     private final String startDate = "2000-01-01";
     private final String endDate = "2100-01-01";
     private final String importFileName = "TestImport";
