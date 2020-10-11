@@ -4,7 +4,6 @@ import com.senla.training.yeutukhovich.bookstore.util.formatter.DateFormatter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.format.Formatter;
@@ -24,7 +23,6 @@ public class AppConfig {
     }
 
     @Bean
-    @Primary
     public Formatter<Date> dateFormatter() {
         return new DateFormatter();
     }
