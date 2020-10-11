@@ -18,6 +18,20 @@ public class BookDto {
     private Date replenishmentDate;
     private BigDecimal price;
 
+    public BookDto() {
+
+    }
+
+    public BookDto(Long id, String title, Boolean isAvailable, Integer editionYear,
+                   Date replenishmentDate, BigDecimal price) {
+        this.id = id;
+        this.title = title;
+        this.isAvailable = isAvailable;
+        this.editionYear = editionYear;
+        this.replenishmentDate = replenishmentDate;
+        this.price = price;
+    }
+
     public Long getId() {
         return id;
     }

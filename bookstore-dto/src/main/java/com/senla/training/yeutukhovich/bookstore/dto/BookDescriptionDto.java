@@ -15,6 +15,16 @@ public class BookDescriptionDto {
     @JsonDeserialize(using = DateConverter.Deserializer.class)
     private Date replenishmentDate;
 
+    public BookDescriptionDto() {
+
+    }
+
+    public BookDescriptionDto(String title, int editionYear, Date replenishmentDate) {
+        this.title = title;
+        this.editionYear = editionYear;
+        this.replenishmentDate = replenishmentDate;
+    }
+
     public String getTitle() {
         return title;
     }
