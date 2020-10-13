@@ -1,8 +1,7 @@
 package com.senla.training.yeutukhovich.bookstore.model.service.order;
 
-import com.senla.training.yeutukhovich.bookstore.model.domain.Order;
-import com.senla.training.yeutukhovich.bookstore.model.service.dto.CreationOrderResult;
-import com.senla.training.yeutukhovich.bookstore.model.service.dto.OrderDetails;
+import com.senla.training.yeutukhovich.bookstore.dto.OrderDetailsDto;
+import com.senla.training.yeutukhovich.bookstore.dto.OrderDto;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -10,29 +9,29 @@ import java.util.List;
 
 public interface OrderService {
 
-    CreationOrderResult createOrder(Long bookId, String customerData);
+    OrderDto createOrder(Long bookId, String customerData);
 
-    void cancelOrder(Long orderId);
+    OrderDto cancelOrder(Long orderId);
 
-    void completeOrder(Long orderId);
+    OrderDto completeOrder(Long orderId);
 
-    List<Order> findSortedAllOrdersByCompletionDate();
+    List<OrderDto> findSortedAllOrdersByCompletionDate();
 
-    List<Order> findSortedAllOrdersByPrice();
+    List<OrderDto> findSortedAllOrdersByPrice();
 
-    List<Order> findSortedAllOrdersByState();
+    List<OrderDto> findSortedAllOrdersByState();
 
-    List<Order> findCompletedOrdersBetweenDates(Date startDate, Date endDate);
+    List<OrderDto> findCompletedOrdersBetweenDates(Date startDate, Date endDate);
 
     BigDecimal calculateProfitBetweenDates(Date startDate, Date endDate);
 
     Long calculateCompletedOrdersNumberBetweenDates(Date startDate, Date endDate);
 
-    OrderDetails showOrderDetails(Long orderId);
+    OrderDetailsDto showOrderDetails(Long orderId);
 
-    int exportAllOrders(String fileName);
+    List<OrderDto> exportAllOrders(String fileName);
 
-    void exportOrder(Long id, String fileName);
+    OrderDto exportOrder(Long id, String fileName);
 
-    int importOrders(String fileName);
+    List<OrderDto> importOrders(String fileName);
 }

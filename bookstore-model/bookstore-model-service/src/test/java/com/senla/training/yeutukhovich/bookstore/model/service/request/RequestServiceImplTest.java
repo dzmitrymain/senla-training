@@ -1,6 +1,6 @@
 package com.senla.training.yeutukhovich.bookstore.model.service.request;
 
-import com.senla.training.yeutukhovich.bookstore.converter.EntityCvsConverter;
+import com.senla.training.yeutukhovich.bookstore.converter.EntityCsvConverter;
 import com.senla.training.yeutukhovich.bookstore.exception.BusinessException;
 import com.senla.training.yeutukhovich.bookstore.model.dao.book.BookDao;
 import com.senla.training.yeutukhovich.bookstore.model.dao.request.RequestDao;
@@ -41,7 +41,7 @@ class RequestServiceImplTest {
     @Autowired
     private RequestDao requestDao;
     @Autowired
-    private EntityCvsConverter entityCvsConverter;
+    private EntityCsvConverter entityCsvConverter;
 
     @BeforeAll
     static void setup() {
@@ -52,9 +52,7 @@ class RequestServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        Mockito.reset(bookDao);
-        Mockito.reset(requestDao);
-        Mockito.reset(entityCvsConverter);
+        Mockito.clearInvocations(bookDao, requestDao, entityCsvConverter);
     }
 
     @Test
@@ -112,11 +110,9 @@ class RequestServiceImplTest {
     @Test
     void RequestServiceImpl_exportAllRequests() {
         try (MockedStatic<FileDataWriter> mockedFileDataWriter = Mockito.mockStatic(FileDataWriter.class)) {
-            mockedFileDataWriter.when(() -> FileDataWriter.writeData(Mockito.anyString(), Mockito.anyList())).thenReturn(1);
-
-            Assertions.assertEquals(1, requestService.exportAllRequests(""));
+            Assertions.assertNotNull(requestService.exportAllRequests(""));
         }
-        Mockito.verify(entityCvsConverter, Mockito.times(1)).convertRequests(Mockito.anyList());
+        Mockito.verify(entityCsvConverter, Mockito.times(1)).convertRequests(Mockito.anyList());
         Mockito.verify(requestDao, Mockito.times(1)).findAll();
     }
 
@@ -127,7 +123,7 @@ class RequestServiceImplTest {
         try (MockedStatic<FileDataWriter> mockedFileDataWriter = Mockito.mockStatic(FileDataWriter.class)) {
             requestService.exportRequest(requestId, "");
         }
-        Mockito.verify(entityCvsConverter, Mockito.times(1)).convertRequests(Mockito.anyList());
+        Mockito.verify(entityCsvConverter, Mockito.times(1)).convertRequests(Mockito.anyList());
         Mockito.verify(requestDao, Mockito.times(1)).findById(Mockito.anyLong());
     }
 
@@ -145,7 +141,7 @@ class RequestServiceImplTest {
 
     @Test
     void RequestServiceImpl_importRequests() {
-        Mockito.when(entityCvsConverter.parseRequests(Mockito.anyList())).thenReturn(List.of(request));
+        Mockito.when(entityCsvConverter.parseRequests(Mockito.anyList())).thenReturn(List.of(request));
         Mockito.when(bookDao.findById(bookId)).thenReturn(Optional.of(book));
 
         try (MockedStatic<FileDataReader> mockedFileDataReader = Mockito.mockStatic(FileDataReader.class)) {
@@ -156,7 +152,7 @@ class RequestServiceImplTest {
 
     @Test
     void RequestServiceImpl_importRequests_shouldThrowExceptionIfBookNotExist() {
-        Mockito.when(entityCvsConverter.parseRequests(Mockito.anyList())).thenReturn(List.of(request));
+        Mockito.when(entityCsvConverter.parseRequests(Mockito.anyList())).thenReturn(List.of(request));
         Mockito.when(bookDao.findById(bookId)).thenReturn(Optional.empty());
 
         try (MockedStatic<FileDataReader> mockedFileDataReader = Mockito.mockStatic(FileDataReader.class)) {

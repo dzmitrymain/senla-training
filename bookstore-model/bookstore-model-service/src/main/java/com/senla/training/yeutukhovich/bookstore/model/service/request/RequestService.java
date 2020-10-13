@@ -1,22 +1,22 @@
 package com.senla.training.yeutukhovich.bookstore.model.service.request;
 
-import com.senla.training.yeutukhovich.bookstore.model.domain.Request;
+import com.senla.training.yeutukhovich.bookstore.dto.RequestDto;
 
 import java.util.List;
 
 public interface RequestService {
 
-    void createRequest(Long bookId, String requesterData);
+    RequestDto createRequest(Long bookId, String requesterData);
 
-    List<Request> findSortedAllRequestsByBookTitle();
+    List<RequestDto> findSortedAllRequestsByBookTitle();
 
-    List<Request> findSortedAllRequestsByIsActive();
+    List<RequestDto> findSortedAllRequestsByIsActive();
 
-    List<Request> findSortedAllRequestsByRequesterData();
+    List<RequestDto> findSortedAllRequestsByRequesterData();
 
-    int exportAllRequests(String fileName);
+    List<RequestDto> exportAllRequests(String fileName);
 
-    void exportRequest(Long requestId, String fileName);
+    RequestDto exportRequest(Long requestId, String fileName);
 
-    int importRequests(String fileName);
+    List<RequestDto> importRequests(String fileName);
 }

@@ -6,7 +6,7 @@ import com.senla.training.yeutukhovich.bookstore.model.domain.Book_;
 import com.senla.training.yeutukhovich.bookstore.model.domain.Order;
 import com.senla.training.yeutukhovich.bookstore.model.domain.Order_;
 import com.senla.training.yeutukhovich.bookstore.model.domain.state.OrderState;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -17,7 +17,7 @@ import javax.persistence.metamodel.SingularAttribute;
 import java.util.Date;
 import java.util.List;
 
-@Repository
+@Component
 public class BookDaoImpl extends HibernateAbstractDao<Book, Long> implements BookDao {
 
     public BookDaoImpl() {
@@ -50,9 +50,8 @@ public class BookDaoImpl extends HibernateAbstractDao<Book, Long> implements Boo
                 cb.equal(subqueryOrders.get(Order_.state), OrderState.COMPLETED.toString()));
         criteriaSubquery.distinct(true);
         criteriaSubquery.select(subqueryBooks.get(Book_.id));
-
         criteriaQuery.where(cb.lessThanOrEqualTo(books.get(Book_.replenishmentDate), startDate),
-                books.get(Book_.id).in(criteriaSubquery).not());
+                books.get(Book_.id).in(criteriaSubquery).not(), cb.equal(books.get(Book_.isAvailable), true));
         return entityManager.createQuery(criteriaQuery).getResultList();
     }
 

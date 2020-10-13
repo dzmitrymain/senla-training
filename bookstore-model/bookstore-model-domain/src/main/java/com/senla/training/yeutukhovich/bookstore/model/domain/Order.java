@@ -4,7 +4,6 @@ import com.senla.training.yeutukhovich.bookstore.model.domain.state.OrderState;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -19,7 +18,7 @@ public class Order extends AbstractEntity {
 
     @Column(name = "state")
     private String state;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "book_id")
     private Book book;
     @Column(name = "price")

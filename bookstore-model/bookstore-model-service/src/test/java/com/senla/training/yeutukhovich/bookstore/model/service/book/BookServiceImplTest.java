@@ -1,12 +1,12 @@
 package com.senla.training.yeutukhovich.bookstore.model.service.book;
 
-import com.senla.training.yeutukhovich.bookstore.converter.EntityCvsConverter;
+import com.senla.training.yeutukhovich.bookstore.converter.EntityCsvConverter;
+import com.senla.training.yeutukhovich.bookstore.dto.BookDescriptionDto;
 import com.senla.training.yeutukhovich.bookstore.exception.BusinessException;
 import com.senla.training.yeutukhovich.bookstore.model.dao.book.BookDao;
 import com.senla.training.yeutukhovich.bookstore.model.dao.request.RequestDao;
 import com.senla.training.yeutukhovich.bookstore.model.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.model.service.config.TestConfig;
-import com.senla.training.yeutukhovich.bookstore.model.service.dto.BookDescription;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 import com.senla.training.yeutukhovich.bookstore.util.reader.FileDataReader;
 import com.senla.training.yeutukhovich.bookstore.util.writer.FileDataWriter;
@@ -42,7 +42,7 @@ class BookServiceImplTest {
     @Autowired
     private RequestDao requestDao;
     @Autowired
-    private EntityCvsConverter entityCvsConverter;
+    private EntityCsvConverter entityCsvConverter;
 
     @Value("${BookServiceImpl.requestAutoCloseEnabled:true}")
     private boolean requestAutoCloseEnabled;
@@ -54,9 +54,7 @@ class BookServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        Mockito.reset(bookDao);
-        Mockito.reset(requestDao);
-        Mockito.reset(entityCvsConverter);
+        Mockito.clearInvocations(bookDao, requestDao, entityCsvConverter);
     }
 
     @Test
@@ -70,19 +68,6 @@ class BookServiceImplTest {
 
         Mockito.verify(bookDao, Mockito.times(1)).update(book);
         Mockito.verify(requestDao, Mockito.times(1)).closeRequestsByBookId(bookId);
-    }
-
-    @Test
-    void BookServiceImpl_replenishBook_shouldUpdateNotAvailableBookAndDontCloseRequests() {
-        Assumptions.assumeFalse(requestAutoCloseEnabled);
-
-        Mockito.when(bookDao.findById(bookId)).thenReturn(Optional.of(book));
-        Mockito.when(book.isAvailable()).thenReturn(false);
-
-        bookService.replenishBook(bookId);
-
-        Mockito.verify(bookDao, Mockito.times(1)).update(book);
-        Mockito.verify(requestDao, Mockito.never()).closeRequestsByBookId(bookId);
     }
 
     @Test
@@ -196,9 +181,9 @@ class BookServiceImplTest {
     void BookServiceImpl_showBookDescription_shouldReturnNotNull() {
         Mockito.when(bookDao.findById(bookId)).thenReturn(Optional.of(book));
 
-        BookDescription bookDescription = bookService.showBookDescription(bookId);
+        BookDescriptionDto bookDescriptionDto = bookService.showBookDescription(bookId);
 
-        Assertions.assertNotNull(bookDescription);
+        Assertions.assertNotNull(bookDescriptionDto);
     }
 
     @Test
@@ -214,11 +199,9 @@ class BookServiceImplTest {
     @Test
     void BookServiceImpl_exportAllBooks() {
         try (MockedStatic<FileDataWriter> mockedFileDataWriter = Mockito.mockStatic(FileDataWriter.class)) {
-            mockedFileDataWriter.when(() -> FileDataWriter.writeData(Mockito.anyString(), Mockito.anyList())).thenReturn(1);
-
-            Assertions.assertEquals(1, bookService.exportAllBooks(""));
+            Assertions.assertNotNull(bookService.exportAllBooks(""));
         }
-        Mockito.verify(entityCvsConverter, Mockito.times(1)).convertBooks(Mockito.anyList());
+        Mockito.verify(entityCsvConverter, Mockito.times(1)).convertBooks(Mockito.anyList());
         Mockito.verify(bookDao, Mockito.times(1)).findAll();
     }
 
@@ -229,14 +212,13 @@ class BookServiceImplTest {
         try (MockedStatic<FileDataWriter> mockedFileDataWriter = Mockito.mockStatic(FileDataWriter.class)) {
             bookService.exportBook(bookId, "");
         }
-        Mockito.verify(entityCvsConverter, Mockito.times(1)).convertBooks(Mockito.anyList());
+        Mockito.verify(entityCsvConverter, Mockito.times(1)).convertBooks(Mockito.anyList());
         Mockito.verify(bookDao, Mockito.times(1)).findById(Mockito.anyLong());
     }
 
     @Test
     void BookServiceImpl_exportBook_shouldThrowExceptionIfBookNotExist() {
         Mockito.when(bookDao.findById(bookId)).thenReturn(Optional.empty());
-
         try (MockedStatic<FileDataWriter> mockedFileDataWriter = Mockito.mockStatic(FileDataWriter.class)) {
             Throwable exception = Assertions.assertThrows(BusinessException.class,
                     () -> bookService.exportBook(bookId, ""));
@@ -247,7 +229,7 @@ class BookServiceImplTest {
 
     @Test
     void BookServiceImpl_importBooks() {
-        Mockito.when(entityCvsConverter.parseBooks(Mockito.anyList())).thenReturn(List.of(book));
+        Mockito.when(entityCsvConverter.parseBooks(Mockito.anyList())).thenReturn(List.of(book));
         Mockito.when(book.isAvailable()).thenReturn(true);
 
         try (MockedStatic<FileDataReader> mockedFileDataReader = Mockito.mockStatic(FileDataReader.class)) {

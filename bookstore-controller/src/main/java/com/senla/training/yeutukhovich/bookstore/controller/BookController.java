@@ -1,214 +1,93 @@
 package com.senla.training.yeutukhovich.bookstore.controller;
 
-import com.senla.training.yeutukhovich.bookstore.exception.BusinessException;
-import com.senla.training.yeutukhovich.bookstore.model.domain.Book;
+import com.senla.training.yeutukhovich.bookstore.dto.BookDescriptionDto;
+import com.senla.training.yeutukhovich.bookstore.dto.BookDto;
 import com.senla.training.yeutukhovich.bookstore.model.service.book.BookService;
-import com.senla.training.yeutukhovich.bookstore.util.constant.LoggerConstant;
-import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
-import com.senla.training.yeutukhovich.bookstore.util.converter.DateConverter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
-import java.util.stream.Collectors;
+import java.util.List;
 
-@Controller
+@RestController
+@RequestMapping("/books")
 public class BookController {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(BookController.class);
-
-    private static final String BOOKS_DELIMITER = "\n";
 
     @Autowired
     private BookService bookService;
 
-    public String replenishBook(Long id) {
-        try {
-            bookService.replenishBook(id);
-            LOGGER.info(LoggerConstant.REPLENISH_BOOK_SUCCESS.getMessage(), id);
-            return MessageConstant.BOOK_HAS_BEEN_REPLENISHED.getMessage();
-        } catch (BusinessException e) {
-            LOGGER.warn(LoggerConstant.REPLENISH_BOOK_FAIL.getMessage(), id, e.getMessage());
-            return e.getMessage();
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
-        }
+    @PostMapping("/{id}/replenish")
+    public BookDto replenishBook(@PathVariable("id") Long id) {
+        return bookService.replenishBook(id);
     }
 
-    public String writeOffBook(Long id) {
-        try {
-            bookService.writeOffBook(id);
-            LOGGER.info(LoggerConstant.WRITE_OFF_BOOK_SUCCESS.getMessage(), id);
-            return MessageConstant.BOOK_HAS_BEEN_WRITTEN_OFF.getMessage();
-        } catch (BusinessException e) {
-            LOGGER.warn(LoggerConstant.WRITE_OFF_BOOK_FAIL.getMessage(), id, e.getMessage());
-            return e.getMessage();
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
-        }
+    @PostMapping("/{id}/writeOff")
+    public BookDto writeOffBook(@PathVariable("id") Long id) {
+        return bookService.writeOffBook(id);
     }
 
-    public String findSortedAllBooksByAvailability() {
-        try {
-            String result = bookService.findSortedAllBooksByAvailability().stream()
-                    .map(Book::toString)
-                    .collect(Collectors.joining(BOOKS_DELIMITER));
-            LOGGER.info(LoggerConstant.FIND_ALL_BOOKS_SORTED_BY_AVAILABILITY.getMessage());
-            return result;
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
-        }
+    @GetMapping("/byAvailability")
+    public List<BookDto> findSortedAllBooksByAvailability() {
+        return bookService.findSortedAllBooksByAvailability();
     }
 
-    public String findSortedAllBooksByEditionYear() {
-        try {
-            String result = bookService.findSortedAllBooksByEditionYear().stream()
-                    .map(Book::toString)
-                    .collect(Collectors.joining(BOOKS_DELIMITER));
-            LOGGER.info(LoggerConstant.FIND_ALL_BOOKS_SORTED_BY_EDITION_YEAR.getMessage());
-            return result;
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
-        }
+    @GetMapping("/byEditionYear")
+    public List<BookDto> findSortedAllBooksByEditionYear() {
+        return bookService.findSortedAllBooksByEditionYear();
     }
 
-    public String findSortedAllBooksByPrice() {
-        try {
-            String result = bookService.findSortedAllBooksByPrice().stream()
-                    .map(Book::toString)
-                    .collect(Collectors.joining(BOOKS_DELIMITER));
-            LOGGER.info(LoggerConstant.FIND_ALL_BOOKS_SORTED_BY_PRICE.getMessage());
-            return result;
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
-        }
+    @GetMapping("/byPrice")
+    public List<BookDto> findSortedAllBooksByPrice() {
+        return bookService.findSortedAllBooksByPrice();
     }
 
-    public String findSortedAllBooksByReplenishmentDate() {
-        try {
-            String result = bookService.findSortedAllBooksByReplenishmentDate().stream()
-                    .map(Book::toString)
-                    .collect(Collectors.joining(BOOKS_DELIMITER));
-            LOGGER.info(LoggerConstant.FIND_ALL_BOOKS_SORTED_BY_REPLENISHMENT_DATE.getMessage());
-            return result;
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
-        }
+    @GetMapping("/byReplenishmentDate")
+    public List<BookDto> findSortedAllBooksByReplenishmentDate() {
+        return bookService.findSortedAllBooksByReplenishmentDate();
     }
 
-    public String findSortedAllBooksByTitle() {
-        try {
-            String result = bookService.findSortedAllBooksByTitle().stream()
-                    .map(Book::toString)
-                    .collect(Collectors.joining(BOOKS_DELIMITER));
-            LOGGER.info(LoggerConstant.FIND_ALL_BOOKS_SORTED_BY_TITLE.getMessage());
-            return result;
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
-        }
+    @GetMapping("/byTitle")
+    public List<BookDto> findSortedAllBooksByTitle() {
+        return bookService.findSortedAllBooksByTitle();
     }
 
-    public String findSoldBooksBetweenDates(Date startDate, Date endDate) {
-        try {
-            String result = bookService.findSoldBooksBetweenDates(startDate, endDate).stream()
-                    .map(Book::toString)
-                    .collect(Collectors.joining(BOOKS_DELIMITER));
-            LOGGER.info(LoggerConstant.FIND_SOLD_BOOKS.getMessage(), DateConverter.formatDate(startDate,
-                    DateConverter.DAY_DATE_FORMAT), DateConverter.formatDate(endDate, DateConverter.DAY_DATE_FORMAT));
-            return result;
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
-        }
+    @GetMapping("/soldBetweenDates")
+    public List<BookDto> findSoldBooksBetweenDates(@RequestParam Date startDate, @RequestParam Date endDate) {
+        return bookService.findSoldBooksBetweenDates(startDate, endDate);
     }
 
-    public String findUnsoldBooksBetweenDates(Date startDate, Date endDate) {
-        try {
-            String result = bookService.findUnsoldBooksBetweenDates(startDate, endDate).stream()
-                    .map(Book::toString)
-                    .collect(Collectors.joining(BOOKS_DELIMITER));
-            LOGGER.info(LoggerConstant.FIND_UNSOLD_BOOKS.getMessage(), DateConverter.formatDate(startDate,
-                    DateConverter.DAY_DATE_FORMAT), DateConverter.formatDate(endDate, DateConverter.DAY_DATE_FORMAT));
-            return result;
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
-        }
+    @GetMapping("/unsoldBetweenDates")
+    public List<BookDto> findUnsoldBooksBetweenDates(@RequestParam Date startDate, @RequestParam Date endDate) {
+        return bookService.findUnsoldBooksBetweenDates(startDate, endDate);
     }
 
-    public String findStaleBooks() {
-        try {
-            String result = bookService.findStaleBooks().stream()
-                    .map(Book::toString)
-                    .collect(Collectors.joining(BOOKS_DELIMITER));
-            LOGGER.info(LoggerConstant.FIND_STALE_BOOKS.getMessage());
-            return result;
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
-        }
+    @GetMapping("/stale")
+    public List<BookDto> findStaleBooks() {
+        return bookService.findStaleBooks();
     }
 
-    public String showBookDescription(Long id) {
-        try {
-            String result = bookService.showBookDescription(id).toString();
-            LOGGER.info(LoggerConstant.SHOW_BOOK_DESCRIPTION_SUCCESS.getMessage(), id);
-            return result;
-        } catch (BusinessException e) {
-            LOGGER.warn(LoggerConstant.SHOW_BOOK_DESCRIPTION_FAIL.getMessage(), id, e.getMessage());
-            return e.getMessage();
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
-        }
+    @GetMapping("/{id}/description")
+    public BookDescriptionDto showBookDescription(@PathVariable("id") Long id) {
+        return bookService.showBookDescription(id);
     }
 
-    public String importBooks(String fileName) {
-        try {
-            String result = MessageConstant.IMPORTED_ENTITIES.getMessage() + bookService.importBooks(fileName);
-            LOGGER.info(LoggerConstant.IMPORT_BOOKS_SUCCESS.getMessage(), fileName);
-            return result;
-        } catch (BusinessException e) {
-            LOGGER.warn(LoggerConstant.IMPORT_BOOKS_FAIL.getMessage(), e.getMessage());
-            return e.getMessage();
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
-        }
+    @PostMapping("/import")
+    public List<BookDto> importBooks(@RequestParam String fileName) {
+        return bookService.importBooks(fileName);
     }
 
-    public String exportAllBooks(String fileName) {
-        try {
-            String result = MessageConstant.EXPORTED_ENTITIES.getMessage()
-                    + bookService.exportAllBooks(fileName);
-            LOGGER.info(LoggerConstant.EXPORT_ALL_BOOKS.getMessage(), fileName);
-            return result;
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
-        }
+    @PostMapping("/export")
+    public List<BookDto> exportAllBooks(@RequestParam String fileName) {
+        return bookService.exportAllBooks(fileName);
     }
 
-    public String exportBook(Long bookId, String fileName) {
-        try {
-            bookService.exportBook(bookId, fileName);
-            LOGGER.info(LoggerConstant.EXPORT_BOOK_SUCCESS.getMessage(), bookId, fileName);
-            return MessageConstant.ENTITY_EXPORTED.getMessage();
-        } catch (BusinessException e) {
-            LOGGER.warn(LoggerConstant.EXPORT_BOOK_FAIL.getMessage(), bookId, e.getMessage());
-            return e.getMessage();
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-            return MessageConstant.SOMETHING_WENT_WRONG.getMessage();
-        }
+    @PostMapping("/{id}/export")
+    public BookDto exportBook(@PathVariable("id") Long bookId, @RequestParam String fileName) {
+        return bookService.exportBook(bookId, fileName);
     }
 }
