@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -65,7 +66,7 @@ class OrderControllerTest {
             "\"price\":1,\"creationDate\":\"Sat Jan 01 00:00:00 MSK 2000\",\"completionDate\":null," +
             "\"customerData\":\"TestCustomer\"}]";
     private final String exceptionMessage = "Exception message.";
-    private final String expectedErrorDtoJson = "{\"status\":\"OK\",\"message\":\"Exception message.\"}";
+    private final String expectedErrorDtoJson = "{\"status\":\"FORBIDDEN\",\"message\":\"Exception message.\"}";
     private final String startDate = "2000-01-01";
     private final String endDate = "2100-01-01";
     private final String importFileName = "TestImport";
@@ -96,86 +97,48 @@ class OrderControllerTest {
     @Test
     void OrderController_createOrder_shouldReturnErrorDto() throws Exception {
         Mockito.when(orderService.createOrder(Mockito.anyLong(), Mockito.anyString()))
-                .thenThrow(new BusinessException(exceptionMessage));
+                .thenThrow(new BusinessException(exceptionMessage, HttpStatus.FORBIDDEN));
 
         mvc.perform(MockMvcRequestBuilders
                 .post(EndpointConstant.ORDERS_CREATE.getEndpoint())
                 .param(RequestParameterConstant.BOOK_ID.getParameterName(), bookId.toString())
                 .param(RequestParameterConstant.CUSTOMER_DATA.getParameterName(), customerData))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().isForbidden())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.content().json(expectedErrorDtoJson));
     }
 
     @Test
-    void OrderController_cancelOrder_shouldReturnCanceledOrderDto() throws Exception {
-        Mockito.when(orderService.cancelOrder(Mockito.anyLong())).thenReturn(orderDto);
+    void OrderController_updateState_shouldReturnUpdatedOrderDto() throws Exception {
+        Mockito.when(orderService.updateState(Mockito.anyLong(), Mockito.any(OrderDto.class))).thenReturn(orderDto);
 
         mvc.perform(MockMvcRequestBuilders
-                .post(String.format(EndpointConstant.ORDERS_CANCEL.getEndpoint(), orderId)))
+                .put(String.format(EndpointConstant.ORDERS_UPDATE_STATE.getEndpoint(), orderId))
+                .content(expectedOrderDtoJson)
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.content().json(expectedOrderDtoJson));
     }
 
     @Test
-    void OrderController_cancelOrder_shouldReturnErrorDto() throws Exception {
-        Mockito.when(orderService.cancelOrder(Mockito.anyLong())).thenThrow(new BusinessException(exceptionMessage));
+    void OrderController_updateState_shouldReturnErrorDto() throws Exception {
+        Mockito.when(orderService.updateState(Mockito.anyLong(), Mockito.any(OrderDto.class))).thenThrow(new BusinessException(exceptionMessage, HttpStatus.FORBIDDEN));
 
         mvc.perform(MockMvcRequestBuilders
-                .post(String.format(EndpointConstant.ORDERS_CANCEL.getEndpoint(), orderId)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .put(String.format(EndpointConstant.ORDERS_UPDATE_STATE.getEndpoint(), orderId))
+                .content(expectedOrderDtoJson)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isForbidden())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.content().json(expectedErrorDtoJson));
     }
 
     @Test
-    void OrderController_completeOrder_shouldReturnCompletedOrderDto() throws Exception {
-        Mockito.when(orderService.completeOrder(Mockito.anyLong())).thenReturn(orderDto);
-
-        mvc.perform(MockMvcRequestBuilders
-                .post(String.format(EndpointConstant.ORDERS_COMPLETE.getEndpoint(), orderId)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.content().json(expectedOrderDtoJson));
-    }
-
-    @Test
-    void OrderController_completeOrder_shouldReturnErrorDto() throws Exception {
-        Mockito.when(orderService.completeOrder(Mockito.anyLong())).thenThrow(new BusinessException(exceptionMessage));
-
-        mvc.perform(MockMvcRequestBuilders
-                .post(String.format(EndpointConstant.ORDERS_COMPLETE.getEndpoint(), orderId)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.content().json(expectedErrorDtoJson));
-    }
-
-    @Test
-    void OrderController_findSortedAllOrdersByCompletionDate() throws Exception {
-        Mockito.when(orderService.findSortedAllOrdersByCompletionDate()).thenReturn(ordersDto);
+    void OrderController_findSortedAllOrders() throws Exception {
+        Mockito.when(orderService.findSortedAllOrders(Mockito.anyString())).thenReturn(ordersDto);
 
         mvc.perform(MockMvcRequestBuilders.get(EndpointConstant.ORDERS_BY_COMPLETION_DATE.getEndpoint()))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.content().json(expectedOrdersDtoJson));
-    }
-
-    @Test
-    void OrderController_findSortedAllOrdersByPrice() throws Exception {
-        Mockito.when(orderService.findSortedAllOrdersByPrice()).thenReturn(ordersDto);
-
-        mvc.perform(MockMvcRequestBuilders.get(EndpointConstant.ORDERS_BY_PRICE.getEndpoint()))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.content().json(expectedOrdersDtoJson));
-    }
-
-    @Test
-    void OrderController_findSortedAllOrdersByState() throws Exception {
-        Mockito.when(orderService.findSortedAllOrdersByState()).thenReturn(ordersDto);
-
-        mvc.perform(MockMvcRequestBuilders.get(EndpointConstant.ORDERS_BY_STATE.getEndpoint()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.content().json(expectedOrdersDtoJson));
@@ -238,10 +201,10 @@ class OrderControllerTest {
 
     @Test
     void OrderController_showOrderDetails_shouldReturnErrorDto() throws Exception {
-        Mockito.when(orderService.showOrderDetails(orderId)).thenThrow(new BusinessException(exceptionMessage));
+        Mockito.when(orderService.showOrderDetails(orderId)).thenThrow(new BusinessException(exceptionMessage, HttpStatus.FORBIDDEN));
 
         mvc.perform(MockMvcRequestBuilders.get(String.format(EndpointConstant.ORDERS_DETAILS.getEndpoint(), orderId)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().isForbidden())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.content().json(expectedErrorDtoJson));
     }
@@ -259,11 +222,11 @@ class OrderControllerTest {
 
     @Test
     void OrderController_importOrders_shouldReturnErrorDto() throws Exception {
-        Mockito.when(orderService.importOrders(Mockito.anyString())).thenThrow(new BusinessException(exceptionMessage));
+        Mockito.when(orderService.importOrders(Mockito.anyString())).thenThrow(new BusinessException(exceptionMessage, HttpStatus.FORBIDDEN));
 
         mvc.perform(MockMvcRequestBuilders.post(EndpointConstant.ORDERS_IMPORT.getEndpoint())
                 .param(RequestParameterConstant.FILE_NAME.getParameterName(), importFileName))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().isForbidden())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.content().json(expectedErrorDtoJson));
     }
@@ -293,11 +256,11 @@ class OrderControllerTest {
     @Test
     void OrderController_exportOrder_shouldReturnErrorDto() throws Exception {
         Mockito.when(orderService.exportOrder(Mockito.anyLong(), Mockito.anyString()))
-                .thenThrow(new BusinessException(exceptionMessage));
+                .thenThrow(new BusinessException(exceptionMessage, HttpStatus.FORBIDDEN));
 
         mvc.perform(MockMvcRequestBuilders.post(String.format(EndpointConstant.ORDERS_EXPORT.getEndpoint(), orderId))
                 .param(RequestParameterConstant.FILE_NAME.getParameterName(), exportFileName))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().isForbidden())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.content().json(expectedErrorDtoJson));
     }

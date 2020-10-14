@@ -2,6 +2,7 @@ package com.senla.training.yeutukhovich.bookstore.model.service.book;
 
 import com.senla.training.yeutukhovich.bookstore.converter.EntityCsvConverter;
 import com.senla.training.yeutukhovich.bookstore.dto.BookDescriptionDto;
+import com.senla.training.yeutukhovich.bookstore.dto.BookDto;
 import com.senla.training.yeutukhovich.bookstore.exception.BusinessException;
 import com.senla.training.yeutukhovich.bookstore.model.dao.book.BookDao;
 import com.senla.training.yeutukhovich.bookstore.model.dao.request.RequestDao;
@@ -11,7 +12,6 @@ import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 import com.senla.training.yeutukhovich.bookstore.util.reader.FileDataReader;
 import com.senla.training.yeutukhovich.bookstore.util.writer.FileDataWriter;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,6 +33,7 @@ class BookServiceImplTest {
 
     private static final Book book = Mockito.mock(Book.class);
     private static final Long bookId = 1L;
+    private static final BookDto bookDto = Mockito.mock(BookDto.class);
 
     @Autowired
     private BookService bookService;
@@ -58,97 +59,59 @@ class BookServiceImplTest {
     }
 
     @Test
-    void BookServiceImpl_replenishBook_shouldUpdateNotAvailableBookAndCloseRequests() {
-        Assumptions.assumeTrue(requestAutoCloseEnabled);
-
+    void BookServiceImpl_updateBook_shouldUpdateNotAvailableBookAndCloseRequests() {
+        Mockito.when(bookDto.getAvailable()).thenReturn(true);
+        Mockito.when(bookDto.getId()).thenReturn(bookId);
         Mockito.when(bookDao.findById(bookId)).thenReturn(Optional.of(book));
         Mockito.when(book.isAvailable()).thenReturn(false);
 
-        bookService.replenishBook(bookId);
+        bookService.updateBook(bookId, bookDto);
 
-        Mockito.verify(bookDao, Mockito.times(1)).update(book);
+        Mockito.verify(bookDao, Mockito.times(1)).update(Mockito.any(Book.class));
         Mockito.verify(requestDao, Mockito.times(1)).closeRequestsByBookId(bookId);
     }
 
     @Test
-    void BookServiceImpl_replenishBook_shouldThrowExceptionIfBookNotExist() {
+    void BookServiceImpl_updateBook_shouldThrowExceptionIfBookNotExist() {
         Mockito.when(bookDao.findById(bookId)).thenReturn(Optional.empty());
+        Mockito.when(bookDto.getId()).thenReturn(bookId);
 
-        Throwable exception = Assertions.assertThrows(BusinessException.class, () -> bookService.replenishBook(bookId));
+        Throwable exception = Assertions.assertThrows(BusinessException.class, () -> bookService.updateBook(bookId, bookDto));
 
         Assertions.assertEquals(MessageConstant.BOOK_NOT_EXIST.getMessage(), exception.getMessage());
     }
 
     @Test
-    void BookServiceImpl_replenishBook_shouldThrowExceptionIfBookAvailable() {
-        Mockito.when(bookDao.findById(bookId)).thenReturn(Optional.of(book));
-        Mockito.when(book.isAvailable()).thenReturn(true);
-
-        Throwable exception = Assertions.assertThrows(BusinessException.class, () -> bookService.replenishBook(bookId));
-
-        Assertions.assertEquals(MessageConstant.BOOK_ALREADY_REPLENISHED.getMessage(), exception.getMessage());
-    }
-
-    @Test
-    void BookServiceImpl_writeOffBook_shouldUpdateAvailableBook() {
-        Mockito.when(bookDao.findById(bookId)).thenReturn(Optional.of(book));
-        Mockito.when(book.isAvailable()).thenReturn(true);
-
-        bookService.writeOffBook(bookId);
-
-        Mockito.verify(bookDao, Mockito.times(1)).update(book);
-    }
-
-    @Test
-    void BookServiceImpl_writeOffBook_shouldThrowExceptionIfBookNotExist() {
-        Mockito.when(bookDao.findById(bookId)).thenReturn(Optional.empty());
-
-        Throwable exception = Assertions.assertThrows(BusinessException.class, () -> bookService.writeOffBook(bookId));
-
-        Assertions.assertEquals(MessageConstant.BOOK_NOT_EXIST.getMessage(), exception.getMessage());
-    }
-
-    @Test
-    void BookServiceImpl_writeOffBook_shouldThrowExceptionIfBookNotAvailable() {
-        Mockito.when(bookDao.findById(bookId)).thenReturn(Optional.of(book));
-        Mockito.when(book.isAvailable()).thenReturn(false);
-
-        Throwable exception = Assertions.assertThrows(BusinessException.class, () -> bookService.writeOffBook(bookId));
-
-        Assertions.assertEquals(MessageConstant.BOOK_ALREADY_WRITTEN_OFF.getMessage(), exception.getMessage());
-    }
-
-    @Test
-    void BookServiceImpl_findSortedAllBooksByAvailability() {
-        bookService.findSortedAllBooksByAvailability();
+    void BookServiceImpl_findSortedAllBooks_paramAvailability() {
+        bookService.findSortedAllBooks("AVAILABILITY");
 
         Mockito.verify(bookDao, Mockito.times(1)).findSortedAllBooksByAvailability();
     }
 
     @Test
-    void BookServiceImpl_findSortedAllBooksByEditionYear() {
-        bookService.findSortedAllBooksByEditionYear();
+    void BookServiceImpl_findSortedAllBooks_paramEditionYear() {
+        bookService.findSortedAllBooks("EDITION");
 
         Mockito.verify(bookDao, Mockito.times(1)).findSortedAllBooksByEditionYear();
     }
 
     @Test
-    void BookServiceImpl_findSortedAllBooksByPrice() {
-        bookService.findSortedAllBooksByPrice();
+    void BookServiceImpl_findSortedAllBooks_paramPrice() {
+        bookService.findSortedAllBooks("PRICE");
 
         Mockito.verify(bookDao, Mockito.times(1)).findSortedAllBooksByPrice();
     }
 
     @Test
-    void BookServiceImpl_findSortedAllBooksByReplenishmentDate() {
-        bookService.findSortedAllBooksByReplenishmentDate();
+    void BookServiceImpl_findSortedAllBooks_paramReplenishment() {
+        bookService.findSortedAllBooks("REPLENISHMENT");
 
         Mockito.verify(bookDao, Mockito.times(1)).findSortedAllBooksByReplenishmentDate();
     }
 
     @Test
-    void BookServiceImpl_findSortedAllBooksByTitle() {
-        bookService.findSortedAllBooksByTitle();
+    void BookServiceImpl_findSortedAllBooks_paramTitle() {
+        bookService.findSortedAllBooks("TITLE");
 
         Mockito.verify(bookDao, Mockito.times(1)).findSortedAllBooksByTitle();
     }

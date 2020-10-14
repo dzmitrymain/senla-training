@@ -6,6 +6,7 @@ import com.senla.training.yeutukhovich.bookstore.util.converter.DateConverter;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Objects;
 
 public class BookDto {
 
@@ -78,6 +79,33 @@ public class BookDto {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        BookDto bookDto = (BookDto) o;
+
+        if (!id.equals(bookDto.id)) return false;
+        if (!title.equals(bookDto.title)) return false;
+        if (!isAvailable.equals(bookDto.isAvailable)) return false;
+        if (!editionYear.equals(bookDto.editionYear)) return false;
+        if (!Objects.equals(replenishmentDate, bookDto.replenishmentDate))
+            return false;
+        return price.equals(bookDto.price);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id.hashCode();
+        result = 31 * result + title.hashCode();
+        result = 31 * result + isAvailable.hashCode();
+        result = 31 * result + editionYear.hashCode();
+        result = 31 * result + (replenishmentDate != null ? replenishmentDate.hashCode() : 0);
+        result = 31 * result + price.hashCode();
+        return result;
     }
 
     @Override

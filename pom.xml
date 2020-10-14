@@ -26,12 +26,12 @@
         <sl4j.version>1.7.30</sl4j.version>
         <logback.version>1.2.3</logback.version>
         <jackson.databind.version>2.11.3</jackson.databind.version>
+        <javaee.api.version>8.0.1</javaee.api.version>
         <!-- bookstore-model -->
         <hibernate.version>5.4.21.Final</hibernate.version>
         <!-- bookstore-model-dao -->
         <mysql.connector.version>8.0.21</mysql.connector.version>
         <!-- bookstore-web -->
-        <javaee.api.version>8.0.1</javaee.api.version>
         <tomcat.plugin.version>2.2</tomcat.plugin.version>
         <!-- bookstore-controller -->
         <servlet.api.version>4.0.1</servlet.api.version>
@@ -55,6 +55,14 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
             <version>${spring.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/javax/javaee-api -->
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>${javaee.api.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>

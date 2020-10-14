@@ -8,19 +8,9 @@ import java.util.List;
 
 public interface BookService {
 
-    BookDto replenishBook(Long id);
+    BookDto updateBook(Long id, BookDto bookDto);
 
-    BookDto writeOffBook(Long id);
-
-    List<BookDto> findSortedAllBooksByAvailability();
-
-    List<BookDto> findSortedAllBooksByEditionYear();
-
-    List<BookDto> findSortedAllBooksByPrice();
-
-    List<BookDto> findSortedAllBooksByReplenishmentDate();
-
-    List<BookDto> findSortedAllBooksByTitle();
+    List<BookDto> findSortedAllBooks(String sortParam);
 
     List<BookDto> findSoldBooksBetweenDates(Date startDate, Date endDate);
 

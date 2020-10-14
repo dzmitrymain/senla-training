@@ -18,7 +18,7 @@ public class AppConfig {
     public PropertySourcesPlaceholderConfigurer properties() {
         final PropertySourcesPlaceholderConfigurer ppc = new PropertySourcesPlaceholderConfigurer();
         ppc.setIgnoreResourceNotFound(true);
-        ppc.setLocation(new ClassPathResource("/application.properties"));
+        ppc.setLocation(new ClassPathResource("application.properties"));
         return ppc;
     }
 

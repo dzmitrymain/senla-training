@@ -20,19 +20,22 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ErrorDto> handleBusinessException(BusinessException exception) {
-        return ResponseEntity.ok(new ErrorDto(HttpStatus.OK, exception.getMessage()));
+        return ResponseEntity.status(exception.getHttpStatus()).body(new ErrorDto(exception.getHttpStatus(), exception.getMessage()));
     }
 
     @ExceptionHandler(Exception.class)
-    public final ResponseEntity<ErrorDto> handleAllExceptions(Exception exception) {
+    public ResponseEntity<ErrorDto> handleAllExceptions(Exception exception) {
         LOGGER.error(exception.getMessage(), exception);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ErrorDto(HttpStatus.INTERNAL_SERVER_ERROR, MessageConstant.SOMETHING_WENT_WRONG.getMessage()));
     }
 
     @Override
-    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers,
-                                                             HttpStatus status, WebRequest request) {
+    protected ResponseEntity<Object> handleExceptionInternal(Exception ex,
+                                                             Object body,
+                                                             HttpHeaders headers,
+                                                             HttpStatus status,
+                                                             WebRequest request) {
         return ResponseEntity.status(status)
                 .headers(headers)
                 .body(new ErrorDto(status, ex.getMessage()));

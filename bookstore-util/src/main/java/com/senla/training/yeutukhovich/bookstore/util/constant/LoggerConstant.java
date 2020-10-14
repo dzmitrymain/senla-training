@@ -21,6 +21,10 @@ public enum LoggerConstant {
     EXPORT_ALL_BOOKS("Books were exported. File name: {}"),
     EXPORT_BOOK_SUCCESS("Book[id={}] was exported. File name: {}"),
     EXPORT_BOOK_FAIL("Book[id={}] wasn't exported. Cause: {}"),
+    UPDATE_BOOK_FAIL("Book[id={}] wasn't updated. Cause: {}"),
+    UPDATE_BOOK_SUCCESS("Book[id={}] has been updated."),
+    UPDATE_ORDER_FAIL("Order[id={}] wasn't updated. Cause: {}"),
+    UPDATE_ORDER_SUCCESS("Order[id={}] has been updated."),
 
     CREATE_ORDER_SUCCESS("Order[id={}] on Book[id={}] has been created."),
     CREATE_ORDER_FAIL("Order on Book[id={}] has not been created. Cause: {}"),

@@ -87,22 +87,22 @@ class RequestServiceImplTest {
     }
 
     @Test
-    void RequestServiceImpl_findSortedAllRequestsByBookTitle() {
-        requestService.findSortedAllRequestsByBookTitle();
+    void RequestServiceImpl_findSortedAllRequests_paramTitle() {
+        requestService.findSortedAllRequests("TITLE");
 
         Mockito.verify(requestDao, Mockito.times(1)).findSortedAllRequestsByBookTitle();
     }
 
     @Test
-    void RequestServiceImpl_findSortedAllRequestsByIsActive() {
-        requestService.findSortedAllRequestsByIsActive();
+    void RequestServiceImpl_findSortedAllRequests_paramActive() {
+        requestService.findSortedAllRequests("ACTIVE");
 
         Mockito.verify(requestDao, Mockito.times(1)).findSortedAllRequestsByIsActive();
     }
 
     @Test
-    void RequestServiceImpl_findSortedAllRequestsByRequesterData() {
-        requestService.findSortedAllRequestsByRequesterData();
+    void RequestServiceImpl_findSortedAllRequests_paramRequester() {
+        requestService.findSortedAllRequests("REQUESTER");
 
         Mockito.verify(requestDao, Mockito.times(1)).findSortedAllRequestsByRequesterData();
     }

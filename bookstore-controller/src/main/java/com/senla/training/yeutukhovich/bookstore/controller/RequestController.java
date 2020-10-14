@@ -24,19 +24,9 @@ public class RequestController {
         return requestService.createRequest(bookId, requesterData);
     }
 
-    @GetMapping("/byBookTitle")
-    public List<RequestDto> findSortedAllRequestsByBookTitle() {
-        return requestService.findSortedAllRequestsByBookTitle();
-    }
-
-    @GetMapping("/byState")
-    public List<RequestDto> findSortedAllRequestsByIsActive() {
-        return requestService.findSortedAllRequestsByIsActive();
-    }
-
-    @GetMapping("/byRequesterData")
-    public List<RequestDto> findSortedAllRequestsByRequesterData() {
-        return requestService.findSortedAllRequestsByRequesterData();
+    @GetMapping
+    public List<RequestDto> findSortedAllRequests(@RequestParam("sort") String sortParam) {
+        return requestService.findSortedAllRequests(sortParam);
     }
 
     @PostMapping("/import")

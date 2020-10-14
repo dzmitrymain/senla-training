@@ -2,6 +2,7 @@ package com.senla.training.yeutukhovich.bookstore.util.reader;
 
 import com.senla.training.yeutukhovich.bookstore.exception.BusinessException;
 import com.senla.training.yeutukhovich.bookstore.exception.InternalException;
+import org.springframework.http.HttpStatus;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -23,7 +24,7 @@ public final class FileDataReader {
             try (BufferedReader bufferedReader = new BufferedReader(new FileReader(path))) {
                 data = bufferedReader.lines().collect(Collectors.toList());
             } catch (FileNotFoundException e) {
-                throw new BusinessException(e.getMessage());
+                throw new BusinessException(e.getMessage(), HttpStatus.BAD_REQUEST);
             } catch (IOException e) {
                 throw new InternalException(e.getMessage());
             }

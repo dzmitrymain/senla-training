@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,29 +30,14 @@ public class OrderController {
         return orderService.createOrder(bookId, customerData);
     }
 
-    @PostMapping("/{id}/cancel")
-    public OrderDto cancelOrder(@PathVariable("id") Long orderId) {
-        return orderService.cancelOrder(orderId);
+    @PutMapping("/{id}/state")
+    public OrderDto cancelOrder(@PathVariable("id") Long orderId, @RequestBody OrderDto orderDto) {
+        return orderService.updateState(orderId, orderDto);
     }
 
-    @PostMapping("/{id}/complete")
-    public OrderDto completeOrder(@PathVariable("id") Long orderId) {
-        return orderService.completeOrder(orderId);
-    }
-
-    @GetMapping("/byCompletionDate")
-    public List<OrderDto> findSortedAllOrdersByCompletionDate() {
-        return orderService.findSortedAllOrdersByCompletionDate();
-    }
-
-    @GetMapping("/byPrice")
-    public List<OrderDto> findSortedAllOrdersByPrice() {
-        return orderService.findSortedAllOrdersByPrice();
-    }
-
-    @GetMapping("/byState")
-    public List<OrderDto> findSortedAllOrdersByState() {
-        return orderService.findSortedAllOrdersByState();
+    @GetMapping
+    public List<OrderDto> findSortedAllOrders(@RequestParam("sort") String sortParam) {
+        return orderService.findSortedAllOrders(sortParam);
     }
 
     @GetMapping("/completedBetweenDates")

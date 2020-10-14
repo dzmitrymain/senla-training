@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -55,7 +56,7 @@ class RequestControllerTest {
             "\"title\":\"TestBook\",\"editionYear\":1000,\"replenishmentDate\":null,\"price\":1,\"available\":false}," +
             "\"requesterData\":\"TestRequester\",\"active\":true}]";
     private final String exceptionMessage = "Exception message.";
-    private final String expectedErrorDtoJson = "{\"status\":\"OK\",\"message\":\"Exception message.\"}";
+    private final String expectedErrorDtoJson = "{\"status\":\"FORBIDDEN\",\"message\":\"Exception message.\"}";
     private final String importFileName = "TestImport";
     private final String exportFileName = "TestExport";
 
@@ -81,20 +82,20 @@ class RequestControllerTest {
     @Test
     void RequestController_createRequest_shouldReturnErrorDto() throws Exception {
         Mockito.when(requestService.createRequest(Mockito.anyLong(), Mockito.anyString()))
-                .thenThrow(new BusinessException(exceptionMessage));
+                .thenThrow(new BusinessException(exceptionMessage, HttpStatus.FORBIDDEN));
 
         mvc.perform(MockMvcRequestBuilders
                 .post(EndpointConstant.REQUESTS_CREATE.getEndpoint())
                 .param(RequestParameterConstant.BOOK_ID.getParameterName(), bookId.toString())
                 .param(RequestParameterConstant.REQUESTER_DATA.getParameterName(), requesterData))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().isForbidden())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.content().json(expectedErrorDtoJson));
     }
 
     @Test
-    void RequestController_findSortedAllRequestsByBookTitle() throws Exception {
-        Mockito.when(requestService.findSortedAllRequestsByBookTitle()).thenReturn(requestsDto);
+    void RequestController_findSortedAllRequests() throws Exception {
+        Mockito.when(requestService.findSortedAllRequests(Mockito.anyString())).thenReturn(requestsDto);
 
         mvc.perform(MockMvcRequestBuilders.get(EndpointConstant.REQUESTS_BY_BOOK_TITLE.getEndpoint()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -102,25 +103,6 @@ class RequestControllerTest {
                 .andExpect(MockMvcResultMatchers.content().json(expectedRequestsDtoJson));
     }
 
-    @Test
-    void RequestController_findSortedAllRequestsByIsActive() throws Exception {
-        Mockito.when(requestService.findSortedAllRequestsByIsActive()).thenReturn(requestsDto);
-
-        mvc.perform(MockMvcRequestBuilders.get(EndpointConstant.REQUESTS_BY_STATE.getEndpoint()))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.content().json(expectedRequestsDtoJson));
-    }
-
-    @Test
-    void RequestController_findSortedAllRequestsByRequesterData() throws Exception {
-        Mockito.when(requestService.findSortedAllRequestsByRequesterData()).thenReturn(requestsDto);
-
-        mvc.perform(MockMvcRequestBuilders.get(EndpointConstant.REQUESTS_BY_REQUESTER_DATA.getEndpoint()))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.content().json(expectedRequestsDtoJson));
-    }
 
     @Test
     void RequestController_importRequests_shouldReturnImportedRequestsDto() throws Exception {
@@ -135,11 +117,11 @@ class RequestControllerTest {
 
     @Test
     void RequestController_importRequests_shouldReturnErrorDto() throws Exception {
-        Mockito.when(requestService.importRequests(Mockito.anyString())).thenThrow(new BusinessException(exceptionMessage));
+        Mockito.when(requestService.importRequests(Mockito.anyString())).thenThrow(new BusinessException(exceptionMessage, HttpStatus.FORBIDDEN));
 
         mvc.perform(MockMvcRequestBuilders.post(EndpointConstant.REQUESTS_IMPORT.getEndpoint())
                 .param(RequestParameterConstant.FILE_NAME.getParameterName(), importFileName))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().isForbidden())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.content().json(expectedErrorDtoJson));
     }
@@ -169,11 +151,11 @@ class RequestControllerTest {
     @Test
     void RequestController_exportRequest_shouldReturnErrorDto() throws Exception {
         Mockito.when(requestService.exportRequest(Mockito.anyLong(), Mockito.anyString()))
-                .thenThrow(new BusinessException(exceptionMessage));
+                .thenThrow(new BusinessException(exceptionMessage, HttpStatus.FORBIDDEN));
 
         mvc.perform(MockMvcRequestBuilders.post(String.format(EndpointConstant.REQUESTS_EXPORT.getEndpoint(), requestId))
                 .param(RequestParameterConstant.FILE_NAME.getParameterName(), exportFileName))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().isForbidden())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.content().json(expectedErrorDtoJson));
     }

@@ -5,6 +5,7 @@
 
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
         <file>${catalina.base}/logs/production.log</file>
+        <!--        <file>logs/production.log</file>-->
         <append>true</append>
         <encoder>
             <pattern>${DEFAULT_PATTERN}</pattern>
@@ -13,6 +14,7 @@
 
     <appender name="FILE-SQL" class="ch.qos.logback.core.FileAppender">
         <file>${catalina.base}/logs/hibernate-sql.log</file>
+        <!--        <file>logs/hibernate-sql.log</file>-->
         <append>true</append>
         <encoder>
             <pattern>${DEFAULT_PATTERN}</pattern>
@@ -27,12 +29,12 @@
 
     <logger name="com.senla.training.yeutukhovich.bookstore" level="debug" additivity="false">
         <appender-ref ref="FILE"/>
-        <!--        <appender-ref ref="STDOUT"/>-->
+        <!--                <appender-ref ref="STDOUT"/>-->
     </logger>
 
     <logger name="org.hibernate.SQL" level="debug" additivity="false">
         <appender-ref ref="FILE-SQL"/>
-        <!--        <appender-ref ref="STDOUT"/>-->
+        <!--                <appender-ref ref="STDOUT"/>-->
     </logger>
 
     <root level="error">

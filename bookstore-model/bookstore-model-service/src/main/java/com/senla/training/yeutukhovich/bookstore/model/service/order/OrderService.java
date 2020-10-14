@@ -11,15 +11,9 @@ public interface OrderService {
 
     OrderDto createOrder(Long bookId, String customerData);
 
-    OrderDto cancelOrder(Long orderId);
+    OrderDto updateState(Long orderId, OrderDto orderDto);
 
-    OrderDto completeOrder(Long orderId);
-
-    List<OrderDto> findSortedAllOrdersByCompletionDate();
-
-    List<OrderDto> findSortedAllOrdersByPrice();
-
-    List<OrderDto> findSortedAllOrdersByState();
+    List<OrderDto> findSortedAllOrders(String sortParam);
 
     List<OrderDto> findCompletedOrdersBetweenDates(Date startDate, Date endDate);
 

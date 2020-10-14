@@ -1,15 +1,17 @@
-package com.senla.training.yeutukhovich.bookstore.ui.util.webclient;
+package com.senla.training.yeutukhovich.bookstore.ui.webclient;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.senla.training.yeutukhovich.bookstore.dto.ErrorDto;
 import com.senla.training.yeutukhovich.bookstore.ui.util.printer.UiConsolePrinter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -19,30 +21,32 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+@Component
 public class RequestExecutor {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
     private static final String DELIMITER = "\n";
     private static final int OK_STATUS_CODE = 200;
 
-    public static <T> void executeRequestForEntity(String url, HttpMethod method, HttpEntity<?> request,
-                                                   Class<T> clazz) {
-        RestTemplate restTemplate = new RestTemplate();
+    @Autowired
+    private RestTemplate restTemplate;
+
+    public <T> void executeRequestForEntity(String url, HttpMethod method, HttpEntity<?> request,
+                                            Class<T> clazz) {
         ResponseEntity<String> responseEntity = restTemplate.exchange(
                 url, method, request, String.class);
         UiConsolePrinter.printMessage(readObjectBody(responseEntity.getBody(), responseEntity.getStatusCode(), clazz));
     }
 
-    public static <T> void executeRequestForEntityArray(String url, HttpMethod method, HttpEntity<?> request,
-                                                        Class<T[]> clazz) {
-        RestTemplate restTemplate = new RestTemplate();
+    public <T> void executeRequestForEntityArray(String url, HttpMethod method, HttpEntity<?> request,
+                                                 Class<T[]> clazz) {
         ResponseEntity<String> responseEntity = restTemplate.exchange(
                 url, method, request, String.class);
         UiConsolePrinter.printMessage(readArrayBody(responseEntity.getBody(), responseEntity.getStatusCode(), clazz));
     }
 
-    public static HttpEntity<MultiValueMap<String, String>> createUrlencodedRequest(List<String> values,
-                                                                                    String... keys) {
+    public HttpEntity<MultiValueMap<String, String>> createUrlencodedRequest(List<String> values,
+                                                                             String... keys) {
         if (values.size() != keys.length || keys.length == 0) {
             throw new RuntimeException("Wrong keys number.");
         }
@@ -55,7 +59,7 @@ public class RequestExecutor {
         return new HttpEntity<>(body, headers);
     }
 
-    private static <T> String readArrayBody(String json, HttpStatus status, Class<T[]> clazz) {
+    private <T> String readArrayBody(String json, HttpStatus status, Class<T[]> clazz) {
         if (status.value() != OK_STATUS_CODE) {
             return readErrorDtoMessage(json);
         }
@@ -68,7 +72,7 @@ public class RequestExecutor {
         }
     }
 
-    private static <T> String readObjectBody(String json, HttpStatus status, Class<T> clazz) {
+    private <T> String readObjectBody(String json, HttpStatus status, Class<T> clazz) {
         if (status.value() != OK_STATUS_CODE) {
             return readErrorDtoMessage(json);
         }
@@ -79,7 +83,7 @@ public class RequestExecutor {
         }
     }
 
-    private static String readErrorDtoMessage(String json) {
+    private String readErrorDtoMessage(String json) {
         try {
             return MAPPER.readValue((json), ErrorDto.class).getMessage();
         } catch (JsonProcessingException ex) {

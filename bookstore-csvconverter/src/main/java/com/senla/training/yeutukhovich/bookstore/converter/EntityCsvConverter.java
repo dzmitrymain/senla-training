@@ -7,6 +7,7 @@ import com.senla.training.yeutukhovich.bookstore.model.domain.Request;
 import com.senla.training.yeutukhovich.bookstore.model.domain.state.OrderState;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 import com.senla.training.yeutukhovich.bookstore.util.converter.DateConverter;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -142,7 +143,7 @@ public class EntityCsvConverter {
                 book.setPrice(BigDecimal.valueOf(Double.parseDouble(strings[5])));
                 return book;
             } catch (IllegalArgumentException | ParseException e) {
-                throw new BusinessException(MessageConstant.CANT_PARSE_BOOK.getMessage() + " " + e.getMessage());
+                throw new BusinessException(MessageConstant.CANT_PARSE_BOOK.getMessage() + " " + e.getMessage(), HttpStatus.BAD_REQUEST);
             }
         }
         return null;
@@ -169,7 +170,7 @@ public class EntityCsvConverter {
                 order.setCustomerData(strings[6]);
                 return order;
             } catch (IllegalArgumentException | ParseException e) {
-                throw new BusinessException(MessageConstant.CANT_PARSE_ORDER.getMessage() + " " + e.getMessage());
+                throw new BusinessException(MessageConstant.CANT_PARSE_ORDER.getMessage() + " " + e.getMessage(), HttpStatus.BAD_REQUEST);
             }
         }
         return null;
@@ -185,7 +186,7 @@ public class EntityCsvConverter {
                 request.setRequesterData(strings[3]);
                 return request;
             } catch (IllegalArgumentException e) {
-                throw new BusinessException(MessageConstant.CANT_PARSE_REQUEST.getMessage() + " " + e.getMessage());
+                throw new BusinessException(MessageConstant.CANT_PARSE_REQUEST.getMessage() + " " + e.getMessage(), HttpStatus.BAD_REQUEST);
             }
         }
         return null;
