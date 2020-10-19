@@ -28,7 +28,7 @@ public class EntityCsvConverter {
                     DELIMITER +
                     book.getTitle() +
                     DELIMITER +
-                    book.isAvailable() +
+                    book.getAvailable() +
                     DELIMITER +
                     book.getEditionYear() +
                     DELIMITER +
@@ -96,7 +96,7 @@ public class EntityCsvConverter {
                     DELIMITER +
                     request.getBook().getId() +
                     DELIMITER +
-                    request.isActive() +
+                    request.getActive() +
                     DELIMITER +
                     request.getRequesterData();
             requestStrings.add(requestString);
@@ -155,6 +155,7 @@ public class EntityCsvConverter {
                 Order order = new Order();
                 order.setId(Long.valueOf(strings[0]));
                 order.setBook(new Book(Long.valueOf(strings[1])));
+                new Book();
                 order.setState(OrderState.valueOf(strings[2]));
                 order.setCurrentBookPrice(BigDecimal.valueOf(Double.parseDouble(strings[3])));
                 Date creationDate = DateConverter.parseDate(strings[4], DateConverter.STANDARD_DATE_FORMAT);

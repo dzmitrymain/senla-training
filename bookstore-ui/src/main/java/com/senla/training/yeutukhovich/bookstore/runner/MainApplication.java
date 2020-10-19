@@ -13,5 +13,8 @@ public class MainApplication {
         menuController.run();
 
         UserInputReader.closeReader();
+
+        //TODO: lombok
+        //TODO: fix ui
     }
 }

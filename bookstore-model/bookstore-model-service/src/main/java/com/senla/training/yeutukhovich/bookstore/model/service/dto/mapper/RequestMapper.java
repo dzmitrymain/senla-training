@@ -18,7 +18,7 @@ public class RequestMapper {
         RequestDto requestDto = new RequestDto();
         requestDto.setId(request.getId());
         requestDto.setBookDto(bookMapper.map(request.getBook()));
-        requestDto.setActive(request.isActive());
+        requestDto.setActive(request.getActive());
         requestDto.setRequesterData(request.getRequesterData());
         return requestDto;
     }

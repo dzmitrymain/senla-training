@@ -57,7 +57,7 @@ public class OrderServiceImpl implements OrderService {
                             MessageConstant.BOOK_NOT_EXIST.getMessage());
                     return new BusinessException(MessageConstant.BOOK_NOT_EXIST.getMessage(), HttpStatus.NOT_FOUND);
                 });
-        if (!book.isAvailable()) {
+        if (!book.getAvailable()) {
             Long requestId = requestDao.add(new Request(book, customerData));
             LOGGER.info(LoggerConstant.CREATE_REQUEST_SUCCESS.getMessage(), requestId, bookId);
         }
@@ -237,7 +237,7 @@ public class OrderServiceImpl implements OrderService {
                             MessageConstant.ORDER_NOT_EXIST.getMessage());
                     return new BusinessException(MessageConstant.ORDER_NOT_EXIST.getMessage(), HttpStatus.NOT_FOUND);
                 });
-        if (!order.getBook().isAvailable()) {
+        if (!order.getBook().getAvailable()) {
             LOGGER.warn(LoggerConstant.COMPLETE_ORDER_FAIL.getMessage(), orderId,
                     MessageConstant.BOOK_NOT_AVAILABLE.getMessage());
             throw new BusinessException(MessageConstant.BOOK_NOT_AVAILABLE.getMessage(), HttpStatus.FORBIDDEN);

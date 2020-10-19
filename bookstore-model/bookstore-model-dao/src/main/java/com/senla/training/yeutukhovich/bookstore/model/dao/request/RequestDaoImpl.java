@@ -27,9 +27,9 @@ public class RequestDaoImpl extends HibernateAbstractDao<Request, Long> implemen
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaUpdate<Request> update = cb.createCriteriaUpdate(Request.class);
         Root<Request> requests = update.from(Request.class);
-        update.set(Request_.isActive, false);
+        update.set(Request_.active, false);
         update.where(cb.equal(requests.get(Request_.book).get(Book_.id), bookId),
-                cb.equal(requests.get(Request_.isActive), true));
+                cb.equal(requests.get(Request_.active), true));
         return (long) entityManager.createQuery(update).executeUpdate();
     }
 
@@ -46,7 +46,7 @@ public class RequestDaoImpl extends HibernateAbstractDao<Request, Long> implemen
 
     @Override
     public List<Request> findSortedAllRequestsByIsActive() {
-        return findAllSortedRequests(Request_.isActive, false);
+        return findAllSortedRequests(Request_.active, false);
     }
 
     @Override

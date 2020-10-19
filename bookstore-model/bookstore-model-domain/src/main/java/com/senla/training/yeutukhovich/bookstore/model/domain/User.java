@@ -1,6 +1,8 @@
 package com.senla.training.yeutukhovich.bookstore.model.domain;
 
 import com.senla.training.yeutukhovich.bookstore.model.domain.role.UserRole;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,6 +14,8 @@ import javax.persistence.metamodel.StaticMetamodel;
 @StaticMetamodel(User.class)
 @Entity
 @Table(name = "users")
+@Data
+@EqualsAndHashCode(callSuper = true)
 public class User extends AbstractEntity {
 
     @Column(name = "username")
@@ -21,28 +25,4 @@ public class User extends AbstractEntity {
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private UserRole role;
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public UserRole getRole() {
-        return role;
-    }
-
-    public void setRole(UserRole role) {
-        this.role = role;
-    }
 }

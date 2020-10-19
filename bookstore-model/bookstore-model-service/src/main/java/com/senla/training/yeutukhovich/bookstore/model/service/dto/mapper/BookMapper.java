@@ -14,7 +14,7 @@ public class BookMapper {
         BookDto bookDto = new BookDto();
         bookDto.setId(book.getId());
         bookDto.setTitle(book.getTitle());
-        bookDto.setAvailable(book.isAvailable());
+        bookDto.setAvailable(book.getAvailable());
         bookDto.setEditionYear(book.getEditionYear());
         bookDto.setReplenishmentDate(book.getReplenishmentDate());
         bookDto.setPrice(book.getPrice());

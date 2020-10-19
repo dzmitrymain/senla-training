@@ -58,7 +58,7 @@ class RequestServiceImplTest {
     @Test
     void RequestServiceImpl_createRequest_shouldUpdateIfBookExistAndNotAvailable() {
         Mockito.when(bookDao.findById(bookId)).thenReturn(Optional.of(book));
-        Mockito.when(book.isAvailable()).thenReturn(false);
+        Mockito.when(book.getAvailable()).thenReturn(false);
 
         requestService.createRequest(bookId, "");
 
@@ -78,7 +78,7 @@ class RequestServiceImplTest {
     @Test
     void RequestServiceImpl_createRequest_shouldThrowExceptionIfBookAvailable() {
         Mockito.when(bookDao.findById(bookId)).thenReturn(Optional.of(book));
-        Mockito.when(book.isAvailable()).thenReturn(true);
+        Mockito.when(book.getAvailable()).thenReturn(true);
 
         Throwable exception = Assertions.assertThrows(BusinessException.class,
                 () -> requestService.createRequest(bookId, ""));

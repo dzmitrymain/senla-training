@@ -51,7 +51,7 @@ public class BookDaoImpl extends HibernateAbstractDao<Book, Long> implements Boo
         criteriaSubquery.distinct(true);
         criteriaSubquery.select(subqueryBooks.get(Book_.id));
         criteriaQuery.where(cb.lessThanOrEqualTo(books.get(Book_.replenishmentDate), startDate),
-                books.get(Book_.id).in(criteriaSubquery).not(), cb.equal(books.get(Book_.isAvailable), true));
+                books.get(Book_.id).in(criteriaSubquery).not(), cb.equal(books.get(Book_.available), true));
         return entityManager.createQuery(criteriaQuery).getResultList();
     }
 
@@ -75,7 +75,7 @@ public class BookDaoImpl extends HibernateAbstractDao<Book, Long> implements Boo
 
     @Override
     public List<Book> findSortedAllBooksByAvailability() {
-        return findAllSortedBooks(Book_.isAvailable, false);
+        return findAllSortedBooks(Book_.available, false);
     }
 
     @Override

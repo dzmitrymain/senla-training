@@ -3,10 +3,16 @@ package com.senla.training.yeutukhovich.bookstore.dto;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.senla.training.yeutukhovich.bookstore.util.converter.DateConverter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class OrderDto {
 
     private Long id;
@@ -20,82 +26,4 @@ public class OrderDto {
     @JsonDeserialize(using = DateConverter.Deserializer.class)
     private Date completionDate;
     private String customerData;
-
-    public OrderDto() {
-
-    }
-
-    public OrderDto(Long id, String state, BookDto bookDto, BigDecimal price, Date creationDate,
-                    Date completionDate, String customerData) {
-        this.id = id;
-        this.state = state;
-        this.bookDto = bookDto;
-        this.price = price;
-        this.creationDate = creationDate;
-        this.completionDate = completionDate;
-        this.customerData = customerData;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public BookDto getBookDto() {
-        return bookDto;
-    }
-
-    public void setBookDto(BookDto bookDto) {
-        this.bookDto = bookDto;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public Date getCreationDate() {
-        return creationDate;
-    }
-
-    public void setCreationDate(Date creationDate) {
-        this.creationDate = creationDate;
-    }
-
-    public Date getCompletionDate() {
-        return completionDate;
-    }
-
-    public void setCompletionDate(Date completionDate) {
-        this.completionDate = completionDate;
-    }
-
-    public String getCustomerData() {
-        return customerData;
-    }
-
-    public void setCustomerData(String customerData) {
-        this.customerData = customerData;
-    }
-
-    @Override
-    public String toString() {
-        return "Order [id=" + id +
-                ", state=" + state +
-                ", customer data='" + customerData + "']";
-    }
 }

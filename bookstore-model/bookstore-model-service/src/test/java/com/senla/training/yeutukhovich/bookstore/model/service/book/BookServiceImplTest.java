@@ -63,7 +63,7 @@ class BookServiceImplTest {
         Mockito.when(bookDto.getAvailable()).thenReturn(true);
         Mockito.when(bookDto.getId()).thenReturn(bookId);
         Mockito.when(bookDao.findById(bookId)).thenReturn(Optional.of(book));
-        Mockito.when(book.isAvailable()).thenReturn(false);
+        Mockito.when(book.getAvailable()).thenReturn(false);
 
         bookService.updateBook(bookId, bookDto);
 
@@ -193,7 +193,7 @@ class BookServiceImplTest {
     @Test
     void BookServiceImpl_importBooks() {
         Mockito.when(entityCsvConverter.parseBooks(Mockito.anyList())).thenReturn(List.of(book));
-        Mockito.when(book.isAvailable()).thenReturn(true);
+        Mockito.when(book.getAvailable()).thenReturn(true);
 
         try (MockedStatic<FileDataReader> mockedFileDataReader = Mockito.mockStatic(FileDataReader.class)) {
             bookService.importBooks("");

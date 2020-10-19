@@ -48,7 +48,7 @@ public class RequestServiceImpl implements RequestService {
                             MessageConstant.BOOK_NOT_EXIST.getMessage());
                     return new BusinessException(MessageConstant.BOOK_NOT_EXIST.getMessage(), HttpStatus.NOT_FOUND);
                 });
-        if (book.isAvailable()) {
+        if (book.getAvailable()) {
             LOGGER.warn(LoggerConstant.CREATE_REQUEST_FAIL.getMessage(), bookId,
                     MessageConstant.BOOK_ALREADY_REPLENISHED.getMessage());
             throw new BusinessException(MessageConstant.BOOK_ALREADY_REPLENISHED.getMessage(), HttpStatus.FORBIDDEN);

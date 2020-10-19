@@ -63,7 +63,7 @@ public class BookServiceImpl implements BookService {
                     return new BusinessException(MessageConstant.BOOK_NOT_EXIST.getMessage(), HttpStatus.NOT_FOUND);
                 });
         BookDto updatedBookDto = bookMapper.map(bookDao.update(bookMapper.map(bookDto)));
-        if (requestAutoCloseEnabled && (!book.isAvailable() && bookDto.getAvailable())) {
+        if (requestAutoCloseEnabled && (!book.getAvailable() && bookDto.getAvailable())) {
             requestDao.closeRequestsByBookId(id);
         }
         LOGGER.info(LoggerConstant.UPDATE_BOOK_SUCCESS.getMessage(), id);
@@ -190,7 +190,7 @@ public class BookServiceImpl implements BookService {
         List<Book> importedBooks = entityCsvConverter.parseBooks(dataStrings);
         for (Book importedBook : importedBooks) {
             bookDao.update(importedBook);
-            if (importedBook.isAvailable()) {
+            if (importedBook.getAvailable()) {
                 requestDao.closeRequestsByBookId(importedBook.getId());
             }
         }

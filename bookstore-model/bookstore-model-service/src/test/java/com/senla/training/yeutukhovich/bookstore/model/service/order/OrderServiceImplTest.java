@@ -66,7 +66,7 @@ class OrderServiceImplTest {
 
     @Test
     void OrderServiceImpl_createOrder_shouldCreateOrderAndRequestIfBookNotAvailable() {
-        Mockito.when(book.isAvailable()).thenReturn(false);
+        Mockito.when(book.getAvailable()).thenReturn(false);
         Mockito.when(bookDao.findById(bookId)).thenReturn(Optional.of(book));
 
         OrderDto result = orderService.createOrder(bookId, "");
@@ -78,7 +78,7 @@ class OrderServiceImplTest {
 
     @Test
     void OrderServiceImpl_createOrder_shouldCreateOrderWithoutRequestIfBookAvailable() {
-        Mockito.when(book.isAvailable()).thenReturn(true);
+        Mockito.when(book.getAvailable()).thenReturn(true);
         Mockito.when(bookDao.findById(bookId)).thenReturn(Optional.of(book));
 
         OrderDto result = orderService.createOrder(bookId, "");
@@ -102,7 +102,7 @@ class OrderServiceImplTest {
     void OrderServiceImpl_updateOrder_shouldUpdateIfOrderExistAndStateCreated() {
         Mockito.when(orderDto.getState()).thenReturn(OrderState.COMPLETED.toString());
         Mockito.when(orderDto.getId()).thenReturn(orderId);
-        Mockito.when(order.getBook().isAvailable()).thenReturn(true);
+        Mockito.when(order.getBook().getAvailable()).thenReturn(true);
         Mockito.when(orderDao.findById(orderId)).thenReturn(Optional.of(order));
         Mockito.when(order.getState()).thenReturn(OrderState.CREATED);
 
