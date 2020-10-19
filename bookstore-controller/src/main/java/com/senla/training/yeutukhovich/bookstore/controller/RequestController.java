@@ -3,6 +3,7 @@ package com.senla.training.yeutukhovich.bookstore.controller;
 import com.senla.training.yeutukhovich.bookstore.dto.RequestDto;
 import com.senla.training.yeutukhovich.bookstore.model.service.request.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,16 +30,19 @@ public class RequestController {
         return requestService.findSortedAllRequests(sortParam);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/import")
     public List<RequestDto> importRequests(@RequestParam String fileName) {
         return requestService.importRequests(fileName);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/export")
     public List<RequestDto> exportAllRequests(@RequestParam String fileName) {
         return requestService.exportAllRequests(fileName);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{id}/export")
     public RequestDto exportRequest(@PathVariable("id") Long requestId, @RequestParam String fileName) {
         return requestService.exportRequest(requestId, fileName);

@@ -4,6 +4,7 @@ import com.senla.training.yeutukhovich.bookstore.dto.OrderDetailsDto;
 import com.senla.training.yeutukhovich.bookstore.dto.OrderDto;
 import com.senla.training.yeutukhovich.bookstore.model.service.order.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,8 +31,9 @@ public class OrderController {
         return orderService.createOrder(bookId, customerData);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}/state")
-    public OrderDto cancelOrder(@PathVariable("id") Long orderId, @RequestBody OrderDto orderDto) {
+    public OrderDto changeState(@PathVariable("id") Long orderId, @RequestBody OrderDto orderDto) {
         return orderService.updateState(orderId, orderDto);
     }
 
@@ -61,16 +63,19 @@ public class OrderController {
         return orderService.showOrderDetails(orderId);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/import")
     public List<OrderDto> importOrders(@RequestParam String fileName) {
         return orderService.importOrders(fileName);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/export")
     public List<OrderDto> exportAllOrders(@RequestParam String fileName) {
         return orderService.exportAllOrders(fileName);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{id}/export")
     public OrderDto exportOrder(@PathVariable("id") Long orderId, @RequestParam String fileName) {
         return orderService.exportOrder(orderId, fileName);

@@ -4,6 +4,7 @@ import com.senla.training.yeutukhovich.bookstore.dto.BookDescriptionDto;
 import com.senla.training.yeutukhovich.bookstore.dto.BookDto;
 import com.senla.training.yeutukhovich.bookstore.model.service.book.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,6 +24,7 @@ public class BookController {
     @Autowired
     private BookService bookService;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public BookDto updateBook(@PathVariable("id") Long id, @RequestBody BookDto bookDto) {
         return bookService.updateBook(id, bookDto);
@@ -53,16 +55,19 @@ public class BookController {
         return bookService.showBookDescription(id);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/import")
     public List<BookDto> importBooks(@RequestParam String fileName) {
         return bookService.importBooks(fileName);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/export")
     public List<BookDto> exportAllBooks(@RequestParam String fileName) {
         return bookService.exportAllBooks(fileName);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{id}/export")
     public BookDto exportBook(@PathVariable("id") Long bookId, @RequestParam String fileName) {
         return bookService.exportBook(bookId, fileName);
