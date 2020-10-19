@@ -9,9 +9,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.metamodel.StaticMetamodel;
 import java.math.BigDecimal;
 import java.util.Date;
 
+@StaticMetamodel(Order.class)
 @Entity
 @Table(name = "orders")
 public class Order extends AbstractEntity {
