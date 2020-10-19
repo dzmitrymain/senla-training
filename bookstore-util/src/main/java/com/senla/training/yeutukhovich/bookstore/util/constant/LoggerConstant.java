@@ -58,7 +58,8 @@ public enum LoggerConstant {
     EXPORT_REQUEST_SUCCESS("Request[id={}] was exported. File name: {}"),
     EXPORT_REQUEST_FAIL("Requests[id={}] wasn't exported. Cause: {}"),
 
-    SESSION_FACTORY_BUILD_FAILURE("Session factory build failure. Cause: {}");
+    USER_REGISTRATION_SUCCESS("User with username [{}] has been registered."),
+    INVALID_TOKEN("Invalid token. Cause: {}.");
 
     private String message;
 

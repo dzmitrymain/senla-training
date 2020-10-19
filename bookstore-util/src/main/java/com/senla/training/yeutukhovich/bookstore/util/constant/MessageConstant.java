@@ -42,6 +42,13 @@ public enum MessageConstant {
     EARLIEST_DATE_BOUND_YYYY_MM_DD("Please enter an earliest date bound in format \"yyyy-MM-dd\": "),
     LATEST_DATE_BOUND_YYYY_MM_DD("Please enter a latest date bound in format \"yyyy-MM-dd\": "),
 
+    ROLE_NOT_EXIST("Role [%s] does not exist."),
+    ACCESS_DENIED("Access denied."),
+    USERNAME_ALREADY_EXISTS("Username [%s] already exists."),
+    USER_NOT_FOUND("User not found"),
+    AUTHORIZATION_FAIL("Invalid username or password"),
+    AUTHENTICATION_REQUIRED("Authentication required. Check your authorization token."),
+
     IMPORTED_ENTITIES("Imported entities number: "),
     EXPORTED_ENTITIES("Exported entities number: "),
     ENTITY_EXPORTED("Entity has been exported."),
