@@ -1,5 +1,6 @@
 package com.senla.training.yeutukhovich.bookstore.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.senla.training.yeutukhovich.bookstore.util.formatter.DateFormatter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -25,5 +26,10 @@ public class AppConfig {
     @Bean
     public Formatter<Date> dateFormatter() {
         return new DateFormatter();
+    }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper();
     }
 }

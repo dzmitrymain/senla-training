@@ -24,12 +24,14 @@ import java.util.stream.Collectors;
 @Component
 public class RequestExecutor {
 
-    private static final ObjectMapper MAPPER = new ObjectMapper();
+
     private static final String DELIMITER = "\n";
     private static final int OK_STATUS_CODE = 200;
 
     @Autowired
     private RestTemplate restTemplate;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     public <T> void executeRequestForEntity(String url, HttpMethod method, HttpEntity<?> request,
                                             Class<T> clazz) {
@@ -64,7 +66,7 @@ public class RequestExecutor {
             return readErrorDtoMessage(json);
         }
         try {
-            return Arrays.stream(MAPPER.readValue(json, clazz))
+            return Arrays.stream(objectMapper.readValue(json, clazz))
                     .map(Objects::toString)
                     .collect(Collectors.joining(DELIMITER));
         } catch (JsonProcessingException e) {
@@ -77,7 +79,7 @@ public class RequestExecutor {
             return readErrorDtoMessage(json);
         }
         try {
-            return MAPPER.readValue(json, clazz).toString();
+            return objectMapper.readValue(json, clazz).toString();
         } catch (JsonProcessingException e) {
             return readErrorDtoMessage(json);
         }
@@ -85,7 +87,7 @@ public class RequestExecutor {
 
     private String readErrorDtoMessage(String json) {
         try {
-            return MAPPER.readValue((json), ErrorDto.class).getMessage();
+            return objectMapper.readValue((json), ErrorDto.class).getMessage();
         } catch (JsonProcessingException ex) {
             throw new RuntimeException(ex);
         }
