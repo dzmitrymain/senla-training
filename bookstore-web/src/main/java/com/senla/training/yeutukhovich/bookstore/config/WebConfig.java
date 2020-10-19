@@ -5,6 +5,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.Formatter;
 import org.springframework.format.FormatterRegistry;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -13,6 +14,7 @@ import java.util.Date;
 @Configuration
 @EnableWebMvc
 @ComponentScan("com.senla.training.yeutukhovich.bookstore.controller")
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebConfig implements WebMvcConfigurer {
 
     @Autowired
