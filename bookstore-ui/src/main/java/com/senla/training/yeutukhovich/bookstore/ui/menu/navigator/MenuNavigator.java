@@ -4,15 +4,13 @@ import com.senla.training.yeutukhovich.bookstore.ui.menu.Menu;
 import com.senla.training.yeutukhovich.bookstore.ui.menu.MenuItem;
 import com.senla.training.yeutukhovich.bookstore.ui.util.printer.UiConsolePrinter;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 
 @Component
+@Slf4j
 public class MenuNavigator {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(MenuNavigator.class);
 
     private Menu currentMenu;
 
@@ -50,7 +48,7 @@ public class MenuNavigator {
             try {
                 selectedMenuItem.doAction();
             } catch (Throwable e) {
-                LOGGER.error(e.getMessage(), e);
+                log.error(e.getMessage(), e);
                 UiConsolePrinter.printError(MessageConstant.SOMETHING_WENT_WRONG.getMessage());
             }
         }

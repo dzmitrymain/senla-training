@@ -14,8 +14,7 @@ import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 import com.senla.training.yeutukhovich.bookstore.util.converter.DateConverter;
 import com.senla.training.yeutukhovich.bookstore.util.reader.FileDataReader;
 import com.senla.training.yeutukhovich.bookstore.util.writer.FileDataWriter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -28,9 +27,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class BookServiceImpl implements BookService {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(BookServiceImpl.class);
 
     @Autowired
     private BookDao bookDao;
@@ -52,13 +50,13 @@ public class BookServiceImpl implements BookService {
     @Transactional
     public BookDto updateBook(Long id, BookDto bookDto) {
         if (!id.equals(bookDto.getId())) {
-            LOGGER.warn(LoggerConstant.UPDATE_BOOK_FAIL.getMessage(), id,
+            log.warn(LoggerConstant.UPDATE_BOOK_FAIL.getMessage(), id,
                     MessageConstant.ID_NOT_EQUALS_DTO.getMessage());
             throw new BusinessException(MessageConstant.ID_NOT_EQUALS_DTO.getMessage(), HttpStatus.BAD_REQUEST);
         }
         Book book = bookDao.findById(id)
                 .orElseThrow(() -> {
-                    LOGGER.warn(LoggerConstant.UPDATE_BOOK_FAIL.getMessage(), id,
+                    log.warn(LoggerConstant.UPDATE_BOOK_FAIL.getMessage(), id,
                             MessageConstant.BOOK_NOT_EXIST.getMessage());
                     return new BusinessException(MessageConstant.BOOK_NOT_EXIST.getMessage(), HttpStatus.NOT_FOUND);
                 });
@@ -66,7 +64,7 @@ public class BookServiceImpl implements BookService {
         if (requestAutoCloseEnabled && (!book.getAvailable() && bookDto.getAvailable())) {
             requestDao.closeRequestsByBookId(id);
         }
-        LOGGER.info(LoggerConstant.UPDATE_BOOK_SUCCESS.getMessage(), id);
+        log.info(LoggerConstant.UPDATE_BOOK_SUCCESS.getMessage(), id);
         return updatedBookDto;
     }
 
@@ -77,23 +75,23 @@ public class BookServiceImpl implements BookService {
         switch (sortParam) {
             case "AVAILABILITY":
                 result = bookDao.findSortedAllBooksByAvailability();
-                LOGGER.info(LoggerConstant.FIND_ALL_BOOKS_SORTED_BY_AVAILABILITY.getMessage());
+                log.info(LoggerConstant.FIND_ALL_BOOKS_SORTED_BY_AVAILABILITY.getMessage());
                 break;
             case "EDITION":
                 result = bookDao.findSortedAllBooksByEditionYear();
-                LOGGER.info(LoggerConstant.FIND_ALL_BOOKS_SORTED_BY_EDITION_YEAR.getMessage());
+                log.info(LoggerConstant.FIND_ALL_BOOKS_SORTED_BY_EDITION_YEAR.getMessage());
                 break;
             case "PRICE":
                 result = bookDao.findSortedAllBooksByPrice();
-                LOGGER.info(LoggerConstant.FIND_ALL_BOOKS_SORTED_BY_PRICE.getMessage());
+                log.info(LoggerConstant.FIND_ALL_BOOKS_SORTED_BY_PRICE.getMessage());
                 break;
             case "TITLE":
                 result = bookDao.findSortedAllBooksByTitle();
-                LOGGER.info(LoggerConstant.FIND_ALL_BOOKS_SORTED_BY_TITLE.getMessage());
+                log.info(LoggerConstant.FIND_ALL_BOOKS_SORTED_BY_TITLE.getMessage());
                 break;
             case "REPLENISHMENT":
                 result = bookDao.findSortedAllBooksByReplenishmentDate();
-                LOGGER.info(LoggerConstant.FIND_ALL_BOOKS_SORTED_BY_REPLENISHMENT_DATE.getMessage());
+                log.info(LoggerConstant.FIND_ALL_BOOKS_SORTED_BY_REPLENISHMENT_DATE.getMessage());
                 break;
             default:
                 throw new BusinessException(String.format(MessageConstant.SORT_PARAM_NOT_SUPPORTED.getMessage(),
@@ -108,7 +106,7 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional
     public List<BookDto> findSoldBooksBetweenDates(Date startDate, Date endDate) {
-        LOGGER.info(LoggerConstant.FIND_SOLD_BOOKS.getMessage(), DateConverter.formatDate(startDate,
+        log.info(LoggerConstant.FIND_SOLD_BOOKS.getMessage(), DateConverter.formatDate(startDate,
                 DateConverter.DAY_DATE_FORMAT), DateConverter.formatDate(endDate, DateConverter.DAY_DATE_FORMAT));
         return bookDao.findSoldBooksBetweenDates(startDate, endDate).stream()
                 .map(bookMapper::map)
@@ -118,7 +116,7 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional
     public List<BookDto> findUnsoldBooksBetweenDates(Date startDate, Date endDate) {
-        LOGGER.info(LoggerConstant.FIND_UNSOLD_BOOKS.getMessage(), DateConverter.formatDate(startDate,
+        log.info(LoggerConstant.FIND_UNSOLD_BOOKS.getMessage(), DateConverter.formatDate(startDate,
                 DateConverter.DAY_DATE_FORMAT), DateConverter.formatDate(endDate, DateConverter.DAY_DATE_FORMAT));
         return bookDao.findUnsoldBooksBetweenDates(startDate, endDate).stream()
                 .map(bookMapper::map)
@@ -131,7 +129,7 @@ public class BookServiceImpl implements BookService {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MONTH, -staleMonthNumber);
         Date staleDate = new Date(calendar.getTimeInMillis());
-        LOGGER.info(LoggerConstant.FIND_STALE_BOOKS.getMessage());
+        log.info(LoggerConstant.FIND_STALE_BOOKS.getMessage());
         return bookDao.findStaleBooksBetweenDates(staleDate, new Date()).stream()
                 .map(bookMapper::map)
                 .collect(Collectors.toList());
@@ -142,7 +140,7 @@ public class BookServiceImpl implements BookService {
     public BookDescriptionDto showBookDescription(Long id) {
         Book book = bookDao.findById(id)
                 .orElseThrow(() -> {
-                    LOGGER.warn(LoggerConstant.SHOW_BOOK_DESCRIPTION_FAIL.getMessage(), id,
+                    log.warn(LoggerConstant.SHOW_BOOK_DESCRIPTION_FAIL.getMessage(), id,
                             MessageConstant.BOOK_NOT_EXIST.getMessage());
                     return new BusinessException(MessageConstant.BOOK_NOT_EXIST.getMessage(), HttpStatus.NOT_FOUND);
                 });
@@ -150,7 +148,7 @@ public class BookServiceImpl implements BookService {
         bookDescriptionDto.setTitle(book.getTitle());
         bookDescriptionDto.setEditionYear(book.getEditionYear());
         bookDescriptionDto.setReplenishmentDate(book.getReplenishmentDate());
-        LOGGER.info(LoggerConstant.SHOW_BOOK_DESCRIPTION_SUCCESS.getMessage(), id);
+        log.info(LoggerConstant.SHOW_BOOK_DESCRIPTION_SUCCESS.getMessage(), id);
         return bookDescriptionDto;
     }
 
@@ -162,7 +160,7 @@ public class BookServiceImpl implements BookService {
         List<Book> books = bookDao.findAll();
         List<String> bookStrings = entityCsvConverter.convertBooks(books);
         FileDataWriter.writeData(path, bookStrings);
-        LOGGER.info(LoggerConstant.EXPORT_ALL_BOOKS.getMessage(), fileName);
+        log.info(LoggerConstant.EXPORT_ALL_BOOKS.getMessage(), fileName);
         return books.stream()
                 .map(bookMapper::map)
                 .collect(Collectors.toList());
@@ -174,12 +172,12 @@ public class BookServiceImpl implements BookService {
         String path = csvDirectoryPath
                 + fileName + ApplicationConstant.CSV_FORMAT_TYPE;
         Book book = bookDao.findById(bookId).orElseThrow(() -> {
-            LOGGER.warn(LoggerConstant.EXPORT_BOOK_FAIL.getMessage(), bookId, MessageConstant.BOOK_NOT_EXIST.getMessage());
+            log.warn(LoggerConstant.EXPORT_BOOK_FAIL.getMessage(), bookId, MessageConstant.BOOK_NOT_EXIST.getMessage());
             return new BusinessException(MessageConstant.BOOK_NOT_EXIST.getMessage(), HttpStatus.NOT_FOUND);
         });
         List<String> bookStrings = entityCsvConverter.convertBooks(List.of(book));
         FileDataWriter.writeData(path, bookStrings);
-        LOGGER.info(LoggerConstant.EXPORT_BOOK_SUCCESS.getMessage(), bookId, fileName);
+        log.info(LoggerConstant.EXPORT_BOOK_SUCCESS.getMessage(), bookId, fileName);
         return bookMapper.map(book);
     }
 
@@ -194,7 +192,7 @@ public class BookServiceImpl implements BookService {
                 requestDao.closeRequestsByBookId(importedBook.getId());
             }
         }
-        LOGGER.info(LoggerConstant.IMPORT_BOOKS_SUCCESS.getMessage(), fileName);
+        log.info(LoggerConstant.IMPORT_BOOKS_SUCCESS.getMessage(), fileName);
         return importedBooks.stream()
                 .map(bookMapper::map)
                 .collect(Collectors.toList());

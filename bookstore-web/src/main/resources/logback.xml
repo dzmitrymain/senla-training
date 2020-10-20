@@ -27,6 +27,10 @@
         </encoder>
     </appender>
 
+    <logger name="com.senla.training.yeutukhovich.bookstore.filter" level="error" additivity="false">
+        <appender-ref ref="FILE"/>
+    </logger>
+
     <logger name="com.senla.training.yeutukhovich.bookstore" level="debug" additivity="false">
         <appender-ref ref="FILE"/>
         <!--                <appender-ref ref="STDOUT"/>-->

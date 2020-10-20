@@ -4,8 +4,7 @@ import com.senla.training.yeutukhovich.bookstore.security.provider.JwtTokenProvi
 import com.senla.training.yeutukhovich.bookstore.security.util.SecurityConstant;
 import com.senla.training.yeutukhovich.bookstore.util.constant.LoggerConstant;
 import io.jsonwebtoken.JwtException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -25,9 +24,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class JwtAuthorizationFilter extends GenericFilterBean {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(JwtAuthorizationFilter.class);
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
@@ -41,7 +39,7 @@ public class JwtAuthorizationFilter extends GenericFilterBean {
                     setSecurityContext(token);
                 }
             } catch (JwtException e) {
-                LOGGER.warn(LoggerConstant.INVALID_TOKEN.getMessage(), e.getMessage());
+                log.warn(LoggerConstant.INVALID_TOKEN.getMessage(), e.getMessage());
             }
         });
         filterChain.doFilter(servletRequest, servletResponse);
