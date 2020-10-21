@@ -39,6 +39,8 @@
         <!-- bookstore-controller -->
         <servlet.api.version>4.0.1</servlet.api.version>
         <jsonassert.version>1.5.0</jsonassert.version>
+        <!-- bookstore-ui -->
+        <httpclient.version>4.5.13</httpclient.version>
     </properties>
 
     <modules>
