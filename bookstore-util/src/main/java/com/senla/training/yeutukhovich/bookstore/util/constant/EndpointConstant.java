@@ -2,6 +2,9 @@ package com.senla.training.yeutukhovich.bookstore.util.constant;
 
 public enum EndpointConstant {
 
+    AUTHENTICATION("/auth"),
+    REGISTRATION("/register"),
+
     BOOKS_DESCRIPTION("/books/%d/description"),
     BOOKS_UPDATE("/books/%d"),
     BOOKS_STALE("/books/stale"),

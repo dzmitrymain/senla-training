@@ -9,6 +9,7 @@ public enum MessageConstant {
 
     SORT_PARAM_NOT_SUPPORTED("'Sort' parameter value not supported. Supported 'sort' values: [%s]."),
     SOMETHING_WENT_WRONG("Something went wrong."),
+    UNSUPPORTED_OPERATION("Unsupported operation."),
     NO_DATA_WAS_FOUND("No data was found."),
     STRING_FORMAT_UNPARSEABLE_BOOLEAN("Unparseable boolean: '%s'"),
 

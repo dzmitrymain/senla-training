@@ -26,7 +26,7 @@ public class OrderDaoImpl extends HibernateAbstractDao<Order, Long> implements O
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Order> criteriaQuery = cb.createQuery(Order.class);
         Root<Order> orders = criteriaQuery.from(Order.class);
-        criteriaQuery.where(cb.equal(orders.get(Order_.state), OrderState.COMPLETED.toString()),
+        criteriaQuery.where(cb.equal(orders.get(Order_.state), OrderState.COMPLETED),
                 cb.between(orders.get(Order_.completionDate), startDate, endDate));
         criteriaQuery.select(orders);
         return entityManager.createQuery(criteriaQuery).getResultList();
@@ -37,7 +37,7 @@ public class OrderDaoImpl extends HibernateAbstractDao<Order, Long> implements O
         CriteriaQuery<BigDecimal> criteriaQuery = cb.createQuery(BigDecimal.class);
         Root<Order> orders = criteriaQuery.from(Order.class);
         criteriaQuery.select(cb.sum(orders.get(Order_.currentBookPrice))).where(cb.equal(orders.get(Order_.state),
-                OrderState.COMPLETED.toString()),
+                OrderState.COMPLETED),
                 cb.between(orders.get(Order_.completionDate), startDate, endDate));
         return entityManager.createQuery(criteriaQuery).getSingleResult();
     }
@@ -48,7 +48,7 @@ public class OrderDaoImpl extends HibernateAbstractDao<Order, Long> implements O
         CriteriaQuery<Long> criteriaQuery = cb.createQuery(Long.class);
         Root<Order> orders = criteriaQuery.from(Order.class);
         criteriaQuery.select(cb.count(orders)).where(cb.equal(orders.get(Order_.state),
-                OrderState.COMPLETED.toString()),
+                OrderState.COMPLETED),
                 cb.between(orders.get(Order_.completionDate), startDate, endDate));
         return entityManager.createQuery(criteriaQuery).getSingleResult();
     }

@@ -5,6 +5,10 @@ import com.senla.training.yeutukhovich.bookstore.dto.BookDto;
 import com.senla.training.yeutukhovich.bookstore.dto.OrderDetailsDto;
 import com.senla.training.yeutukhovich.bookstore.dto.OrderDto;
 import com.senla.training.yeutukhovich.bookstore.dto.RequestDto;
+import com.senla.training.yeutukhovich.bookstore.dto.auth.AuthenticationRequestDto;
+import com.senla.training.yeutukhovich.bookstore.dto.auth.AuthenticationResponseDto;
+import com.senla.training.yeutukhovich.bookstore.dto.auth.RegistrationRequestDto;
+import com.senla.training.yeutukhovich.bookstore.dto.auth.RegistrationResponseDto;
 import com.senla.training.yeutukhovich.bookstore.ui.menu.Menu;
 import com.senla.training.yeutukhovich.bookstore.ui.menu.MenuItem;
 import com.senla.training.yeutukhovich.bookstore.ui.util.reader.UserInputReader;
@@ -16,6 +20,7 @@ import com.senla.training.yeutukhovich.bookstore.util.constant.RequestParameterC
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
@@ -48,12 +53,43 @@ public class MenuBuilder {
         Menu orderMenu = initOrderMenu(previousRootMenuItem);
         Menu requestMenu = initRequestMenu(previousRootMenuItem);
 
+        MenuItem registrationMenuItem = new MenuItem(MenuNameConstant.REGISTRATION.getMenuName(), () -> {
+            System.out.println("Please, input username:");
+            String username = UserInputReader.readInputString();
+            System.out.println("Please, input password:");
+            String password = UserInputReader.readInputString();
+            System.out.println("Please, input role:");
+            String role = UserInputReader.readInputString();
+
+            RegistrationRequestDto requestDto = new RegistrationRequestDto();
+            requestDto.setUsername(username);
+            requestDto.setPassword(password);
+            requestDto.setRole(role);
+
+            requestExecutor.executeRequestForEntity(webContextUrl + EndpointConstant.REGISTRATION.getEndpoint(),
+                    HttpMethod.POST, new HttpEntity<>(requestDto), RegistrationResponseDto.class);
+        }, rootMenu);
+
+        MenuItem authMenuItem = new MenuItem(MenuNameConstant.AUTHENTICATION.getMenuName(), () -> {
+            System.out.println("Please, input username:");
+            String username = UserInputReader.readInputString();
+            System.out.println("Please, input password:");
+            String password = UserInputReader.readInputString();
+
+            AuthenticationRequestDto requestDto = new AuthenticationRequestDto();
+            requestDto.setUsername(username);
+            requestDto.setPassword(password);
+
+            requestExecutor.executeRequestForEntity(webContextUrl + EndpointConstant.AUTHENTICATION.getEndpoint(),
+                    HttpMethod.POST, new HttpEntity<>(requestDto), AuthenticationResponseDto.class);
+        }, rootMenu);
         MenuItem bookMenuItem = new MenuItem(MenuNameConstant.BOOK_MENU.getMenuName(), null, bookMenu);
         MenuItem orderMenuItem = new MenuItem(MenuNameConstant.ORDER_MENU.getMenuName(), null, orderMenu);
         MenuItem requestMenuItem = new MenuItem(MenuNameConstant.REQUEST_MENU.getMenuName(), null, requestMenu);
         MenuItem exitMenuItem = new MenuItem(MenuNameConstant.EXIT.getMenuName(), null, null);
 
-        Collections.addAll(rootMenu.getMenuItems(), bookMenuItem, orderMenuItem, requestMenuItem, exitMenuItem);
+        Collections.addAll(rootMenu.getMenuItems(), registrationMenuItem, authMenuItem, bookMenuItem, orderMenuItem,
+                requestMenuItem, exitMenuItem);
     }
 
     private Menu initBookMenu(MenuItem previousRootMenuItem) {
@@ -74,14 +110,10 @@ public class MenuBuilder {
                 }, bookMenu);
         MenuItem replenishBookItem = new MenuItem(MenuNameConstant.REPLENISH_BOOK.getMenuName(),
                 () -> {
-                    System.out.println(MessageConstant.ENTER_BOOK_ID.getMessage());
-                    Long id = UserInputReader.readInputLong();
                     throw new UnsupportedOperationException();
                 }, bookMenu);
         MenuItem writeOffBookItem = new MenuItem(MenuNameConstant.WRITE_OFF_BOOK.getMenuName(),
                 () -> {
-                    System.out.println(MessageConstant.ENTER_BOOK_ID.getMessage());
-                    Long id = UserInputReader.readInputLong();
                     throw new UnsupportedOperationException();
                 }, bookMenu);
         MenuItem findStaleBooksMenuItem = new MenuItem(MenuNameConstant.SHOW_STALE_BOOKS.getMenuName(),
@@ -199,7 +231,14 @@ public class MenuBuilder {
                 () -> {
                     System.out.println(MessageConstant.ENTER_ORDER_ID.getMessage());
                     Long orderId = UserInputReader.readInputLong();
-                    throw new UnsupportedOperationException();
+                    OrderDto orderDto = new OrderDto();
+                    orderDto.setId(orderId);
+                    orderDto.setState("CANCELED");
+                    HttpHeaders headers = new HttpHeaders();
+                    headers.add(HttpHeaders.AUTHORIZATION, requestExecutor.getToken());
+                    requestExecutor.executeRequestForEntity(webContextUrl + String.format(
+                            EndpointConstant.ORDERS_UPDATE_STATE.getEndpoint(), orderId), HttpMethod.PUT,
+                            new HttpEntity<>(orderDto, headers), OrderDto.class);
                 },
                 orderMenu);
         MenuItem createOrderMenuItem = new MenuItem(MenuNameConstant.CREATE_ORDER.getMenuName(),
@@ -223,7 +262,14 @@ public class MenuBuilder {
                 () -> {
                     System.out.println(MessageConstant.ENTER_ORDER_ID.getMessage());
                     Long orderId = UserInputReader.readInputLong();
-                    throw new UnsupportedOperationException();
+                    OrderDto orderDto = new OrderDto();
+                    orderDto.setId(orderId);
+                    orderDto.setState("COMPLETED");
+                    HttpHeaders headers = new HttpHeaders();
+                    headers.add(HttpHeaders.AUTHORIZATION, requestExecutor.getToken());
+                    requestExecutor.executeRequestForEntity(webContextUrl + String.format(
+                            EndpointConstant.ORDERS_UPDATE_STATE.getEndpoint(), orderId), HttpMethod.PUT,
+                            new HttpEntity<>(orderDto, headers), OrderDto.class);
                 }, orderMenu);
         MenuItem showCompletedOrdersNumberMenuItem =
                 new MenuItem(MenuNameConstant.SHOW_COMPLETED_ORDERS_NUMBER_BETWEEN_DATES.getMenuName(),

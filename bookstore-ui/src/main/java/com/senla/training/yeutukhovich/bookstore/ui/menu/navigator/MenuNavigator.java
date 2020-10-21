@@ -47,6 +47,8 @@ public class MenuNavigator {
         if (selectedMenuItem.getAction() != null) {
             try {
                 selectedMenuItem.doAction();
+            } catch (UnsupportedOperationException e) {
+                UiConsolePrinter.printError(MessageConstant.UNSUPPORTED_OPERATION.getMessage());
             } catch (Throwable e) {
                 log.error(e.getMessage(), e);
                 UiConsolePrinter.printError(MessageConstant.SOMETHING_WENT_WRONG.getMessage());
