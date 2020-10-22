@@ -63,6 +63,9 @@ public class JwtTokenProvider {
     }
 
     private String generateToken(Map<String, Object> claims, String subject) {
+        // Date now = new Date();
+        // Date expiration = new Date(now.getTime() + validityInMilliseconds);
+
         long now = System.currentTimeMillis();
         return Jwts.builder()
                 .setClaims(claims)

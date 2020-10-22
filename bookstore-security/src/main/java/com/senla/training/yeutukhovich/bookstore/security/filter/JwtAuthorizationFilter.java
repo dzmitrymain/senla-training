@@ -32,6 +32,7 @@ public class JwtAuthorizationFilter extends GenericFilterBean {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        // две строки можно объединить в одну
         Optional<String> jwt = getJwtFromRequest(servletRequest);
         jwt.ifPresent(token -> {
             try {
@@ -60,6 +61,8 @@ public class JwtAuthorizationFilter extends GenericFilterBean {
     private static Optional<String> getJwtFromRequest(ServletRequest request) {
         String bearerToken = ((HttpServletRequest) request).getHeader(SecurityConstant.HEADER_STRING.getConstant());
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(SecurityConstant.TOKEN_PREFIX.getConstant())) {
+            // вместо неочевидного литерала 7 лучше взять
+            // у константы длину или еще как-то отрезать префикс
             return Optional.of(bearerToken.substring(7));
         }
         return Optional.empty();

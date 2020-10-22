@@ -17,6 +17,7 @@ public class AppConfig {
 
     @Bean
     public PropertySourcesPlaceholderConfigurer properties() {
+        // про нейминг повторюсь - я против таких переменных
         final PropertySourcesPlaceholderConfigurer ppc = new PropertySourcesPlaceholderConfigurer();
         ppc.setIgnoreResourceNotFound(true);
         ppc.setLocation(new ClassPathResource("application.properties"));

@@ -19,9 +19,15 @@ public class GenericExceptionHandleFilter extends GenericFilterBean {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException {
+        //обычно в фильтре исключения не ловят - есть же хэндлеры,
+        // иначе лишнего можно поймать и испортить работу спринга
+        // но в целом архитектура твоего приложения довольно логичная и удобная, хотя я чаще видел
+        // контроллеры + секьюрити + веб = один модуль
         try {
             filterChain.doFilter(servletRequest, servletResponse);
+        // обычно ловят все же Exception - Error ловить бессмысленно
         } catch (Throwable e) {
+            // мне кажется, ты ничего не потеряешь, если залогируешь log.error(e);
             log.error(e.getMessage(), e);
             HttpServletResponse response = (HttpServletResponse) servletResponse;
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());

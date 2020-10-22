@@ -44,6 +44,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             return authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(requestDto.getUsername(), requestDto.getPassword()));
         } catch (IOException e) {
+            // а чего не свое исключение?
             throw new RuntimeException(e.getMessage());
         }
     }

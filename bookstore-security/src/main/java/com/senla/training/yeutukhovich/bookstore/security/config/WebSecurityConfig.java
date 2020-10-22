@@ -26,6 +26,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        // все копипастят, но никто не задумывается, что переменную надо назвать httpSecurity
         http
                 .csrf().disable()
                 .httpBasic().disable()
@@ -35,6 +36,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/register").permitAll()
                 .anyRequest().authenticated()
                 .and()
+                // сам фильтр можно сделать бином (компонентом) и заавтоварить в WebSecurityConfig -
+                // так он будет иметь доступ к контексту
                 .addFilter(new JwtAuthenticationFilter(getApplicationContext()))
                 .addFilterBefore(jwtAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling().authenticationEntryPoint(customAuthenticationEntryPoint());
@@ -46,6 +49,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .passwordEncoder(passwordEncoder());
     }
 
+    // вижу это уже не в первой работе, мне кажется, что без этого будет работать -
+    // тут нет никакой полезной логики
     @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
