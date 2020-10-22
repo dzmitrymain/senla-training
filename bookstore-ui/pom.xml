@@ -12,6 +12,13 @@
     <artifactId>bookstore-ui</artifactId>
 
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>${httpclient.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>com.senla.training.yeutukhovich.bookstore</groupId>
             <artifactId>bookstore-dto</artifactId>

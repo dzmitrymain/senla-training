@@ -44,7 +44,7 @@ public abstract class HibernateAbstractDao<T extends AbstractEntity, PK extends 
     }
 
     @Override
-    public void update(T entity) {
-        entityManager.merge(entity);
+    public T update(T entity) {
+        return entityManager.merge(entity);
     }
 }

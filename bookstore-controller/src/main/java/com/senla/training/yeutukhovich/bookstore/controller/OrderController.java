@@ -4,9 +4,12 @@ import com.senla.training.yeutukhovich.bookstore.dto.OrderDetailsDto;
 import com.senla.training.yeutukhovich.bookstore.dto.OrderDto;
 import com.senla.training.yeutukhovich.bookstore.model.service.order.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,29 +31,15 @@ public class OrderController {
         return orderService.createOrder(bookId, customerData);
     }
 
-    @PostMapping("/{id}/cancel")
-    public OrderDto cancelOrder(@PathVariable("id") Long orderId) {
-        return orderService.cancelOrder(orderId);
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{id}/state")
+    public OrderDto changeState(@PathVariable("id") Long orderId, @RequestBody OrderDto orderDto) {
+        return orderService.updateState(orderId, orderDto);
     }
 
-    @PostMapping("/{id}/complete")
-    public OrderDto completeOrder(@PathVariable("id") Long orderId) {
-        return orderService.completeOrder(orderId);
-    }
-
-    @GetMapping("/byCompletionDate")
-    public List<OrderDto> findSortedAllOrdersByCompletionDate() {
-        return orderService.findSortedAllOrdersByCompletionDate();
-    }
-
-    @GetMapping("/byPrice")
-    public List<OrderDto> findSortedAllOrdersByPrice() {
-        return orderService.findSortedAllOrdersByPrice();
-    }
-
-    @GetMapping("/byState")
-    public List<OrderDto> findSortedAllOrdersByState() {
-        return orderService.findSortedAllOrdersByState();
+    @GetMapping
+    public List<OrderDto> findSortedAllOrders(@RequestParam("sort") String sortParam) {
+        return orderService.findSortedAllOrders(sortParam);
     }
 
     @GetMapping("/completedBetweenDates")
@@ -74,16 +63,19 @@ public class OrderController {
         return orderService.showOrderDetails(orderId);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/import")
     public List<OrderDto> importOrders(@RequestParam String fileName) {
         return orderService.importOrders(fileName);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/export")
     public List<OrderDto> exportAllOrders(@RequestParam String fileName) {
         return orderService.exportAllOrders(fileName);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{id}/export")
     public OrderDto exportOrder(@PathVariable("id") Long orderId, @RequestParam String fileName) {
         return orderService.exportOrder(orderId, fileName);

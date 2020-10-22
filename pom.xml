@@ -20,22 +20,27 @@
         <maven.war.version>3.3.1</maven.war.version>
         <maven.surefire.version>3.0.0-M5</maven.surefire.version>
         <spring.version>5.2.9.RELEASE</spring.version>
+        <spring.secutity.version>5.4.1</spring.secutity.version>
         <junit.version>5.7.0</junit.version>
         <mockito.version>3.5.13</mockito.version>
         <mockito.inline.version>3.5.11</mockito.inline.version>
         <sl4j.version>1.7.30</sl4j.version>
         <logback.version>1.2.3</logback.version>
         <jackson.databind.version>2.11.3</jackson.databind.version>
+        <javaee.api.version>8.0.1</javaee.api.version>
+        <jsonwebtoken.version>0.9.1</jsonwebtoken.version>
+        <lombok.version>1.18.16</lombok.version>
         <!-- bookstore-model -->
         <hibernate.version>5.4.21.Final</hibernate.version>
         <!-- bookstore-model-dao -->
         <mysql.connector.version>8.0.21</mysql.connector.version>
         <!-- bookstore-web -->
-        <javaee.api.version>8.0.1</javaee.api.version>
         <tomcat.plugin.version>2.2</tomcat.plugin.version>
         <!-- bookstore-controller -->
         <servlet.api.version>4.0.1</servlet.api.version>
         <jsonassert.version>1.5.0</jsonassert.version>
+        <!-- bookstore-ui -->
+        <httpclient.version>4.5.13</httpclient.version>
     </properties>
 
     <modules>
@@ -47,6 +52,7 @@
         <module>bookstore-model</module>
         <module>bookstore-web</module>
         <module>bookstore-dto</module>
+        <module>bookstore-security</module>
     </modules>
 
     <dependencies>
@@ -55,6 +61,49 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
             <version>${spring.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-core -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+            <version>${spring.secutity.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-web -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
+            <version>${spring.secutity.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-config -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+            <version>${spring.secutity.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>${jsonwebtoken.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/javax/javaee-api -->
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>${javaee.api.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -138,6 +187,23 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>${maven.war.version}</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler.version}</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
             </plugin>
         </plugins>
     </build>

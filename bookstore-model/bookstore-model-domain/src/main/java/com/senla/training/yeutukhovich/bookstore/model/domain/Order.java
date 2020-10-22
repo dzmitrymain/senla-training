@@ -1,23 +1,34 @@
 package com.senla.training.yeutukhovich.bookstore.model.domain;
 
 import com.senla.training.yeutukhovich.bookstore.model.domain.state.OrderState;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.metamodel.StaticMetamodel;
 import java.math.BigDecimal;
 import java.util.Date;
 
+@StaticMetamodel(Order.class)
 @Entity
 @Table(name = "orders")
+@Data
+@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
 public class Order extends AbstractEntity {
 
     @Column(name = "state")
-    private String state;
+    @Enumerated(EnumType.STRING)
+    private OrderState state;
     @ManyToOne
     @JoinColumn(name = "book_id")
     private Book book;
@@ -32,70 +43,11 @@ public class Order extends AbstractEntity {
     @Column(name = "customer_data")
     private String customerData;
 
-    public Order() {
-
-    }
-
     public Order(Book book, String customerData) {
-        state = OrderState.CREATED.toString();
+        state = OrderState.CREATED;
         this.book = book;
         currentBookPrice = book.getPrice();
         creationDate = new Date();
         this.customerData = customerData;
-    }
-
-    public OrderState getState() {
-        return OrderState.valueOf(state);
-    }
-
-    public void setState(OrderState state) {
-        this.state = state.toString();
-    }
-
-    public Book getBook() {
-        return book;
-    }
-
-    public void setBook(Book book) {
-        this.book = book;
-    }
-
-    public BigDecimal getCurrentBookPrice() {
-        return currentBookPrice;
-    }
-
-    public void setCurrentBookPrice(BigDecimal currentBookPrice) {
-        this.currentBookPrice = currentBookPrice;
-    }
-
-    public Date getCreationDate() {
-        return creationDate;
-    }
-
-    public void setCreationDate(Date creationDate) {
-        this.creationDate = creationDate;
-    }
-
-    public Date getCompletionDate() {
-        return completionDate;
-    }
-
-    public void setCompletionDate(Date completionDate) {
-        this.completionDate = completionDate;
-    }
-
-    public String getCustomerData() {
-        return customerData;
-    }
-
-    public void setCustomerData(String customerData) {
-        this.customerData = customerData;
-    }
-
-    @Override
-    public String toString() {
-        return "Order [id=" + id +
-                ", state=" + state +
-                ", customer data='" + customerData + "']";
     }
 }

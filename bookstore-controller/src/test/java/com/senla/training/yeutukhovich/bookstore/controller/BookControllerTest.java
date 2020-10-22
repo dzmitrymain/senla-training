@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -52,7 +53,7 @@ class BookControllerTest {
             "\"replenishmentDate\":null,\"price\":1,\"available\":false},{\"id\":1,\"title\":\"SecondTestBook\"," +
             "\"editionYear\":2000,\"replenishmentDate\":null,\"price\":10,\"available\":false}]";
     private final String exceptionMessage = "Exception message.";
-    private final String expectedErrorDtoJson = "{\"status\":\"OK\",\"message\":\"Exception message.\"}";
+    private final String expectedErrorDtoJson = "{\"status\":\"FORBIDDEN\",\"message\":\"Exception message.\"}";
     private final BookDescriptionDto bookDescriptionDto = new BookDescriptionDto(
             "FirstTestBook", 1000, null);
     private final String startDate = "2000-01-01";
@@ -67,94 +68,37 @@ class BookControllerTest {
     }
 
     @Test
-    void BookController_replenishBook_shouldReturnReplenishedBookDto() throws Exception {
-        Mockito.when(bookService.replenishBook(bookId)).thenReturn(bookDto);
+    void BookController_updateBook_shouldReturnUpdatedBookDto() throws Exception {
+        Mockito.when(bookService.updateBook(bookId, bookDto)).thenReturn(bookDto);
 
         mvc.perform(MockMvcRequestBuilders
-                .post(String.format(EndpointConstant.BOOKS_REPLENISH.getEndpoint(), bookId)))
+                .put(String.format(EndpointConstant.BOOKS_UPDATE.getEndpoint(), bookId))
+                .content(expectedBookDtoJson)
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.content().json(expectedBookDtoJson));
     }
 
     @Test
-    void BookController_replenishBook_shouldReturnErrorDto() throws Exception {
-        Mockito.when(bookService.replenishBook(bookId)).thenThrow(new BusinessException(exceptionMessage));
+    void BookController_updateBook_shouldReturnErrorDto() throws Exception {
+        Mockito.when(bookService.updateBook(Mockito.anyLong(), Mockito.any(BookDto.class)))
+                .thenThrow(new BusinessException(exceptionMessage, HttpStatus.FORBIDDEN));
 
         mvc.perform(MockMvcRequestBuilders
-                .post(String.format(EndpointConstant.BOOKS_REPLENISH.getEndpoint(), bookId)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .put(String.format(EndpointConstant.BOOKS_UPDATE.getEndpoint(), bookId))
+                .content(expectedBookDtoJson)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isForbidden())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.content().json(expectedErrorDtoJson));
     }
 
     @Test
-    void BookController_writeOffBook_shouldReturnWrittenOffBookDto() throws Exception {
-        Mockito.when(bookService.writeOffBook(bookId)).thenReturn(bookDto);
-
-        mvc.perform(MockMvcRequestBuilders
-                .post(String.format(EndpointConstant.BOOKS_WRITE_OFF.getEndpoint(), bookId)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.content().json(expectedBookDtoJson));
-    }
-
-    @Test
-    void BookController_writeOffBook_shouldReturnErrorDto() throws Exception {
-        Mockito.when(bookService.writeOffBook(bookId)).thenThrow(new BusinessException(exceptionMessage));
-
-        mvc.perform(MockMvcRequestBuilders
-                .post(String.format(EndpointConstant.BOOKS_WRITE_OFF.getEndpoint(), bookId)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.content().json(expectedErrorDtoJson));
-    }
-
-    @Test
-    void BookController_findSortedAllBooksByAvailability() throws Exception {
-        Mockito.when(bookService.findSortedAllBooksByAvailability()).thenReturn(booksDto);
+    void BookController_findSortedAllBooks() throws Exception {
+        Mockito.when(bookService.findSortedAllBooks(Mockito.anyString())).thenReturn(booksDto);
 
         mvc.perform(MockMvcRequestBuilders.get(EndpointConstant.BOOKS_BY_AVAILABILITY.getEndpoint()))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.content().json(expectedBooksDtoJson));
-    }
-
-    @Test
-    void BookController_findSortedAllBooksByEditionYear() throws Exception {
-        Mockito.when(bookService.findSortedAllBooksByEditionYear()).thenReturn(booksDto);
-
-        mvc.perform(MockMvcRequestBuilders.get(EndpointConstant.BOOKS_BY_EDITION_YEAR.getEndpoint()))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.content().json(expectedBooksDtoJson));
-    }
-
-    @Test
-    void BookController_findSortedAllBooksByPrice() throws Exception {
-        Mockito.when(bookService.findSortedAllBooksByPrice()).thenReturn(booksDto);
-
-        mvc.perform(MockMvcRequestBuilders.get(EndpointConstant.BOOKS_BY_PRICE.getEndpoint()))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.content().json(expectedBooksDtoJson));
-    }
-
-    @Test
-    void BookController_findSortedAllBooksByReplenishmentDate() throws Exception {
-        Mockito.when(bookService.findSortedAllBooksByReplenishmentDate()).thenReturn(booksDto);
-
-        mvc.perform(MockMvcRequestBuilders.get(EndpointConstant.BOOKS_BY_REPLENISHMENT.getEndpoint()))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.content().json(expectedBooksDtoJson));
-    }
-
-    @Test
-    void BookController_findSortedAllBooksByTitle() throws Exception {
-        Mockito.when(bookService.findSortedAllBooksByTitle()).thenReturn(booksDto);
-
-        mvc.perform(MockMvcRequestBuilders.get(EndpointConstant.BOOKS_BY_TITLE.getEndpoint()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.content().json(expectedBooksDtoJson));
@@ -208,10 +152,10 @@ class BookControllerTest {
 
     @Test
     void BookController_showBookDescription_shouldReturnErrorDto() throws Exception {
-        Mockito.when(bookService.showBookDescription(Mockito.anyLong())).thenThrow(new BusinessException(exceptionMessage));
+        Mockito.when(bookService.showBookDescription(Mockito.anyLong())).thenThrow(new BusinessException(exceptionMessage, HttpStatus.FORBIDDEN));
 
         mvc.perform(MockMvcRequestBuilders.get(String.format(EndpointConstant.BOOKS_DESCRIPTION.getEndpoint(), bookId)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().isForbidden())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.content().json(expectedErrorDtoJson));
     }
@@ -229,11 +173,11 @@ class BookControllerTest {
 
     @Test
     void BookController_importBooks_shouldReturnErrorDto() throws Exception {
-        Mockito.when(bookService.importBooks(Mockito.anyString())).thenThrow(new BusinessException(exceptionMessage));
+        Mockito.when(bookService.importBooks(Mockito.anyString())).thenThrow(new BusinessException(exceptionMessage, HttpStatus.FORBIDDEN));
 
         mvc.perform(MockMvcRequestBuilders.post(EndpointConstant.BOOKS_IMPORT.getEndpoint())
                 .param(RequestParameterConstant.FILE_NAME.getParameterName(), importFileName))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().isForbidden())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.content().json(expectedErrorDtoJson));
     }
@@ -263,11 +207,11 @@ class BookControllerTest {
     @Test
     void BookController_exportBook_shouldReturnErrorDto() throws Exception {
         Mockito.when(bookService.exportBook(Mockito.anyLong(), Mockito.anyString()))
-                .thenThrow(new BusinessException(exceptionMessage));
+                .thenThrow(new BusinessException(exceptionMessage, HttpStatus.FORBIDDEN));
 
         mvc.perform(MockMvcRequestBuilders.post(String.format(EndpointConstant.BOOKS_EXPORT.getEndpoint(), bookId))
                 .param(RequestParameterConstant.FILE_NAME.getParameterName(), exportFileName))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().isForbidden())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.content().json(expectedErrorDtoJson));
     }

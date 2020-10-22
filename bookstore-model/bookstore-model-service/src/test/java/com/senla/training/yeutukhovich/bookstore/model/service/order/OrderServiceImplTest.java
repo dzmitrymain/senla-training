@@ -35,6 +35,7 @@ class OrderServiceImplTest {
 
     private static final Book book = Mockito.mock(Book.class);
     private static final Order order = Mockito.mock(Order.class);
+    private static final OrderDto orderDto = Mockito.mock(OrderDto.class);
     private static final Long bookId = 1L;
     private static final Long orderId = 1L;
 
@@ -55,6 +56,7 @@ class OrderServiceImplTest {
         Mockito.when(order.getId()).thenReturn(orderId);
         Mockito.when(book.getId()).thenReturn(bookId);
         Mockito.when(order.getBook()).thenReturn(book);
+        Mockito.when(orderDto.getId()).thenReturn(orderId);
     }
 
     @BeforeEach
@@ -64,7 +66,7 @@ class OrderServiceImplTest {
 
     @Test
     void OrderServiceImpl_createOrder_shouldCreateOrderAndRequestIfBookNotAvailable() {
-        Mockito.when(book.isAvailable()).thenReturn(false);
+        Mockito.when(book.getAvailable()).thenReturn(false);
         Mockito.when(bookDao.findById(bookId)).thenReturn(Optional.of(book));
 
         OrderDto result = orderService.createOrder(bookId, "");
@@ -76,7 +78,7 @@ class OrderServiceImplTest {
 
     @Test
     void OrderServiceImpl_createOrder_shouldCreateOrderWithoutRequestIfBookAvailable() {
-        Mockito.when(book.isAvailable()).thenReturn(true);
+        Mockito.when(book.getAvailable()).thenReturn(true);
         Mockito.when(bookDao.findById(bookId)).thenReturn(Optional.of(book));
 
         OrderDto result = orderService.createOrder(bookId, "");
@@ -97,92 +99,55 @@ class OrderServiceImplTest {
     }
 
     @Test
-    void OrderServiceImpl_cancelOrder_shouldUpdateIfOrderExistAndStateCreated() {
+    void OrderServiceImpl_updateOrder_shouldUpdateIfOrderExistAndStateCreated() {
+        Mockito.when(orderDto.getState()).thenReturn(OrderState.COMPLETED.toString());
+        Mockito.when(orderDto.getId()).thenReturn(orderId);
+        Mockito.when(order.getBook().getAvailable()).thenReturn(true);
         Mockito.when(orderDao.findById(orderId)).thenReturn(Optional.of(order));
         Mockito.when(order.getState()).thenReturn(OrderState.CREATED);
 
-        orderService.cancelOrder(orderId);
+        orderService.updateState(orderId, orderDto);
 
         Mockito.verify(orderDao, Mockito.times(1)).update(order);
     }
 
     @Test
-    void OrderServiceImpl_cancelOrder_shouldThrowExceptionIfOrderNotExist() {
+    void OrderServiceImpl_updateOrder_shouldThrowExceptionIfOrderNotExist() {
+        Mockito.when(orderDto.getState()).thenReturn(OrderState.COMPLETED.toString());
         Mockito.when(orderDao.findById(orderId)).thenReturn(Optional.empty());
 
-        Throwable exception = Assertions.assertThrows(BusinessException.class, () -> orderService.cancelOrder(orderId));
+        Throwable exception = Assertions.assertThrows(BusinessException.class, () -> orderService.updateState(orderId, orderDto));
 
         Assertions.assertEquals(MessageConstant.ORDER_NOT_EXIST.getMessage(), exception.getMessage());
     }
 
     @Test
-    void OrderServiceImpl_cancelOrder_shouldThrowExceptionIfStateNotCreated() {
+    void OrderServiceImpl_updateOrder_shouldThrowExceptionIfStateNotCreated() {
         Mockito.when(orderDao.findById(orderId)).thenReturn(Optional.of(order));
         Mockito.when(order.getState()).thenReturn(null);
 
-        Throwable exception = Assertions.assertThrows(BusinessException.class, () -> orderService.cancelOrder(orderId));
+        Throwable exception = Assertions.assertThrows(BusinessException.class, () -> orderService.updateState(orderId, orderDto));
 
         Assertions.assertEquals(MessageConstant.WRONG_ORDER_STATE.getMessage(), exception.getMessage());
     }
 
     @Test
-    void OrderServiceImpl_completeOrder_shouldUpdateIfOrderExistAndStateCreatedAndBookAvailable() {
-        Mockito.when(orderDao.findById(orderId)).thenReturn(Optional.of(order));
-        Mockito.when(order.getState()).thenReturn(OrderState.CREATED);
-        Mockito.when(book.isAvailable()).thenReturn(true);
-
-        orderService.completeOrder(orderId);
-
-        Mockito.verify(orderDao, Mockito.times(1)).update(order);
-    }
-
-    @Test
-    void OrderServiceImpl_completeOrder_shouldThrowExceptionIfOrderNotExist() {
-        Mockito.when(orderDao.findById(orderId)).thenReturn(Optional.empty());
-
-        Throwable exception = Assertions.assertThrows(BusinessException.class, () -> orderService.completeOrder(orderId));
-
-        Assertions.assertEquals(MessageConstant.ORDER_NOT_EXIST.getMessage(), exception.getMessage());
-    }
-
-    @Test
-    void OrderServiceImpl_completeOrder_shouldThrowExceptionIfOrderStateNotCreated() {
-        Mockito.when(orderDao.findById(orderId)).thenReturn(Optional.of(order));
-        Mockito.when(book.isAvailable()).thenReturn(true);
-        Mockito.when(order.getState()).thenReturn(null);
-
-        Throwable exception = Assertions.assertThrows(BusinessException.class, () -> orderService.completeOrder(orderId));
-
-        Assertions.assertEquals(MessageConstant.WRONG_ORDER_STATE.getMessage(), exception.getMessage());
-    }
-
-    @Test
-    void OrderServiceImpl_completeOrder_shouldThrowExceptionIfBookNotAvailable() {
-        Mockito.when(orderDao.findById(orderId)).thenReturn(Optional.of(order));
-        Mockito.when(book.isAvailable()).thenReturn(false);
-
-        Throwable exception = Assertions.assertThrows(BusinessException.class, () -> orderService.completeOrder(orderId));
-
-        Assertions.assertEquals(MessageConstant.BOOK_NOT_AVAILABLE.getMessage(), exception.getMessage());
-    }
-
-    @Test
-    void OrderServiceImpl_findSortedAllOrdersByCompletionDate() {
-        orderService.findSortedAllOrdersByCompletionDate();
+    void OrderServiceImpl_findSortedAllOrders_paramCompletionDate() {
+        orderService.findSortedAllOrders("COMPLETION");
 
         Mockito.verify(orderDao, Mockito.times(1)).findSortedAllOrdersByCompletionDate();
     }
 
     @Test
-    void OrderServiceImpl_findSortedAllOrdersByPrice() {
-        orderService.findSortedAllOrdersByPrice();
+    void OrderServiceImpl_findSortedAllOrders_paramPrice() {
+        orderService.findSortedAllOrders("PRICE");
 
         Mockito.verify(orderDao, Mockito.times(1)).findSortedAllOrdersByPrice();
     }
 
     @Test
-    void OrderServiceImpl_findSortedAllOrdersByState() {
-        orderService.findSortedAllOrdersByState();
+    void OrderServiceImpl_findSortedAllOrders_paramState() {
+        orderService.findSortedAllOrders("STATE");
 
         Mockito.verify(orderDao, Mockito.times(1)).findSortedAllOrdersByState();
     }

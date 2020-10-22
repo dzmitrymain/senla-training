@@ -7,7 +7,9 @@ public enum MessageConstant {
     MENU_NAME_INDENT("        "),
     MENU_ITEM_INDEX_DELIMITER(". "),
 
+    SORT_PARAM_NOT_SUPPORTED("'Sort' parameter value not supported. Supported 'sort' values: [%s]."),
     SOMETHING_WENT_WRONG("Something went wrong."),
+    UNSUPPORTED_OPERATION("Unsupported operation."),
     NO_DATA_WAS_FOUND("No data was found."),
     STRING_FORMAT_UNPARSEABLE_BOOLEAN("Unparseable boolean: '%s'"),
 
@@ -19,6 +21,7 @@ public enum MessageConstant {
 
     ENTER_BOOK_ID("Please, enter book id: "),
     BOOK_NOT_AVAILABLE("Book not available."),
+    ID_NOT_EQUALS_DTO("Path variable id should be equals to dto id."),
     BOOK_HAS_BEEN_REPLENISHED("Book has been replenished."),
     BOOK_HAS_BEEN_WRITTEN_OFF("Book has been written off."),
 
@@ -39,6 +42,13 @@ public enum MessageConstant {
 
     EARLIEST_DATE_BOUND_YYYY_MM_DD("Please enter an earliest date bound in format \"yyyy-MM-dd\": "),
     LATEST_DATE_BOUND_YYYY_MM_DD("Please enter a latest date bound in format \"yyyy-MM-dd\": "),
+
+    ROLE_NOT_EXIST("Role [%s] does not exist."),
+    ACCESS_DENIED("Access denied."),
+    USERNAME_ALREADY_EXISTS("Username [%s] already exists."),
+    USER_NOT_FOUND("User not found"),
+    AUTHORIZATION_FAIL("Invalid username or password"),
+    AUTHENTICATION_REQUIRED("Authentication required. Check your authorization token."),
 
     IMPORTED_ENTITIES("Imported entities number: "),
     EXPORTED_ENTITIES("Exported entities number: "),

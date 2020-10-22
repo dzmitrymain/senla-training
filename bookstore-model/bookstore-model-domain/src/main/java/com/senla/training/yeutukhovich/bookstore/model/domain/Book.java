@@ -1,5 +1,9 @@
 package com.senla.training.yeutukhovich.bookstore.model.domain;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -15,12 +19,15 @@ import java.util.Set;
 @StaticMetamodel(Book.class)
 @Entity
 @Table(name = "books")
+@Data
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class Book extends AbstractEntity {
 
     @Column(name = "title")
     private String title;
     @Column(name = "is_available")
-    private Boolean isAvailable;
+    private Boolean available;
     @Column(name = "edition_year")
     private int editionYear;
     @Temporal(TemporalType.TIMESTAMP)
@@ -34,75 +41,7 @@ public class Book extends AbstractEntity {
     @OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
     private Set<Request> requests;
 
-    public Book() {
-
-    }
-
     public Book(Long id) {
         this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public Boolean isAvailable() {
-        return isAvailable;
-    }
-
-    public void setAvailable(Boolean available) {
-        isAvailable = available;
-    }
-
-    public int getEditionYear() {
-        return editionYear;
-    }
-
-    public void setEditionYear(int editionYear) {
-        this.editionYear = editionYear;
-    }
-
-    public Date getReplenishmentDate() {
-        return replenishmentDate;
-    }
-
-    public void setReplenishmentDate(Date replenishmentDate) {
-        this.replenishmentDate = replenishmentDate;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public Set<Order> getOrders() {
-        return orders;
-    }
-
-    public void setOrders(Set<Order> orders) {
-        this.orders = orders;
-    }
-
-    public Set<Request> getRequests() {
-        return requests;
-    }
-
-    public void setRequests(Set<Request> requests) {
-        this.requests = requests;
-    }
-
-    @Override
-    public String toString() {
-        return "Book [id=" + id +
-                ", title='" + title +
-                "', is available=" + isAvailable +
-                ", price=" + price + "]";
     }
 }

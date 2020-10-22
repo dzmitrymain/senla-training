@@ -58,7 +58,7 @@ class RequestServiceImplTest {
     @Test
     void RequestServiceImpl_createRequest_shouldUpdateIfBookExistAndNotAvailable() {
         Mockito.when(bookDao.findById(bookId)).thenReturn(Optional.of(book));
-        Mockito.when(book.isAvailable()).thenReturn(false);
+        Mockito.when(book.getAvailable()).thenReturn(false);
 
         requestService.createRequest(bookId, "");
 
@@ -78,7 +78,7 @@ class RequestServiceImplTest {
     @Test
     void RequestServiceImpl_createRequest_shouldThrowExceptionIfBookAvailable() {
         Mockito.when(bookDao.findById(bookId)).thenReturn(Optional.of(book));
-        Mockito.when(book.isAvailable()).thenReturn(true);
+        Mockito.when(book.getAvailable()).thenReturn(true);
 
         Throwable exception = Assertions.assertThrows(BusinessException.class,
                 () -> requestService.createRequest(bookId, ""));
@@ -87,22 +87,22 @@ class RequestServiceImplTest {
     }
 
     @Test
-    void RequestServiceImpl_findSortedAllRequestsByBookTitle() {
-        requestService.findSortedAllRequestsByBookTitle();
+    void RequestServiceImpl_findSortedAllRequests_paramTitle() {
+        requestService.findSortedAllRequests("TITLE");
 
         Mockito.verify(requestDao, Mockito.times(1)).findSortedAllRequestsByBookTitle();
     }
 
     @Test
-    void RequestServiceImpl_findSortedAllRequestsByIsActive() {
-        requestService.findSortedAllRequestsByIsActive();
+    void RequestServiceImpl_findSortedAllRequests_paramActive() {
+        requestService.findSortedAllRequests("ACTIVE");
 
         Mockito.verify(requestDao, Mockito.times(1)).findSortedAllRequestsByIsActive();
     }
 
     @Test
-    void RequestServiceImpl_findSortedAllRequestsByRequesterData() {
-        requestService.findSortedAllRequestsByRequesterData();
+    void RequestServiceImpl_findSortedAllRequests_paramRequester() {
+        requestService.findSortedAllRequests("REQUESTER");
 
         Mockito.verify(requestDao, Mockito.times(1)).findSortedAllRequestsByRequesterData();
     }

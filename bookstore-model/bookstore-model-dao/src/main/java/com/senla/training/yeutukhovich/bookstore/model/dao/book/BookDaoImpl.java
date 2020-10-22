@@ -6,7 +6,7 @@ import com.senla.training.yeutukhovich.bookstore.model.domain.Book_;
 import com.senla.training.yeutukhovich.bookstore.model.domain.Order;
 import com.senla.training.yeutukhovich.bookstore.model.domain.Order_;
 import com.senla.training.yeutukhovich.bookstore.model.domain.state.OrderState;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -17,7 +17,7 @@ import javax.persistence.metamodel.SingularAttribute;
 import java.util.Date;
 import java.util.List;
 
-@Component
+@Repository
 public class BookDaoImpl extends HibernateAbstractDao<Book, Long> implements BookDao {
 
     public BookDaoImpl() {
@@ -32,7 +32,7 @@ public class BookDaoImpl extends HibernateAbstractDao<Book, Long> implements Boo
         Join<Book, Order> orders = books.join(Book_.orders);
         criteriaQuery.select(books);
         criteriaQuery.distinct(true);
-        criteriaQuery.where(cb.equal(orders.get(Order_.state), OrderState.COMPLETED.toString()),
+        criteriaQuery.where(cb.equal(orders.get(Order_.state), OrderState.COMPLETED),
                 cb.between(orders.get(Order_.completionDate), startDate, endDate));
         return entityManager.createQuery(criteriaQuery).getResultList();
     }
@@ -47,11 +47,11 @@ public class BookDaoImpl extends HibernateAbstractDao<Book, Long> implements Boo
         Root<Book> subqueryBooks = criteriaSubquery.from(Book.class);
         Join<Book, Order> subqueryOrders = subqueryBooks.join(Book_.orders);
         criteriaSubquery.where(cb.between(subqueryOrders.get(Order_.completionDate), startDate, endDate),
-                cb.equal(subqueryOrders.get(Order_.state), OrderState.COMPLETED.toString()));
+                cb.equal(subqueryOrders.get(Order_.state), OrderState.COMPLETED));
         criteriaSubquery.distinct(true);
         criteriaSubquery.select(subqueryBooks.get(Book_.id));
         criteriaQuery.where(cb.lessThanOrEqualTo(books.get(Book_.replenishmentDate), startDate),
-                books.get(Book_.id).in(criteriaSubquery).not(), cb.equal(books.get(Book_.isAvailable), true));
+                books.get(Book_.id).in(criteriaSubquery).not(), cb.equal(books.get(Book_.available), true));
         return entityManager.createQuery(criteriaQuery).getResultList();
     }
 
@@ -65,7 +65,7 @@ public class BookDaoImpl extends HibernateAbstractDao<Book, Long> implements Boo
         Root<Book> subqueryBooks = criteriaSubquery.from(Book.class);
         Join<Book, Order> subqueryOrders = subqueryBooks.join(Book_.orders);
         criteriaSubquery.where(cb.between(subqueryOrders.get(Order_.completionDate), startDate, endDate),
-                cb.equal(subqueryOrders.get(Order_.state), OrderState.COMPLETED.toString()));
+                cb.equal(subqueryOrders.get(Order_.state), OrderState.COMPLETED));
         criteriaSubquery.distinct(true);
         criteriaSubquery.select(subqueryBooks.get(Book_.id));
 
@@ -75,7 +75,7 @@ public class BookDaoImpl extends HibernateAbstractDao<Book, Long> implements Boo
 
     @Override
     public List<Book> findSortedAllBooksByAvailability() {
-        return findAllSortedBooks(Book_.isAvailable, false);
+        return findAllSortedBooks(Book_.available, false);
     }
 
     @Override

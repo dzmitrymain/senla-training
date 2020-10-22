@@ -8,11 +8,7 @@ public interface RequestService {
 
     RequestDto createRequest(Long bookId, String requesterData);
 
-    List<RequestDto> findSortedAllRequestsByBookTitle();
-
-    List<RequestDto> findSortedAllRequestsByIsActive();
-
-    List<RequestDto> findSortedAllRequestsByRequesterData();
+    List<RequestDto> findSortedAllRequests(String sortParam);
 
     List<RequestDto> exportAllRequests(String fileName);
 

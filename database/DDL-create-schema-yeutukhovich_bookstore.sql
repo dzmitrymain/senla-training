@@ -34,6 +34,16 @@ CREATE TABLE `yeutukhovich_bookstore`.`requests`
     CONSTRAINT `pk_requests_id` PRIMARY KEY (`id`)
 );
 
+CREATE TABLE `yeutukhovich_bookstore`.`users`
+(
+    `id`       INT          NOT NULL AUTO_INCREMENT,
+    `username` VARCHAR(255) NOT NULL,
+    `password` VARCHAR(255) NOT NULL,
+    `role`     VARCHAR(45)  NOT NULL,
+    CONSTRAINT `pk_users_id` PRIMARY KEY (`id`),
+    UNIQUE INDEX `username_UNIQUE` (`username` ASC) VISIBLE
+);
+
 ALTER TABLE `yeutukhovich_bookstore`.`orders`
     ADD INDEX `fk_orders_books_idx` (`book_id` ASC) VISIBLE,
     ADD CONSTRAINT `fk_orders_books`

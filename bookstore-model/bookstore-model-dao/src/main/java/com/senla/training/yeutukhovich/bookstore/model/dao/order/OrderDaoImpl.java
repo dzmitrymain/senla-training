@@ -4,7 +4,7 @@ import com.senla.training.yeutukhovich.bookstore.model.dao.HibernateAbstractDao;
 import com.senla.training.yeutukhovich.bookstore.model.domain.Order;
 import com.senla.training.yeutukhovich.bookstore.model.domain.Order_;
 import com.senla.training.yeutukhovich.bookstore.model.domain.state.OrderState;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-@Component
+@Repository
 public class OrderDaoImpl extends HibernateAbstractDao<Order, Long> implements OrderDao {
 
     public OrderDaoImpl() {
@@ -26,7 +26,7 @@ public class OrderDaoImpl extends HibernateAbstractDao<Order, Long> implements O
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Order> criteriaQuery = cb.createQuery(Order.class);
         Root<Order> orders = criteriaQuery.from(Order.class);
-        criteriaQuery.where(cb.equal(orders.get(Order_.state), OrderState.COMPLETED.toString()),
+        criteriaQuery.where(cb.equal(orders.get(Order_.state), OrderState.COMPLETED),
                 cb.between(orders.get(Order_.completionDate), startDate, endDate));
         criteriaQuery.select(orders);
         return entityManager.createQuery(criteriaQuery).getResultList();
@@ -37,7 +37,7 @@ public class OrderDaoImpl extends HibernateAbstractDao<Order, Long> implements O
         CriteriaQuery<BigDecimal> criteriaQuery = cb.createQuery(BigDecimal.class);
         Root<Order> orders = criteriaQuery.from(Order.class);
         criteriaQuery.select(cb.sum(orders.get(Order_.currentBookPrice))).where(cb.equal(orders.get(Order_.state),
-                OrderState.COMPLETED.toString()),
+                OrderState.COMPLETED),
                 cb.between(orders.get(Order_.completionDate), startDate, endDate));
         return entityManager.createQuery(criteriaQuery).getSingleResult();
     }
@@ -48,7 +48,7 @@ public class OrderDaoImpl extends HibernateAbstractDao<Order, Long> implements O
         CriteriaQuery<Long> criteriaQuery = cb.createQuery(Long.class);
         Root<Order> orders = criteriaQuery.from(Order.class);
         criteriaQuery.select(cb.count(orders)).where(cb.equal(orders.get(Order_.state),
-                OrderState.COMPLETED.toString()),
+                OrderState.COMPLETED),
                 cb.between(orders.get(Order_.completionDate), startDate, endDate));
         return entityManager.createQuery(criteriaQuery).getSingleResult();
     }

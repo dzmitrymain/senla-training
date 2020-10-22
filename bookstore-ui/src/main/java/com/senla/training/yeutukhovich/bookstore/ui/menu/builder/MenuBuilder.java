@@ -5,16 +5,22 @@ import com.senla.training.yeutukhovich.bookstore.dto.BookDto;
 import com.senla.training.yeutukhovich.bookstore.dto.OrderDetailsDto;
 import com.senla.training.yeutukhovich.bookstore.dto.OrderDto;
 import com.senla.training.yeutukhovich.bookstore.dto.RequestDto;
+import com.senla.training.yeutukhovich.bookstore.dto.auth.AuthenticationRequestDto;
+import com.senla.training.yeutukhovich.bookstore.dto.auth.AuthenticationResponseDto;
+import com.senla.training.yeutukhovich.bookstore.dto.auth.RegistrationRequestDto;
+import com.senla.training.yeutukhovich.bookstore.dto.auth.RegistrationResponseDto;
 import com.senla.training.yeutukhovich.bookstore.ui.menu.Menu;
 import com.senla.training.yeutukhovich.bookstore.ui.menu.MenuItem;
 import com.senla.training.yeutukhovich.bookstore.ui.util.reader.UserInputReader;
-import com.senla.training.yeutukhovich.bookstore.ui.util.webclient.RequestExecutor;
+import com.senla.training.yeutukhovich.bookstore.ui.webclient.RequestExecutor;
 import com.senla.training.yeutukhovich.bookstore.util.constant.EndpointConstant;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MenuNameConstant;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 import com.senla.training.yeutukhovich.bookstore.util.constant.RequestParameterConstant;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
@@ -29,6 +35,8 @@ public class MenuBuilder {
 
     @Value("${webcontext.url}")
     private String webContextUrl;
+    @Autowired
+    private RequestExecutor requestExecutor;
 
     private Menu rootMenu;
 
@@ -45,12 +53,43 @@ public class MenuBuilder {
         Menu orderMenu = initOrderMenu(previousRootMenuItem);
         Menu requestMenu = initRequestMenu(previousRootMenuItem);
 
+        MenuItem registrationMenuItem = new MenuItem(MenuNameConstant.REGISTRATION.getMenuName(), () -> {
+            System.out.println("Please, input username:");
+            String username = UserInputReader.readInputString();
+            System.out.println("Please, input password:");
+            String password = UserInputReader.readInputString();
+            System.out.println("Please, input role:");
+            String role = UserInputReader.readInputString();
+
+            RegistrationRequestDto requestDto = new RegistrationRequestDto();
+            requestDto.setUsername(username);
+            requestDto.setPassword(password);
+            requestDto.setRole(role);
+
+            requestExecutor.executeRequestForEntity(webContextUrl + EndpointConstant.REGISTRATION.getEndpoint(),
+                    HttpMethod.POST, new HttpEntity<>(requestDto), RegistrationResponseDto.class);
+        }, rootMenu);
+
+        MenuItem authMenuItem = new MenuItem(MenuNameConstant.AUTHENTICATION.getMenuName(), () -> {
+            System.out.println("Please, input username:");
+            String username = UserInputReader.readInputString();
+            System.out.println("Please, input password:");
+            String password = UserInputReader.readInputString();
+
+            AuthenticationRequestDto requestDto = new AuthenticationRequestDto();
+            requestDto.setUsername(username);
+            requestDto.setPassword(password);
+
+            requestExecutor.executeRequestForEntity(webContextUrl + EndpointConstant.AUTHENTICATION.getEndpoint(),
+                    HttpMethod.POST, new HttpEntity<>(requestDto), AuthenticationResponseDto.class);
+        }, rootMenu);
         MenuItem bookMenuItem = new MenuItem(MenuNameConstant.BOOK_MENU.getMenuName(), null, bookMenu);
         MenuItem orderMenuItem = new MenuItem(MenuNameConstant.ORDER_MENU.getMenuName(), null, orderMenu);
         MenuItem requestMenuItem = new MenuItem(MenuNameConstant.REQUEST_MENU.getMenuName(), null, requestMenu);
         MenuItem exitMenuItem = new MenuItem(MenuNameConstant.EXIT.getMenuName(), null, null);
 
-        Collections.addAll(rootMenu.getMenuItems(), bookMenuItem, orderMenuItem, requestMenuItem, exitMenuItem);
+        Collections.addAll(rootMenu.getMenuItems(), registrationMenuItem, authMenuItem, bookMenuItem, orderMenuItem,
+                requestMenuItem, exitMenuItem);
     }
 
     private Menu initBookMenu(MenuItem previousRootMenuItem) {
@@ -65,28 +104,20 @@ public class MenuBuilder {
                 () -> {
                     System.out.println(MessageConstant.ENTER_BOOK_ID.getMessage());
                     Long id = UserInputReader.readInputLong();
-                    RequestExecutor.executeRequestForEntity(webContextUrl +
+                    requestExecutor.executeRequestForEntity(webContextUrl +
                                     String.format(EndpointConstant.BOOKS_DESCRIPTION.getEndpoint(), id), HttpMethod.GET,
                             null, BookDescriptionDto.class);
                 }, bookMenu);
         MenuItem replenishBookItem = new MenuItem(MenuNameConstant.REPLENISH_BOOK.getMenuName(),
                 () -> {
-                    System.out.println(MessageConstant.ENTER_BOOK_ID.getMessage());
-                    Long id = UserInputReader.readInputLong();
-                    RequestExecutor.executeRequestForEntity(webContextUrl +
-                                    String.format(EndpointConstant.BOOKS_REPLENISH.getEndpoint(), id), HttpMethod.POST,
-                            null, BookDto.class);
+                    throw new UnsupportedOperationException();
                 }, bookMenu);
         MenuItem writeOffBookItem = new MenuItem(MenuNameConstant.WRITE_OFF_BOOK.getMenuName(),
                 () -> {
-                    System.out.println(MessageConstant.ENTER_BOOK_ID.getMessage());
-                    Long id = UserInputReader.readInputLong();
-                    RequestExecutor.executeRequestForEntity(webContextUrl +
-                                    String.format(EndpointConstant.BOOKS_WRITE_OFF.getEndpoint(), id), HttpMethod.POST,
-                            null, BookDto.class);
+                    throw new UnsupportedOperationException();
                 }, bookMenu);
         MenuItem findStaleBooksMenuItem = new MenuItem(MenuNameConstant.SHOW_STALE_BOOKS.getMenuName(),
-                () -> RequestExecutor.executeRequestForEntityArray(webContextUrl +
+                () -> requestExecutor.executeRequestForEntityArray(webContextUrl +
                         EndpointConstant.BOOKS_STALE.getEndpoint(), HttpMethod.GET, null, BookDto[].class),
                 bookMenu);
         MenuItem findSoldBooksItem = new MenuItem(MenuNameConstant.SHOW_SOLD_BOOKS_BETWEEN_DATES.getMenuName(),
@@ -96,7 +127,7 @@ public class MenuBuilder {
                     System.out.println(MessageConstant.LATEST_DATE_BOUND_YYYY_MM_DD.getMessage());
                     String secondDate = UserInputReader.readInputString();
 
-                    RequestExecutor.executeRequestForEntityArray(webContextUrl +
+                    requestExecutor.executeRequestForEntityArray(webContextUrl +
                                     String.format(EndpointConstant.BOOKS_SOLD_BETWEEN_DATES.getEndpoint(), firstDate, secondDate),
                             HttpMethod.GET, null, BookDto[].class);
                 }, bookMenu);
@@ -107,7 +138,7 @@ public class MenuBuilder {
                     System.out.println(MessageConstant.LATEST_DATE_BOUND_YYYY_MM_DD.getMessage());
                     String secondDate = UserInputReader.readInputString();
 
-                    RequestExecutor.executeRequestForEntityArray(webContextUrl +
+                    requestExecutor.executeRequestForEntityArray(webContextUrl +
                             String.format(EndpointConstant.BOOKS_UNSOLD_BETWEEN_DATES.getEndpoint(), firstDate,
                                     secondDate), HttpMethod.GET, null, BookDto[].class);
                 }, bookMenu);
@@ -118,9 +149,9 @@ public class MenuBuilder {
                     if (fileName == null) {
                         return;
                     }
-                    HttpEntity<MultiValueMap<String, String>> request = RequestExecutor.createUrlencodedRequest(
+                    HttpEntity<MultiValueMap<String, String>> request = requestExecutor.createUrlencodedRequest(
                             List.of(fileName), RequestParameterConstant.FILE_NAME.getParameterName());
-                    RequestExecutor.executeRequestForEntityArray(webContextUrl +
+                    requestExecutor.executeRequestForEntityArray(webContextUrl +
                             EndpointConstant.BOOKS_IMPORT.getEndpoint(), HttpMethod.POST, request, BookDto[].class);
                 }, bookMenu);
         MenuItem bookExportMenuItem = new MenuItem(MenuNameConstant.EXPORT_BOOKS.getMenuName(), null,
@@ -139,12 +170,12 @@ public class MenuBuilder {
                 () -> {
                     System.out.println(MessageConstant.ENTER_BOOK_ID.getMessage());
                     Long bookId = UserInputReader.readInputLong();
-                    RequestExecutor.executeRequestForEntity(webContextUrl +
+                    requestExecutor.executeRequestForEntity(webContextUrl +
                                     String.format(EndpointConstant.BOOKS_EXPORT.getEndpoint(), bookId), HttpMethod.POST,
                             createRequestWithInputtedFileName(), BookDto.class);
                 }, bookExportMenu);
         MenuItem exportAllBooksMenuItem = new MenuItem(MenuNameConstant.EXPORT_ALL_BOOKS.getMenuName(),
-                () -> RequestExecutor.executeRequestForEntityArray(webContextUrl +
+                () -> requestExecutor.executeRequestForEntityArray(webContextUrl +
                                 EndpointConstant.BOOKS_EXPORT_ALL.getEndpoint(), HttpMethod.POST,
                         createRequestWithInputtedFileName(), BookDto[].class), bookExportMenu);
 
@@ -160,23 +191,23 @@ public class MenuBuilder {
         Menu showAllBooksMenu = new Menu(MenuNameConstant.SHOW_ALL_BOOKS.getMenuName());
 
         MenuItem allBooksSortByTitle = new MenuItem(MenuNameConstant.SORT_BY_TITLE.getMenuName(),
-                () -> RequestExecutor.executeRequestForEntityArray(webContextUrl +
+                () -> requestExecutor.executeRequestForEntityArray(webContextUrl +
                         EndpointConstant.BOOKS_BY_TITLE.getEndpoint(), HttpMethod.GET, null, BookDto[].class),
                 showAllBooksMenu);
         MenuItem allBooksSortByPrice = new MenuItem(MenuNameConstant.SORT_BY_PRICE.getMenuName(),
-                () -> RequestExecutor.executeRequestForEntityArray(webContextUrl +
+                () -> requestExecutor.executeRequestForEntityArray(webContextUrl +
                         EndpointConstant.BOOKS_BY_PRICE.getEndpoint(), HttpMethod.GET, null, BookDto[].class),
                 showAllBooksMenu);
         MenuItem allBooksSortByAvailability = new MenuItem(MenuNameConstant.SORT_BY_AVAILABILITY.getMenuName(),
-                () -> RequestExecutor.executeRequestForEntityArray(webContextUrl +
+                () -> requestExecutor.executeRequestForEntityArray(webContextUrl +
                         EndpointConstant.BOOKS_BY_AVAILABILITY.getEndpoint(), HttpMethod.GET, null, BookDto[].class),
                 showAllBooksMenu);
         MenuItem allBooksSortByEditionYear = new MenuItem(MenuNameConstant.SORT_BY_EDITION_YEAR.getMenuName(),
-                () -> RequestExecutor.executeRequestForEntityArray(webContextUrl +
+                () -> requestExecutor.executeRequestForEntityArray(webContextUrl +
                         EndpointConstant.BOOKS_BY_EDITION_YEAR.getEndpoint(), HttpMethod.GET, null, BookDto[].class),
                 showAllBooksMenu);
         MenuItem allBooksSortByReplenishmentDate = new MenuItem(MenuNameConstant.SORT_BY_REPLENISHMENT_DATE.getMenuName(),
-                () -> RequestExecutor.executeRequestForEntityArray(webContextUrl +
+                () -> requestExecutor.executeRequestForEntityArray(webContextUrl +
                         EndpointConstant.BOOKS_BY_REPLENISHMENT.getEndpoint(), HttpMethod.GET, null, BookDto[].class),
                 showAllBooksMenu);
 
@@ -200,9 +231,14 @@ public class MenuBuilder {
                 () -> {
                     System.out.println(MessageConstant.ENTER_ORDER_ID.getMessage());
                     Long orderId = UserInputReader.readInputLong();
-                    RequestExecutor.executeRequestForEntity(webContextUrl +
-                                    String.format(EndpointConstant.ORDERS_CANCEL.getEndpoint(), orderId), HttpMethod.POST,
-                            null, OrderDto.class);
+                    OrderDto orderDto = new OrderDto();
+                    orderDto.setId(orderId);
+                    orderDto.setState("CANCELED");
+                    HttpHeaders headers = new HttpHeaders();
+                    headers.add(HttpHeaders.AUTHORIZATION, requestExecutor.getToken());
+                    requestExecutor.executeRequestForEntity(webContextUrl + String.format(
+                            EndpointConstant.ORDERS_UPDATE_STATE.getEndpoint(), orderId), HttpMethod.PUT,
+                            new HttpEntity<>(orderDto, headers), OrderDto.class);
                 },
                 orderMenu);
         MenuItem createOrderMenuItem = new MenuItem(MenuNameConstant.CREATE_ORDER.getMenuName(),
@@ -214,11 +250,11 @@ public class MenuBuilder {
                     if (customerData == null) {
                         return;
                     }
-                    HttpEntity<MultiValueMap<String, String>> request = RequestExecutor.createUrlencodedRequest(
+                    HttpEntity<MultiValueMap<String, String>> request = requestExecutor.createUrlencodedRequest(
                             List.of(customerData, Objects.requireNonNull(id).toString()),
                             RequestParameterConstant.CUSTOMER_DATA.getParameterName(),
                             RequestParameterConstant.BOOK_ID.getParameterName());
-                    RequestExecutor.executeRequestForEntity(webContextUrl +
+                    requestExecutor.executeRequestForEntity(webContextUrl +
                             EndpointConstant.ORDERS_CREATE.getEndpoint(), HttpMethod.POST, request, OrderDto.class);
                 },
                 orderMenu);
@@ -226,9 +262,14 @@ public class MenuBuilder {
                 () -> {
                     System.out.println(MessageConstant.ENTER_ORDER_ID.getMessage());
                     Long orderId = UserInputReader.readInputLong();
-                    RequestExecutor.executeRequestForEntity(webContextUrl +
-                                    String.format(EndpointConstant.ORDERS_COMPLETE.getEndpoint(), orderId),
-                            HttpMethod.POST, null, OrderDto.class);
+                    OrderDto orderDto = new OrderDto();
+                    orderDto.setId(orderId);
+                    orderDto.setState("COMPLETED");
+                    HttpHeaders headers = new HttpHeaders();
+                    headers.add(HttpHeaders.AUTHORIZATION, requestExecutor.getToken());
+                    requestExecutor.executeRequestForEntity(webContextUrl + String.format(
+                            EndpointConstant.ORDERS_UPDATE_STATE.getEndpoint(), orderId), HttpMethod.PUT,
+                            new HttpEntity<>(orderDto, headers), OrderDto.class);
                 }, orderMenu);
         MenuItem showCompletedOrdersNumberMenuItem =
                 new MenuItem(MenuNameConstant.SHOW_COMPLETED_ORDERS_NUMBER_BETWEEN_DATES.getMenuName(),
@@ -238,7 +279,7 @@ public class MenuBuilder {
                             System.out.println(MessageConstant.LATEST_DATE_BOUND_YYYY_MM_DD.getMessage());
                             String secondDate = UserInputReader.readInputString();
 
-                            RequestExecutor.executeRequestForEntity(webContextUrl +
+                            requestExecutor.executeRequestForEntity(webContextUrl +
                                     String.format(EndpointConstant.ORDERS_NUMBER_BETWEEN_DATES.getEndpoint(),
                                             firstDate, secondDate), HttpMethod.GET, null, Map.class);
                         }, orderMenu);
@@ -250,7 +291,7 @@ public class MenuBuilder {
                             System.out.println(MessageConstant.LATEST_DATE_BOUND_YYYY_MM_DD.getMessage());
                             String secondDate = UserInputReader.readInputString();
 
-                            RequestExecutor.executeRequestForEntityArray(webContextUrl +
+                            requestExecutor.executeRequestForEntityArray(webContextUrl +
                                     String.format(EndpointConstant.ORDERS_COMPLETED_BETWEEN_DATES.getEndpoint(),
                                             firstDate, secondDate), HttpMethod.GET, null, OrderDto[].class);
                         }, orderMenu);
@@ -258,7 +299,7 @@ public class MenuBuilder {
                 () -> {
                     System.out.println(MessageConstant.ENTER_ORDER_ID.getMessage());
                     Long id = UserInputReader.readInputLong();
-                    RequestExecutor.executeRequestForEntity(webContextUrl +
+                    requestExecutor.executeRequestForEntity(webContextUrl +
                                     String.format(EndpointConstant.ORDERS_DETAILS.getEndpoint(), id), HttpMethod.GET,
                             null, OrderDetailsDto.class);
                 }, orderMenu);
@@ -269,12 +310,12 @@ public class MenuBuilder {
                     System.out.println(MessageConstant.LATEST_DATE_BOUND_YYYY_MM_DD.getMessage());
                     String secondDate = UserInputReader.readInputString();
 
-                    RequestExecutor.executeRequestForEntity(webContextUrl +
+                    requestExecutor.executeRequestForEntity(webContextUrl +
                             String.format(EndpointConstant.ORDERS_PROFIT_BETWEEN_DATES.getEndpoint(),
                                     firstDate, secondDate), HttpMethod.GET, null, Map.class);
                 }, orderMenu);
         MenuItem importOrdersMenuItem = new MenuItem(MenuNameConstant.IMPORT_ORDERS.getMenuName(),
-                () -> RequestExecutor.executeRequestForEntityArray(webContextUrl +
+                () -> requestExecutor.executeRequestForEntityArray(webContextUrl +
                                 EndpointConstant.ORDERS_IMPORT.getEndpoint(), HttpMethod.POST, createRequestWithInputtedFileName(),
                         OrderDto[].class), orderMenu);
         MenuItem exportOrdersMenuItem = new MenuItem(MenuNameConstant.EXPORT_ORDERS.getMenuName(),
@@ -294,13 +335,13 @@ public class MenuBuilder {
                 () -> {
                     System.out.println(MessageConstant.ENTER_ORDER_ID.getMessage());
                     Long orderId = UserInputReader.readInputLong();
-                    RequestExecutor.executeRequestForEntity(webContextUrl +
+                    requestExecutor.executeRequestForEntity(webContextUrl +
                                     String.format(EndpointConstant.ORDERS_EXPORT.getEndpoint(), orderId),
                             HttpMethod.POST, createRequestWithInputtedFileName(), OrderDto.class);
                 }, exportOrdersMenu);
         MenuItem exportAllOrdersMenuItem = new MenuItem(MenuNameConstant.EXPORT_ALL_ORDERS.getMenuName(),
                 () ->
-                        RequestExecutor.executeRequestForEntityArray(webContextUrl +
+                        requestExecutor.executeRequestForEntityArray(webContextUrl +
                                         EndpointConstant.ORDERS_EXPORT_ALL.getEndpoint(), HttpMethod.POST,
                                 createRequestWithInputtedFileName(), OrderDto[].class), exportOrdersMenu);
         MenuItem previousOrderMenuItem = new MenuItem(MenuNameConstant.BACK_TO_ORDER_MENU.getMenuName(),
@@ -315,15 +356,15 @@ public class MenuBuilder {
         Menu showAllOrdersMenu = new Menu(MenuNameConstant.SHOW_ALL_ORDERS.getMenuName());
 
         MenuItem allOrdersByStateMenuItem = new MenuItem(MenuNameConstant.SORT_BY_STATE.getMenuName(),
-                () -> RequestExecutor.executeRequestForEntityArray(webContextUrl +
+                () -> requestExecutor.executeRequestForEntityArray(webContextUrl +
                         EndpointConstant.ORDERS_BY_STATE.getEndpoint(), HttpMethod.GET, null, OrderDto[].class),
                 showAllOrdersMenu);
         MenuItem allOrdersByPriceMenuItem = new MenuItem(MenuNameConstant.SORT_BY_PRICE.getMenuName(),
-                () -> RequestExecutor.executeRequestForEntityArray(webContextUrl +
+                () -> requestExecutor.executeRequestForEntityArray(webContextUrl +
                         EndpointConstant.ORDERS_BY_PRICE.getEndpoint(), HttpMethod.GET, null, OrderDto[].class),
                 showAllOrdersMenu);
         MenuItem allOrdersByCompletionMenuItem = new MenuItem(MenuNameConstant.SORT_BY_COMPLETION_DATE.getMenuName(),
-                () -> RequestExecutor.executeRequestForEntityArray(webContextUrl +
+                () -> requestExecutor.executeRequestForEntityArray(webContextUrl +
                         EndpointConstant.ORDERS_BY_COMPLETION_DATE.getEndpoint(), HttpMethod.GET, null, OrderDto[].class),
                 showAllOrdersMenu);
         MenuItem previousOrderMenuItem = new MenuItem(MenuNameConstant.BACK_TO_ORDER_MENU.getMenuName(),
@@ -351,15 +392,15 @@ public class MenuBuilder {
                     if (requesterData == null) {
                         return;
                     }
-                    HttpEntity<MultiValueMap<String, String>> request = RequestExecutor.createUrlencodedRequest(
+                    HttpEntity<MultiValueMap<String, String>> request = requestExecutor.createUrlencodedRequest(
                             List.of(requesterData, Objects.requireNonNull(bookId).toString()),
                             RequestParameterConstant.REQUESTER_DATA.getParameterName(),
                             RequestParameterConstant.BOOK_ID.getParameterName());
-                    RequestExecutor.executeRequestForEntity(webContextUrl + EndpointConstant.REQUESTS_CREATE.getEndpoint(),
+                    requestExecutor.executeRequestForEntity(webContextUrl + EndpointConstant.REQUESTS_CREATE.getEndpoint(),
                             HttpMethod.POST, request, RequestDto.class);
                 }, requestMenu);
         MenuItem importRequestsMenuItem = new MenuItem(MenuNameConstant.IMPORT_REQUESTS.getMenuName(),
-                () -> RequestExecutor.executeRequestForEntityArray(webContextUrl +
+                () -> requestExecutor.executeRequestForEntityArray(webContextUrl +
                                 EndpointConstant.REQUESTS_IMPORT.getEndpoint(), HttpMethod.POST, createRequestWithInputtedFileName(),
                         RequestDto[].class), requestMenu);
         MenuItem exportRequestsMenuItem = new MenuItem(MenuNameConstant.EXPORT_REQUESTS.getMenuName(),
@@ -378,12 +419,12 @@ public class MenuBuilder {
                 () -> {
                     System.out.println(MessageConstant.ENTER_REQUEST_ID.getMessage());
                     Long requestId = UserInputReader.readInputLong();
-                    RequestExecutor.executeRequestForEntity(webContextUrl +
+                    requestExecutor.executeRequestForEntity(webContextUrl +
                                     String.format(EndpointConstant.REQUESTS_EXPORT.getEndpoint(), requestId),
                             HttpMethod.POST, createRequestWithInputtedFileName(), RequestDto.class);
                 }, exportRequestMenu);
         MenuItem exportAllRequestsMenuItem = new MenuItem(MenuNameConstant.EXPORT_ALL_REQUESTS.getMenuName(),
-                () -> RequestExecutor.executeRequestForEntityArray(webContextUrl +
+                () -> requestExecutor.executeRequestForEntityArray(webContextUrl +
                                 EndpointConstant.REQUESTS_EXPORT_ALL.getEndpoint(), HttpMethod.POST,
                         createRequestWithInputtedFileName(), RequestDto[].class), exportRequestMenu);
 
@@ -399,16 +440,16 @@ public class MenuBuilder {
         Menu showAllRequestsMenu = new Menu(MenuNameConstant.SHOW_ALL_REQUESTS.getMenuName());
 
         MenuItem allRequestsSortByBookTitleMenuItem = new MenuItem(MenuNameConstant.SORT_BY_BOOK_TITLE.getMenuName(),
-                () -> RequestExecutor.executeRequestForEntityArray(webContextUrl +
+                () -> requestExecutor.executeRequestForEntityArray(webContextUrl +
                         EndpointConstant.REQUESTS_BY_BOOK_TITLE.getEndpoint(), HttpMethod.GET, null, RequestDto[].class),
                 showAllRequestsMenu);
         MenuItem allRequestsSortByIsActiveMenuItem = new MenuItem(MenuNameConstant.SORT_BY_STATE.getMenuName(),
-                () -> RequestExecutor.executeRequestForEntityArray(webContextUrl +
+                () -> requestExecutor.executeRequestForEntityArray(webContextUrl +
                         EndpointConstant.REQUESTS_BY_STATE.getEndpoint(), HttpMethod.GET, null, RequestDto[].class),
                 showAllRequestsMenu);
         MenuItem allRequestsSortByRequesterDataMenuItem =
                 new MenuItem(MenuNameConstant.SORT_BY_REQUESTER_DATA.getMenuName(),
-                        () -> RequestExecutor.executeRequestForEntityArray(webContextUrl +
+                        () -> requestExecutor.executeRequestForEntityArray(webContextUrl +
                                         EndpointConstant.REQUESTS_BY_REQUESTER_DATA.getEndpoint(), HttpMethod.GET, null,
                                 RequestDto[].class),
                         showAllRequestsMenu);
@@ -426,7 +467,7 @@ public class MenuBuilder {
         if (fileName == null) {
             return null;
         }
-        return RequestExecutor.createUrlencodedRequest(List.of(fileName),
+        return requestExecutor.createUrlencodedRequest(List.of(fileName),
                 RequestParameterConstant.FILE_NAME.getParameterName());
     }
 }

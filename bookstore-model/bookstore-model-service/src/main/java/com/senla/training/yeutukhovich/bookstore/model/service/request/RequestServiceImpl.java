@@ -7,15 +7,15 @@ import com.senla.training.yeutukhovich.bookstore.model.dao.book.BookDao;
 import com.senla.training.yeutukhovich.bookstore.model.dao.request.RequestDao;
 import com.senla.training.yeutukhovich.bookstore.model.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.model.domain.Request;
-import com.senla.training.yeutukhovich.bookstore.model.service.dto.DtoMapper;
+import com.senla.training.yeutukhovich.bookstore.model.service.dto.mapper.RequestMapper;
 import com.senla.training.yeutukhovich.bookstore.util.constant.ApplicationConstant;
 import com.senla.training.yeutukhovich.bookstore.util.constant.LoggerConstant;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
 import com.senla.training.yeutukhovich.bookstore.util.reader.FileDataReader;
 import com.senla.training.yeutukhovich.bookstore.util.writer.FileDataWriter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,9 +23,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class RequestServiceImpl implements RequestService {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(RequestServiceImpl.class);
 
     @Autowired
     private BookDao bookDao;
@@ -33,6 +32,8 @@ public class RequestServiceImpl implements RequestService {
     private RequestDao requestDao;
     @Autowired
     private EntityCsvConverter entityCsvConverter;
+    @Autowired
+    private RequestMapper requestMapper;
 
     private String csvDirectoryPath = ApplicationConstant.CSV_DIRECTORY_PATH;
 
@@ -41,45 +42,45 @@ public class RequestServiceImpl implements RequestService {
     public RequestDto createRequest(Long bookId, String requesterData) {
         Book book = bookDao.findById(bookId)
                 .orElseThrow(() -> {
-                    LOGGER.warn(LoggerConstant.CREATE_REQUEST_FAIL.getMessage(), bookId,
+                    log.warn(LoggerConstant.CREATE_REQUEST_FAIL.getMessage(), bookId,
                             MessageConstant.BOOK_NOT_EXIST.getMessage());
-                    return new BusinessException(MessageConstant.BOOK_NOT_EXIST.getMessage());
+                    return new BusinessException(MessageConstant.BOOK_NOT_EXIST.getMessage(), HttpStatus.NOT_FOUND);
                 });
-        if (book.isAvailable()) {
-            LOGGER.warn(LoggerConstant.CREATE_REQUEST_FAIL.getMessage(), bookId,
+        if (book.getAvailable()) {
+            log.warn(LoggerConstant.CREATE_REQUEST_FAIL.getMessage(), bookId,
                     MessageConstant.BOOK_ALREADY_REPLENISHED.getMessage());
-            throw new BusinessException(MessageConstant.BOOK_ALREADY_REPLENISHED.getMessage());
+            throw new BusinessException(MessageConstant.BOOK_ALREADY_REPLENISHED.getMessage(), HttpStatus.FORBIDDEN);
         }
         Request request = new Request(book, requesterData);
         requestDao.add(request);
-        LOGGER.info(LoggerConstant.CREATE_REQUEST_SUCCESS.getMessage(), bookId);
-        return DtoMapper.mapRequest(request);
+        log.info(LoggerConstant.CREATE_REQUEST_SUCCESS.getMessage(), bookId);
+        return requestMapper.map(request);
     }
 
     @Override
     @Transactional
-    public List<RequestDto> findSortedAllRequestsByBookTitle() {
-        LOGGER.info(LoggerConstant.FIND_ALL_REQUESTS_SORTED_BY_BOOK_TITLE.getMessage());
-        return requestDao.findSortedAllRequestsByBookTitle().stream()
-                .map(DtoMapper::mapRequest)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    @Transactional
-    public List<RequestDto> findSortedAllRequestsByIsActive() {
-        LOGGER.info(LoggerConstant.FIND_ALL_REQUESTS_SORTED_BY_IS_ACTIVE.getMessage());
-        return requestDao.findSortedAllRequestsByIsActive().stream()
-                .map(DtoMapper::mapRequest)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    @Transactional
-    public List<RequestDto> findSortedAllRequestsByRequesterData() {
-        LOGGER.info(LoggerConstant.FIND_ALL_REQUESTS_SORTED_BY_REQUESTER_DATA.getMessage());
-        return requestDao.findSortedAllRequestsByRequesterData().stream()
-                .map(DtoMapper::mapRequest)
+    public List<RequestDto> findSortedAllRequests(String sortParam) {
+        List<Request> result;
+        switch (sortParam) {
+            case "TITLE":
+                result = requestDao.findSortedAllRequestsByBookTitle();
+                log.info(LoggerConstant.FIND_ALL_REQUESTS_SORTED_BY_BOOK_TITLE.getMessage());
+                break;
+            case "ACTIVE":
+                result = requestDao.findSortedAllRequestsByIsActive();
+                log.info(LoggerConstant.FIND_ALL_REQUESTS_SORTED_BY_IS_ACTIVE.getMessage());
+                break;
+            case "REQUESTER":
+                result = requestDao.findSortedAllRequestsByRequesterData();
+                log.info(LoggerConstant.FIND_ALL_REQUESTS_SORTED_BY_REQUESTER_DATA.getMessage());
+                break;
+            default:
+                throw new BusinessException(String.format(MessageConstant.SORT_PARAM_NOT_SUPPORTED.getMessage(),
+                        "TITLE, ACTIVE, REQUESTER"),
+                        HttpStatus.BAD_REQUEST);
+        }
+        return result.stream()
+                .map(requestMapper::map)
                 .collect(Collectors.toList());
     }
 
@@ -91,9 +92,9 @@ public class RequestServiceImpl implements RequestService {
         List<Request> requests = requestDao.findAll();
         List<String> requestStrings = entityCsvConverter.convertRequests(requests);
         FileDataWriter.writeData(path, requestStrings);
-        LOGGER.info(LoggerConstant.EXPORT_ALL_REQUESTS.getMessage(), fileName);
+        log.info(LoggerConstant.EXPORT_ALL_REQUESTS.getMessage(), fileName);
         return requests.stream()
-                .map(DtoMapper::mapRequest)
+                .map(requestMapper::map)
                 .collect(Collectors.toList());
     }
 
@@ -103,14 +104,14 @@ public class RequestServiceImpl implements RequestService {
         String path = csvDirectoryPath
                 + fileName + ApplicationConstant.CSV_FORMAT_TYPE;
         Request request = requestDao.findById(requestId).orElseThrow(() -> {
-            LOGGER.warn(LoggerConstant.EXPORT_REQUEST_FAIL.getMessage(), requestId,
+            log.warn(LoggerConstant.EXPORT_REQUEST_FAIL.getMessage(), requestId,
                     MessageConstant.REQUEST_NOT_EXIST.getMessage());
-            return new BusinessException(MessageConstant.REQUEST_NOT_EXIST.getMessage());
+            return new BusinessException(MessageConstant.REQUEST_NOT_EXIST.getMessage(), HttpStatus.NOT_FOUND);
         });
         List<String> requestStrings = entityCsvConverter.convertRequests(List.of(request));
         FileDataWriter.writeData(path, requestStrings);
-        LOGGER.info(LoggerConstant.EXPORT_REQUEST_SUCCESS.getMessage(), requestId, fileName);
-        return DtoMapper.mapRequest(request);
+        log.info(LoggerConstant.EXPORT_REQUEST_SUCCESS.getMessage(), requestId, fileName);
+        return requestMapper.map(request);
     }
 
     @Override
@@ -121,16 +122,16 @@ public class RequestServiceImpl implements RequestService {
         for (Request importedRequest : importedRequests) {
             Book dependentBook = bookDao.findById(importedRequest.getBook().getId())
                     .orElseThrow(() -> {
-                        LOGGER.warn(LoggerConstant.IMPORT_REQUESTS_FAIL.getMessage(),
+                        log.warn(LoggerConstant.IMPORT_REQUESTS_FAIL.getMessage(),
                                 MessageConstant.BOOK_CANT_NULL.getMessage());
-                        return new BusinessException(MessageConstant.BOOK_CANT_NULL.getMessage());
+                        return new BusinessException(MessageConstant.BOOK_CANT_NULL.getMessage(), HttpStatus.BAD_REQUEST);
                     });
             importedRequest.setBook(dependentBook);
             requestDao.update(importedRequest);
         }
-        LOGGER.info(LoggerConstant.IMPORT_REQUESTS_SUCCESS.getMessage(), fileName);
+        log.info(LoggerConstant.IMPORT_REQUESTS_SUCCESS.getMessage(), fileName);
         return importedRequests.stream()
-                .map(DtoMapper::mapRequest)
+                .map(requestMapper::map)
                 .collect(Collectors.toList());
     }
 

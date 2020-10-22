@@ -5,7 +5,7 @@ import com.senla.training.yeutukhovich.bookstore.model.domain.Book;
 import com.senla.training.yeutukhovich.bookstore.model.domain.Book_;
 import com.senla.training.yeutukhovich.bookstore.model.domain.Request;
 import com.senla.training.yeutukhovich.bookstore.model.domain.Request_;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -15,7 +15,7 @@ import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.SingularAttribute;
 import java.util.List;
 
-@Component
+@Repository
 public class RequestDaoImpl extends HibernateAbstractDao<Request, Long> implements RequestDao {
 
     public RequestDaoImpl() {
@@ -27,9 +27,9 @@ public class RequestDaoImpl extends HibernateAbstractDao<Request, Long> implemen
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaUpdate<Request> update = cb.createCriteriaUpdate(Request.class);
         Root<Request> requests = update.from(Request.class);
-        update.set(Request_.isActive, false);
+        update.set(Request_.active, false);
         update.where(cb.equal(requests.get(Request_.book).get(Book_.id), bookId),
-                cb.equal(requests.get(Request_.isActive), true));
+                cb.equal(requests.get(Request_.active), true));
         return (long) entityManager.createQuery(update).executeUpdate();
     }
 
@@ -46,7 +46,7 @@ public class RequestDaoImpl extends HibernateAbstractDao<Request, Long> implemen
 
     @Override
     public List<Request> findSortedAllRequestsByIsActive() {
-        return findAllSortedRequests(Request_.isActive, false);
+        return findAllSortedRequests(Request_.active, false);
     }
 
     @Override

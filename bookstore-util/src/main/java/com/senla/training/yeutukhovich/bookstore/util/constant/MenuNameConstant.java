@@ -2,6 +2,8 @@ package com.senla.training.yeutukhovich.bookstore.util.constant;
 
 public enum MenuNameConstant {
 
+    AUTHENTICATION("Authentication"),
+    REGISTRATION("Registration"),
     MAIN_MENU("Main menu"),
     BOOK_MENU("Book menu"),
     ORDER_MENU("Order menu"),

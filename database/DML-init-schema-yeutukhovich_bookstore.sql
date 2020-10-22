@@ -19,14 +19,23 @@ VALUES ('1', '1', 'COMPLETED', '25.90', '2020-08-22 15:02:32', '2020-08-22 15:02
 
 -- yeutukhovich_bookstore.requests
 INSERT INTO `yeutukhovich_bookstore`.`requests` (`id`, `book_id`, `is_active`, `requester_data`)
-VALUES ('1', '3', '1', 'Customer3')
-     , ('2', '4', '1', 'Customer4');
+VALUES ('1', '3', '1', 'Customer3'),
+       ('2', '4', '1', 'Customer4');
+
+-- yeutukhovich_bookstore.users
+INSERT INTO `yeutukhovich_bookstore`.`users` (`id`, `username`, `password`, `role`)
+-- password: 'user'
+VALUES ('1', 'user', '$2a$10$BYIA9DWnhTZr3VjVogWqleBFtOiajifygf9qYP278UY23Qwv453Gy', 'USER'),
+-- password: 'admin'
+       ('2', 'admin', '$2a$10$s.WjPYNmCe6tt82pDTosTuak55xpC4TmF26YvFq8ks.gyiQov9Gqm', 'ADMIN');
 
 ALTER TABLE `books`
     AUTO_INCREMENT = 6;
 ALTER TABLE `orders`
     AUTO_INCREMENT = 5;
 ALTER TABLE `requests`
+    AUTO_INCREMENT = 3;
+ALTER TABLE `users`
     AUTO_INCREMENT = 3;
 
 COMMIT;

@@ -1,8 +1,17 @@
 package com.senla.training.yeutukhovich.bookstore.exception;
 
+import org.springframework.http.HttpStatus;
+
 public class BusinessException extends RuntimeException {
 
-    public BusinessException(String message) {
+    private HttpStatus httpStatus;
+
+    public BusinessException(String message, HttpStatus httpStatus) {
         super(message);
+        this.httpStatus = httpStatus;
+    }
+
+    public HttpStatus getHttpStatus() {
+        return httpStatus;
     }
 }
