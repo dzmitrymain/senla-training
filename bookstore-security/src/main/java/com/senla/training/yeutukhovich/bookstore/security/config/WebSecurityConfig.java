@@ -23,10 +23,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserDetailsService userDetailsService;
+    @Autowired
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
+    protected void configure(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity
                 .csrf().disable()
                 .httpBasic().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -35,7 +37,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/register").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .addFilter(new JwtAuthenticationFilter(getApplicationContext()))
+                .addFilter(jwtAuthenticationFilter)
                 .addFilterBefore(jwtAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling().authenticationEntryPoint(customAuthenticationEntryPoint());
     }

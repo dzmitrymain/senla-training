@@ -7,7 +7,7 @@ import com.senla.training.yeutukhovich.bookstore.dto.auth.AuthenticationResponse
 import com.senla.training.yeutukhovich.bookstore.security.provider.JwtTokenProvider;
 import com.senla.training.yeutukhovich.bookstore.security.util.SecurityConstant;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
-import org.springframework.context.ApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,24 +15,25 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+@Component
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private static final String AUTH_ENDPOINT = "/auth";
 
-    private final AuthenticationManager authenticationManager;
-    private final JwtTokenProvider tokenProvider;
-    private final ObjectMapper objectMapper;
+    @Autowired
+    private JwtTokenProvider tokenProvider;
+    @Autowired
+    private ObjectMapper objectMapper;
 
-    public JwtAuthenticationFilter(ApplicationContext applicationContext) {
-        this.authenticationManager = applicationContext.getBean(AuthenticationManager.class);
-        this.tokenProvider = applicationContext.getBean(JwtTokenProvider.class);
-        this.objectMapper = applicationContext.getBean(ObjectMapper.class);
+    public JwtAuthenticationFilter(@Autowired AuthenticationManager authenticationManager) {
+        super(authenticationManager);
         setFilterProcessesUrl(AUTH_ENDPOINT);
     }
 
@@ -41,7 +42,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         try {
             AuthenticationRequestDto requestDto = objectMapper.readValue(
                     request.getInputStream(), AuthenticationRequestDto.class);
-            return authenticationManager.authenticate(
+            return getAuthenticationManager().authenticate(
                     new UsernamePasswordAuthenticationToken(requestDto.getUsername(), requestDto.getPassword()));
         } catch (IOException e) {
             throw new RuntimeException(e.getMessage());
