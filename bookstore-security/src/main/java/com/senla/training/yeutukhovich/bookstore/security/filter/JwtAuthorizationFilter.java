@@ -59,7 +59,7 @@ public class JwtAuthorizationFilter extends GenericFilterBean {
     private static Optional<String> getJwtFromRequest(ServletRequest request) {
         String bearerToken = ((HttpServletRequest) request).getHeader(SecurityConstant.HEADER_STRING.getConstant());
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(SecurityConstant.TOKEN_PREFIX.getConstant())) {
-            return Optional.of(bearerToken.substring(7));
+            return Optional.of(bearerToken.split(SecurityConstant.TOKEN_PREFIX.getConstant())[1]);
         }
         return Optional.empty();
     }
