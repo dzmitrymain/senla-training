@@ -7,6 +7,8 @@ import com.senla.training.yeutukhovich.bookstore.dto.auth.AuthenticationResponse
 import com.senla.training.yeutukhovich.bookstore.security.provider.JwtTokenProvider;
 import com.senla.training.yeutukhovich.bookstore.security.util.SecurityConstant;
 import com.senla.training.yeutukhovich.bookstore.util.constant.MessageConstant;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
+@Slf4j
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private static final String AUTH_ENDPOINT = "/auth";
@@ -38,15 +41,12 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
     @Override
+    @SneakyThrows
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        try {
-            AuthenticationRequestDto requestDto = objectMapper.readValue(
-                    request.getInputStream(), AuthenticationRequestDto.class);
-            return getAuthenticationManager().authenticate(
-                    new UsernamePasswordAuthenticationToken(requestDto.getUsername(), requestDto.getPassword()));
-        } catch (IOException e) {
-            throw new RuntimeException(e.getMessage());
-        }
+        AuthenticationRequestDto requestDto = objectMapper.readValue(
+                request.getInputStream(), AuthenticationRequestDto.class);
+        return getAuthenticationManager().authenticate(
+                new UsernamePasswordAuthenticationToken(requestDto.getUsername(), requestDto.getPassword()));
     }
 
     @Override

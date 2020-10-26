@@ -25,7 +25,6 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
 
     @Override
     protected Filter[] getServletFilters() {
-        return new Filter[]{new GenericExceptionHandleFilter(),
-                new DelegatingFilterProxy("springSecurityFilterChain")};
+        return new Filter[]{new GenericExceptionHandleFilter()};
     }
 }

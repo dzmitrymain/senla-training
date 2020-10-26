@@ -32,8 +32,7 @@ public class JwtAuthorizationFilter extends GenericFilterBean {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        Optional<String> jwt = getJwtFromRequest(servletRequest);
-        jwt.ifPresent(token -> {
+        getJwtFromRequest(servletRequest).ifPresent(token -> {
             try {
                 if (jwtTokenProvider.validateToken(token)) {
                     setSecurityContext(token);
