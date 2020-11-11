@@ -4,7 +4,7 @@ USE scooter_rental;
 
 CREATE TABLE scooter_rental.`locations`
 (
-    `id`   INT         NOT NULL AUTO_INCREMENT,
+    `id`   BIGINT         NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(45) NOT NULL,
     CONSTRAINT `pk_locations_id` PRIMARY KEY (`id`),
     UNIQUE INDEX `unique_index_locations_name` (`name` ASC) VISIBLE
@@ -12,7 +12,7 @@ CREATE TABLE scooter_rental.`locations`
 
 CREATE TABLE scooter_rental.`users`
 (
-    `id`            INT          NOT NULL AUTO_INCREMENT,
+    `id`            BIGINT          NOT NULL AUTO_INCREMENT,
     `username`      VARCHAR(255) NOT NULL,
     `password`      VARCHAR(255) NOT NULL,
     `role`          VARCHAR(45)  NOT NULL,
@@ -24,9 +24,9 @@ CREATE TABLE scooter_rental.`users`
 
 CREATE TABLE scooter_rental.`profiles`
 (
-    `id`           INT          NOT NULL AUTO_INCREMENT,
-    `user_id`      INT          NOT NULL,
-    `location_id`  INT          NOT NULL,
+    `id`           BIGINT          NOT NULL AUTO_INCREMENT,
+    `user_id`      BIGINT          NOT NULL,
+    `location_id`  BIGINT          NOT NULL,
     `name`         VARCHAR(255) NOT NULL,
     `surname`      VARCHAR(255) NOT NULL,
     `email`        VARCHAR(255) NOT NULL,
@@ -39,7 +39,7 @@ CREATE TABLE scooter_rental.`profiles`
 
 CREATE TABLE scooter_rental.`models`
 (
-    `id`    INT          NOT NULL AUTO_INCREMENT,
+    `id`    BIGINT          NOT NULL AUTO_INCREMENT,
     `model` VARCHAR(255) NOT NULL,
     `range` SMALLINT     NOT NULL,
     `speed` SMALLINT     NOT NULL,
@@ -50,8 +50,8 @@ CREATE TABLE scooter_rental.`models`
 
 CREATE TABLE scooter_rental.`spots`
 (
-    `id`           INT         NOT NULL AUTO_INCREMENT,
-    `location_id`  INT         NOT NULL,
+    `id`           BIGINT         NOT NULL AUTO_INCREMENT,
+    `location_id`  BIGINT         NOT NULL,
     `phone_number` VARCHAR(13) NULL,
     `coordinates`  POINT       NOT NULL,
     CONSTRAINT `pk_spots_id` PRIMARY KEY (`id`)
@@ -59,9 +59,9 @@ CREATE TABLE scooter_rental.`spots`
 
 CREATE TABLE scooter_rental.`scooters`
 (
-    `id`                       INT       NOT NULL AUTO_INCREMENT,
-    `model_id`                 INT       NOT NULL,
-    `spot_id`                  INT       NOT NULL,
+    `id`                       BIGINT       NOT NULL AUTO_INCREMENT,
+    `model_id`                 BIGINT       NOT NULL,
+    `spot_id`                  BIGINT       NOT NULL,
     `begin_operation_date`     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `total_distance_travelled` INT       NOT NULL DEFAULT 0,
     CONSTRAINT `pk_scooters_id` PRIMARY KEY (`id`)
@@ -69,8 +69,8 @@ CREATE TABLE scooter_rental.`scooters`
 
 CREATE TABLE scooter_rental.`rates`
 (
-    `id`               INT            NOT NULL AUTO_INCREMENT,
-    `model_id`         INT            NOT NULL,
+    `id`               BIGINT            NOT NULL AUTO_INCREMENT,
+    `model_id`         BIGINT            NOT NULL,
     `per_hour`         DECIMAL(15, 2) NOT NULL,
     `weekend_per_hour` DECIMAL(15, 2) NOT NULL,
     CONSTRAINT `pk_rates_id` PRIMARY KEY (`id`)
@@ -78,9 +78,9 @@ CREATE TABLE scooter_rental.`rates`
 
 CREATE TABLE scooter_rental.`passes`
 (
-    `id`                INT            NOT NULL AUTO_INCREMENT,
-    `user_id`           INT            NOT NULL,
-    `model_id`          INT            NOT NULL,
+    `id`                BIGINT            NOT NULL AUTO_INCREMENT,
+    `user_id`           BIGINT            NOT NULL,
+    `model_id`          BIGINT            NOT NULL,
     `start_date`        TIMESTAMP      NOT NULL,
     `expired_date`      TIMESTAMP      NOT NULL,
     `total_minutes`     INT            NOT NULL,
@@ -91,8 +91,8 @@ CREATE TABLE scooter_rental.`passes`
 
 CREATE TABLE scooter_rental.`discounts`
 (
-    `id`         INT           NOT NULL AUTO_INCREMENT,
-    `model_id`   INT           NOT NULL,
+    `id`         BIGINT           NOT NULL AUTO_INCREMENT,
+    `model_id`   BIGINT           NOT NULL,
     `start_date` TIMESTAMP     NOT NULL,
     `end_date`   TIMESTAMP     NOT NULL,
     `discount`   DECIMAL(3, 2) NOT NULL,
@@ -101,9 +101,9 @@ CREATE TABLE scooter_rental.`discounts`
 
 CREATE TABLE scooter_rental.`rents`
 (
-    `id`                 INT            NOT NULL AUTO_INCREMENT,
-    `user_id`            INT            NOT NULL,
-    `scooter_id`         INT            NOT NULL,
+    `id`                 BIGINT            NOT NULL AUTO_INCREMENT,
+    `user_id`            BIGINT            NOT NULL,
+    `scooter_id`         BIGINT            NOT NULL,
     `state`              VARCHAR(45)    NOT NULL,
     `start_date`         TIMESTAMP      NOT NULL,
     `end_date`           TIMESTAMP      NOT NULL,
@@ -117,9 +117,9 @@ CREATE TABLE scooter_rental.`rents`
 
 CREATE TABLE scooter_rental.`reviews`
 (
-    `id`            INT           NOT NULL AUTO_INCREMENT,
-    `user_id`       INT           NOT NULL,
-    `model_id`      INT           NULL,
+    `id`            BIGINT           NOT NULL AUTO_INCREMENT,
+    `user_id`       BIGINT           NOT NULL,
+    `model_id`      BIGINT           NULL,
     `score`         TINYINT       NOT NULL,
     `opinion`       VARCHAR(2000) NULL,
     `creation_date` TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,

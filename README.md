@@ -1,4 +1,4 @@
-# Scooter rental
+# Scooter Rental
 ## Information
 
 *This is a final project at Senla training courses*
