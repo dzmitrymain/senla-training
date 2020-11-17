@@ -28,7 +28,7 @@ public class Pass extends AbstractEntity {
     @Column(name = "expired_date")
     private LocalDateTime expiredDate;
     @Column(name = "total_minutes")
-    private final Integer totalMinutes;
+    private Integer totalMinutes;
     @Column(name = "remaining_minutes")
     private Integer remainingMinutes;
     @Column(name = "price")

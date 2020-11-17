@@ -7,8 +7,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import java.util.Set;
 
 @Entity
 @Table(name = "profiles")
@@ -30,4 +32,7 @@ public class Profile extends AbstractEntity {
     private String email;
     @Column(name = "phone_number")
     private String phoneNumber;
+
+    @OneToMany(mappedBy = "profile")
+    private Set<Review> reviews;
 }

@@ -10,8 +10,10 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.metamodel.StaticMetamodel;
 import java.util.Set;
 
+@StaticMetamodel(Model.class)
 @Entity
 @Table(name = "models")
 @Data
@@ -20,17 +22,15 @@ public class Model extends AbstractEntity {
 
     @Column(name = "name")
     private String modelName;
-    @Column(name = "range")
+    @Column(name = "[range]")
     private Short range;
     @Column(name = "speed")
     private Short speed;
     @Column(name = "power")
     private Short power;
 
-    @ManyToOne
-    @JoinFormula("(SELECT r.id FROM rates r WHERE r.model_id = id ORDER BY r.creation_date DESC LIMIT 1)")
-    private Rate rate;
-
+    @OneToMany(mappedBy = "model", fetch = FetchType.LAZY)
+    private Set<Rate> rates;
     @OneToMany(mappedBy = "model", fetch = FetchType.LAZY)
     private Set<Pass> passes;
     @OneToMany(mappedBy = "model", fetch = FetchType.LAZY)

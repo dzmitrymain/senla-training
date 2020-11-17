@@ -8,7 +8,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.Set;
 
 @Entity
 @Table(name = "spots")
@@ -23,4 +25,7 @@ public class Spot extends AbstractEntity {
     private String phoneNumber;
     @Column(name = "coordinates")
     private Point coordinates;
+
+    @OneToMany(mappedBy = "spot")
+    private Set<Scooter> scooters;
 }

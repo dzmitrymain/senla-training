@@ -38,7 +38,5 @@ public class User extends AbstractEntity {
     @OneToMany(mappedBy = "user")
     private Set<Pass> passes;
     @OneToOne(mappedBy = "user")
-    private Review review;
-    @OneToOne(mappedBy = "user")
     private Profile profile;
 }
