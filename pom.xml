@@ -8,32 +8,105 @@
     <artifactId>scooter-rental</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <modules>
-        <module>scooter-rental-domain</module>
-    </modules>
-
     <packaging>pom</packaging>
 
     <name>Scooter Rental Final Project</name>
+
+    <modules>
+        <module>scooter-rental-domain</module>
+        <module>scooter-rental-dao</module>
+        <module>scooter-rental-web</module>
+        <module>scooter-rental-service</module>
+        <module>scooter-rental-dto</module>
+        <module>scooter-rental-util</module>
+        <module>scooter-rental-exception</module>
+    </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <maven.compiler.version>3.8.1</maven.compiler.version>
+        <maven.war.version>3.3.1</maven.war.version>
 
+        <spring.version>5.2.9.RELEASE</spring.version>
+        <javaee.api.version>8.0.1</javaee.api.version>
         <lombok.version>1.18.16</lombok.version>
+        <sl4j.version>1.7.30</sl4j.version>
+        <logback.version>1.2.3</logback.version>
+        <hibernate.version>5.4.21.Final</hibernate.version>
+        <mysql.connector.version>8.0.21</mysql.connector.version>
+        <jackson.databind.version>2.11.3</jackson.databind.version>
         <!-- scooter-rental-domain -->
         <javax.persistence.version>2.2</javax.persistence.version>
     </properties>
 
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-web -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/javax/javaee-api -->
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>${javaee.api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+
+        <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-entitymanager -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-spatial</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql.connector.version}</version>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>ch.vorburger.mariaDB4j</groupId>-->
+<!--            <artifactId>mariaDB4j</artifactId>-->
+<!--            <version>2.2.3</version>-->
+<!--        </dependency>-->
+
+        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${sl4j.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.databind.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -53,6 +126,11 @@
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>${maven.war.version}</version>
             </plugin>
         </plugins>
     </build>
