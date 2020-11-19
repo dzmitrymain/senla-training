@@ -34,7 +34,7 @@ public class DiscountServiceImpl implements DiscountService {
     @Override
     @Transactional
     public List<DiscountDto> findAllActiveDiscounts() {
-        log.info(LoggerConstant.DISCOUNT_ACTIVE.getMessage());
+        log.info(LoggerConstant.DISCOUNTS_ACTIVE.getMessage());
         return discountDao.findAllActiveDiscounts().stream()
                 .map(discountDtoMapper::map)
                 .collect(Collectors.toList());

@@ -49,7 +49,7 @@ public class DiscountController {
         return discountService.create(discountDto);
     }
 
-    @GetMapping("/actual")
+    @GetMapping("/active")
     public List<DiscountDto> findAllActiveDiscounts(){
         return discountService.findAllActiveDiscounts();
     }
