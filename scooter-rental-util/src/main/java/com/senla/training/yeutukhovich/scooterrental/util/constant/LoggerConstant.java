@@ -2,7 +2,8 @@ package com.senla.training.yeutukhovich.scooterrental.util.constant;
 
 public enum LoggerConstant {
 
-    DISCOUNT_ACTIVE("Active discounts searched."),
+    DISCOUNTS_ACTIVE("Active discounts searched."),
+    RATES_ACTUAL("Actual rates searched"),
 
     MODEL_SCOOTERS_SEARCHED("Scooters by model[id={}] searched."),
     MODEL_REVIEWS("Reviews by model[id={}] searched."),
