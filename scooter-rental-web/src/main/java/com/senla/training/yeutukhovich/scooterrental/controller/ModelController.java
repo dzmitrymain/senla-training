@@ -1,5 +1,6 @@
 package com.senla.training.yeutukhovich.scooterrental.controller;
 
+import com.senla.training.yeutukhovich.scooterrental.dto.DiscountDto;
 import com.senla.training.yeutukhovich.scooterrental.dto.ModelDto;
 import com.senla.training.yeutukhovich.scooterrental.dto.RateDto;
 import com.senla.training.yeutukhovich.scooterrental.dto.ReviewDto;
@@ -14,9 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/models")
@@ -45,13 +44,13 @@ public class ModelController {
     }
 
     @PutMapping("/{id}")
-    public ModelDto updateModel(@PathVariable("id") Long id, @RequestBody ModelDto modelDto) {
-        return modelService.updateModel(id, modelDto);
+    public ModelDto updateById(@PathVariable("id") Long id, @RequestBody ModelDto modelDto) {
+        return modelService.updateById(id, modelDto);
     }
 
     @PostMapping()
-    public ModelDto createModel(@RequestBody ModelDto modelDto) {
-        return modelService.createModel(modelDto);
+    public ModelDto create(@RequestBody ModelDto modelDto) {
+        return modelService.create(modelDto);
     }
 
     @GetMapping("/{id}/scooters")
@@ -65,9 +64,12 @@ public class ModelController {
     }
 
     @GetMapping("/{id}/rate")
-    public RateDto findCurrentModelRate(@PathVariable("id") Long id){
+    public RateDto findCurrentModelRate(@PathVariable("id") Long id) {
         return modelService.findCurrentModelRate(id);
     }
 
-
+    @GetMapping("/{id}/discount")
+    public DiscountDto findCurrentModelDiscount(@PathVariable("id") Long id){
+    return modelService.findCurrentModelDiscount(id);
+    }
 }
