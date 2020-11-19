@@ -16,8 +16,8 @@ CREATE TABLE scooter_rental.`users`
     `username`      VARCHAR(255) NOT NULL,
     `password`      VARCHAR(255) NOT NULL,
     `role`          VARCHAR(45)  NOT NULL,
-    `creation_date` DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `enabled`       BIT          NOT NULL DEFAULT 1,
+    `creation_date` DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `enabled`       TINYINT      NOT NULL DEFAULT 1,
     CONSTRAINT `pk_users_id` PRIMARY KEY (`id`),
     UNIQUE INDEX `unique_index_users_username` (`username` ASC) VISIBLE
 );
@@ -104,8 +104,8 @@ CREATE TABLE scooter_rental.`rents`
     `id`                 BIGINT         NOT NULL AUTO_INCREMENT,
     `user_id`            BIGINT         NOT NULL,
     `scooter_id`         BIGINT         NOT NULL,
-    `active`             BIT            NOT NULL DEFAULT 1,
-    `start_date`         DATETIME       NOT NULL,
+    `active`             TINYINT        NOT NULL DEFAULT 1,
+    `creation_date`      DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `expired_date`       DATETIME       NOT NULL,
     `payment_type`       VARCHAR(45)    NOT NULL,
     `price`              DECIMAL(15, 2) NOT NULL DEFAULT 0.00,
@@ -118,7 +118,7 @@ CREATE TABLE scooter_rental.`rents`
 CREATE TABLE scooter_rental.`reviews`
 (
     `id`            BIGINT        NOT NULL AUTO_INCREMENT,
-    `profile_id`       BIGINT        NOT NULL,
+    `profile_id`    BIGINT        NOT NULL,
     `model_id`      BIGINT        NULL,
     `score`         TINYINT       NOT NULL,
     `opinion`       VARCHAR(2000) NULL,
