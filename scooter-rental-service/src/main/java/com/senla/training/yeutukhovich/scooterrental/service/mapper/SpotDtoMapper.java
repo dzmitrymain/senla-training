@@ -2,10 +2,23 @@ package com.senla.training.yeutukhovich.scooterrental.service.mapper;
 
 import com.senla.training.yeutukhovich.scooterrental.domain.Spot;
 import com.senla.training.yeutukhovich.scooterrental.dto.SpotDto;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class SpotDtoMapper {
+
+    private final LocationDtoMapper locationDtoMapper;
+    //TODO: bean?
+    private final GeometryFactory geometryFactory = new GeometryFactory();
+
+    @Autowired
+    public SpotDtoMapper(LocationDtoMapper locationDtoMapper) {
+        this.locationDtoMapper = locationDtoMapper;
+    }
+
 
     public SpotDto map(Spot spot) {
         if (spot == null) {
@@ -13,9 +26,21 @@ public class SpotDtoMapper {
         }
         return new SpotDto(
                 spot.getId(),
-                spot.getLocation() == null ? null : spot.getLocation().getLocationName(),
+                locationDtoMapper.map(spot.getLocation()),
                 spot.getPhoneNumber(),
                 spot.getCoordinates() == null ? null : spot.getCoordinates().getX(),
                 spot.getCoordinates() == null ? null : spot.getCoordinates().getY());
+    }
+
+    public Spot map(SpotDto spotDto) {
+        if (spotDto == null) {
+            return null;
+        }
+        Spot spot = new Spot();
+        spot.setId(spotDto.getId());
+        spot.setLocation(locationDtoMapper.map(spotDto.getLocationDto()));
+        spot.setPhoneNumber(spotDto.getPhoneNumber());
+        spot.setCoordinates(geometryFactory.createPoint(new Coordinate(spotDto.getLatitude(), spotDto.getLongitude())));
+        return spot;
     }
 }

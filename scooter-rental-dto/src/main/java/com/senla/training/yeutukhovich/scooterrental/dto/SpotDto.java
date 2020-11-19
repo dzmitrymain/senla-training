@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class SpotDto {
 
     private Long id;
-    private String locationName;
+    private LocationDto locationDto;
     private String phoneNumber;
     private Double latitude;
     private Double longitude;
