@@ -9,6 +9,9 @@ public enum LoggerConstant {
     MODEL_RATE("Current rate by model[id={}] searched."),
     MODEL_DISCOUNT("Current discount by model[id={}] searched."),
 
+    LOCATION_PROFILES("Profiles by location[id={}] searched."),
+    LOCATION_SPOTS("Spots by location[id={}] searched."),
+
     ENTITY_CREATE("{} creating."),
     ENTITY_CREATE_SUCCESS("{}[id={}] has been created."),
     ENTITY_DELETE("{}[id={}] deleting."),
