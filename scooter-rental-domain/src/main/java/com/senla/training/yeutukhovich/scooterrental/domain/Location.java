@@ -12,7 +12,7 @@ import java.util.Set;
 @Entity
 @Table(name = "locations")
 @Data
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, of="locationName")
 public class Location extends AbstractEntity {
 
     @Column(name = "name")

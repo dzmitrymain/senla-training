@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "passes")
 @Data
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, of = {"user", "model", "startDate"})
 public class Pass extends AbstractEntity {
 
     @ManyToOne

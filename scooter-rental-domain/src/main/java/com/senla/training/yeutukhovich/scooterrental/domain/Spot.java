@@ -15,7 +15,7 @@ import java.util.Set;
 @Entity
 @Table(name = "spots")
 @Data
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, of = {"location", "phoneNumber"})
 public class Spot extends AbstractEntity {
 
     @ManyToOne

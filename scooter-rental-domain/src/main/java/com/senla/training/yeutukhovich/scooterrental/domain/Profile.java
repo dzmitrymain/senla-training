@@ -15,7 +15,7 @@ import java.util.Set;
 @Entity
 @Table(name = "profiles")
 @Data
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, of = "email")
 public class Profile extends AbstractEntity {
 
     @OneToOne

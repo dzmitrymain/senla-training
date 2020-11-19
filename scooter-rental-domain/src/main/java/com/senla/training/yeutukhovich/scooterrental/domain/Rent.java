@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "rents")
 @Data
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, of = {"user", "scooter"})
 public class Rent extends AbstractEntity {
 
     @ManyToOne
@@ -30,8 +30,8 @@ public class Rent extends AbstractEntity {
     private Boolean active;
     @Column(name = "start_date")
     private LocalDateTime startDate;
-    @Column(name = "end_date")
-    private LocalDateTime endDate;
+    @Column(name = "expired_date")
+    private LocalDateTime expiredDate;
     @Column(name = "return_date")
     private LocalDateTime returnDate;
     @Column(name = "payment_type")

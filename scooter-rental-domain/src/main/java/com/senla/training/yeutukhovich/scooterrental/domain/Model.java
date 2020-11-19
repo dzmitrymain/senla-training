@@ -17,7 +17,7 @@ import java.util.Set;
 @Entity
 @Table(name = "models")
 @Data
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, of="modelName")
 public class Model extends AbstractEntity {
 
     @Column(name = "name")

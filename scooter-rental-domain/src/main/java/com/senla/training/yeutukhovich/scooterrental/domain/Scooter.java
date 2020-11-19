@@ -17,7 +17,7 @@ import java.util.Set;
 @Entity
 @Table(name = "scooters")
 @Data
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, of = {"model", "beginOperationDate"})
 public class Scooter extends AbstractEntity {
 
     @ManyToOne

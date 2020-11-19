@@ -2,6 +2,7 @@ package com.senla.training.yeutukhovich.scooterrental.domain;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,7 +15,8 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "discounts")
 @Data
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, of = {"model", "startDate", "discount"})
+@NoArgsConstructor
 public class Discount extends AbstractEntity {
 
     @ManyToOne
