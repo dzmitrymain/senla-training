@@ -8,8 +8,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class DiscountDtoMapper {
 
+    private final ModelDtoMapper modelDtoMapper;
+
     @Autowired
-    private ModelDtoMapper modelDtoMapper;
+    public DiscountDtoMapper(ModelDtoMapper modelDtoMapper) {
+        this.modelDtoMapper = modelDtoMapper;
+    }
 
     public DiscountDto map(Discount discount) {
         if (discount == null) {
