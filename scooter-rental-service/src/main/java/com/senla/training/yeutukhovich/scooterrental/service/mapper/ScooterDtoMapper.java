@@ -8,10 +8,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class ScooterDtoMapper {
 
+    private final ModelDtoMapper modelDtoMapper;
+    private final SpotDtoMapper spotDtoMapper;
+
     @Autowired
-    private ModelDtoMapper modelDtoMapper;
-    @Autowired
-    private SpotDtoMapper spotDtoMapper;
+    public ScooterDtoMapper(ModelDtoMapper modelDtoMapper, SpotDtoMapper spotDtoMapper) {
+        this.modelDtoMapper = modelDtoMapper;
+        this.spotDtoMapper = spotDtoMapper;
+    }
 
     public ScooterDto map(Scooter scooter) {
         if (scooter == null) {
@@ -22,6 +26,18 @@ public class ScooterDtoMapper {
                 modelDtoMapper.map(scooter.getModel()),
                 spotDtoMapper.map(scooter.getSpot()),
                 scooter.getBeginOperationDate());
+    }
+
+    public Scooter map(ScooterDto scooterDto) {
+        if (scooterDto == null) {
+            return null;
+        }
+        Scooter scooter = new Scooter();
+        scooter.setId(scooterDto.getId());
+        scooter.setModel(modelDtoMapper.map(scooterDto.getModelDto()));
+        scooter.setSpot(spotDtoMapper.map(scooterDto.getSpotDto()));
+        scooter.setBeginOperationDate(scooterDto.getBeginOperationDate());
+        return scooter;
     }
 
 }
