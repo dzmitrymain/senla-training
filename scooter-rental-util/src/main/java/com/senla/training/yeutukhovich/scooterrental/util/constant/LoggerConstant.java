@@ -2,13 +2,19 @@ package com.senla.training.yeutukhovich.scooterrental.util.constant;
 
 public enum LoggerConstant {
 
+    DISCOUNT_ACTIVE("Active discounts searched."),
+
     MODEL_SCOOTERS_SEARCHED("Scooters by model[id={}] searched."),
-    MODEL_CREATE("Model creating"),
-    MODEL_CREATE_SUCCESS("Model[id={}] has been created."),
-    MODEL_DELETE("Model[id={}] deleting."),
-    MODEL_UPDATE("Model[id={}] updating."),
-    MODEL_SEARCHED("Model[id={}] searched"),
-    MODELS_SEARCHED("Models searched.");
+    MODEL_REVIEWS("Reviews by model[id={}] searched."),
+    MODEL_RATE("Current rate by model[id={}] searched."),
+    MODEL_DISCOUNT("Current discount by model[id={}] searched."),
+
+    ENTITY_CREATE("{} creating."),
+    ENTITY_CREATE_SUCCESS("{}[id={}] has been created."),
+    ENTITY_DELETE("{}[id={}] deleting."),
+    ENTITY_UPDATE("{}[id={}] updating."),
+    ENTITY_SEARCHED("{}[id={}] searched"),
+    ENTITIES_SEARCHED("{}(s/es) searched.");
 
     private String message;
 
