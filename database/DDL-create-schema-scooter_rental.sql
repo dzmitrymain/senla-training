@@ -95,7 +95,7 @@ CREATE TABLE scooter_rental.`discounts`
     `model_id`   BIGINT        NOT NULL,
     `start_date` DATETIME      NOT NULL,
     `end_date`   DATETIME      NOT NULL,
-    `discount`   DECIMAL(3, 2) NOT NULL,
+    `discount`   DECIMAL(5, 2) NOT NULL,
     CONSTRAINT `pk_discounts_id` PRIMARY KEY (`id`)
 );
 

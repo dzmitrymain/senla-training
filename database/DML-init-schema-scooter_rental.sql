@@ -42,4 +42,11 @@ VALUES ('1', 'test', 'test', 'ADMIN');
 INSERT INTO `scooter_rental`.`profiles` (`id`, `user_id`, `location_id`, `name`, `surname`, `email`, `phone_number`)
 VALUES ('1', '1', '1', 'test', 'test', 'test', 'test');
 
+-- scooter_rental.discounts
+INSERT INTO `scooter_rental`.`discounts` (`id`, `model_id`, `start_date`, `end_date`, `discount`)
+VALUES ('1', '1', '2020-11-11 08:00:00', '2020-12-31 23:59:59', '15.00'),
+       ('2', '1', '2020-11-13 08:00:00', '2020-12-31 23:59:59', '20.00'),
+       ('3', '2', '2020-11-11 08:00:00', '2020-12-31 23:59:59', '15.00'),
+       ('4', '1', '2020-12-25 08:00:00', '2020-12-31 23:59:59', '25.00');
+
 COMMIT;
