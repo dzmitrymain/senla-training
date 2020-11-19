@@ -28,8 +28,8 @@ public class Rent extends AbstractEntity {
     private Scooter scooter;
     @Column(name = "active")
     private Boolean active;
-    @Column(name = "start_date")
-    private LocalDateTime startDate;
+    @Column(name = "creation_date")
+    private LocalDateTime creationDate;
     @Column(name = "expired_date")
     private LocalDateTime expiredDate;
     @Column(name = "return_date")
@@ -38,7 +38,7 @@ public class Rent extends AbstractEntity {
     @Enumerated(EnumType.STRING)
     private PaymentType paymentType;
     @Column(name = "distance_travelled")
-    private Integer distance_travelled;
+    private Integer distanceTravelled;
     @Column(name = "price")
     private BigDecimal price;
     @Column(name = "overtime_penalty")
