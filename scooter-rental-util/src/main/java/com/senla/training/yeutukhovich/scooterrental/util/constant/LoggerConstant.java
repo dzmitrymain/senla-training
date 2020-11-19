@@ -4,6 +4,8 @@ public enum LoggerConstant {
 
     DISCOUNTS_ACTIVE("Active discounts searched."),
     RATES_ACTUAL("Actual rates searched"),
+    SCOOTER_DISTANCE("Distance travelled by scooter[id={}] searched."),
+    SCOOTER_RENTS("Rents by scooter[id={}] searched."),
 
     MODEL_SCOOTERS_SEARCHED("Scooters by model[id={}] searched."),
     MODEL_REVIEWS("Reviews by model[id={}] searched."),
