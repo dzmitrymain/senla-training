@@ -8,8 +8,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class RateDtoMapper {
 
+    private final ModelDtoMapper modelDtoMapper;
+
     @Autowired
-    private ModelDtoMapper modelDtoMapper;
+    public RateDtoMapper(ModelDtoMapper modelDtoMapper) {
+        this.modelDtoMapper = modelDtoMapper;
+    }
 
     public RateDto map(Rate rate) {
         if (rate == null) {
@@ -22,5 +26,18 @@ public class RateDtoMapper {
                 rate.getWeekendPerHour(),
                 rate.getCreationDate()
         );
+    }
+
+    public Rate map(RateDto rateDto) {
+        if (rateDto == null) {
+            return null;
+        }
+        Rate rate = new Rate();
+        rate.setId(rateDto.getId());
+        rate.setModel(modelDtoMapper.map(rateDto.getModeldto()));
+        rate.setPerHour(rateDto.getPerHour());
+        rate.setWeekendPerHour(rateDto.getWeekendPerHour());
+        rate.setCreationDate(rateDto.getCreationDate());
+        return rate;
     }
 }
