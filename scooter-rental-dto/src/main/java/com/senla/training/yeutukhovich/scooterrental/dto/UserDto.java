@@ -1,6 +1,5 @@
 package com.senla.training.yeutukhovich.scooterrental.dto;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,14 +10,12 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProfileDto {
+public class UserDto {
 
     private Long id;
-    private Long userId;
-    private LocationDto locationDto;
-    private String name;
-    private String surname;
-    private String email;
-    private String phoneNumber;
+    private String username;
+    private String role;
+    private LocalDateTime creationDate;
+    private Boolean enabled;
+    private ProfileDto profileDto;
 }
-
