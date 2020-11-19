@@ -16,5 +16,5 @@ public interface GenericDao<T extends AbstractEntity, PK extends Serializable> {
 
     T update(T entity);
 
-    Optional<T> delete(PK id);
+    void delete(T entity);
 }

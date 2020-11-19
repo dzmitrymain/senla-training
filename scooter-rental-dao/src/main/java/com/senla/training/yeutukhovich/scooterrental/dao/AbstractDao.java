@@ -56,9 +56,7 @@ public abstract class AbstractDao<T extends AbstractEntity, PK extends Serializa
 
     @Override
     @Transactional
-    public Optional<T> delete(PK id) {
-        Optional<T> entityToDelete = Optional.ofNullable(entityManager.find(type, id));
-        entityToDelete.ifPresent(entity -> entityManager.remove(entity));
-        return entityToDelete;
+    public void delete(T entity) {
+        entityManager.remove(entity);
     }
 }
