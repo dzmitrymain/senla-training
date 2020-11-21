@@ -8,10 +8,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class ReviewDtoMapper {
 
+    private final ProfileDtoMapper profileDtoMapper;
+    private final ModelDtoMapper modelDtoMapper;
+
     @Autowired
-    private ProfileDtoMapper profileDtoMapper;
-    @Autowired
-    ModelDtoMapper modelDtoMapper;
+    public ReviewDtoMapper(ProfileDtoMapper profileDtoMapper, ModelDtoMapper modelDtoMapper) {
+        this.profileDtoMapper = profileDtoMapper;
+        this.modelDtoMapper = modelDtoMapper;
+    }
 
     public ReviewDto map(Review review) {
         if (review == null) {
@@ -24,5 +28,19 @@ public class ReviewDtoMapper {
                 review.getScore(),
                 review.getOpinion(),
                 review.getCreationDate());
+    }
+
+    public Review map(ReviewDto reviewDto) {
+        if (reviewDto == null) {
+            return null;
+        }
+        Review review = new Review();
+        review.setId(reviewDto.getId());
+        review.setProfile(profileDtoMapper.map(reviewDto.getProfileDto()));
+        review.setModel(modelDtoMapper.map(reviewDto.getModelDto()));
+        review.setScore(reviewDto.getScore());
+        review.setOpinion(reviewDto.getOpinion());
+        review.setCreationDate(reviewDto.getCreationDate());
+        return review;
     }
 }
