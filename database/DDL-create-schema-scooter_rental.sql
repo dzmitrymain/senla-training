@@ -53,8 +53,10 @@ CREATE TABLE scooter_rental.`spots`
     `id`           BIGINT      NOT NULL AUTO_INCREMENT,
     `location_id`  BIGINT      NOT NULL,
     `phone_number` VARCHAR(13) NULL,
-    `coordinates`  POINT       NOT NULL,
-    CONSTRAINT `pk_spots_id` PRIMARY KEY (`id`)
+    `coordinates`  POINT SRID 4326 NOT NULL,
+    CONSTRAINT `pk_spots_id` PRIMARY KEY (`id`),
+    UNIQUE INDEX `unique_index_spots_phone_number` (`phone_number` ASC) VISIBLE,
+    SPATIAL INDEX `spatial_index_spots_coordinates` (`coordinates`) VISIBLE
 );
 
 CREATE TABLE scooter_rental.`scooters`

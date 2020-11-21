@@ -1,5 +1,8 @@
 package com.senla.training.yeutukhovich.scooterrental.config;
 
+import com.senla.training.yeutukhovich.scooterrental.util.constant.ApplicationConstant;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.PrecisionModel;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -16,5 +19,10 @@ public class AppConfig {
         ppc.setIgnoreResourceNotFound(true);
         ppc.setLocation(new ClassPathResource("application.properties"));
         return ppc;
+    }
+
+    @Bean
+    public GeometryFactory geometryFactory() {
+        return new GeometryFactory(new PrecisionModel(), Integer.parseInt(ApplicationConstant.SRID_WGS84.getConstant()));
     }
 }
