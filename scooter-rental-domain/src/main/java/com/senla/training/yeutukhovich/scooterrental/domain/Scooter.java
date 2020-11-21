@@ -9,11 +9,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.metamodel.StaticMetamodel;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-@StaticMetamodel(Scooter.class)
 @Entity
 @Table(name = "scooters")
 @Data
