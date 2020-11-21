@@ -11,12 +11,12 @@ import org.springframework.stereotype.Component;
 public class SpotDtoMapper {
 
     private final LocationDtoMapper locationDtoMapper;
-    //TODO: bean?
-    private final GeometryFactory geometryFactory = new GeometryFactory();
+    private final GeometryFactory geometryFactory;
 
     @Autowired
-    public SpotDtoMapper(LocationDtoMapper locationDtoMapper) {
+    public SpotDtoMapper(LocationDtoMapper locationDtoMapper, GeometryFactory geometryFactory) {
         this.locationDtoMapper = locationDtoMapper;
+        this.geometryFactory = geometryFactory;
     }
 
 
@@ -28,8 +28,8 @@ public class SpotDtoMapper {
                 spot.getId(),
                 locationDtoMapper.map(spot.getLocation()),
                 spot.getPhoneNumber(),
-                spot.getCoordinates() == null ? null : spot.getCoordinates().getX(),
-                spot.getCoordinates() == null ? null : spot.getCoordinates().getY());
+                spot.getCoordinates() == null ? null : spot.getCoordinates().getY(),
+                spot.getCoordinates() == null ? null : spot.getCoordinates().getX());
     }
 
     public Spot map(SpotDto spotDto) {
@@ -40,7 +40,7 @@ public class SpotDtoMapper {
         spot.setId(spotDto.getId());
         spot.setLocation(locationDtoMapper.map(spotDto.getLocationDto()));
         spot.setPhoneNumber(spotDto.getPhoneNumber());
-        spot.setCoordinates(geometryFactory.createPoint(new Coordinate(spotDto.getLatitude(), spotDto.getLongitude())));
+        spot.setCoordinates(geometryFactory.createPoint(new Coordinate(spotDto.getLongitude(), spotDto.getLatitude())));
         return spot;
     }
 }
