@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "passes")
 @Data
-@EqualsAndHashCode(callSuper = true, of = {"user", "model", "startDate"})
+@EqualsAndHashCode(callSuper = true, of = {"user", "model", "creationDate"})
 public class Pass extends AbstractEntity {
 
     @ManyToOne
@@ -23,8 +23,8 @@ public class Pass extends AbstractEntity {
     @ManyToOne
     @JoinColumn(name = "model_id")
     private Model model;
-    @Column(name = "start_date")
-    private LocalDateTime startDate;
+    @Column(name = "creation_date")
+    private LocalDateTime creationDate;
     @Column(name = "expired_date")
     private LocalDateTime expiredDate;
     @Column(name = "total_minutes")

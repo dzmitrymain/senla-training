@@ -3,6 +3,7 @@ package com.senla.training.yeutukhovich.scooterrental.domain;
 import com.senla.training.yeutukhovich.scooterrental.domain.type.PaymentType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "rents")
+//@DynamicInsert
 @Data
 @EqualsAndHashCode(callSuper = true, of = {"user", "scooter"})
 public class Rent extends AbstractEntity {
