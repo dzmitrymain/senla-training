@@ -8,6 +8,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @ComponentScan("com.senla.training.yeutukhovich.scooterrental.dao")
@@ -23,6 +25,11 @@ public class AppConfig {
 
     @Bean
     public GeometryFactory geometryFactory() {
-        return new GeometryFactory(new PrecisionModel(), Integer.parseInt(ApplicationConstant.SRID_WGS84.getConstant()));
+        return new GeometryFactory(new PrecisionModel(), ApplicationConstant.SRID_WGS84);
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

@@ -83,13 +83,25 @@ CREATE TABLE scooter_rental.`passes`
     `id`                BIGINT         NOT NULL AUTO_INCREMENT,
     `user_id`           BIGINT         NOT NULL,
     `model_id`          BIGINT         NOT NULL,
-    `start_date`        DATETIME       NOT NULL,
+    `creation_date`     DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `expired_date`      DATETIME       NOT NULL,
     `total_minutes`     INT            NOT NULL,
     `remaining_minutes` INT            NOT NULL,
     `price`             DECIMAL(15, 2) NOT NULL,
     CONSTRAINT `pk_passes_id` PRIMARY KEY (`id`)
 );
+
+DELIMITER |
+CREATE TRIGGER trigger_passes_default_remaining_minutes
+    BEFORE INSERT
+    ON passes
+    FOR EACH ROW
+BEGIN
+    IF NEW.remaining_minutes IS NULL THEN
+        SET NEW.remaining_minutes = NEW.total_minutes;
+    END IF;
+END |
+DELIMITER ;
 
 CREATE TABLE scooter_rental.`discounts`
 (
