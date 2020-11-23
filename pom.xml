@@ -30,6 +30,7 @@
         <maven.war.version>3.3.1</maven.war.version>
 
         <spring.version>5.2.9.RELEASE</spring.version>
+        <spring.secutity.version>5.4.1</spring.secutity.version>
         <javaee.api.version>8.0.1</javaee.api.version>
         <lombok.version>1.18.16</lombok.version>
         <sl4j.version>1.7.30</sl4j.version>
@@ -47,6 +48,27 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
             <version>${spring.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-core -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+            <version>${spring.secutity.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-web -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
+            <version>${spring.secutity.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-config -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+            <version>${spring.secutity.version}</version>
         </dependency>
 
         <dependency>
@@ -107,6 +129,11 @@
             <version>${jackson.databind.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>${jackson.databind.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
