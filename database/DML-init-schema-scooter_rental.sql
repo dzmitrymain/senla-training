@@ -31,9 +31,9 @@ VALUES ('1', '1', '1')
 
 -- scooter_rental.rates
 INSERT INTO `scooter_rental`.`rates` (`id`, `model_id`, `per_hour`, `weekend_per_hour`)
-VALUES ('1', '1', '6', '8')
-     , ('2', '2', '7', '9')
-     , ('3', '3', '8', '10');
+VALUES ('1', '1', '2', '2.5')
+     , ('2', '2', '2.5', '3')
+     , ('3', '3', '3', '3.5');
 
 -- scooter_rental.users
 INSERT INTO `scooter_rental`.`users` (`id`, `username`, `password`, `role`)
