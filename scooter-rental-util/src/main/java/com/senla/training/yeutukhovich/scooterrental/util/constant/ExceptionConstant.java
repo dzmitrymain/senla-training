@@ -2,9 +2,14 @@ package com.senla.training.yeutukhovich.scooterrental.util.constant;
 
 public enum ExceptionConstant {
 
+    SOMETHING_WENT_WRONG("Something went wrong."),
+    VALIDATION_FAILURE("Data validation failure."),
+
     USER_CHANGE_PASSWORD_WRONG("User[id=%d] try to change password with incorrect old password."),
     USER_CREATE_ADMIN_FAIL("Only admin can create user with role: ADMIN"),
     USER_ALREADY_EXIST("User with username: [%s] already exists."),
+
+    PROFILE_ALREADY_EXIST("User[id=%d] already has profile."),
 
     PROFILE_EMAIL_ALREADY_EXISTS("Email [%s] already exists."),
     PROFILE_PHONE_NUMBER_ALREADY_EXISTS("Phone number [%s] already exists."),
