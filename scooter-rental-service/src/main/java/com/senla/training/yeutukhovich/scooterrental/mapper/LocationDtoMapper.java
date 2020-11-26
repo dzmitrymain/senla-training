@@ -1,4 +1,4 @@
-package com.senla.training.yeutukhovich.scooterrental.service.mapper;
+package com.senla.training.yeutukhovich.scooterrental.mapper;
 
 import com.senla.training.yeutukhovich.scooterrental.domain.Location;
 import com.senla.training.yeutukhovich.scooterrental.dto.entity.LocationDto;
