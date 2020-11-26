@@ -7,6 +7,7 @@ import com.senla.training.yeutukhovich.scooterrental.dto.entity.ReviewDto;
 import com.senla.training.yeutukhovich.scooterrental.dto.entity.ScooterDto;
 
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface ModelService {
@@ -28,4 +29,6 @@ public interface ModelService {
     RateDto findCurrentModelRate(Long id);
 
     DiscountDto findCurrentModelDiscount(Long id);
+
+    BigDecimal findCurrentModelPrice(Long id);
 }

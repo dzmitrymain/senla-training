@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Future;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
@@ -30,6 +31,7 @@ public class PassDto extends AbstractEntityDto {
     private LocalDateTime expiredDate;
     @NotNull
     @Positive
+    @Min(10000)
     private Integer totalMinutes;
     private Integer remainingMinutes;
     private BigDecimal price;

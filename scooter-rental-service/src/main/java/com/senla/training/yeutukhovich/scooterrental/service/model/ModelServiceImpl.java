@@ -1,6 +1,7 @@
 package com.senla.training.yeutukhovich.scooterrental.service.model;
 
 import com.senla.training.yeutukhovich.scooterrental.dao.model.ModelDao;
+import com.senla.training.yeutukhovich.scooterrental.domain.Discount;
 import com.senla.training.yeutukhovich.scooterrental.domain.Model;
 import com.senla.training.yeutukhovich.scooterrental.dto.entity.DiscountDto;
 import com.senla.training.yeutukhovich.scooterrental.dto.entity.ModelDto;
@@ -23,7 +24,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -145,6 +151,27 @@ public class ModelServiceImpl implements ModelService {
             log.warn(exception.getMessage());
             return exception;
         }));
+    }
+
+    @Override
+    @Transactional
+    public BigDecimal findCurrentModelPrice(Long id) {
+        RateDto rateDto = findCurrentModelRate(id);
+        final LocalDate currentDate = LocalDate.now();
+        BigDecimal currentPerHourPrice;
+        if (currentDate.getDayOfWeek() == DayOfWeek.SATURDAY || currentDate.getDayOfWeek() == DayOfWeek.SUNDAY) {
+            currentPerHourPrice = rateDto.getWeekendPerHour();
+        } else {
+            currentPerHourPrice = rateDto.getPerHour();
+        }
+        Optional<Discount> discount;
+        if ((discount = modelDao.findCurrentDiscountByModelId(id)).isPresent()) {
+            BigDecimal discountCoefficient = BigDecimal.valueOf(100)
+                    .subtract(discount.get().getDiscount())
+                    .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_EVEN);
+            currentPerHourPrice = currentPerHourPrice.multiply(discountCoefficient);
+        }
+        return currentPerHourPrice.setScale(2,RoundingMode.HALF_EVEN);
     }
 
     private Model findModelById(Long modelId) {

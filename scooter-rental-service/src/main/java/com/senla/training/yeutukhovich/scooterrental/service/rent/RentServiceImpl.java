@@ -5,13 +5,11 @@ import com.senla.training.yeutukhovich.scooterrental.dao.pass.PassDao;
 import com.senla.training.yeutukhovich.scooterrental.dao.rent.RentDao;
 import com.senla.training.yeutukhovich.scooterrental.dao.scooter.ScooterDao;
 import com.senla.training.yeutukhovich.scooterrental.dao.user.UserDao;
-import com.senla.training.yeutukhovich.scooterrental.domain.Discount;
 import com.senla.training.yeutukhovich.scooterrental.domain.Model;
 import com.senla.training.yeutukhovich.scooterrental.domain.Pass;
 import com.senla.training.yeutukhovich.scooterrental.domain.Rent;
 import com.senla.training.yeutukhovich.scooterrental.domain.type.PaymentType;
 import com.senla.training.yeutukhovich.scooterrental.dto.CreationRentDto;
-import com.senla.training.yeutukhovich.scooterrental.dto.entity.RateDto;
 import com.senla.training.yeutukhovich.scooterrental.dto.entity.RentDto;
 import com.senla.training.yeutukhovich.scooterrental.exception.BusinessException;
 import com.senla.training.yeutukhovich.scooterrental.service.mapper.RentDtoMapper;
@@ -34,11 +32,9 @@ import javax.validation.Valid;
 import javax.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -140,7 +136,7 @@ public class RentServiceImpl implements RentService {
                     rent.getScooter().getModel().getId(), (int) timeSubtractionMinutes);
         } else if (currentDateTime.isAfter(rent.getExpiredDate())) {
             rent.setOvertimePenalty(overtimeCoefficient.multiply(calculateRentPrice(rent.getScooter().getModel(),
-                    currentDateTime, timeSubtractionMinutes)).setScale(2, RoundingMode.HALF_EVEN));
+                    timeSubtractionMinutes)).setScale(2, RoundingMode.HALF_EVEN));
         }
         rent = rentDao.update(rent);
         log.info(LoggerConstant.RENT_END_SUCCESS.getMessage(), rent.getId(), rent.getOvertimePenalty());
@@ -233,24 +229,11 @@ public class RentServiceImpl implements RentService {
         if (rentDurationInMinutesToPay <= 0) {
             return BigDecimal.ZERO;
         }
-        return calculateRentPrice(model, currentDateTime, rentDurationInMinutesToPay);
+        return calculateRentPrice(model, rentDurationInMinutesToPay);
     }
 
-    private BigDecimal calculateRentPrice(Model model, LocalDateTime currentDateTime, long rentDurationInMinutesToPay) {
-        RateDto rateDto = modelService.findCurrentModelRate(model.getId());
-        BigDecimal currentPerHour;
-        if (currentDateTime.getDayOfWeek() == DayOfWeek.SATURDAY || currentDateTime.getDayOfWeek() == DayOfWeek.SUNDAY) {
-            currentPerHour = rateDto.getWeekendPerHour();
-        } else {
-            currentPerHour = rateDto.getPerHour();
-        }
-        Optional<Discount> discount;
-        if ((discount = modelDao.findCurrentDiscountByModelId(model.getId())).isPresent()) {
-            BigDecimal discountCoefficient = BigDecimal.valueOf(100)
-                    .subtract(discount.get().getDiscount())
-                    .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_EVEN);
-            currentPerHour = currentPerHour.multiply(discountCoefficient);
-        }
+    private BigDecimal calculateRentPrice(Model model, long rentDurationInMinutesToPay) {
+        BigDecimal currentPerHour = modelService.findCurrentModelPrice(model.getId());
         long hoursToPay = rentDurationInMinutesToPay / 60;
         if (rentDurationInMinutesToPay % 60 != 0) {
             hoursToPay++;

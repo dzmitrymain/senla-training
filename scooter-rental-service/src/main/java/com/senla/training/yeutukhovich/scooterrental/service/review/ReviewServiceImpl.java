@@ -17,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -70,7 +72,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public ReviewDto updateById(Long id,@Valid ReviewDto reviewDto) {
+    public ReviewDto updateById(Long id, @Valid ReviewDto reviewDto) {
         log.info(LoggerConstant.ENTITY_UPDATE.getMessage(), ENTITY_NAME, id);
         findReviewById(id);
         reviewDto.setProfileDto(profileService.findById(reviewDto.getProfileDto().getId()));
@@ -92,6 +94,12 @@ public class ReviewServiceImpl implements ReviewService {
         reviewDao.add(review);
         log.info(LoggerConstant.ENTITY_CREATE_SUCCESS.getMessage(), review.getId());
         return reviewDtoMapper.map(review);
+    }
+
+    @Override
+    @Transactional
+    public BigDecimal findAverageScore() {
+        return BigDecimal.valueOf(reviewDao.findAverageScore()).setScale(1, RoundingMode.HALF_UP);
     }
 
     private Review findReviewById(Long reviewId) {

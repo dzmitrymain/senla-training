@@ -15,7 +15,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/models")
@@ -51,6 +54,11 @@ public class ModelController {
     @PostMapping()
     public ModelDto create(@RequestBody ModelDto modelDto) {
         return modelService.create(modelDto);
+    }
+
+    @GetMapping("/{id}/price")
+    public Map<String, BigDecimal> findCurrentPriceByModelId(@PathVariable("id") Long id) {
+        return Collections.singletonMap("currentPricePerHour", modelService.findCurrentModelPrice(id));
     }
 
     @GetMapping("/{id}/scooters")
