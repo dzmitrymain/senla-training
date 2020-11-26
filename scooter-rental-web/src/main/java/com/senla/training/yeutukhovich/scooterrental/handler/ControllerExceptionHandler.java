@@ -24,7 +24,10 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ErrorDto> handleBusinessException(BusinessException exception) {
-        return ResponseEntity.status(exception.getHttpStatus()).body(new ErrorDto(exception.getHttpStatus(), exception.getMessage(), null));
+        log.warn(exception.getMessage());
+        return ResponseEntity
+                .status(exception.getHttpStatus())
+                .body(new ErrorDto(exception.getHttpStatus(), exception.getMessage(), null));
     }
 
 //    @ExceptionHandler(AccessDeniedException.class)
@@ -35,11 +38,14 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorDto> handleDataIntegrityViolationException(DataIntegrityViolationException exception) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorDto(HttpStatus.FORBIDDEN, exception.getMessage(), null));
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(new ErrorDto(HttpStatus.FORBIDDEN, ExceptionConstant.SQL_EXECUTION_FAILURE.getMessage(), null));
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ErrorDto> handleConstraintViolationException(ConstraintViolationException exception) {
+        log.warn(exception.getMessage());
         List<ErrorDto.FieldError> errors = exception.getConstraintViolations().stream()
                 .map(ErrorDto.FieldError::new)
                 .collect(Collectors.toList());
