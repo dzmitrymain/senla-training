@@ -1,7 +1,7 @@
 package com.senla.training.yeutukhovich.scooterrental.dto.entity;
 
 import com.senla.training.yeutukhovich.scooterrental.validator.DecimalDegrees;
-import com.senla.training.yeutukhovich.scooterrental.validator.NestedEntityDto;
+import com.senla.training.yeutukhovich.scooterrental.validator.NestedDtoIdNotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -16,7 +16,7 @@ import javax.validation.constraints.Pattern;
 public class SpotDto extends AbstractEntityDto {
 
     @NotNull
-    @NestedEntityDto
+    @NestedDtoIdNotNull
     private LocationDto locationDto;
     @NotBlank
     @Pattern(regexp = "[+][0-9]{12}")

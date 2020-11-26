@@ -1,6 +1,6 @@
 package com.senla.training.yeutukhovich.scooterrental.dto.entity;
 
-import com.senla.training.yeutukhovich.scooterrental.validator.NestedEntityDto;
+import com.senla.training.yeutukhovich.scooterrental.validator.NestedDtoIdNotNull;
 import com.senla.training.yeutukhovich.scooterrental.validator.marker.OnUserCreate;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,7 +20,7 @@ public class ProfileDto extends AbstractEntityDto {
     @NotNull(groups = {Default.class, OnUserCreate.class})
     private Long userId;
     @NotNull(groups = {Default.class, OnUserCreate.class})
-    @NestedEntityDto(groups = {Default.class, OnUserCreate.class})
+    @NestedDtoIdNotNull(groups = {Default.class, OnUserCreate.class})
     private LocationDto locationDto;
     @NotBlank(groups = {Default.class, OnUserCreate.class})
     private String name;

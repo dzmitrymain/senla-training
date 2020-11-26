@@ -1,7 +1,7 @@
 package com.senla.training.yeutukhovich.scooterrental.dto.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.senla.training.yeutukhovich.scooterrental.validator.NestedEntityDto;
+import com.senla.training.yeutukhovich.scooterrental.validator.NestedDtoIdNotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -18,10 +18,10 @@ import java.time.LocalDateTime;
 public class PassDto extends AbstractEntityDto {
 
     @NotNull
-    @NestedEntityDto
+    @NestedDtoIdNotNull
     private UserDto userDto;
     @NotNull
-    @NestedEntityDto
+    @NestedDtoIdNotNull
     private ModelDto modelDto;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime creationDate;
