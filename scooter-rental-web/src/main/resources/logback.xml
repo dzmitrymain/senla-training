@@ -31,7 +31,7 @@
 <!--        <appender-ref ref="FILE"/>-->
 <!--    </logger>-->
 
-    <logger name="com.senla.training.yeutukhovich.bookstore" level="debug" additivity="false">
+    <logger name="com.senla.training.yeutukhovich.scooterrental" level="info" additivity="false">
 <!--        <appender-ref ref="FILE"/>-->
                         <appender-ref ref="STDOUT"/>
     </logger>

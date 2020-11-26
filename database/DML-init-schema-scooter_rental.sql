@@ -52,7 +52,7 @@ VALUES ('1', '1', '2020-11-11 08:00:00', '2020-12-31 23:59:59', '15.00'),
 
 -- scooter_rental.reviews
 INSERT INTO `scooter_rental`.`reviews` (`id`, `profile_id`, `model_id`, `score`, `opinion`)
-VALUES ('1', '1', '1', '10', 'Awesome.');
+VALUES ('1', '1', '1', '4', 'Awesome.');
 
 -- scooter_rental.passes
 INSERT INTO `scooter_rental`.`passes` (`id`, `user_id`, `model_id`, `expired_date`, `remaining_minutes`,
