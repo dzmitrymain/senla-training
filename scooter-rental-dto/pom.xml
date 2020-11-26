@@ -11,5 +11,11 @@
 
     <artifactId>scooter-rental-dto</artifactId>
 
-
+    <dependencies>
+        <dependency>
+            <artifactId>scooter-rental-domain</artifactId>
+            <groupId>com.senla.training.yeutukhovich</groupId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 </project>

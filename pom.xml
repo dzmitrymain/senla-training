@@ -20,13 +20,17 @@
         <module>scooter-rental-dto</module>
         <module>scooter-rental-util</module>
         <module>scooter-rental-exception</module>
+        <module>scooter-rental-validator</module>
     </modules>
+
+
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <maven.compiler.version>3.8.1</maven.compiler.version>
+        <maven.checkstyle.version>3.1.1</maven.checkstyle.version>
         <maven.war.version>3.3.1</maven.war.version>
 
         <spring.version>5.2.9.RELEASE</spring.version>
@@ -62,6 +66,20 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-web</artifactId>
             <version>${spring.secutity.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-orm -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.11</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-config -->
@@ -103,11 +121,6 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>${mysql.connector.version}</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>ch.vorburger.mariaDB4j</groupId>-->
-<!--            <artifactId>mariaDB4j</artifactId>-->
-<!--            <version>2.2.3</version>-->
-<!--        </dependency>-->
 
         <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
         <dependency>
@@ -134,10 +147,33 @@
             <artifactId>jackson-datatype-jsr310</artifactId>
             <version>${jackson.databind.version}</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-validator -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>6.1.6.Final</version>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${maven.checkstyle.version}</version>
+                <configuration>
+                    <configLocation>checkstyle.xml</configLocation>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -145,6 +181,10 @@
                 <configuration>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
+                    <forceJavacCompilerUse>true</forceJavacCompilerUse>
+                    <compilerArgs>
+                    <arg>-parameters</arg>
+                    </compilerArgs>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.projectlombok</groupId>

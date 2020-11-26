@@ -14,12 +14,7 @@
     <artifactId>scooter-rental-dao</artifactId>
 
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/org.springframework/spring-orm -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-orm</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
+
 
         <dependency>
             <artifactId>scooter-rental-domain</artifactId>

@@ -13,7 +13,6 @@ import javax.persistence.metamodel.StaticMetamodel;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@StaticMetamodel(Rate.class)
 @Entity
 @Table(name = "rates")
 @Data

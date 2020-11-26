@@ -2,6 +2,7 @@ package com.senla.training.yeutukhovich.scooterrental.domain;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

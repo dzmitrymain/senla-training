@@ -2,6 +2,7 @@ package com.senla.training.yeutukhovich.scooterrental.domain;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -25,6 +26,7 @@ public class Scooter extends AbstractEntity {
     @JoinColumn(name = "spot_id")
     private Spot spot;
     @Column(name = "begin_operation_date")
+    @CreationTimestamp
     private LocalDateTime beginOperationDate;
 
     @OneToMany(mappedBy = "scooter")
