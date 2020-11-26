@@ -55,8 +55,9 @@ INSERT INTO `scooter_rental`.`reviews` (`id`, `profile_id`, `model_id`, `score`,
 VALUES ('1', '1', '1', '10', 'Awesome.');
 
 -- scooter_rental.passes
-INSERT INTO `scooter_rental`.`passes` (`id`, `user_id`, `model_id`, `expired_date`, `total_minutes`, `price`)
-VALUES ('1', '1', '1', '2020-12-31 23:59:59', '1000', '100.00'),
-       ('2', '1', '1', '2020-10-15 23:59:59', '1000', '100.00');
+INSERT INTO `scooter_rental`.`passes` (`id`, `user_id`, `model_id`, `expired_date`, `remaining_minutes`,
+                                       `total_minutes`, `price`)
+VALUES ('1', '1', '1', '2020-12-31 23:59:59', '1000', '1000', '100.00'),
+       ('2', '1', '1', '2020-10-15 23:59:59', '1000', '1000', '100.00');
 
 COMMIT;

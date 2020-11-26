@@ -12,7 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
-@ComponentScan("com.senla.training.yeutukhovich.scooterrental.dao")
+@ComponentScan("com.senla.training.yeutukhovich.scooterrental")
 public class AppConfig {
 
     @Bean
@@ -22,6 +22,7 @@ public class AppConfig {
         ppc.setLocation(new ClassPathResource("application.properties"));
         return ppc;
     }
+
 
     @Bean
     public GeometryFactory geometryFactory() {

@@ -7,6 +7,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan("com.senla.training.yeutukhovich.scooterrental")
+@ComponentScan("com.senla.training.yeutukhovich.scooterrental.controller")
 public class WebConfig implements WebMvcConfigurer {
 }
