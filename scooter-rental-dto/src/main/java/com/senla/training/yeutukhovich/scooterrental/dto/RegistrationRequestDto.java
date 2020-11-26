@@ -1,14 +1,17 @@
 package com.senla.training.yeutukhovich.scooterrental.dto;
 
-import lombok.AllArgsConstructor;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.UserDto;
+import com.senla.training.yeutukhovich.scooterrental.validator.marker.OnUserCreate;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class RegistrationRequestDto {
 
+    @Valid
     private UserDto userDto;
+    @NotBlank(groups = OnUserCreate.class)
     private String password;
 }

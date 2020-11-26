@@ -2,9 +2,10 @@ package com.senla.training.yeutukhovich.scooterrental.service.discount;
 
 import com.senla.training.yeutukhovich.scooterrental.dao.discount.DiscountDao;
 import com.senla.training.yeutukhovich.scooterrental.domain.Discount;
-import com.senla.training.yeutukhovich.scooterrental.dto.DiscountDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.DiscountDto;
 import com.senla.training.yeutukhovich.scooterrental.exception.BusinessException;
 import com.senla.training.yeutukhovich.scooterrental.service.mapper.DiscountDtoMapper;
+import com.senla.training.yeutukhovich.scooterrental.service.model.ModelService;
 import com.senla.training.yeutukhovich.scooterrental.util.constant.ExceptionConstant;
 import com.senla.training.yeutukhovich.scooterrental.util.constant.LoggerConstant;
 import lombok.extern.slf4j.Slf4j;
@@ -12,22 +13,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@Validated
 public class DiscountServiceImpl implements DiscountService {
 
     private static final String ENTITY_NAME = "Discount";
 
     private final DiscountDao discountDao;
+    private final ModelService modelService;
     private final DiscountDtoMapper discountDtoMapper;
 
     @Autowired
-    public DiscountServiceImpl(DiscountDao discountDao, DiscountDtoMapper discountDtoMapper) {
+    public DiscountServiceImpl(DiscountDao discountDao, ModelService modelService, DiscountDtoMapper discountDtoMapper) {
         this.discountDao = discountDao;
+        this.modelService = modelService;
         this.discountDtoMapper = discountDtoMapper;
     }
 
@@ -67,9 +73,10 @@ public class DiscountServiceImpl implements DiscountService {
 
     @Override
     @Transactional
-    public DiscountDto updateById(Long id, DiscountDto discountDto) {
+    public DiscountDto updateById(Long id, @Valid DiscountDto discountDto) {
         log.info(LoggerConstant.ENTITY_UPDATE.getMessage(), ENTITY_NAME, id);
         findDiscountById(id);
+        modelService.findById(discountDto.getModelDto().getId());
         if (!id.equals(discountDto.getId())) {
             discountDto.setId(id);
         }
@@ -78,8 +85,9 @@ public class DiscountServiceImpl implements DiscountService {
 
     @Override
     @Transactional
-    public DiscountDto create(DiscountDto discountDto) {
+    public DiscountDto create(@Valid DiscountDto discountDto) {
         log.info(LoggerConstant.ENTITY_CREATE.getMessage(), ENTITY_NAME);
+        discountDto.setModelDto(modelService.findById(discountDto.getModelDto().getId()));
         Discount discount = discountDtoMapper.map(discountDto);
         discount.setId(null);
         discountDao.add(discount);

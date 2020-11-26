@@ -1,8 +1,8 @@
 package com.senla.training.yeutukhovich.scooterrental.controller;
 
-import com.senla.training.yeutukhovich.scooterrental.dto.LocationDto;
-import com.senla.training.yeutukhovich.scooterrental.dto.ProfileDto;
-import com.senla.training.yeutukhovich.scooterrental.dto.SpotDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.LocationDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.ProfileDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.SpotDto;
 import com.senla.training.yeutukhovich.scooterrental.service.location.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,7 +1,8 @@
 package com.senla.training.yeutukhovich.scooterrental.service.rate;
 
-import com.senla.training.yeutukhovich.scooterrental.dto.RateDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.RateDto;
 
+import javax.validation.Valid;
 import java.util.List;
 
 public interface RateService {
@@ -12,9 +13,9 @@ public interface RateService {
 
     RateDto deleteById(Long id);
 
-    RateDto updateById(Long id, RateDto rateDto);
+    RateDto updateById(Long id, @Valid RateDto rateDto);
 
-    RateDto create(RateDto rateDto);
+    RateDto create(@Valid RateDto rateDto);
 
     List<RateDto> findAllActualRates();
 }

@@ -1,7 +1,8 @@
 package com.senla.training.yeutukhovich.scooterrental.service.profile;
 
-import com.senla.training.yeutukhovich.scooterrental.dto.ProfileDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.ProfileDto;
 
+import javax.validation.Valid;
 import java.util.List;
 
 public interface ProfileService {
@@ -12,11 +13,7 @@ public interface ProfileService {
 
     ProfileDto deleteById(Long id);
 
-    ProfileDto updateById(Long id, ProfileDto profileDto);
+    ProfileDto updateById(Long id, @Valid ProfileDto profileDto);
 
-    ProfileDto create(ProfileDto profileDto);
-
-    ProfileDto findProfileByEmail(String email);
-
-    ProfileDto findProfileByPhoneNumber(String phoneNumber);
+    ProfileDto create(@Valid ProfileDto profileDto);
 }

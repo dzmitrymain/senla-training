@@ -1,8 +1,9 @@
 package com.senla.training.yeutukhovich.scooterrental.service.scooter;
 
-import com.senla.training.yeutukhovich.scooterrental.dto.RentDto;
-import com.senla.training.yeutukhovich.scooterrental.dto.ScooterDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.RentDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.ScooterDto;
 
+import javax.validation.Valid;
 import java.util.List;
 
 public interface ScooterService {
@@ -13,9 +14,9 @@ public interface ScooterService {
 
     ScooterDto deleteById(Long id);
 
-    ScooterDto updateById(Long id, ScooterDto scooterDto);
+    ScooterDto updateById(Long id, @Valid ScooterDto scooterDto);
 
-    ScooterDto create(ScooterDto scooterDto);
+    ScooterDto create(@Valid ScooterDto scooterDto);
 
     Integer findDistanceTravelledByScooterId(Long id);
 

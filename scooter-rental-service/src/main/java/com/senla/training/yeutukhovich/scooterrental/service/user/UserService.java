@@ -1,15 +1,20 @@
 package com.senla.training.yeutukhovich.scooterrental.service.user;
 
-import com.senla.training.yeutukhovich.scooterrental.dto.PassDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.PassDto;
 import com.senla.training.yeutukhovich.scooterrental.dto.RegistrationRequestDto;
-import com.senla.training.yeutukhovich.scooterrental.dto.RentDto;
-import com.senla.training.yeutukhovich.scooterrental.dto.UserDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.RentDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.UserDto;
+import com.senla.training.yeutukhovich.scooterrental.validator.marker.OnUserCreate;
+import com.senla.training.yeutukhovich.scooterrental.validator.marker.OnUserUpdate;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import java.util.List;
 
 public interface UserService {
 
-    UserDto register(RegistrationRequestDto registrationRequestDto);
+    @Validated(OnUserCreate.class)
+    UserDto register(@Valid RegistrationRequestDto registrationRequestDto);
 
     List<UserDto> findAll();
 
@@ -17,7 +22,8 @@ public interface UserService {
 
     UserDto deleteById(Long id);
 
-    UserDto updateById(Long id, UserDto userDto);
+    @Validated(OnUserUpdate.class)
+    UserDto updateById(Long id, @Valid UserDto userDto);
 
     UserDto changePasswordByUserId(Long id, String oldPassword, String newPassword);
 

@@ -1,7 +1,7 @@
 package com.senla.training.yeutukhovich.scooterrental.service.mapper;
 
 import com.senla.training.yeutukhovich.scooterrental.domain.Pass;
-import com.senla.training.yeutukhovich.scooterrental.dto.PassDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.PassDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -43,7 +43,7 @@ public class PassDtoMapper {
         pass.setCreationDate(passDto.getCreationDate());
         pass.setExpiredDate(passDto.getExpiredDate());
         pass.setTotalMinutes(passDto.getTotalMinutes());
-        pass.setRemainingMinutes(pass.getRemainingMinutes());
+        pass.setRemainingMinutes(passDto.getRemainingMinutes());
         pass.setPrice(passDto.getPrice());
         return pass;
     }

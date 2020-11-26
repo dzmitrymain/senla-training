@@ -1,7 +1,7 @@
 package com.senla.training.yeutukhovich.scooterrental.service.mapper;
 
 import com.senla.training.yeutukhovich.scooterrental.domain.Spot;
-import com.senla.training.yeutukhovich.scooterrental.dto.SpotDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.SpotDto;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.springframework.beans.factory.annotation.Autowired;

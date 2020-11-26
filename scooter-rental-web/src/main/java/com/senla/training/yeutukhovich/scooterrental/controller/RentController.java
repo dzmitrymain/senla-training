@@ -1,7 +1,7 @@
 package com.senla.training.yeutukhovich.scooterrental.controller;
 
-import com.senla.training.yeutukhovich.scooterrental.dto.RentDto;
-import com.senla.training.yeutukhovich.scooterrental.dto.StartRentDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.RentDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.CreationRentDto;
 import com.senla.training.yeutukhovich.scooterrental.service.rent.RentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,8 +49,8 @@ public class RentController {
     }
 
     @PostMapping("/start")
-    public RentDto create(@RequestBody StartRentDto startRentDto) {
-        return rentService.create(startRentDto);
+    public RentDto create(@RequestBody CreationRentDto creationRentDto) {
+        return rentService.create(creationRentDto);
     }
 
     @GetMapping("/active")

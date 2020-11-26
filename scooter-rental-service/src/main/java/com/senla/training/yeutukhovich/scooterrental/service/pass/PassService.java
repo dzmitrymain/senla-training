@@ -1,7 +1,8 @@
 package com.senla.training.yeutukhovich.scooterrental.service.pass;
 
-import com.senla.training.yeutukhovich.scooterrental.dto.PassDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.PassDto;
 
+import javax.validation.Valid;
 import java.util.List;
 
 public interface PassService {
@@ -12,9 +13,9 @@ public interface PassService {
 
     PassDto deleteById(Long id);
 
-    PassDto updateById(Long id, PassDto passDto);
+    PassDto updateById(Long id,@Valid PassDto passDto);
 
-    PassDto create(PassDto passDto);
+    PassDto create(@Valid PassDto passDto);
 
     List<PassDto> findAllActivePasses();
 }

@@ -4,10 +4,10 @@ import com.senla.training.yeutukhovich.scooterrental.dao.user.UserDao;
 import com.senla.training.yeutukhovich.scooterrental.domain.Profile;
 import com.senla.training.yeutukhovich.scooterrental.domain.Role;
 import com.senla.training.yeutukhovich.scooterrental.domain.User;
-import com.senla.training.yeutukhovich.scooterrental.dto.PassDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.PassDto;
 import com.senla.training.yeutukhovich.scooterrental.dto.RegistrationRequestDto;
-import com.senla.training.yeutukhovich.scooterrental.dto.RentDto;
-import com.senla.training.yeutukhovich.scooterrental.dto.UserDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.RentDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.UserDto;
 import com.senla.training.yeutukhovich.scooterrental.exception.BusinessException;
 import com.senla.training.yeutukhovich.scooterrental.service.mapper.PassDtoMapper;
 import com.senla.training.yeutukhovich.scooterrental.service.mapper.ProfileDtoMapper;
@@ -16,6 +16,8 @@ import com.senla.training.yeutukhovich.scooterrental.service.mapper.UserDtoMappe
 import com.senla.training.yeutukhovich.scooterrental.service.profile.ProfileService;
 import com.senla.training.yeutukhovich.scooterrental.util.constant.ExceptionConstant;
 import com.senla.training.yeutukhovich.scooterrental.util.constant.LoggerConstant;
+import com.senla.training.yeutukhovich.scooterrental.validator.marker.OnUserCreate;
+import com.senla.training.yeutukhovich.scooterrental.validator.marker.OnUserUpdate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,13 +28,16 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@Validated
 public class UserServiceImpl implements UserService {
 
     private static final String ENTITY_NAME = "User";
@@ -66,7 +71,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserDto register(RegistrationRequestDto registrationRequestDto) {
+    @Validated(OnUserCreate.class)
+    public UserDto register(@Valid RegistrationRequestDto registrationRequestDto) {
         if (userDao.findUserByUsername(registrationRequestDto.getUserDto().getUsername()).isPresent()) {
             BusinessException exception = new BusinessException(
                     String.format(ExceptionConstant.USER_ALREADY_EXIST.getMessage(),
@@ -124,9 +130,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserDto updateById(Long id, UserDto userDto) {
+    @Validated(OnUserUpdate.class)
+    public UserDto updateById(Long id, @Valid UserDto userDto) {
         log.info(LoggerConstant.ENTITY_UPDATE.getMessage(), ENTITY_NAME, id);
         User user = findUserById(id);
+        user.setRole(Role.valueOf(userDto.getRole()));
         user.setEnabled(userDto.getEnabled());
         return userDtoMapper.map(userDao.update(user));
     }

@@ -2,13 +2,15 @@ package com.senla.training.yeutukhovich.scooterrental.service.spot;
 
 import com.senla.training.yeutukhovich.scooterrental.dao.spot.SpotDao;
 import com.senla.training.yeutukhovich.scooterrental.domain.Spot;
-import com.senla.training.yeutukhovich.scooterrental.dto.ScooterDto;
-import com.senla.training.yeutukhovich.scooterrental.dto.SpotDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.ScooterDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.SpotDto;
 import com.senla.training.yeutukhovich.scooterrental.exception.BusinessException;
+import com.senla.training.yeutukhovich.scooterrental.service.location.LocationService;
 import com.senla.training.yeutukhovich.scooterrental.service.mapper.ScooterDtoMapper;
 import com.senla.training.yeutukhovich.scooterrental.service.mapper.SpotDtoMapper;
 import com.senla.training.yeutukhovich.scooterrental.util.constant.ExceptionConstant;
 import com.senla.training.yeutukhovich.scooterrental.util.constant.LoggerConstant;
+import com.senla.training.yeutukhovich.scooterrental.validator.DecimalDegrees;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -16,8 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.Tuple;
+import javax.validation.Valid;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -27,18 +31,25 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@Validated
 public class SpotServiceImpl implements SpotService {
 
     private static final String ENTITY_NAME = "Spot";
 
     private final SpotDao spotDao;
+    private final LocationService locationService;
     private final ScooterDtoMapper scooterDtoMapper;
     private final GeometryFactory geometryFactory;
     private final SpotDtoMapper spotDtoMapper;
 
     @Autowired
-    public SpotServiceImpl(SpotDao spotDao, ScooterDtoMapper scooterDtoMapper, GeometryFactory geometryFactory, SpotDtoMapper spotDtoMapper) {
+    public SpotServiceImpl(SpotDao spotDao,
+                           LocationService locationService,
+                           ScooterDtoMapper scooterDtoMapper,
+                           GeometryFactory geometryFactory,
+                           SpotDtoMapper spotDtoMapper) {
         this.spotDao = spotDao;
+        this.locationService = locationService;
         this.scooterDtoMapper = scooterDtoMapper;
         this.geometryFactory = geometryFactory;
         this.spotDtoMapper = spotDtoMapper;
@@ -71,9 +82,10 @@ public class SpotServiceImpl implements SpotService {
 
     @Override
     @Transactional
-    public SpotDto updateById(Long id, SpotDto spotDto) {
+    public SpotDto updateById(Long id, @Valid SpotDto spotDto) {
         log.info(LoggerConstant.ENTITY_UPDATE.getMessage(), ENTITY_NAME, id);
         findSpotById(id);
+        locationService.findById(spotDto.getLocationDto().getId());
         if (!id.equals(spotDto.getId())) {
             spotDto.setId(id);
         }
@@ -82,8 +94,9 @@ public class SpotServiceImpl implements SpotService {
 
     @Override
     @Transactional
-    public SpotDto create(SpotDto spotDto) {
+    public SpotDto create(@Valid SpotDto spotDto) {
         log.info(LoggerConstant.ENTITY_CREATE.getMessage(), ENTITY_NAME);
+        spotDto.setLocationDto(locationService.findById(spotDto.getLocationDto().getId()));
         Spot spot = spotDtoMapper.map(spotDto);
         spot.setId(null);
         spotDao.add(spot);
@@ -93,7 +106,7 @@ public class SpotServiceImpl implements SpotService {
 
     @Override
     @Transactional
-    public List<Map<String, Long>> findDistancesToSpots(Double latitude, Double longitude) {
+    public List<Map<String, Long>> findDistancesToSpots(@DecimalDegrees Double latitude,@DecimalDegrees Double longitude) {
         log.info(LoggerConstant.SPOT_DISTANCES.getMessage(), latitude, longitude);
         List<Tuple> resultTupleList = spotDao.findDistancesFromPointToSpots(
                 geometryFactory.createPoint(new Coordinate(longitude, latitude)));

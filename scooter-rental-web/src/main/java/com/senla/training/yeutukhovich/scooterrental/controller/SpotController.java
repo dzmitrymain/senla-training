@@ -1,7 +1,7 @@
 package com.senla.training.yeutukhovich.scooterrental.controller;
 
-import com.senla.training.yeutukhovich.scooterrental.dto.ScooterDto;
-import com.senla.training.yeutukhovich.scooterrental.dto.SpotDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.ScooterDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.SpotDto;
 import com.senla.training.yeutukhovich.scooterrental.service.spot.SpotService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -53,8 +53,8 @@ public class SpotController {
     }
 
     @GetMapping("/coordinateDistances")
-    public List<Map<String, Long>> findDistancesToSpots(@RequestParam("lat") Double latitude,
-                                                        @RequestParam("long") Double longitude) {
+    public List<Map<String, Long>> findDistancesToSpots(@RequestParam("latitude") Double latitude,
+                                                        @RequestParam("longitude") Double longitude) {
         return spotService.findDistancesToSpots(latitude, longitude);
     }
 

@@ -1,6 +1,6 @@
 package com.senla.training.yeutukhovich.scooterrental.controller;
 
-import com.senla.training.yeutukhovich.scooterrental.dto.DiscountDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.DiscountDto;
 import com.senla.training.yeutukhovich.scooterrental.service.discount.DiscountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,7 +50,7 @@ public class DiscountController {
     }
 
     @GetMapping("/active")
-    public List<DiscountDto> findAllActiveDiscounts(){
+    public List<DiscountDto> findAllActiveDiscounts() {
         return discountService.findAllActiveDiscounts();
     }
 }

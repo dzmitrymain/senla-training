@@ -11,9 +11,9 @@ import java.util.List;
 @Repository
 public class DiscountDaoImpl extends AbstractDao<Discount, Long> implements DiscountDao {
 
-    private static final String FIND_ALL_ACTIVE_DISCOUNTS="SELECT * FROM discounts WHERE (model_id, start_date) in " +
-            "(SELECT model_id, MAX(start_date) FROM discounts WHERE end_date>:now AND" +
-            " start_date<:now GROUP BY model_id)";
+    private static final String FIND_ALL_ACTIVE_DISCOUNTS = "SELECT * FROM discounts WHERE (model_id, start_date, id) in " +
+            "(SELECT model_id, MAX(start_date), MAX(id) FROM discounts WHERE end_date >= :now AND" +
+            " start_date <= :now GROUP BY model_id)";
 
     public DiscountDaoImpl() {
         super(Discount.class);
@@ -22,9 +22,8 @@ public class DiscountDaoImpl extends AbstractDao<Discount, Long> implements Disc
     @Override
     @SuppressWarnings("unchecked")
     public List<Discount> findAllActiveDiscounts() {
-        LocalDateTime now=LocalDateTime.now();
-        Query query=entityManager.createNativeQuery(FIND_ALL_ACTIVE_DISCOUNTS,Discount.class);
-        query.setParameter("now",now);
+        Query query = entityManager.createNativeQuery(FIND_ALL_ACTIVE_DISCOUNTS, Discount.class);
+        query.setParameter("now", LocalDateTime.now());
         return query.getResultList();
     }
 }

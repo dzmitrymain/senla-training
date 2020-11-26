@@ -1,7 +1,7 @@
 package com.senla.training.yeutukhovich.scooterrental.service.mapper;
 
 import com.senla.training.yeutukhovich.scooterrental.domain.Discount;
-import com.senla.training.yeutukhovich.scooterrental.dto.DiscountDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.DiscountDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

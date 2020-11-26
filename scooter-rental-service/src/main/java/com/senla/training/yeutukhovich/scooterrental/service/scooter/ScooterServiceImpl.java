@@ -2,11 +2,13 @@ package com.senla.training.yeutukhovich.scooterrental.service.scooter;
 
 import com.senla.training.yeutukhovich.scooterrental.dao.scooter.ScooterDao;
 import com.senla.training.yeutukhovich.scooterrental.domain.Scooter;
-import com.senla.training.yeutukhovich.scooterrental.dto.RentDto;
-import com.senla.training.yeutukhovich.scooterrental.dto.ScooterDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.RentDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.ScooterDto;
 import com.senla.training.yeutukhovich.scooterrental.exception.BusinessException;
 import com.senla.training.yeutukhovich.scooterrental.service.mapper.RentDtoMapper;
 import com.senla.training.yeutukhovich.scooterrental.service.mapper.ScooterDtoMapper;
+import com.senla.training.yeutukhovich.scooterrental.service.model.ModelService;
+import com.senla.training.yeutukhovich.scooterrental.service.spot.SpotService;
 import com.senla.training.yeutukhovich.scooterrental.util.constant.ExceptionConstant;
 import com.senla.training.yeutukhovich.scooterrental.util.constant.LoggerConstant;
 import lombok.extern.slf4j.Slf4j;
@@ -14,12 +16,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@Validated
 public class ScooterServiceImpl implements ScooterService {
 
     private static final String ENTITY_NAME = "Scooter";
@@ -27,13 +32,21 @@ public class ScooterServiceImpl implements ScooterService {
     private final ScooterDao scooterDao;
     private final ScooterDtoMapper scooterDtoMapper;
     private final RentDtoMapper rentDtoMapper;
+    private final ModelService modelService;
+    private final SpotService spotService;
 
 
     @Autowired
-    public ScooterServiceImpl(ScooterDao scooterDao, ScooterDtoMapper scooterDtoMapper, RentDtoMapper rentDtoMapper) {
+    public ScooterServiceImpl(ScooterDao scooterDao,
+                              ScooterDtoMapper scooterDtoMapper,
+                              RentDtoMapper rentDtoMapper,
+                              ModelService modelService,
+                              SpotService spotService) {
         this.scooterDao = scooterDao;
         this.scooterDtoMapper = scooterDtoMapper;
         this.rentDtoMapper = rentDtoMapper;
+        this.modelService = modelService;
+        this.spotService = spotService;
     }
 
     @Override
@@ -63,9 +76,11 @@ public class ScooterServiceImpl implements ScooterService {
 
     @Override
     @Transactional
-    public ScooterDto updateById(Long id, ScooterDto scooterDto) {
+    public ScooterDto updateById(Long id, @Valid ScooterDto scooterDto) {
         log.info(LoggerConstant.ENTITY_UPDATE.getMessage(), ENTITY_NAME, id);
         findScooterById(id);
+        modelService.findById(scooterDto.getModelDto().getId());
+        spotService.findById(scooterDto.getSpotDto().getId());
         if (!id.equals(scooterDto.getId())) {
             scooterDto.setId(id);
         }
@@ -74,8 +89,10 @@ public class ScooterServiceImpl implements ScooterService {
 
     @Override
     @Transactional
-    public ScooterDto create(ScooterDto scooterDto) {
+    public ScooterDto create(@Valid ScooterDto scooterDto) {
         log.info(LoggerConstant.ENTITY_CREATE.getMessage(), ENTITY_NAME);
+        scooterDto.setModelDto(modelService.findById(scooterDto.getModelDto().getId()));
+        scooterDto.setSpotDto(spotService.findById(scooterDto.getSpotDto().getId()));
         Scooter scooter = scooterDtoMapper.map(scooterDto);
         scooter.setId(null);
         scooterDao.add(scooter);

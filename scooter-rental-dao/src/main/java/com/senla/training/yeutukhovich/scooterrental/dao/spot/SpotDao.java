@@ -7,7 +7,6 @@ import org.locationtech.jts.geom.Point;
 
 import javax.persistence.Tuple;
 import java.util.List;
-import java.util.Map;
 
 public interface SpotDao extends GenericDao<Spot, Long> {
 

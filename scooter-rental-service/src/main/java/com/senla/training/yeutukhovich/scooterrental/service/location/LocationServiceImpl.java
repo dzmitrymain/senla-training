@@ -2,9 +2,9 @@ package com.senla.training.yeutukhovich.scooterrental.service.location;
 
 import com.senla.training.yeutukhovich.scooterrental.dao.location.LocationDao;
 import com.senla.training.yeutukhovich.scooterrental.domain.Location;
-import com.senla.training.yeutukhovich.scooterrental.dto.LocationDto;
-import com.senla.training.yeutukhovich.scooterrental.dto.ProfileDto;
-import com.senla.training.yeutukhovich.scooterrental.dto.SpotDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.LocationDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.ProfileDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.SpotDto;
 import com.senla.training.yeutukhovich.scooterrental.exception.BusinessException;
 import com.senla.training.yeutukhovich.scooterrental.service.mapper.LocationDtoMapper;
 import com.senla.training.yeutukhovich.scooterrental.service.mapper.ProfileDtoMapper;
@@ -16,12 +16,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@Validated
 public class LocationServiceImpl implements LocationService {
 
     private static final String ENTITY_NAME = "Location";
@@ -69,7 +72,7 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     @Transactional
-    public LocationDto updateById(Long id, LocationDto locationDto) {
+    public LocationDto updateById(Long id, @Valid LocationDto locationDto) {
         log.info(LoggerConstant.ENTITY_UPDATE.getMessage(), ENTITY_NAME, id);
         findLocationById(id);
         if (!id.equals(locationDto.getId())) {
@@ -80,7 +83,7 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     @Transactional
-    public LocationDto create(LocationDto locationDto) {
+    public LocationDto create(@Valid LocationDto locationDto) {
         log.info(LoggerConstant.ENTITY_CREATE.getMessage(), ENTITY_NAME);
         Location location = locationDtoMapper.map(locationDto);
         location.setId(null);

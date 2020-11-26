@@ -1,11 +1,12 @@
 package com.senla.training.yeutukhovich.scooterrental.service.model;
 
-import com.senla.training.yeutukhovich.scooterrental.dto.DiscountDto;
-import com.senla.training.yeutukhovich.scooterrental.dto.ModelDto;
-import com.senla.training.yeutukhovich.scooterrental.dto.RateDto;
-import com.senla.training.yeutukhovich.scooterrental.dto.ReviewDto;
-import com.senla.training.yeutukhovich.scooterrental.dto.ScooterDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.DiscountDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.ModelDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.RateDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.ReviewDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.ScooterDto;
 
+import javax.validation.Valid;
 import java.util.List;
 
 public interface ModelService {
@@ -16,9 +17,9 @@ public interface ModelService {
 
     ModelDto deleteById(Long id);
 
-    ModelDto updateById(Long id, ModelDto modelDto);
+    ModelDto updateById(Long id, @Valid ModelDto modelDto);
 
-    ModelDto create(ModelDto modelDto);
+    ModelDto create(@Valid ModelDto modelDto);
 
     List<ScooterDto> findModelScooters(Long id);
 

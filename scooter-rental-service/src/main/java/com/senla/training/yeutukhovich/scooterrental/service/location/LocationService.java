@@ -1,9 +1,10 @@
 package com.senla.training.yeutukhovich.scooterrental.service.location;
 
-import com.senla.training.yeutukhovich.scooterrental.dto.LocationDto;
-import com.senla.training.yeutukhovich.scooterrental.dto.ProfileDto;
-import com.senla.training.yeutukhovich.scooterrental.dto.SpotDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.LocationDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.ProfileDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.SpotDto;
 
+import javax.validation.Valid;
 import java.util.List;
 
 public interface LocationService {
@@ -14,9 +15,9 @@ public interface LocationService {
 
     LocationDto deleteById(Long id);
 
-    LocationDto updateById(Long id, LocationDto locationDto);
+    LocationDto updateById(Long id, @Valid LocationDto locationDto);
 
-    LocationDto create(LocationDto locationDto);
+    LocationDto create(@Valid LocationDto locationDto);
 
     List<ProfileDto> findLocationProfiles(Long id);
 

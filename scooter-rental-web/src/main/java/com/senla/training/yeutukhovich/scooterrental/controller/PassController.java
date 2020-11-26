@@ -1,6 +1,6 @@
 package com.senla.training.yeutukhovich.scooterrental.controller;
 
-import com.senla.training.yeutukhovich.scooterrental.dto.PassDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.PassDto;
 import com.senla.training.yeutukhovich.scooterrental.service.pass.PassService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

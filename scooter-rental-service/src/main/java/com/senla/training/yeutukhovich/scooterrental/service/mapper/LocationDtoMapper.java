@@ -1,7 +1,7 @@
 package com.senla.training.yeutukhovich.scooterrental.service.mapper;
 
 import com.senla.training.yeutukhovich.scooterrental.domain.Location;
-import com.senla.training.yeutukhovich.scooterrental.dto.LocationDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.LocationDto;
 import org.springframework.stereotype.Component;
 
 @Component

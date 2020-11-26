@@ -2,11 +2,11 @@ package com.senla.training.yeutukhovich.scooterrental.service.model;
 
 import com.senla.training.yeutukhovich.scooterrental.dao.model.ModelDao;
 import com.senla.training.yeutukhovich.scooterrental.domain.Model;
-import com.senla.training.yeutukhovich.scooterrental.dto.DiscountDto;
-import com.senla.training.yeutukhovich.scooterrental.dto.ModelDto;
-import com.senla.training.yeutukhovich.scooterrental.dto.RateDto;
-import com.senla.training.yeutukhovich.scooterrental.dto.ReviewDto;
-import com.senla.training.yeutukhovich.scooterrental.dto.ScooterDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.DiscountDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.ModelDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.RateDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.ReviewDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.ScooterDto;
 import com.senla.training.yeutukhovich.scooterrental.exception.BusinessException;
 import com.senla.training.yeutukhovich.scooterrental.service.mapper.DiscountDtoMapper;
 import com.senla.training.yeutukhovich.scooterrental.service.mapper.ModelDtoMapper;
@@ -20,12 +20,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@Validated
 public class ModelServiceImpl implements ModelService {
 
     private static final String ENTITY_NAME = "Model";
@@ -80,7 +83,7 @@ public class ModelServiceImpl implements ModelService {
 
     @Override
     @Transactional
-    public ModelDto updateById(Long id, ModelDto modelDto) {
+    public ModelDto updateById(Long id, @Valid ModelDto modelDto) {
         log.info(LoggerConstant.ENTITY_UPDATE.getMessage(), ENTITY_NAME, id);
         findModelById(id);
         if (!id.equals(modelDto.getId())) {
@@ -91,12 +94,12 @@ public class ModelServiceImpl implements ModelService {
 
     @Override
     @Transactional
-    public ModelDto create(ModelDto modelDto) {
+    public ModelDto create(@Valid ModelDto modelDto) {
         log.info(LoggerConstant.ENTITY_CREATE.getMessage(), ENTITY_NAME);
         Model model = modelDtoMapper.map(modelDto);
         model.setId(null);
         modelDao.add(model);
-        log.info(LoggerConstant.ENTITY_CREATE_SUCCESS.getMessage(), model.getId());
+        log.info(LoggerConstant.ENTITY_CREATE_SUCCESS.getMessage(), ENTITY_NAME, model.getId());
         return modelDtoMapper.map(model);
     }
 
@@ -123,7 +126,12 @@ public class ModelServiceImpl implements ModelService {
     public RateDto findCurrentModelRate(Long id) {
         log.info(LoggerConstant.MODEL_RATE.getMessage(), id);
         findModelById(id);
-        return rateDtoMapper.map(modelDao.findCurrentRateByModelId(id));
+        return rateDtoMapper.map(modelDao.findCurrentRateByModelId(id).orElseThrow(() -> {
+            BusinessException exception = new BusinessException(
+                    String.format(ExceptionConstant.ENTITY_NOT_EXIST.getMessage(), "Rate"), HttpStatus.NOT_FOUND);
+            log.warn(exception.getMessage());
+            return exception;
+        }));
     }
 
     @Override
@@ -131,7 +139,12 @@ public class ModelServiceImpl implements ModelService {
     public DiscountDto findCurrentModelDiscount(Long id) {
         log.info(LoggerConstant.MODEL_DISCOUNT.getMessage(), id);
         findModelById(id);
-        return discountDtoMapper.map(modelDao.findCurrentDiscountByModelId(id));
+        return discountDtoMapper.map(modelDao.findCurrentDiscountByModelId(id).orElseThrow(() -> {
+            BusinessException exception = new BusinessException(
+                    String.format(ExceptionConstant.ENTITY_NOT_EXIST.getMessage(), "Discount"), HttpStatus.NOT_FOUND);
+            log.warn(exception.getMessage());
+            return exception;
+        }));
     }
 
     private Model findModelById(Long modelId) {

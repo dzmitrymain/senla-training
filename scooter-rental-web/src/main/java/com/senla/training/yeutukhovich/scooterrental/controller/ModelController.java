@@ -1,10 +1,10 @@
 package com.senla.training.yeutukhovich.scooterrental.controller;
 
-import com.senla.training.yeutukhovich.scooterrental.dto.DiscountDto;
-import com.senla.training.yeutukhovich.scooterrental.dto.ModelDto;
-import com.senla.training.yeutukhovich.scooterrental.dto.RateDto;
-import com.senla.training.yeutukhovich.scooterrental.dto.ReviewDto;
-import com.senla.training.yeutukhovich.scooterrental.dto.ScooterDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.DiscountDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.ModelDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.RateDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.ReviewDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.ScooterDto;
 import com.senla.training.yeutukhovich.scooterrental.service.model.ModelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -69,7 +69,7 @@ public class ModelController {
     }
 
     @GetMapping("/{id}/discount")
-    public DiscountDto findCurrentModelDiscount(@PathVariable("id") Long id){
-    return modelService.findCurrentModelDiscount(id);
+    public DiscountDto findCurrentModelDiscount(@PathVariable("id") Long id) {
+        return modelService.findCurrentModelDiscount(id);
     }
 }

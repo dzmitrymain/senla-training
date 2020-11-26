@@ -2,9 +2,11 @@ package com.senla.training.yeutukhovich.scooterrental.service.review;
 
 import com.senla.training.yeutukhovich.scooterrental.dao.review.ReviewDao;
 import com.senla.training.yeutukhovich.scooterrental.domain.Review;
-import com.senla.training.yeutukhovich.scooterrental.dto.ReviewDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.ReviewDto;
 import com.senla.training.yeutukhovich.scooterrental.exception.BusinessException;
 import com.senla.training.yeutukhovich.scooterrental.service.mapper.ReviewDtoMapper;
+import com.senla.training.yeutukhovich.scooterrental.service.model.ModelService;
+import com.senla.training.yeutukhovich.scooterrental.service.profile.ProfileService;
 import com.senla.training.yeutukhovich.scooterrental.util.constant.ExceptionConstant;
 import com.senla.training.yeutukhovich.scooterrental.util.constant.LoggerConstant;
 import lombok.extern.slf4j.Slf4j;
@@ -12,22 +14,32 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@Validated
 public class ReviewServiceImpl implements ReviewService {
 
     private static final String ENTITY_NAME = "Review";
 
     private final ReviewDao reviewDao;
+    private final ModelService modelService;
+    private final ProfileService profileService;
     private final ReviewDtoMapper reviewDtoMapper;
 
     @Autowired
-    public ReviewServiceImpl(ReviewDao reviewDao, ReviewDtoMapper reviewDtoMapper) {
+    public ReviewServiceImpl(ReviewDao reviewDao,
+                             ModelService modelService,
+                             ProfileService profileService,
+                             ReviewDtoMapper reviewDtoMapper) {
         this.reviewDao = reviewDao;
+        this.modelService = modelService;
+        this.profileService = profileService;
         this.reviewDtoMapper = reviewDtoMapper;
     }
 
@@ -58,9 +70,11 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public ReviewDto updateById(Long id, ReviewDto reviewDto) {
+    public ReviewDto updateById(Long id,@Valid ReviewDto reviewDto) {
         log.info(LoggerConstant.ENTITY_UPDATE.getMessage(), ENTITY_NAME, id);
         findReviewById(id);
+        reviewDto.setProfileDto(profileService.findById(reviewDto.getProfileDto().getId()));
+        modelService.findById(reviewDto.getModelDto().getId());
         if (!id.equals(reviewDto.getId())) {
             reviewDto.setId(id);
         }
@@ -69,8 +83,10 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public ReviewDto create(ReviewDto reviewDto) {
+    public ReviewDto create(@Valid ReviewDto reviewDto) {
         log.info(LoggerConstant.ENTITY_CREATE.getMessage(), ENTITY_NAME);
+        reviewDto.setModelDto(modelService.findById(reviewDto.getModelDto().getId()));
+        reviewDto.setProfileDto(profileService.findById(reviewDto.getProfileDto().getId()));
         Review review = reviewDtoMapper.map(reviewDto);
         review.setId(null);
         reviewDao.add(review);
