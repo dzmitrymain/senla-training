@@ -4,7 +4,7 @@ import com.senla.training.yeutukhovich.scooterrental.dao.discount.DiscountDao;
 import com.senla.training.yeutukhovich.scooterrental.domain.Discount;
 import com.senla.training.yeutukhovich.scooterrental.dto.entity.DiscountDto;
 import com.senla.training.yeutukhovich.scooterrental.exception.BusinessException;
-import com.senla.training.yeutukhovich.scooterrental.service.mapper.DiscountDtoMapper;
+import com.senla.training.yeutukhovich.scooterrental.mapper.DiscountDtoMapper;
 import com.senla.training.yeutukhovich.scooterrental.service.model.ModelService;
 import com.senla.training.yeutukhovich.scooterrental.util.constant.ExceptionConstant;
 import com.senla.training.yeutukhovich.scooterrental.util.constant.LoggerConstant;
@@ -31,7 +31,9 @@ public class DiscountServiceImpl implements DiscountService {
     private final DiscountDtoMapper discountDtoMapper;
 
     @Autowired
-    public DiscountServiceImpl(DiscountDao discountDao, ModelService modelService, DiscountDtoMapper discountDtoMapper) {
+    public DiscountServiceImpl(DiscountDao discountDao,
+                               ModelService modelService,
+                               DiscountDtoMapper discountDtoMapper) {
         this.discountDao = discountDao;
         this.modelService = modelService;
         this.discountDtoMapper = discountDtoMapper;
@@ -96,11 +98,7 @@ public class DiscountServiceImpl implements DiscountService {
     }
 
     private Discount findDiscountById(Long discountId) {
-        return discountDao.findById(discountId).orElseThrow(() -> {
-            BusinessException exception = new BusinessException(
-                    String.format(ExceptionConstant.ENTITY_NOT_EXIST.getMessage(), ENTITY_NAME), HttpStatus.NOT_FOUND);
-            log.warn(exception.getMessage());
-            return exception;
-        });
+        return discountDao.findById(discountId).orElseThrow(() -> new BusinessException(
+                String.format(ExceptionConstant.ENTITY_NOT_EXIST.getMessage(), ENTITY_NAME), HttpStatus.NOT_FOUND));
     }
 }

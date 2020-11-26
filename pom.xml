@@ -20,7 +20,6 @@
         <module>scooter-rental-dto</module>
         <module>scooter-rental-util</module>
         <module>scooter-rental-exception</module>
-        <module>scooter-rental-validator</module>
     </modules>
 
 
@@ -42,6 +41,7 @@
         <hibernate.version>5.4.21.Final</hibernate.version>
         <mysql.connector.version>8.0.21</mysql.connector.version>
         <jackson.databind.version>2.11.3</jackson.databind.version>
+        <hibernate.validator>6.1.6.Final</hibernate.validator>
         <!-- scooter-rental-domain -->
         <javax.persistence.version>2.2</javax.persistence.version>
     </properties>
@@ -150,9 +150,9 @@
 
         <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-validator -->
         <dependency>
-            <groupId>org.hibernate</groupId>
+            <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>6.1.6.Final</version>
+            <version>${hibernate.validator}</version>
         </dependency>
     </dependencies>
 

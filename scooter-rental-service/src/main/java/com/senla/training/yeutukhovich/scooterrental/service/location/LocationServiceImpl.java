@@ -6,9 +6,9 @@ import com.senla.training.yeutukhovich.scooterrental.dto.entity.LocationDto;
 import com.senla.training.yeutukhovich.scooterrental.dto.entity.ProfileDto;
 import com.senla.training.yeutukhovich.scooterrental.dto.entity.SpotDto;
 import com.senla.training.yeutukhovich.scooterrental.exception.BusinessException;
-import com.senla.training.yeutukhovich.scooterrental.service.mapper.LocationDtoMapper;
-import com.senla.training.yeutukhovich.scooterrental.service.mapper.ProfileDtoMapper;
-import com.senla.training.yeutukhovich.scooterrental.service.mapper.SpotDtoMapper;
+import com.senla.training.yeutukhovich.scooterrental.mapper.LocationDtoMapper;
+import com.senla.training.yeutukhovich.scooterrental.mapper.ProfileDtoMapper;
+import com.senla.training.yeutukhovich.scooterrental.mapper.SpotDtoMapper;
 import com.senla.training.yeutukhovich.scooterrental.util.constant.ExceptionConstant;
 import com.senla.training.yeutukhovich.scooterrental.util.constant.LoggerConstant;
 import lombok.extern.slf4j.Slf4j;
@@ -112,11 +112,7 @@ public class LocationServiceImpl implements LocationService {
     }
 
     private Location findLocationById(Long locationId) {
-        return locationDao.findById(locationId).orElseThrow(() -> {
-            BusinessException exception = new BusinessException(
-                    String.format(ExceptionConstant.ENTITY_NOT_EXIST.getMessage(), ENTITY_NAME), HttpStatus.NOT_FOUND);
-            log.warn(exception.getMessage());
-            return exception;
-        });
+        return locationDao.findById(locationId).orElseThrow(() -> new BusinessException(
+                String.format(ExceptionConstant.ENTITY_NOT_EXIST.getMessage(), ENTITY_NAME), HttpStatus.NOT_FOUND));
     }
 }

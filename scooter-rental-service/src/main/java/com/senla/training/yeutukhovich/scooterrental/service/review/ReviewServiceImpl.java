@@ -4,7 +4,7 @@ import com.senla.training.yeutukhovich.scooterrental.dao.review.ReviewDao;
 import com.senla.training.yeutukhovich.scooterrental.domain.Review;
 import com.senla.training.yeutukhovich.scooterrental.dto.entity.ReviewDto;
 import com.senla.training.yeutukhovich.scooterrental.exception.BusinessException;
-import com.senla.training.yeutukhovich.scooterrental.service.mapper.ReviewDtoMapper;
+import com.senla.training.yeutukhovich.scooterrental.mapper.ReviewDtoMapper;
 import com.senla.training.yeutukhovich.scooterrental.service.model.ModelService;
 import com.senla.training.yeutukhovich.scooterrental.service.profile.ProfileService;
 import com.senla.training.yeutukhovich.scooterrental.util.constant.ExceptionConstant;
@@ -74,8 +74,8 @@ public class ReviewServiceImpl implements ReviewService {
     @Transactional
     public ReviewDto updateById(Long id, @Valid ReviewDto reviewDto) {
         log.info(LoggerConstant.ENTITY_UPDATE.getMessage(), ENTITY_NAME, id);
-        findReviewById(id);
-        reviewDto.setProfileDto(profileService.findById(reviewDto.getProfileDto().getId()));
+        Review checkedReview = findReviewById(id);
+        reviewDto.setProfileDto(profileService.findById(checkedReview.getProfile().getId()));
         modelService.findById(reviewDto.getModelDto().getId());
         if (!id.equals(reviewDto.getId())) {
             reviewDto.setId(id);
@@ -92,22 +92,19 @@ public class ReviewServiceImpl implements ReviewService {
         Review review = reviewDtoMapper.map(reviewDto);
         review.setId(null);
         reviewDao.add(review);
-        log.info(LoggerConstant.ENTITY_CREATE_SUCCESS.getMessage(), review.getId());
+        log.info(LoggerConstant.ENTITY_CREATE_SUCCESS.getMessage(), ENTITY_NAME, review.getId());
         return reviewDtoMapper.map(review);
     }
 
     @Override
     @Transactional
     public BigDecimal findAverageScore() {
+        log.info(LoggerConstant.REVIEWS_SCORE.getMessage());
         return BigDecimal.valueOf(reviewDao.findAverageScore()).setScale(1, RoundingMode.HALF_UP);
     }
 
     private Review findReviewById(Long reviewId) {
-        return reviewDao.findById(reviewId).orElseThrow(() -> {
-            BusinessException exception = new BusinessException(
-                    String.format(ExceptionConstant.ENTITY_NOT_EXIST.getMessage(), ENTITY_NAME), HttpStatus.NOT_FOUND);
-            log.warn(exception.getMessage());
-            return exception;
-        });
+        return reviewDao.findById(reviewId).orElseThrow(() -> new BusinessException(
+                String.format(ExceptionConstant.ENTITY_NOT_EXIST.getMessage(), ENTITY_NAME), HttpStatus.NOT_FOUND));
     }
 }

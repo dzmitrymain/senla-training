@@ -5,9 +5,9 @@ import com.senla.training.yeutukhovich.scooterrental.domain.Spot;
 import com.senla.training.yeutukhovich.scooterrental.dto.entity.ScooterDto;
 import com.senla.training.yeutukhovich.scooterrental.dto.entity.SpotDto;
 import com.senla.training.yeutukhovich.scooterrental.exception.BusinessException;
+import com.senla.training.yeutukhovich.scooterrental.mapper.ScooterDtoMapper;
+import com.senla.training.yeutukhovich.scooterrental.mapper.SpotDtoMapper;
 import com.senla.training.yeutukhovich.scooterrental.service.location.LocationService;
-import com.senla.training.yeutukhovich.scooterrental.service.mapper.ScooterDtoMapper;
-import com.senla.training.yeutukhovich.scooterrental.service.mapper.SpotDtoMapper;
 import com.senla.training.yeutukhovich.scooterrental.util.constant.ExceptionConstant;
 import com.senla.training.yeutukhovich.scooterrental.util.constant.LoggerConstant;
 import com.senla.training.yeutukhovich.scooterrental.validator.DecimalDegrees;
@@ -106,7 +106,7 @@ public class SpotServiceImpl implements SpotService {
 
     @Override
     @Transactional
-    public List<Map<String, Long>> findDistancesToSpots(@DecimalDegrees Double latitude,@DecimalDegrees Double longitude) {
+    public List<Map<String, Long>> findDistancesToSpots(@DecimalDegrees Double latitude, @DecimalDegrees Double longitude) {
         log.info(LoggerConstant.SPOT_DISTANCES.getMessage(), latitude, longitude);
         List<Tuple> resultTupleList = spotDao.findDistancesFromPointToSpots(
                 geometryFactory.createPoint(new Coordinate(longitude, latitude)));
@@ -140,11 +140,7 @@ public class SpotServiceImpl implements SpotService {
     }
 
     private Spot findSpotById(Long spotId) {
-        return spotDao.findById(spotId).orElseThrow(() -> {
-            BusinessException exception = new BusinessException(
-                    String.format(ExceptionConstant.ENTITY_NOT_EXIST.getMessage(), ENTITY_NAME), HttpStatus.NOT_FOUND);
-            log.warn(exception.getMessage());
-            return exception;
-        });
+        return spotDao.findById(spotId).orElseThrow(() -> new BusinessException(
+                String.format(ExceptionConstant.ENTITY_NOT_EXIST.getMessage(), ENTITY_NAME), HttpStatus.NOT_FOUND));
     }
 }

@@ -4,7 +4,7 @@ import com.senla.training.yeutukhovich.scooterrental.dao.rate.RateDao;
 import com.senla.training.yeutukhovich.scooterrental.domain.Rate;
 import com.senla.training.yeutukhovich.scooterrental.dto.entity.RateDto;
 import com.senla.training.yeutukhovich.scooterrental.exception.BusinessException;
-import com.senla.training.yeutukhovich.scooterrental.service.mapper.RateDtoMapper;
+import com.senla.training.yeutukhovich.scooterrental.mapper.RateDtoMapper;
 import com.senla.training.yeutukhovich.scooterrental.service.model.ModelService;
 import com.senla.training.yeutukhovich.scooterrental.util.constant.ExceptionConstant;
 import com.senla.training.yeutukhovich.scooterrental.util.constant.LoggerConstant;
@@ -96,11 +96,7 @@ public class RateServiceImpl implements RateService {
     }
 
     private Rate findRatesById(Long rateId) {
-        return rateDao.findById(rateId).orElseThrow(() -> {
-            BusinessException exception = new BusinessException(
-                    String.format(ExceptionConstant.ENTITY_NOT_EXIST.getMessage(), ENTITY_NAME), HttpStatus.NOT_FOUND);
-            log.warn(exception.getMessage());
-            return exception;
-        });
+        return rateDao.findById(rateId).orElseThrow(() -> new BusinessException(
+                String.format(ExceptionConstant.ENTITY_NOT_EXIST.getMessage(), ENTITY_NAME), HttpStatus.NOT_FOUND));
     }
 }

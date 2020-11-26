@@ -6,7 +6,7 @@ import com.senla.training.yeutukhovich.scooterrental.domain.Role;
 import com.senla.training.yeutukhovich.scooterrental.dto.entity.PassDto;
 import com.senla.training.yeutukhovich.scooterrental.dto.entity.RateDto;
 import com.senla.training.yeutukhovich.scooterrental.exception.BusinessException;
-import com.senla.training.yeutukhovich.scooterrental.service.mapper.PassDtoMapper;
+import com.senla.training.yeutukhovich.scooterrental.mapper.PassDtoMapper;
 import com.senla.training.yeutukhovich.scooterrental.service.model.ModelService;
 import com.senla.training.yeutukhovich.scooterrental.service.user.UserService;
 import com.senla.training.yeutukhovich.scooterrental.util.constant.ExceptionConstant;
@@ -42,7 +42,10 @@ public class PassServiceImpl implements PassService {
     private BigDecimal passPriceCoefficient;
 
     @Autowired
-    public PassServiceImpl(PassDao passDao, PassDtoMapper passDtoMapper, ModelService modelService, UserService userService) {
+    public PassServiceImpl(PassDao passDao,
+                           PassDtoMapper passDtoMapper,
+                           ModelService modelService,
+                           UserService userService) {
         this.passDao = passDao;
         this.passDtoMapper = passDtoMapper;
         this.modelService = modelService;
@@ -79,6 +82,8 @@ public class PassServiceImpl implements PassService {
     public PassDto updateById(Long id, @Valid PassDto passDto) {
         log.info(LoggerConstant.ENTITY_UPDATE.getMessage(), ENTITY_NAME, id);
         findPassById(id);
+        modelService.findById(passDto.getModelDto().getId());
+        userService.findById(passDto.getUserDto().getId());
         if (!id.equals(passDto.getId())) {
             passDto.setId(id);
         }
@@ -108,7 +113,7 @@ public class PassServiceImpl implements PassService {
         }
         pass.setRemainingMinutes(pass.getTotalMinutes());
         passDao.add(pass);
-        log.info(LoggerConstant.ENTITY_CREATE_SUCCESS.getMessage(), pass.getId());
+        log.info(LoggerConstant.ENTITY_CREATE_SUCCESS.getMessage(), ENTITY_NAME, pass.getId());
         return passDtoMapper.map(pass);
     }
 
@@ -122,12 +127,8 @@ public class PassServiceImpl implements PassService {
     }
 
     private Pass findPassById(Long passId) {
-        return passDao.findById(passId).orElseThrow(() -> {
-            BusinessException exception = new BusinessException(
-                    String.format(ExceptionConstant.ENTITY_NOT_EXIST.getMessage(), ENTITY_NAME), HttpStatus.NOT_FOUND);
-            log.warn(exception.getMessage());
-            return exception;
-        });
+        return passDao.findById(passId).orElseThrow(() -> new BusinessException(
+                String.format(ExceptionConstant.ENTITY_NOT_EXIST.getMessage(), ENTITY_NAME), HttpStatus.NOT_FOUND));
     }
 
     private BigDecimal calculatePassPrice(long passMinutes, BigDecimal perHour) {

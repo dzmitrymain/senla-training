@@ -15,7 +15,7 @@ public interface DiscountService {
 
     DiscountDto deleteById(Long id);
 
-    DiscountDto updateById(Long id,@Valid DiscountDto discountDto);
+    DiscountDto updateById(Long id, @Valid DiscountDto discountDto);
 
     DiscountDto create(@Valid DiscountDto discountDto);
 }

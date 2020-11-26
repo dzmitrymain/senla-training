@@ -28,6 +28,7 @@ public enum LoggerConstant {
     MODEL_REVIEWS("Reviews by model[id={}] searched."),
     MODEL_RATE("Current rate by model[id={}] searched."),
     MODEL_DISCOUNT("Current discount by model[id={}] searched."),
+    MODEL_PRICE("Current model price is calculated."),
 
     SPOT_SCOOTERS("Scooters by spot[id={}] searched."),
     SPOT_AVAILABLE_SCOOTERS("Available scooters by spot[id={}] searched."),
@@ -35,6 +36,8 @@ public enum LoggerConstant {
 
     LOCATION_PROFILES("Profiles by location[id={}] searched."),
     LOCATION_SPOTS("Spots by location[id={}] searched."),
+
+    REVIEWS_SCORE("Average review's score searched."),
 
     ENTITY_CREATE("{} creating."),
     ENTITY_CREATE_SUCCESS("{}[id={}] has been created."),

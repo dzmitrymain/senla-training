@@ -13,7 +13,7 @@ public interface PassService {
 
     PassDto deleteById(Long id);
 
-    PassDto updateById(Long id,@Valid PassDto passDto);
+    PassDto updateById(Long id, @Valid PassDto passDto);
 
     PassDto create(@Valid PassDto passDto);
 

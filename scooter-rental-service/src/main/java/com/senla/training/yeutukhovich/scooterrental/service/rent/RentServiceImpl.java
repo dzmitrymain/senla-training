@@ -1,6 +1,5 @@
 package com.senla.training.yeutukhovich.scooterrental.service.rent;
 
-import com.senla.training.yeutukhovich.scooterrental.dao.model.ModelDao;
 import com.senla.training.yeutukhovich.scooterrental.dao.pass.PassDao;
 import com.senla.training.yeutukhovich.scooterrental.dao.rent.RentDao;
 import com.senla.training.yeutukhovich.scooterrental.dao.scooter.ScooterDao;
@@ -12,9 +11,9 @@ import com.senla.training.yeutukhovich.scooterrental.domain.type.PaymentType;
 import com.senla.training.yeutukhovich.scooterrental.dto.CreationRentDto;
 import com.senla.training.yeutukhovich.scooterrental.dto.entity.RentDto;
 import com.senla.training.yeutukhovich.scooterrental.exception.BusinessException;
-import com.senla.training.yeutukhovich.scooterrental.service.mapper.RentDtoMapper;
-import com.senla.training.yeutukhovich.scooterrental.service.mapper.ScooterDtoMapper;
-import com.senla.training.yeutukhovich.scooterrental.service.mapper.UserDtoMapper;
+import com.senla.training.yeutukhovich.scooterrental.mapper.RentDtoMapper;
+import com.senla.training.yeutukhovich.scooterrental.mapper.ScooterDtoMapper;
+import com.senla.training.yeutukhovich.scooterrental.mapper.UserDtoMapper;
 import com.senla.training.yeutukhovich.scooterrental.service.model.ModelService;
 import com.senla.training.yeutukhovich.scooterrental.service.scooter.ScooterService;
 import com.senla.training.yeutukhovich.scooterrental.service.user.UserService;
@@ -46,7 +45,6 @@ public class RentServiceImpl implements RentService {
 
     private final RentDao rentDao;
     private final ScooterDao scooterDao;
-    private final ModelDao modelDao;
     private final PassDao passDao;
     private final UserDao userDao;
 
@@ -64,7 +62,6 @@ public class RentServiceImpl implements RentService {
     @Autowired
     public RentServiceImpl(RentDao rentDao,
                            ScooterDao scooterDao,
-                           ModelDao modelDao,
                            PassDao passDao,
                            UserDao userDao,
                            RentDtoMapper rentDtoMapper,
@@ -75,7 +72,6 @@ public class RentServiceImpl implements RentService {
                            ScooterService scooterService) {
         this.rentDao = rentDao;
         this.scooterDao = scooterDao;
-        this.modelDao = modelDao;
         this.passDao = passDao;
         this.userDao = userDao;
         this.rentDtoMapper = rentDtoMapper;
@@ -117,10 +113,8 @@ public class RentServiceImpl implements RentService {
         log.info(LoggerConstant.RENT_END.getMessage(), id);
         Rent rent = findRentById(id);
         if (!rent.getActive()) {
-            BusinessException exception = new BusinessException(
+            throw new BusinessException(
                     String.format(ExceptionConstant.RENT_ALREADY_ENDS.getMessage(), id), HttpStatus.FORBIDDEN);
-            log.warn(exception.getMessage());
-            throw exception;
         }
         final LocalDateTime currentDateTime = LocalDateTime.now();
         rent.setActive(false);
@@ -154,11 +148,9 @@ public class RentServiceImpl implements RentService {
         List<Rent> rents;
         if (!(rents = scooterDao.findSortedByCreationScooterRents(rent.getScooter().getId())).isEmpty() &&
                 rents.get(0).getActive()) {
-            BusinessException exception = new BusinessException(
+            throw new BusinessException(
                     String.format(ExceptionConstant.SCOOTER_NOT_AVAILABLE.getMessage(), creationRentDto.getScooterId()),
                     HttpStatus.FORBIDDEN);
-            log.warn(exception.getMessage());
-            throw exception;
         }
         rent.setExpiredDate(creationRentDto.getExpiredDate());
         rent.setPaymentType(PaymentType.valueOf(creationRentDto.getPaymentType().toUpperCase()));
@@ -167,7 +159,8 @@ public class RentServiceImpl implements RentService {
         rent.setPrice(completePayment(creationRentDto, rent.getScooter().getModel(), currentDateTime));
         rent.setActive(true);
         rentDao.add(rent);
-        log.info(LoggerConstant.RENT_START_SUCCESS.getMessage(), rent.getId(), rent.getUser().getId(), rent.getScooter().getId());
+        log.info(LoggerConstant.RENT_START_SUCCESS.getMessage(), rent.getId(), rent.getUser().getId(),
+                rent.getScooter().getId());
         return rentDtoMapper.map(rent);
     }
 
@@ -197,12 +190,8 @@ public class RentServiceImpl implements RentService {
     }
 
     private Rent findRentById(Long rentId) {
-        return rentDao.findById(rentId).orElseThrow(() -> {
-            BusinessException exception = new BusinessException(
-                    String.format(ExceptionConstant.ENTITY_NOT_EXIST.getMessage(), ENTITY_NAME), HttpStatus.NOT_FOUND);
-            log.warn(exception.getMessage());
-            return exception;
-        });
+        return rentDao.findById(rentId).orElseThrow(() -> new BusinessException(
+                String.format(ExceptionConstant.ENTITY_NOT_EXIST.getMessage(), ENTITY_NAME), HttpStatus.NOT_FOUND));
     }
 
     private BigDecimal completePayment(CreationRentDto creationRentDto, Model model, LocalDateTime currentDateTime) {

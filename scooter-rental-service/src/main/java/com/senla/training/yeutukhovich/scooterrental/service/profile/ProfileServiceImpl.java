@@ -5,8 +5,7 @@ import com.senla.training.yeutukhovich.scooterrental.dao.user.UserDao;
 import com.senla.training.yeutukhovich.scooterrental.domain.Profile;
 import com.senla.training.yeutukhovich.scooterrental.dto.entity.ProfileDto;
 import com.senla.training.yeutukhovich.scooterrental.exception.BusinessException;
-import com.senla.training.yeutukhovich.scooterrental.service.mapper.ProfileDtoMapper;
-import com.senla.training.yeutukhovich.scooterrental.service.mapper.UserDtoMapper;
+import com.senla.training.yeutukhovich.scooterrental.mapper.ProfileDtoMapper;
 import com.senla.training.yeutukhovich.scooterrental.util.constant.ExceptionConstant;
 import com.senla.training.yeutukhovich.scooterrental.util.constant.LoggerConstant;
 import lombok.extern.slf4j.Slf4j;
@@ -30,17 +29,14 @@ public class ProfileServiceImpl implements ProfileService {
     private final ProfileDao profileDao;
     private final UserDao userDao;
     private final ProfileDtoMapper profileDtoMapper;
-    private final UserDtoMapper userDtoMapper;
 
     @Autowired
     public ProfileServiceImpl(ProfileDao profileDao,
                               UserDao userDao,
-                              ProfileDtoMapper profileDtoMapper,
-                              UserDtoMapper userDtoMapper) {
+                              ProfileDtoMapper profileDtoMapper) {
         this.profileDao = profileDao;
         this.userDao = userDao;
         this.profileDtoMapper = profileDtoMapper;
-        this.userDtoMapper = userDtoMapper;
     }
 
     @Override
@@ -87,34 +83,23 @@ public class ProfileServiceImpl implements ProfileService {
     public ProfileDto create(@Valid ProfileDto profileDto) {
         log.info(LoggerConstant.ENTITY_CREATE.getMessage(), ENTITY_NAME);
         Profile profile = profileDtoMapper.map(profileDto);
-        profile.setUser(userDao.findById(profileDto.getUserId()).orElseThrow(() -> {
-                    BusinessException exception = new BusinessException(
-                            String.format(ExceptionConstant.ENTITY_NOT_EXIST.getMessage(), "User"), HttpStatus.NOT_FOUND);
-                    log.warn(exception.getMessage());
-                    return exception;
-                }
-        ));
+        profile.setUser(userDao.findById(profileDto.getUserId()).orElseThrow(() -> new BusinessException(
+                String.format(ExceptionConstant.ENTITY_NOT_EXIST.getMessage(), "User"), HttpStatus.NOT_FOUND)));
+
         if (profile.getUser().getProfile() != null) {
-            BusinessException exception = new BusinessException(
-                    String.format(ExceptionConstant.PROFILE_ALREADY_EXIST.getMessage(), profileDto.getUserId()),
-                    HttpStatus.FORBIDDEN);
-            log.warn(exception.getMessage());
-            throw exception;
+            throw new BusinessException(String.format(ExceptionConstant.PROFILE_ALREADY_EXIST.getMessage(),
+                    profileDto.getUserId()), HttpStatus.FORBIDDEN);
         }
         profile.setId(null);
         checkUniqueness(profile);
         profileDao.add(profile);
-        log.info(LoggerConstant.ENTITY_CREATE_SUCCESS.getMessage(), profile.getId());
+        log.info(LoggerConstant.ENTITY_CREATE_SUCCESS.getMessage(), ENTITY_NAME, profile.getId());
         return profileDtoMapper.map(profile);
     }
 
     private Profile findProfileById(Long profileId) {
-        return profileDao.findById(profileId).orElseThrow(() -> {
-            BusinessException exception = new BusinessException(
-                    String.format(ExceptionConstant.ENTITY_NOT_EXIST.getMessage(), ENTITY_NAME), HttpStatus.NOT_FOUND);
-            log.warn(exception.getMessage());
-            return exception;
-        });
+        return profileDao.findById(profileId).orElseThrow(() -> new BusinessException(
+                String.format(ExceptionConstant.ENTITY_NOT_EXIST.getMessage(), ENTITY_NAME), HttpStatus.NOT_FOUND));
     }
 
     private void checkUniqueness(Profile profile) {
@@ -122,22 +107,15 @@ public class ProfileServiceImpl implements ProfileService {
             if (checkedProfile.getId().equals(profile.getId())) {
                 return;
             }
-            logAndThrowBusinessException(
-                    String.format(ExceptionConstant.PROFILE_EMAIL_ALREADY_EXISTS.getMessage(), profile.getEmail()
-                    ));
+            throw new BusinessException(String.format(ExceptionConstant.PROFILE_EMAIL_ALREADY_EXISTS.getMessage(),
+                    profile.getEmail()), HttpStatus.FORBIDDEN);
         });
         profileDao.findProfileByPhoneNumber(profile.getPhoneNumber()).ifPresent(checkedProfile -> {
             if (checkedProfile.getId().equals(profile.getId())) {
                 return;
             }
-            logAndThrowBusinessException(
-                    String.format(ExceptionConstant.PROFILE_PHONE_NUMBER_ALREADY_EXISTS.getMessage(), profile.getPhoneNumber()
-                    ));
+            throw new BusinessException(String.format(ExceptionConstant.PROFILE_PHONE_NUMBER_ALREADY_EXISTS.getMessage(),
+                    profile.getPhoneNumber()), HttpStatus.FORBIDDEN);
         });
-    }
-
-    private void logAndThrowBusinessException(String message) {
-        log.warn(message);
-        throw new BusinessException(message, HttpStatus.FORBIDDEN);
     }
 }

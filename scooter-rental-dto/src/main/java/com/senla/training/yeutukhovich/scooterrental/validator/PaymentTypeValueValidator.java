@@ -19,6 +19,4 @@ public class PaymentTypeValueValidator implements ConstraintValidator<PaymentTyp
         }
         return true;
     }
-
-
 }

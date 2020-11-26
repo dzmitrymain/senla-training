@@ -9,11 +9,11 @@ import com.senla.training.yeutukhovich.scooterrental.dto.entity.RateDto;
 import com.senla.training.yeutukhovich.scooterrental.dto.entity.ReviewDto;
 import com.senla.training.yeutukhovich.scooterrental.dto.entity.ScooterDto;
 import com.senla.training.yeutukhovich.scooterrental.exception.BusinessException;
-import com.senla.training.yeutukhovich.scooterrental.service.mapper.DiscountDtoMapper;
-import com.senla.training.yeutukhovich.scooterrental.service.mapper.ModelDtoMapper;
-import com.senla.training.yeutukhovich.scooterrental.service.mapper.RateDtoMapper;
-import com.senla.training.yeutukhovich.scooterrental.service.mapper.ReviewDtoMapper;
-import com.senla.training.yeutukhovich.scooterrental.service.mapper.ScooterDtoMapper;
+import com.senla.training.yeutukhovich.scooterrental.mapper.DiscountDtoMapper;
+import com.senla.training.yeutukhovich.scooterrental.mapper.ModelDtoMapper;
+import com.senla.training.yeutukhovich.scooterrental.mapper.RateDtoMapper;
+import com.senla.training.yeutukhovich.scooterrental.mapper.ReviewDtoMapper;
+import com.senla.training.yeutukhovich.scooterrental.mapper.ScooterDtoMapper;
 import com.senla.training.yeutukhovich.scooterrental.util.constant.ExceptionConstant;
 import com.senla.training.yeutukhovich.scooterrental.util.constant.LoggerConstant;
 import lombok.extern.slf4j.Slf4j;
@@ -132,12 +132,8 @@ public class ModelServiceImpl implements ModelService {
     public RateDto findCurrentModelRate(Long id) {
         log.info(LoggerConstant.MODEL_RATE.getMessage(), id);
         findModelById(id);
-        return rateDtoMapper.map(modelDao.findCurrentRateByModelId(id).orElseThrow(() -> {
-            BusinessException exception = new BusinessException(
-                    String.format(ExceptionConstant.ENTITY_NOT_EXIST.getMessage(), "Rate"), HttpStatus.NOT_FOUND);
-            log.warn(exception.getMessage());
-            return exception;
-        }));
+        return rateDtoMapper.map(modelDao.findCurrentRateByModelId(id).orElseThrow(() -> new BusinessException(
+                String.format(ExceptionConstant.ENTITY_NOT_EXIST.getMessage(), "Rate"), HttpStatus.NOT_FOUND)));
     }
 
     @Override
@@ -145,17 +141,14 @@ public class ModelServiceImpl implements ModelService {
     public DiscountDto findCurrentModelDiscount(Long id) {
         log.info(LoggerConstant.MODEL_DISCOUNT.getMessage(), id);
         findModelById(id);
-        return discountDtoMapper.map(modelDao.findCurrentDiscountByModelId(id).orElseThrow(() -> {
-            BusinessException exception = new BusinessException(
-                    String.format(ExceptionConstant.ENTITY_NOT_EXIST.getMessage(), "Discount"), HttpStatus.NOT_FOUND);
-            log.warn(exception.getMessage());
-            return exception;
-        }));
+        return discountDtoMapper.map(modelDao.findCurrentDiscountByModelId(id).orElseThrow(() -> new BusinessException(
+                String.format(ExceptionConstant.ENTITY_NOT_EXIST.getMessage(), "Discount"), HttpStatus.NOT_FOUND)));
     }
 
     @Override
     @Transactional
     public BigDecimal findCurrentModelPrice(Long id) {
+        log.info(LoggerConstant.MODEL_PRICE.getMessage());
         RateDto rateDto = findCurrentModelRate(id);
         final LocalDate currentDate = LocalDate.now();
         BigDecimal currentPerHourPrice;
@@ -171,15 +164,11 @@ public class ModelServiceImpl implements ModelService {
                     .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_EVEN);
             currentPerHourPrice = currentPerHourPrice.multiply(discountCoefficient);
         }
-        return currentPerHourPrice.setScale(2,RoundingMode.HALF_EVEN);
+        return currentPerHourPrice.setScale(2, RoundingMode.HALF_EVEN);
     }
 
     private Model findModelById(Long modelId) {
-        return modelDao.findById(modelId).orElseThrow(() -> {
-            BusinessException exception = new BusinessException(
-                    String.format(ExceptionConstant.ENTITY_NOT_EXIST.getMessage(), ENTITY_NAME), HttpStatus.NOT_FOUND);
-            log.warn(exception.getMessage());
-            return exception;
-        });
+        return modelDao.findById(modelId).orElseThrow(() -> new BusinessException(
+                String.format(ExceptionConstant.ENTITY_NOT_EXIST.getMessage(), ENTITY_NAME), HttpStatus.NOT_FOUND));
     }
 }

@@ -4,7 +4,6 @@ import com.senla.training.yeutukhovich.scooterrental.dto.CreationRentDto;
 import com.senla.training.yeutukhovich.scooterrental.dto.entity.RentDto;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
 import java.util.List;

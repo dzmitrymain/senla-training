@@ -9,7 +9,7 @@ public class NestedDtoIdNotNullValidator implements ConstraintValidator<NestedDt
 
     @Override
     public boolean isValid(AbstractEntityDto abstractEntityDto, ConstraintValidatorContext constraintValidatorContext) {
-        if(abstractEntityDto==null){
+        if (abstractEntityDto == null) {
             return true;
         }
         return abstractEntityDto.getId() != null;

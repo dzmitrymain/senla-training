@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import java.math.BigDecimal;
 
 @Repository
 public class ReviewDaoImpl extends AbstractDao<Review, Long> implements ReviewDao {
@@ -19,9 +18,9 @@ public class ReviewDaoImpl extends AbstractDao<Review, Long> implements ReviewDa
 
     @Override
     public Double findAverageScore() {
-        CriteriaBuilder criteriaBuilder=entityManager.getCriteriaBuilder();
-        CriteriaQuery<Double> criteriaQuery=criteriaBuilder.createQuery(Double.class);
-        Root<Review> reviews=criteriaQuery.from(Review.class);
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Double> criteriaQuery = criteriaBuilder.createQuery(Double.class);
+        Root<Review> reviews = criteriaQuery.from(Review.class);
         criteriaQuery.select(criteriaBuilder.avg(reviews.get(Review_.score)));
         return entityManager.createQuery(criteriaQuery).getSingleResult();
     }

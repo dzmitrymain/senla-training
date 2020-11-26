@@ -4,15 +4,15 @@ import com.senla.training.yeutukhovich.scooterrental.dao.user.UserDao;
 import com.senla.training.yeutukhovich.scooterrental.domain.Profile;
 import com.senla.training.yeutukhovich.scooterrental.domain.Role;
 import com.senla.training.yeutukhovich.scooterrental.domain.User;
-import com.senla.training.yeutukhovich.scooterrental.dto.entity.PassDto;
 import com.senla.training.yeutukhovich.scooterrental.dto.RegistrationRequestDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.PassDto;
 import com.senla.training.yeutukhovich.scooterrental.dto.entity.RentDto;
 import com.senla.training.yeutukhovich.scooterrental.dto.entity.UserDto;
 import com.senla.training.yeutukhovich.scooterrental.exception.BusinessException;
-import com.senla.training.yeutukhovich.scooterrental.service.mapper.PassDtoMapper;
-import com.senla.training.yeutukhovich.scooterrental.service.mapper.ProfileDtoMapper;
-import com.senla.training.yeutukhovich.scooterrental.service.mapper.RentDtoMapper;
-import com.senla.training.yeutukhovich.scooterrental.service.mapper.UserDtoMapper;
+import com.senla.training.yeutukhovich.scooterrental.mapper.PassDtoMapper;
+import com.senla.training.yeutukhovich.scooterrental.mapper.ProfileDtoMapper;
+import com.senla.training.yeutukhovich.scooterrental.mapper.RentDtoMapper;
+import com.senla.training.yeutukhovich.scooterrental.mapper.UserDtoMapper;
 import com.senla.training.yeutukhovich.scooterrental.service.profile.ProfileService;
 import com.senla.training.yeutukhovich.scooterrental.util.constant.ExceptionConstant;
 import com.senla.training.yeutukhovich.scooterrental.util.constant.LoggerConstant;
@@ -73,19 +73,14 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Validated(OnUserCreate.class)
     public UserDto register(@Valid RegistrationRequestDto registrationRequestDto) {
+        log.info(LoggerConstant.ENTITY_CREATE.getMessage(), ENTITY_NAME);
         if (userDao.findUserByUsername(registrationRequestDto.getUserDto().getUsername()).isPresent()) {
-            BusinessException exception = new BusinessException(
-                    String.format(ExceptionConstant.USER_ALREADY_EXIST.getMessage(),
-                            registrationRequestDto.getUserDto().getUsername()), HttpStatus.FORBIDDEN);
-            log.warn(exception.getMessage());
-            throw exception;
+            throw new BusinessException(String.format(ExceptionConstant.USER_ALREADY_EXIST.getMessage(),
+                    registrationRequestDto.getUserDto().getUsername()), HttpStatus.FORBIDDEN);
         }
         if (registrationRequestDto.getUserDto().getRole().toUpperCase().equals(Role.ADMIN.name())) {
             if (!checkAdmin()) {
-                BusinessException exception = new BusinessException(ExceptionConstant.USER_CREATE_ADMIN_FAIL.getMessage(),
-                        HttpStatus.FORBIDDEN);
-                log.warn(exception.getMessage());
-                throw exception;
+                throw new BusinessException(ExceptionConstant.USER_CREATE_ADMIN_FAIL.getMessage(), HttpStatus.FORBIDDEN);
             }
         }
         User user = userDtoMapper.map(registrationRequestDto.getUserDto());
@@ -100,6 +95,7 @@ public class UserServiceImpl implements UserService {
             profile.setUser(user);
             user.setProfile(profileDtoMapper.map(profileService.create(profileDtoMapper.map(profile))));
         }
+        log.info(LoggerConstant.ENTITY_CREATE_SUCCESS.getMessage(), ENTITY_NAME, user.getId());
         return userDtoMapper.map(user);
     }
 
@@ -146,10 +142,8 @@ public class UserServiceImpl implements UserService {
         log.info(LoggerConstant.USER_CHANGE_PASSWORD.getMessage(), id);
         User user = findUserById(id);
         if (!user.getPassword().equals(encoder.encode(oldPassword))) {
-            BusinessException exception = new BusinessException(
+            throw new BusinessException(
                     String.format(ExceptionConstant.USER_CHANGE_PASSWORD_WRONG.getMessage(), id), HttpStatus.FORBIDDEN);
-            log.warn(exception.getMessage());
-            throw exception;
         }
         user.setPassword(encoder.encode(newPassword));
         return userDtoMapper.map(userDao.update(user));
@@ -175,12 +169,8 @@ public class UserServiceImpl implements UserService {
     }
 
     private User findUserById(Long userId) {
-        return userDao.findById(userId).orElseThrow(() -> {
-            BusinessException exception = new BusinessException(
-                    String.format(ExceptionConstant.ENTITY_NOT_EXIST.getMessage(), ENTITY_NAME), HttpStatus.NOT_FOUND);
-            log.warn(exception.getMessage());
-            return exception;
-        });
+        return userDao.findById(userId).orElseThrow(() -> new BusinessException(
+                String.format(ExceptionConstant.ENTITY_NOT_EXIST.getMessage(), ENTITY_NAME), HttpStatus.NOT_FOUND));
     }
 
     private boolean checkAdmin() {

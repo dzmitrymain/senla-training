@@ -5,8 +5,8 @@ import com.senla.training.yeutukhovich.scooterrental.domain.Scooter;
 import com.senla.training.yeutukhovich.scooterrental.dto.entity.RentDto;
 import com.senla.training.yeutukhovich.scooterrental.dto.entity.ScooterDto;
 import com.senla.training.yeutukhovich.scooterrental.exception.BusinessException;
-import com.senla.training.yeutukhovich.scooterrental.service.mapper.RentDtoMapper;
-import com.senla.training.yeutukhovich.scooterrental.service.mapper.ScooterDtoMapper;
+import com.senla.training.yeutukhovich.scooterrental.mapper.RentDtoMapper;
+import com.senla.training.yeutukhovich.scooterrental.mapper.ScooterDtoMapper;
 import com.senla.training.yeutukhovich.scooterrental.service.model.ModelService;
 import com.senla.training.yeutukhovich.scooterrental.service.spot.SpotService;
 import com.senla.training.yeutukhovich.scooterrental.util.constant.ExceptionConstant;
@@ -96,7 +96,7 @@ public class ScooterServiceImpl implements ScooterService {
         Scooter scooter = scooterDtoMapper.map(scooterDto);
         scooter.setId(null);
         scooterDao.add(scooter);
-        log.info(LoggerConstant.ENTITY_CREATE_SUCCESS.getMessage(), scooter.getId());
+        log.info(LoggerConstant.ENTITY_CREATE_SUCCESS.getMessage(), ENTITY_NAME, scooter.getId());
         return scooterDtoMapper.map(scooter);
     }
 
@@ -118,11 +118,7 @@ public class ScooterServiceImpl implements ScooterService {
     }
 
     private Scooter findScooterById(Long scooterId) {
-        return scooterDao.findById(scooterId).orElseThrow(() -> {
-            BusinessException exception = new BusinessException(
-                    String.format(ExceptionConstant.ENTITY_NOT_EXIST.getMessage(), ENTITY_NAME), HttpStatus.NOT_FOUND);
-            log.warn(exception.getMessage());
-            return exception;
-        });
+        return scooterDao.findById(scooterId).orElseThrow(() -> new BusinessException(
+                String.format(ExceptionConstant.ENTITY_NOT_EXIST.getMessage(), ENTITY_NAME), HttpStatus.NOT_FOUND));
     }
 }

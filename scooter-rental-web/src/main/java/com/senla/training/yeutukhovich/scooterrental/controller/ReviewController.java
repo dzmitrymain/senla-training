@@ -53,7 +53,7 @@ public class ReviewController {
     }
 
     @GetMapping("/score")
-    public Map<String, BigDecimal> findAverageScore(){
-     return Collections.singletonMap("averageScore", reviewService.findAverageScore());
+    public Map<String, BigDecimal> findAverageScore() {
+        return Collections.singletonMap("averageScore", reviewService.findAverageScore());
     }
 }
