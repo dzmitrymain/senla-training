@@ -2,7 +2,7 @@ package com.senla.training.yeutukhovich.scooterrental.service.user;
 
 import com.senla.training.yeutukhovich.scooterrental.dao.user.UserDao;
 import com.senla.training.yeutukhovich.scooterrental.domain.Profile;
-import com.senla.training.yeutukhovich.scooterrental.domain.Role;
+import com.senla.training.yeutukhovich.scooterrental.domain.role.Role;
 import com.senla.training.yeutukhovich.scooterrental.domain.User;
 import com.senla.training.yeutukhovich.scooterrental.dto.RegistrationRequestDto;
 import com.senla.training.yeutukhovich.scooterrental.dto.entity.PassDto;
@@ -153,6 +153,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public List<RentDto> findSortedByCreationDateUserRents(Long id) {
         log.info(LoggerConstant.USER_RENTS.getMessage(), id);
+        findUserById(id);
         return userDao.findAllSortedByCreationUserRents(id).stream()
                 .map(rentDtoMapper::map)
                 .collect(Collectors.toList());
@@ -163,6 +164,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public List<PassDto> findAllActiveUserPasses(Long id) {
         log.info(LoggerConstant.USER_PASSES.getMessage(), id);
+        findUserById(id);
         return userDao.findAllActiveUserPasses(id).stream()
                 .map(passDtoMapper::map)
                 .collect(Collectors.toList());

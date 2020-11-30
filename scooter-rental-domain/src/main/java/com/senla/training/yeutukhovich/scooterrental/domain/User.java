@@ -1,5 +1,6 @@
 package com.senla.training.yeutukhovich.scooterrental.domain;
 
+import com.senla.training.yeutukhovich.scooterrental.domain.role.Role;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.CreationTimestamp;

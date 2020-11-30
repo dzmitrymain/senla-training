@@ -1,6 +1,6 @@
 package com.senla.training.yeutukhovich.scooterrental.validator;
 
-import com.senla.training.yeutukhovich.scooterrental.domain.Role;
+import com.senla.training.yeutukhovich.scooterrental.domain.role.Role;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
