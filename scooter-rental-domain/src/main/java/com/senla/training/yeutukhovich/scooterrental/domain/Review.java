@@ -10,10 +10,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.metamodel.StaticMetamodel;
 import java.time.LocalDateTime;
 
-@StaticMetamodel(Review.class)
 @Entity
 @Table(name = "reviews")
 @Data

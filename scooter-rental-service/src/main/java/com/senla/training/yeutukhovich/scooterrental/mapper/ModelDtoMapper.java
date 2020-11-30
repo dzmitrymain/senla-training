@@ -2,14 +2,10 @@ package com.senla.training.yeutukhovich.scooterrental.mapper;
 
 import com.senla.training.yeutukhovich.scooterrental.domain.Model;
 import com.senla.training.yeutukhovich.scooterrental.dto.entity.ModelDto;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ModelDtoMapper {
-
-    @Autowired
-    private RateDtoMapper rateDtoMapper;
 
     public ModelDto map(Model model) {
         if (model == null) {

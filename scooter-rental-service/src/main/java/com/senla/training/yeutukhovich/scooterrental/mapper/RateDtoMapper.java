@@ -34,7 +34,7 @@ public class RateDtoMapper {
         }
         Rate rate = new Rate();
         rate.setId(rateDto.getId());
-        rate.setModel(modelDtoMapper.map(rateDto.getModeldto()));
+        rate.setModel(modelDtoMapper.map(rateDto.getModelDto()));
         rate.setPerHour(rateDto.getPerHour());
         rate.setWeekendPerHour(rateDto.getWeekendPerHour());
         rate.setCreationDate(rateDto.getCreationDate());

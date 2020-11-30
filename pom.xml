@@ -22,8 +22,6 @@
         <module>scooter-rental-exception</module>
     </modules>
 
-
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>11</maven.compiler.source>
@@ -31,6 +29,7 @@
         <maven.compiler.version>3.8.1</maven.compiler.version>
         <maven.checkstyle.version>3.1.1</maven.checkstyle.version>
         <maven.war.version>3.3.1</maven.war.version>
+        <maven.surefire.version>3.0.0-M5</maven.surefire.version>
 
         <spring.version>5.2.9.RELEASE</spring.version>
         <spring.secutity.version>5.4.1</spring.secutity.version>
@@ -42,6 +41,9 @@
         <mysql.connector.version>8.0.21</mysql.connector.version>
         <jackson.databind.version>2.11.3</jackson.databind.version>
         <hibernate.validator>6.1.6.Final</hibernate.validator>
+        <junit.version>5.7.0</junit.version>
+        <mockito.jupiter.version>3.6.28</mockito.jupiter.version>
+        <apache.commons.version>3.11</apache.commons.version>
         <!-- scooter-rental-domain -->
         <javax.persistence.version>2.2</javax.persistence.version>
     </properties>
@@ -75,11 +77,35 @@
             <version>${spring.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${spring.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.mockito/mockito-junit-jupiter -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>${mockito.jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+
+        <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.11</version>
+            <version>${apache.commons.version}</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-config -->
@@ -194,6 +220,13 @@
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven.surefire.version}</version>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>

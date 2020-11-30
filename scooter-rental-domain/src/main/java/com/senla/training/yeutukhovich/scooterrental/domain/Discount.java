@@ -15,8 +15,8 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "discounts")
 @Data
-@EqualsAndHashCode(callSuper = true, of = {"model", "startDate", "discount"})
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true, of = {"model", "startDate", "discount"})
 public class Discount extends AbstractEntity {
 
     @ManyToOne

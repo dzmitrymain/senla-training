@@ -18,7 +18,7 @@ public class RateDto extends AbstractEntityDto {
 
     @NotNull
     @NestedDtoIdNotNull
-    private ModelDto modeldto;
+    private ModelDto modelDto;
     @NotNull
     @Positive
     private BigDecimal perHour;
@@ -29,12 +29,12 @@ public class RateDto extends AbstractEntityDto {
     private LocalDateTime creationDate;
 
     public RateDto(Long id,
-                   ModelDto modeldto,
+                   ModelDto modelDto,
                    BigDecimal perHour,
                    BigDecimal weekendPerHour,
                    LocalDateTime creationDate) {
         this.id = id;
-        this.modeldto = modeldto;
+        this.modelDto = modelDto;
         this.perHour = perHour;
         this.weekendPerHour = weekendPerHour;
         this.creationDate = creationDate;
