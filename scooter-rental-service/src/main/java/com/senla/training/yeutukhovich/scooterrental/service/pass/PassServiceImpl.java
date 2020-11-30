@@ -2,7 +2,7 @@ package com.senla.training.yeutukhovich.scooterrental.service.pass;
 
 import com.senla.training.yeutukhovich.scooterrental.dao.pass.PassDao;
 import com.senla.training.yeutukhovich.scooterrental.domain.Pass;
-import com.senla.training.yeutukhovich.scooterrental.domain.Role;
+import com.senla.training.yeutukhovich.scooterrental.domain.role.Role;
 import com.senla.training.yeutukhovich.scooterrental.dto.entity.PassDto;
 import com.senla.training.yeutukhovich.scooterrental.dto.entity.RateDto;
 import com.senla.training.yeutukhovich.scooterrental.exception.BusinessException;
@@ -104,7 +104,7 @@ public class PassServiceImpl implements PassService {
         pass.setTotalMinutes(passDto.getTotalMinutes());
         pass.setExpiredDate(currentDateTime.plusMonths(1));
         if (passDto.getUserDto().getRole().equals(Role.USER.name())) {
-            pass.setPrice(calculatePassPrice(pass.getTotalMinutes(), rateDto.getPerHour()));
+            pass.setPrice(calculatePassPricePerMinute(pass.getTotalMinutes(), rateDto.getPerHour()));
         } else if (passDto.getUserDto().getRole().equals(Role.ADMIN.name())) {
             if (passDto.getExpiredDate() != null) {
                 pass.setExpiredDate(passDto.getExpiredDate());
@@ -131,7 +131,7 @@ public class PassServiceImpl implements PassService {
                 String.format(ExceptionConstant.ENTITY_NOT_EXIST.getMessage(), ENTITY_NAME), HttpStatus.NOT_FOUND));
     }
 
-    private BigDecimal calculatePassPrice(long passMinutes, BigDecimal perHour) {
+    private BigDecimal calculatePassPricePerMinute(long passMinutes, BigDecimal perHour) {
         BigDecimal passPricePerMinute = perHour.multiply(passPriceCoefficient).divide(new BigDecimal(60), 2,
                 RoundingMode.HALF_EVEN);
         return passPricePerMinute.multiply(new BigDecimal(passMinutes));

@@ -145,9 +145,7 @@ public class RentServiceImpl implements RentService {
         Rent rent = new Rent();
         rent.setUser(userDtoMapper.map(userService.findById(creationRentDto.getUserId())));
         rent.setScooter(scooterDtoMapper.map(scooterService.findById(creationRentDto.getScooterId())));
-        List<Rent> rents;
-        if (!(rents = scooterDao.findSortedByCreationScooterRents(rent.getScooter().getId())).isEmpty() &&
-                rents.get(0).getActive()) {
+        if (scooterDao.findActiveRentScooters().contains(rent.getScooter())) {
             throw new BusinessException(
                     String.format(ExceptionConstant.SCOOTER_NOT_AVAILABLE.getMessage(), creationRentDto.getScooterId()),
                     HttpStatus.FORBIDDEN);
@@ -198,7 +196,7 @@ public class RentServiceImpl implements RentService {
         Duration rentDuration = Duration.between(currentDateTime, creationRentDto.getExpiredDate());
         long rentDurationInMinutesToPay = rentDuration.toMinutes();
 
-        if (creationRentDto.getPaymentType().equals(PaymentType.PASS.name())) {
+        if (PaymentType.PASS.name().equals(creationRentDto.getPaymentType())) {
             List<Pass> activeUserPasses = userDao.findAllActiveUserPasses(creationRentDto.getUserId()).stream()
                     .filter(pass -> pass.getModel().getId().equals(model.getId()))
                     .collect(Collectors.toList());

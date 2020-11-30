@@ -42,5 +42,16 @@ public class ScooterDaoImpl extends AbstractDao<Scooter, Long> implements Scoote
         criteriaQuery.orderBy(criteriaBuilder.desc(rents.get(Rent_.creationDate)));
         return entityManager.createQuery(criteriaQuery).getResultList();
     }
-}
 
+    @Override
+    public List<Scooter> findActiveRentScooters() {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Scooter> criteriaQuery = criteriaBuilder.createQuery(Scooter.class);
+        Root<Rent> rents = criteriaQuery.from(Rent.class);
+        Join<Rent, Scooter> scooters = rents.join(Rent_.scooter);
+
+        criteriaQuery.where(criteriaBuilder.equal(rents.get(Rent_.active), true));
+        criteriaQuery.select(scooters).distinct(true);
+        return entityManager.createQuery(criteriaQuery).getResultList();
+    }
+}

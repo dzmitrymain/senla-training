@@ -64,4 +64,9 @@ public class ScooterController {
     public List<RentDto> findRentsByScooterId(@PathVariable("id") Long id) {
         return scooterService.findSortedByCreationScooterRents(id);
     }
+
+    @GetMapping("/active")
+    public List<ScooterDto> findActiveRentScooters() {
+        return scooterService.findActiveRentScooters();
+    }
 }

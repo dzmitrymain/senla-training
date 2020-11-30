@@ -11,4 +11,6 @@ public interface ScooterDao extends GenericDao<Scooter, Long> {
     Integer findDistanceTravelledByScooterId(Long id);
 
     List<Rent> findSortedByCreationScooterRents(Long id);
+
+    List<Scooter> findActiveRentScooters();
 }

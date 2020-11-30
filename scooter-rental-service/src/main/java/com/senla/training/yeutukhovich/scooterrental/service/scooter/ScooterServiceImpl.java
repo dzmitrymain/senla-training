@@ -112,8 +112,18 @@ public class ScooterServiceImpl implements ScooterService {
     @Transactional
     public List<RentDto> findSortedByCreationScooterRents(Long id) {
         log.info(LoggerConstant.SCOOTER_RENTS.getMessage(), id);
+        findScooterById(id);
         return scooterDao.findSortedByCreationScooterRents(id).stream()
                 .map(rentDtoMapper::map)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public List<ScooterDto> findActiveRentScooters() {
+        log.info(LoggerConstant.SCOOTER_ACTIVE_RENTS.getMessage());
+        return scooterDao.findActiveRentScooters().stream()
+                .map(scooterDtoMapper::map)
                 .collect(Collectors.toList());
     }
 

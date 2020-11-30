@@ -21,4 +21,6 @@ public interface ScooterService {
     Integer findDistanceTravelledByScooterId(Long id);
 
     List<RentDto> findSortedByCreationScooterRents(Long id);
+
+    List<ScooterDto> findActiveRentScooters();
 }

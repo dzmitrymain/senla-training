@@ -125,6 +125,7 @@ public class SpotServiceImpl implements SpotService {
     @Transactional
     public List<ScooterDto> findAvailableScootersBySpotId(Long id) {
         log.info(LoggerConstant.SPOT_AVAILABLE_SCOOTERS.getMessage(), id);
+        findSpotById(id);
         return spotDao.findAvailableScootersBySpotId(id).stream()
                 .map(scooterDtoMapper::map)
                 .collect(Collectors.toList());

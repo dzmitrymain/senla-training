@@ -67,7 +67,7 @@ public class RateServiceImpl implements RateService {
     public RateDto updateById(Long id, @Valid RateDto rateDto) {
         log.info(LoggerConstant.ENTITY_UPDATE.getMessage(), ENTITY_NAME, id);
         findRatesById(id);
-        modelService.findById(rateDto.getModeldto().getId());
+        modelService.findById(rateDto.getModelDto().getId());
         if (!id.equals(rateDto.getId())) {
             rateDto.setId(id);
         }
@@ -78,7 +78,7 @@ public class RateServiceImpl implements RateService {
     @Transactional
     public RateDto create(@Valid RateDto rateDto) {
         log.info(LoggerConstant.ENTITY_CREATE.getMessage(), ENTITY_NAME);
-        rateDto.setModeldto(modelService.findById(rateDto.getModeldto().getId()));
+        rateDto.setModelDto(modelService.findById(rateDto.getModelDto().getId()));
         Rate rate = rateDtoMapper.map(rateDto);
         rate.setId(null);
         rateDao.add(rate);
