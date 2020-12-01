@@ -7,6 +7,7 @@ import com.senla.training.yeutukhovich.scooterrental.dto.entity.ReviewDto;
 import com.senla.training.yeutukhovich.scooterrental.dto.entity.ScooterDto;
 import com.senla.training.yeutukhovich.scooterrental.service.model.ModelService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -51,6 +52,7 @@ public class ModelController {
         return modelService.updateById(id, modelDto);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping()
     public ModelDto create(@RequestBody ModelDto modelDto) {
         return modelService.create(modelDto);

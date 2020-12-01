@@ -46,6 +46,8 @@
         <apache.commons.version>3.11</apache.commons.version>
         <!-- scooter-rental-domain -->
         <javax.persistence.version>2.2</javax.persistence.version>
+        <!-- scooter-rental-web -->
+        <jsonwebtoken.version>0.9.1</jsonwebtoken.version>
     </properties>
 
     <dependencies>

@@ -1,26 +1,40 @@
-package com.senla.training.yeutukhovich.scooterrental.handler;
+package com.senla.training.yeutukhovich.scooterrental.controller.handler;
 
 import com.senla.training.yeutukhovich.scooterrental.dto.ErrorDto;
 import com.senla.training.yeutukhovich.scooterrental.exception.BusinessException;
+import com.senla.training.yeutukhovich.scooterrental.security.handler.CustomAccessDeniedHandler;
 import com.senla.training.yeutukhovich.scooterrental.util.constant.ExceptionConstant;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @ControllerAdvice
 @Slf4j
 public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
+
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
+
+    @Autowired
+    public ControllerExceptionHandler(CustomAccessDeniedHandler customAccessDeniedHandler) {
+        this.customAccessDeniedHandler = customAccessDeniedHandler;
+    }
 
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ErrorDto> handleBusinessException(BusinessException exception) {
@@ -30,17 +44,19 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(new ErrorDto(exception.getHttpStatus(), exception.getMessage(), null));
     }
 
-//    @ExceptionHandler(AccessDeniedException.class)
-//    public ResponseEntity<ErrorDto> handleAccessDeniedException() {
-//        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorDto(HttpStatus.FORBIDDEN,
-//                MessageConstant.ACCESS_DENIED.getMessage()));
-//    }
+    @ExceptionHandler(AccessDeniedException.class)
+    public void handleAccessDeniedException(HttpServletRequest httpServletRequest,
+                                            HttpServletResponse httpServletResponse,
+                                            AccessDeniedException exception) throws IOException, ServletException {
+        customAccessDeniedHandler.handle(httpServletRequest, httpServletResponse, exception);
+    }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<ErrorDto> handleDataIntegrityViolationException(DataIntegrityViolationException exception) {
+    public ResponseEntity<ErrorDto> handleDataIntegrityViolationException() {
         return ResponseEntity
                 .status(HttpStatus.FORBIDDEN)
-                .body(new ErrorDto(HttpStatus.FORBIDDEN, ExceptionConstant.SQL_EXECUTION_FAILURE.getMessage(), null));
+                .body(new ErrorDto(HttpStatus.FORBIDDEN, ExceptionConstant.SQL_EXECUTION_FAILURE.getMessage(),
+                        null));
     }
 
     @ExceptionHandler(ConstraintViolationException.class)

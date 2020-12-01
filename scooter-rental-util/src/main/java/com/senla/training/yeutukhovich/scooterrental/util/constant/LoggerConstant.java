@@ -14,6 +14,9 @@ public enum LoggerConstant {
     USER_PASSES("Active passes by user[id={}] searched."),
     USER_RENTS("Rents by user[id={}] searched."),
     USER_CHANGE_PASSWORD("User[id={}] is changing password."),
+    USER_INVALID_TOKEN("Invalid token. Cause: {}."),
+    USER_UNAUTHORIZED_REQUEST("Unauthorized request [{}]."),
+    USER_ACCESS_DENIED("Access denied [{}]."),
 
     DISCOUNTS_ACTIVE("Active discounts searched."),
 

@@ -1,4 +1,4 @@
-package com.senla.training.yeutukhovich.scooterrental.config;
+package com.senla.training.yeutukhovich.scooterrental.validator.config;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
