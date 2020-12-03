@@ -12,26 +12,47 @@
     <artifactId>scooter-rental-service</artifactId>
 
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.mockito/mockito-junit-jupiter -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>${mockito.jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+
+        <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+
         <dependency>
             <artifactId>scooter-rental-dao</artifactId>
             <groupId>com.senla.training.yeutukhovich</groupId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+
         <dependency>
             <artifactId>scooter-rental-domain</artifactId>
             <groupId>com.senla.training.yeutukhovich</groupId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+
         <dependency>
             <artifactId>scooter-rental-dto</artifactId>
             <groupId>com.senla.training.yeutukhovich</groupId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+
         <dependency>
             <artifactId>scooter-rental-util</artifactId>
             <groupId>com.senla.training.yeutukhovich</groupId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+
         <dependency>
             <artifactId>scooter-rental-exception</artifactId>
             <groupId>com.senla.training.yeutukhovich</groupId>

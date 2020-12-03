@@ -9,6 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 @Configuration
 @ComponentScan("com.senla.training.yeutukhovich.scooterrental")
@@ -29,6 +30,6 @@ public class AppConfig {
 
     @Bean
     public ObjectMapper objectMapper() {
-        return new ObjectMapper();
+        return Jackson2ObjectMapperBuilder.json().build();
     }
 }

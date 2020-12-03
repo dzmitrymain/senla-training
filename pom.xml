@@ -30,23 +30,23 @@
         <maven.checkstyle.version>3.1.1</maven.checkstyle.version>
         <maven.war.version>3.3.1</maven.war.version>
         <maven.surefire.version>3.0.0-M5</maven.surefire.version>
-
         <spring.version>5.2.9.RELEASE</spring.version>
         <spring.secutity.version>5.4.1</spring.secutity.version>
-        <javaee.api.version>8.0.1</javaee.api.version>
+        <jackson.databind.version>2.12.0</jackson.databind.version>
         <lombok.version>1.18.16</lombok.version>
         <sl4j.version>1.7.30</sl4j.version>
         <logback.version>1.2.3</logback.version>
         <hibernate.version>5.4.21.Final</hibernate.version>
-        <mysql.connector.version>8.0.21</mysql.connector.version>
-        <jackson.databind.version>2.11.3</jackson.databind.version>
-        <hibernate.validator>6.1.6.Final</hibernate.validator>
+        <!-- scooter-rental-service -->
         <junit.version>5.7.0</junit.version>
         <mockito.jupiter.version>3.6.28</mockito.jupiter.version>
+        <!-- scooter-rental-dto -->
+        <hibernate.validator>6.1.6.Final</hibernate.validator>
         <apache.commons.version>3.11</apache.commons.version>
-        <!-- scooter-rental-domain -->
-        <javax.persistence.version>2.2</javax.persistence.version>
+        <!-- scooter-rental-dao -->
+        <mysql.connector.version>8.0.21</mysql.connector.version>
         <!-- scooter-rental-web -->
+        <javaee.api.version>8.0.1</javaee.api.version>
         <jsonwebtoken.version>0.9.1</jsonwebtoken.version>
     </properties>
 
@@ -56,27 +56,6 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
             <version>${spring.version}</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-core -->
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-core</artifactId>
-            <version>${spring.secutity.version}</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-web -->
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-web</artifactId>
-            <version>${spring.secutity.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-test</artifactId>
-            <version>${spring.secutity.version}</version>
-            <scope>test</scope>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.springframework/spring-orm -->
@@ -93,28 +72,18 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.mockito/mockito-junit-jupiter -->
+        <!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-core -->
         <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-junit-jupiter</artifactId>
-            <version>${mockito.jupiter.version}</version>
-            <scope>test</scope>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+            <version>${spring.secutity.version}</version>
         </dependency>
 
-
-        <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
+        <!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-web -->
         <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>${apache.commons.version}</version>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
+            <version>${spring.secutity.version}</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-config -->
@@ -125,36 +94,29 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <version>${spring.secutity.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.databind.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>${jackson.databind.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
             <scope>provided</scope>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/javax/javaee-api -->
-        <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-api</artifactId>
-            <version>${javaee.api.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-
-        <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-entitymanager -->
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-            <version>${hibernate.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-spatial</artifactId>
-            <version>${hibernate.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>${mysql.connector.version}</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
@@ -171,23 +133,17 @@
             <version>${logback.version}</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-entitymanager -->
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${jackson.databind.version}</version>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>${hibernate.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-jsr310</artifactId>
-            <version>${jackson.databind.version}</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-validator -->
-        <dependency>
-            <groupId>org.hibernate.validator</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <version>${hibernate.validator}</version>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-spatial</artifactId>
+            <version>${hibernate.version}</version>
         </dependency>
     </dependencies>
 
@@ -218,7 +174,7 @@
                     <target>${maven.compiler.target}</target>
                     <forceJavacCompilerUse>true</forceJavacCompilerUse>
                     <compilerArgs>
-                    <arg>-parameters</arg>
+                        <arg>-parameters</arg>
                     </compilerArgs>
                     <annotationProcessorPaths>
                         <path>
@@ -243,5 +199,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

@@ -23,6 +23,7 @@ import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 @Component
 @Slf4j
@@ -61,6 +62,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 null);
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding(String.valueOf(StandardCharsets.UTF_8));
         response.getWriter().write(objectMapper.writeValueAsString(errorDto));
     }
 
@@ -75,6 +77,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         AuthenticationResponseDto responseDto = new AuthenticationResponseDto(HttpStatus.OK,
                 SecurityConstant.TOKEN_PREFIX.getConstant() + token);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding(String.valueOf(StandardCharsets.UTF_8));
         response.getWriter().write(objectMapper.writeValueAsString(responseDto));
     }
 }

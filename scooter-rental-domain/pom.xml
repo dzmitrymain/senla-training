@@ -11,15 +11,6 @@
 
     <artifactId>scooter-rental-domain</artifactId>
 
-    <dependencies>
-        <!-- https://mvnrepository.com/artifact/javax.persistence/javax.persistence-api -->
-        <dependency>
-            <groupId>javax.persistence</groupId>
-            <artifactId>javax.persistence-api</artifactId>
-            <version>${javax.persistence.version}</version>
-        </dependency>
-    </dependencies>
-
     <build>
         <plugins>
             <plugin>

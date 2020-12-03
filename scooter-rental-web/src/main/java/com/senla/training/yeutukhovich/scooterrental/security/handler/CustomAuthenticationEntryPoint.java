@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 @Component
 @Slf4j
@@ -33,6 +34,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
                          AuthenticationException authException) throws IOException {
         response.setStatus(HttpStatus.FORBIDDEN.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding(String.valueOf(StandardCharsets.UTF_8));
         ErrorDto errorDto = new ErrorDto(HttpStatus.FORBIDDEN, ExceptionConstant.USER_AUTHENTICATION_REQUIRED.getMessage(),
                 null);
         log.warn(LoggerConstant.USER_UNAUTHORIZED_REQUEST.getMessage(), request.getRequestURI());

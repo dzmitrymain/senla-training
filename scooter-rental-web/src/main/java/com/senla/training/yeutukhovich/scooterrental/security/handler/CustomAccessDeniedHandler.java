@@ -14,10 +14,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 @Component
 @Slf4j
@@ -33,9 +33,10 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest httpServletRequest,
                        HttpServletResponse httpServletResponse,
-                       AccessDeniedException e) throws IOException, ServletException {
+                       AccessDeniedException e) throws IOException {
         httpServletResponse.setStatus(HttpStatus.FORBIDDEN.value());
         httpServletResponse.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        httpServletResponse.setCharacterEncoding(String.valueOf(StandardCharsets.UTF_8));
         ErrorDto errorDto = new ErrorDto(HttpStatus.FORBIDDEN, ExceptionConstant.USER_ACCESS_DENIED.getMessage(),
                 null);
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
