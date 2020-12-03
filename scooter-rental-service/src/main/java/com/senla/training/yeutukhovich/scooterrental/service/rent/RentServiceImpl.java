@@ -7,6 +7,7 @@ import com.senla.training.yeutukhovich.scooterrental.dao.user.UserDao;
 import com.senla.training.yeutukhovich.scooterrental.domain.Model;
 import com.senla.training.yeutukhovich.scooterrental.domain.Pass;
 import com.senla.training.yeutukhovich.scooterrental.domain.Rent;
+import com.senla.training.yeutukhovich.scooterrental.domain.User;
 import com.senla.training.yeutukhovich.scooterrental.domain.type.PaymentType;
 import com.senla.training.yeutukhovich.scooterrental.dto.CreationRentDto;
 import com.senla.training.yeutukhovich.scooterrental.dto.entity.RentDto;
@@ -23,6 +24,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -112,6 +116,7 @@ public class RentServiceImpl implements RentService {
     public RentDto completeRent(Long id, @PositiveOrZero Integer distanceTravelled) {
         log.info(LoggerConstant.RENT_END.getMessage(), id);
         Rent rent = findRentById(id);
+        checkUserMatch(rent.getUser());
         if (!rent.getActive()) {
             throw new BusinessException(
                     String.format(ExceptionConstant.RENT_ALREADY_ENDS.getMessage(), id), HttpStatus.FORBIDDEN);
@@ -144,6 +149,7 @@ public class RentServiceImpl implements RentService {
                 creationRentDto.getPaymentType());
         Rent rent = new Rent();
         rent.setUser(userDtoMapper.map(userService.findById(creationRentDto.getUserId())));
+        checkUserMatch(rent.getUser());
         rent.setScooter(scooterDtoMapper.map(scooterService.findById(creationRentDto.getScooterId())));
         if (scooterDao.findActiveRentScooters().contains(rent.getScooter())) {
             throw new BusinessException(
@@ -190,6 +196,13 @@ public class RentServiceImpl implements RentService {
     private Rent findRentById(Long rentId) {
         return rentDao.findById(rentId).orElseThrow(() -> new BusinessException(
                 String.format(ExceptionConstant.ENTITY_NOT_EXIST.getMessage(), ENTITY_NAME), HttpStatus.NOT_FOUND));
+    }
+
+    private void checkUserMatch(User user) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !user.getUsername().equals(auth.getName())) {
+            throw new AccessDeniedException(ExceptionConstant.USER_ACCESS_DENIED.getMessage());
+        }
     }
 
     private BigDecimal completePayment(CreationRentDto creationRentDto, Model model, LocalDateTime currentDateTime) {

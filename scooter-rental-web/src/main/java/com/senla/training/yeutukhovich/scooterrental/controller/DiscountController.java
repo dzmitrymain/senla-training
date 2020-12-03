@@ -3,6 +3,7 @@ package com.senla.training.yeutukhovich.scooterrental.controller;
 import com.senla.training.yeutukhovich.scooterrental.dto.entity.DiscountDto;
 import com.senla.training.yeutukhovich.scooterrental.service.discount.DiscountService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,16 +35,19 @@ public class DiscountController {
         return discountService.findById(id);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{id}")
     public DiscountDto deleteById(@PathVariable("id") Long id) {
         return discountService.deleteById(id);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public DiscountDto updateById(@PathVariable("id") Long id, @RequestBody DiscountDto discountDto) {
         return discountService.updateById(id, discountDto);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping()
     public DiscountDto create(@RequestBody DiscountDto discountDto) {
         return discountService.create(discountDto);

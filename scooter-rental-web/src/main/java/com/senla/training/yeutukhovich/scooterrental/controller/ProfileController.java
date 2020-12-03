@@ -3,6 +3,7 @@ package com.senla.training.yeutukhovich.scooterrental.controller;
 import com.senla.training.yeutukhovich.scooterrental.dto.entity.ProfileDto;
 import com.senla.training.yeutukhovich.scooterrental.service.profile.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,10 +35,12 @@ public class ProfileController {
         return profileService.findById(id);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{id}")
     public ProfileDto deleteById(@PathVariable("id") Long id) {
         return profileService.deleteById(id);
     }
+
 
     @PutMapping("/{id}")
     public ProfileDto updateById(@PathVariable("id") Long id, @RequestBody ProfileDto profileDto) {

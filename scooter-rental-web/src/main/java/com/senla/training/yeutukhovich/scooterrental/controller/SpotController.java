@@ -4,6 +4,7 @@ import com.senla.training.yeutukhovich.scooterrental.dto.entity.ScooterDto;
 import com.senla.training.yeutukhovich.scooterrental.dto.entity.SpotDto;
 import com.senla.training.yeutukhovich.scooterrental.service.spot.SpotService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,16 +38,19 @@ public class SpotController {
         return spotService.findById(id);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{id}")
     public SpotDto deleteById(@PathVariable("id") Long id) {
         return spotService.deleteById(id);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public SpotDto updateById(@PathVariable("id") Long id, @RequestBody SpotDto spotDto) {
         return spotService.updateById(id, spotDto);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping()
     public SpotDto create(@RequestBody SpotDto spotDto) {
         return spotService.create(spotDto);

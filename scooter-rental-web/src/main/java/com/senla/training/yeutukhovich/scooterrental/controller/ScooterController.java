@@ -4,6 +4,7 @@ import com.senla.training.yeutukhovich.scooterrental.dto.entity.RentDto;
 import com.senla.training.yeutukhovich.scooterrental.dto.entity.ScooterDto;
 import com.senla.training.yeutukhovich.scooterrental.service.scooter.ScooterService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,16 +38,19 @@ public class ScooterController {
         return scooterService.findById(id);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{id}")
     public ScooterDto deleteById(@PathVariable("id") Long id) {
         return scooterService.deleteById(id);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ScooterDto updateById(@PathVariable("id") Long id, @RequestBody ScooterDto scooterDto) {
         return scooterService.updateById(id, scooterDto);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping()
     public ScooterDto create(@RequestBody ScooterDto scooterDto) {
         return scooterService.create(scooterDto);
@@ -60,11 +64,13 @@ public class ScooterController {
         return responseMap;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}/rents")
     public List<RentDto> findRentsByScooterId(@PathVariable("id") Long id) {
         return scooterService.findSortedByCreationScooterRents(id);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/active")
     public List<ScooterDto> findActiveRentScooters() {
         return scooterService.findActiveRentScooters();

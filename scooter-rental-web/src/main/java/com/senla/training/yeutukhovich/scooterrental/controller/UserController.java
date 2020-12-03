@@ -6,6 +6,7 @@ import com.senla.training.yeutukhovich.scooterrental.dto.entity.RentDto;
 import com.senla.training.yeutukhovich.scooterrental.dto.entity.UserDto;
 import com.senla.training.yeutukhovich.scooterrental.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,11 +44,13 @@ public class UserController {
         return userService.findById(id);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{id}")
     public UserDto deleteById(@PathVariable("id") Long id) {
         return userService.deleteById(id);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public UserDto updateById(@PathVariable("id") Long id, @RequestBody UserDto userDto) {
         return userService.updateById(id, userDto);

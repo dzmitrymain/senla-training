@@ -2,16 +2,22 @@ package com.senla.training.yeutukhovich.scooterrental.service.review;
 
 import com.senla.training.yeutukhovich.scooterrental.dao.review.ReviewDao;
 import com.senla.training.yeutukhovich.scooterrental.domain.Review;
+import com.senla.training.yeutukhovich.scooterrental.domain.User;
 import com.senla.training.yeutukhovich.scooterrental.dto.entity.ReviewDto;
 import com.senla.training.yeutukhovich.scooterrental.exception.BusinessException;
 import com.senla.training.yeutukhovich.scooterrental.mapper.ReviewDtoMapper;
+import com.senla.training.yeutukhovich.scooterrental.mapper.UserDtoMapper;
 import com.senla.training.yeutukhovich.scooterrental.service.model.ModelService;
 import com.senla.training.yeutukhovich.scooterrental.service.profile.ProfileService;
+import com.senla.training.yeutukhovich.scooterrental.service.user.UserService;
 import com.senla.training.yeutukhovich.scooterrental.util.constant.ExceptionConstant;
 import com.senla.training.yeutukhovich.scooterrental.util.constant.LoggerConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -30,18 +36,24 @@ public class ReviewServiceImpl implements ReviewService {
     private static final String ENTITY_NAME = "Review";
 
     private final ReviewDao reviewDao;
+    private final UserService userService;
     private final ModelService modelService;
     private final ProfileService profileService;
+    private final UserDtoMapper userDtoMapper;
     private final ReviewDtoMapper reviewDtoMapper;
 
     @Autowired
     public ReviewServiceImpl(ReviewDao reviewDao,
+                             UserService userService,
                              ModelService modelService,
                              ProfileService profileService,
+                             UserDtoMapper userDtoMapper,
                              ReviewDtoMapper reviewDtoMapper) {
         this.reviewDao = reviewDao;
+        this.userService = userService;
         this.modelService = modelService;
         this.profileService = profileService;
+        this.userDtoMapper = userDtoMapper;
         this.reviewDtoMapper = reviewDtoMapper;
     }
 
@@ -66,6 +78,7 @@ public class ReviewServiceImpl implements ReviewService {
     public ReviewDto deleteById(Long id) {
         log.info(LoggerConstant.ENTITY_DELETE.getMessage(), ENTITY_NAME, id);
         Review reviewToDelete = findReviewById(id);
+        checkUserMatch(reviewToDelete.getProfile().getUser());
         reviewDao.delete(reviewToDelete);
         return reviewDtoMapper.map(reviewToDelete);
     }
@@ -75,6 +88,7 @@ public class ReviewServiceImpl implements ReviewService {
     public ReviewDto updateById(Long id, @Valid ReviewDto reviewDto) {
         log.info(LoggerConstant.ENTITY_UPDATE.getMessage(), ENTITY_NAME, id);
         Review checkedReview = findReviewById(id);
+        checkUserMatch(checkedReview.getProfile().getUser());
         reviewDto.setProfileDto(profileService.findById(checkedReview.getProfile().getId()));
         modelService.findById(reviewDto.getModelDto().getId());
         if (!id.equals(reviewDto.getId())) {
@@ -89,6 +103,7 @@ public class ReviewServiceImpl implements ReviewService {
         log.info(LoggerConstant.ENTITY_CREATE.getMessage(), ENTITY_NAME);
         reviewDto.setModelDto(modelService.findById(reviewDto.getModelDto().getId()));
         reviewDto.setProfileDto(profileService.findById(reviewDto.getProfileDto().getId()));
+        checkUserMatch(userDtoMapper.map(userService.findById(reviewDto.getProfileDto().getUserId())));
         Review review = reviewDtoMapper.map(reviewDto);
         review.setId(null);
         reviewDao.add(review);
@@ -106,5 +121,12 @@ public class ReviewServiceImpl implements ReviewService {
     private Review findReviewById(Long reviewId) {
         return reviewDao.findById(reviewId).orElseThrow(() -> new BusinessException(
                 String.format(ExceptionConstant.ENTITY_NOT_EXIST.getMessage(), ENTITY_NAME), HttpStatus.NOT_FOUND));
+    }
+
+    private void checkUserMatch(User user) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !user.getUsername().equals(auth.getName())) {
+            throw new AccessDeniedException(ExceptionConstant.USER_ACCESS_DENIED.getMessage());
+        }
     }
 }

@@ -37,11 +37,12 @@ VALUES ('1', '1', '2', '2.5')
 
 -- scooter_rental.users
 INSERT INTO `scooter_rental`.`users` (`id`, `username`, `password`, `role`)
-VALUES ('1', 'test', 'test', 'ADMIN');
+VALUES ('1', 'admin', '$2a$10$bljEFXZPPwAHZgs.ZB7khuB3U/8Ev2d6k/sUar3LpbSb/yikCA/nK', 'ADMIN'),
+       ('2', 'user', '$2a$10$Yl5zSvxQut0OlQKjqREMHurMQlZXU4v9Onb4LJHLs.68cJw1uaZ7G', 'USER');
 
 -- scooter_rental.profiles
 INSERT INTO `scooter_rental`.`profiles` (`id`, `user_id`, `location_id`, `name`, `surname`, `email`, `phone_number`)
-VALUES ('1', '1', '1', 'test', 'test', 'test', 'test');
+VALUES ('1', '2', '1', 'userName', 'userSurname', 'user@user.user', '+777551771717');
 
 -- scooter_rental.discounts
 INSERT INTO `scooter_rental`.`discounts` (`id`, `model_id`, `start_date`, `end_date`, `discount`)
@@ -57,7 +58,6 @@ VALUES ('1', '1', '1', '4', 'Awesome.');
 -- scooter_rental.passes
 INSERT INTO `scooter_rental`.`passes` (`id`, `user_id`, `model_id`, `expired_date`, `remaining_minutes`,
                                        `total_minutes`, `price`)
-VALUES ('1', '1', '1', '2020-12-31 23:59:59', '1000', '1000', '100.00'),
-       ('2', '1', '1', '2020-10-15 23:59:59', '1000', '1000', '100.00');
+VALUES ('1', '1', '1', '2020-12-31 23:59:59', '10000', '10000', '0.00');
 
 COMMIT;

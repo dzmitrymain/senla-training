@@ -21,6 +21,7 @@ import com.senla.training.yeutukhovich.scooterrental.validator.marker.OnUserUpda
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -141,6 +142,7 @@ public class UserServiceImpl implements UserService {
     public UserDto changePasswordByUserId(Long id, String oldPassword, String newPassword) {
         log.info(LoggerConstant.USER_CHANGE_PASSWORD.getMessage(), id);
         User user = findUserById(id);
+        checkUserMatch(user);
         if (!user.getPassword().equals(encoder.encode(oldPassword))) {
             throw new BusinessException(
                     String.format(ExceptionConstant.USER_CHANGE_PASSWORD_WRONG.getMessage(), id), HttpStatus.FORBIDDEN);
@@ -153,7 +155,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public List<RentDto> findSortedByCreationDateUserRents(Long id) {
         log.info(LoggerConstant.USER_RENTS.getMessage(), id);
-        findUserById(id);
+        checkUserMatch(findUserById(id));
         return userDao.findAllSortedByCreationUserRents(id).stream()
                 .map(rentDtoMapper::map)
                 .collect(Collectors.toList());
@@ -164,7 +166,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public List<PassDto> findAllActiveUserPasses(Long id) {
         log.info(LoggerConstant.USER_PASSES.getMessage(), id);
-        findUserById(id);
+        checkUserMatch(findUserById(id));
         return userDao.findAllActiveUserPasses(id).stream()
                 .map(passDtoMapper::map)
                 .collect(Collectors.toList());
@@ -173,6 +175,13 @@ public class UserServiceImpl implements UserService {
     private User findUserById(Long userId) {
         return userDao.findById(userId).orElseThrow(() -> new BusinessException(
                 String.format(ExceptionConstant.ENTITY_NOT_EXIST.getMessage(), ENTITY_NAME), HttpStatus.NOT_FOUND));
+    }
+
+    private void checkUserMatch(User user) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !user.getUsername().equals(auth.getName())) {
+            throw new AccessDeniedException(ExceptionConstant.USER_ACCESS_DENIED.getMessage());
+        }
     }
 
     private boolean checkAdmin() {

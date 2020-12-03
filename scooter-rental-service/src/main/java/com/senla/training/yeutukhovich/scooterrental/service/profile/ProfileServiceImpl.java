@@ -3,6 +3,7 @@ package com.senla.training.yeutukhovich.scooterrental.service.profile;
 import com.senla.training.yeutukhovich.scooterrental.dao.profile.ProfileDao;
 import com.senla.training.yeutukhovich.scooterrental.dao.user.UserDao;
 import com.senla.training.yeutukhovich.scooterrental.domain.Profile;
+import com.senla.training.yeutukhovich.scooterrental.domain.User;
 import com.senla.training.yeutukhovich.scooterrental.dto.entity.ProfileDto;
 import com.senla.training.yeutukhovich.scooterrental.exception.BusinessException;
 import com.senla.training.yeutukhovich.scooterrental.mapper.ProfileDtoMapper;
@@ -11,6 +12,9 @@ import com.senla.training.yeutukhovich.scooterrental.util.constant.LoggerConstan
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -69,6 +73,7 @@ public class ProfileServiceImpl implements ProfileService {
     public ProfileDto updateById(Long id, @Valid ProfileDto profileDto) {
         log.info(LoggerConstant.ENTITY_UPDATE.getMessage(), ENTITY_NAME, id);
         Profile checkedProfile = findProfileById(id);
+        checkUserMatch(checkedProfile.getUser());
         profileDto.setUserId(checkedProfile.getUser().getId());
         if (!id.equals(profileDto.getId())) {
             profileDto.setId(id);
@@ -100,6 +105,13 @@ public class ProfileServiceImpl implements ProfileService {
     private Profile findProfileById(Long profileId) {
         return profileDao.findById(profileId).orElseThrow(() -> new BusinessException(
                 String.format(ExceptionConstant.ENTITY_NOT_EXIST.getMessage(), ENTITY_NAME), HttpStatus.NOT_FOUND));
+    }
+
+    private void checkUserMatch(User user) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !user.getUsername().equals(auth.getName())) {
+            throw new AccessDeniedException(ExceptionConstant.USER_ACCESS_DENIED.getMessage());
+        }
     }
 
     private void checkUniqueness(Profile profile) {

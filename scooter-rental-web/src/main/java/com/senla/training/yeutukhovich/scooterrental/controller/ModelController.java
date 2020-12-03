@@ -42,11 +42,13 @@ public class ModelController {
         return modelService.findById(id);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{id}")
     public ModelDto deleteById(@PathVariable("id") Long id) {
         return modelService.deleteById(id);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ModelDto updateById(@PathVariable("id") Long id, @RequestBody ModelDto modelDto) {
         return modelService.updateById(id, modelDto);

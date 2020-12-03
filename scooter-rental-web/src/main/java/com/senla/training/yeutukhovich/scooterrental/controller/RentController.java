@@ -4,6 +4,7 @@ import com.senla.training.yeutukhovich.scooterrental.dto.entity.RentDto;
 import com.senla.training.yeutukhovich.scooterrental.dto.CreationRentDto;
 import com.senla.training.yeutukhovich.scooterrental.service.rent.RentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,6 +39,7 @@ public class RentController {
         return rentService.findById(id);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{id}")
     public RentDto deleteById(@PathVariable("id") Long id) {
         return rentService.deleteById(id);
@@ -53,16 +55,19 @@ public class RentController {
         return rentService.create(creationRentDto);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/active")
     public List<RentDto> findAllActiveRents() {
         return rentService.findAllActiveRents();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/profit")
     public Map<String, BigDecimal> findTotalProfit() {
         return Collections.singletonMap("profit", rentService.findTotalProfit());
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/activeExpired")
     public List<RentDto> findExpiredRents() {
         return rentService.findExpiredActiveRents();
