@@ -14,7 +14,6 @@
     <artifactId>scooter-rental-web</artifactId>
 
     <dependencies>
-
         <!-- https://mvnrepository.com/artifact/javax/javaee-api -->
         <dependency>
             <groupId>javax</groupId>
