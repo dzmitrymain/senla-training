@@ -19,6 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -27,6 +28,7 @@ import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestConfig.class)
+@WithMockUser
 class UserServiceImplTest {
 
     private static final Long ENTITY_ID = 1L;
@@ -58,6 +60,7 @@ class UserServiceImplTest {
         Mockito.when(PROFILE_DTO.getUserId()).thenReturn(ENTITY_ID);
         Mockito.when(USER_DTO.getProfileDto()).thenReturn(PROFILE_DTO);
         Mockito.when(USER.getProfile()).thenReturn(PROFILE);
+        Mockito.when(USER.getUsername()).thenReturn("user");
         Mockito.when(REGISTRATION_REQUEST_DTO.getUserDto()).thenReturn(USER_DTO);
     }
 

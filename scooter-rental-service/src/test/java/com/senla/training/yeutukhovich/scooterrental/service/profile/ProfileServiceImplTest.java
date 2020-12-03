@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -23,6 +24,7 @@ import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {TestConfig.class})
+@WithMockUser
 class ProfileServiceImplTest {
 
     private static final Long ENTITY_ID = 1L;
@@ -46,6 +48,7 @@ class ProfileServiceImplTest {
         Mockito.when(PROFILE_DTO.getId()).thenReturn(ENTITY_ID);
         Mockito.when(PROFILE_DTO.getUserId()).thenReturn(ENTITY_ID);
         Mockito.when(PROFILE.getUser()).thenReturn(USER);
+        Mockito.when(USER.getUsername()).thenReturn("user");
     }
 
     @BeforeEach

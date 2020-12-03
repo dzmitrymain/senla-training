@@ -28,6 +28,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -40,6 +41,7 @@ import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestConfig.class)
+@WithMockUser
 class RentServiceImplTest {
 
     private static final Long ENTITY_ID = 1L;
@@ -82,6 +84,7 @@ class RentServiceImplTest {
         Mockito.when(RENT.getScooter()).thenReturn(SCOOTER);
         Mockito.when(SCOOTER.getModel()).thenReturn(MODEL);
         Mockito.when(MODEL.getId()).thenReturn(ENTITY_ID);
+        Mockito.when(USER.getUsername()).thenReturn("user");
         Mockito.when(CREATION_RENT_DTO.getUserId()).thenReturn(ENTITY_ID);
         Mockito.when(CREATION_RENT_DTO.getScooterId()).thenReturn(ENTITY_ID);
     }

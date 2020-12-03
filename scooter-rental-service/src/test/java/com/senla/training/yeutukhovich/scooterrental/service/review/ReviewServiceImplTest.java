@@ -4,16 +4,20 @@ import com.senla.training.yeutukhovich.scooterrental.config.TestConfig;
 import com.senla.training.yeutukhovich.scooterrental.dao.model.ModelDao;
 import com.senla.training.yeutukhovich.scooterrental.dao.profile.ProfileDao;
 import com.senla.training.yeutukhovich.scooterrental.dao.review.ReviewDao;
+import com.senla.training.yeutukhovich.scooterrental.dao.user.UserDao;
 import com.senla.training.yeutukhovich.scooterrental.domain.Model;
 import com.senla.training.yeutukhovich.scooterrental.domain.Profile;
 import com.senla.training.yeutukhovich.scooterrental.domain.Review;
+import com.senla.training.yeutukhovich.scooterrental.domain.User;
 import com.senla.training.yeutukhovich.scooterrental.dto.entity.ModelDto;
 import com.senla.training.yeutukhovich.scooterrental.dto.entity.ProfileDto;
 import com.senla.training.yeutukhovich.scooterrental.dto.entity.ReviewDto;
+import com.senla.training.yeutukhovich.scooterrental.dto.entity.UserDto;
 import com.senla.training.yeutukhovich.scooterrental.exception.BusinessException;
 import com.senla.training.yeutukhovich.scooterrental.mapper.ModelDtoMapper;
 import com.senla.training.yeutukhovich.scooterrental.mapper.ProfileDtoMapper;
 import com.senla.training.yeutukhovich.scooterrental.mapper.ReviewDtoMapper;
+import com.senla.training.yeutukhovich.scooterrental.mapper.UserDtoMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,6 +25,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -28,11 +33,14 @@ import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestConfig.class)
+@WithMockUser
 class ReviewServiceImplTest {
 
     private static final Long ENTITY_ID = 1L;
     private static final Review REVIEW = Mockito.mock(Review.class);
     private static final ReviewDto REVIEW_DTO = Mockito.mock(ReviewDto.class);
+    private static final User USER = Mockito.mock(User.class);
+    private static final UserDto USER_DTO=Mockito.mock(UserDto.class);
     private static final Model MODEL = Mockito.mock(Model.class);
     private static final ModelDto MODEL_DTO = Mockito.mock(ModelDto.class);
     private static final Profile PROFILE = Mockito.mock(Profile.class);
@@ -48,11 +56,15 @@ class ReviewServiceImplTest {
     @Autowired
     private ModelDao modelDao;
     @Autowired
+    private UserDao userDao;
+    @Autowired
     private ReviewDtoMapper reviewDtoMapper;
     @Autowired
     private ProfileDtoMapper profileDtoMapper;
     @Autowired
     private ModelDtoMapper modelDtoMapper;
+    @Autowired
+    private UserDtoMapper userDtoMapper;
 
     @BeforeAll
     static void setup() {
@@ -64,6 +76,9 @@ class ReviewServiceImplTest {
         Mockito.when(MODEL_DTO.getId()).thenReturn(ENTITY_ID);
         Mockito.when(REVIEW_DTO.getProfileDto()).thenReturn(PROFILE_DTO);
         Mockito.when(PROFILE_DTO.getId()).thenReturn(ENTITY_ID);
+        Mockito.when(PROFILE_DTO.getUserId()).thenReturn(ENTITY_ID);
+        Mockito.when(PROFILE.getUser()).thenReturn(USER);
+        Mockito.when(USER.getUsername()).thenReturn("user");
     }
 
     @BeforeEach
@@ -72,6 +87,9 @@ class ReviewServiceImplTest {
         Mockito.when(reviewDtoMapper.map(REVIEW_DTO)).thenReturn(REVIEW);
         Mockito.when(profileDtoMapper.map(PROFILE)).thenReturn(PROFILE_DTO);
         Mockito.when(modelDtoMapper.map(MODEL)).thenReturn(MODEL_DTO);
+        Mockito.when(userDtoMapper.map(USER)).thenReturn(USER_DTO);
+        Mockito.when(userDtoMapper.map(USER_DTO)).thenReturn(USER);
+        Mockito.when(userDao.findById(ENTITY_ID)).thenReturn(Optional.ofNullable(USER));
         Mockito.clearInvocations(reviewDao, modelDao, profileDao);
     }
 
@@ -167,6 +185,7 @@ class ReviewServiceImplTest {
     void ReviewServiceImpl_create() {
         Mockito.when(modelDao.findById(ENTITY_ID)).thenReturn(Optional.ofNullable(MODEL));
         Mockito.when(profileDao.findById(ENTITY_ID)).thenReturn(Optional.ofNullable(PROFILE));
+        Mockito.when(userDao.findById(ENTITY_ID)).thenReturn(Optional.ofNullable(USER));
 
         ReviewDto reviewDto = reviewService.create(REVIEW_DTO);
 
