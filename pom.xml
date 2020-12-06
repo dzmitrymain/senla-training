@@ -30,6 +30,7 @@
         <maven.checkstyle.version>3.1.1</maven.checkstyle.version>
         <maven.war.version>3.3.1</maven.war.version>
         <maven.surefire.version>3.0.0-M5</maven.surefire.version>
+        <tomcat.plugin.version>2.2</tomcat.plugin.version>
         <spring.version>5.2.9.RELEASE</spring.version>
         <spring.secutity.version>5.4.1</spring.secutity.version>
         <jackson.databind.version>2.12.0</jackson.databind.version>
@@ -165,6 +166,7 @@
                     </execution>
                 </executions>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -196,6 +198,19 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>${maven.war.version}</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>${tomcat.plugin.version}</version>
+                <configuration>
+                    <url>http://localhost:8080/manager/text</url>
+                    <path>/scooter-rental</path>
+                    <server>war-deployment-server</server>
+                    <username>war-deployer</username>
+                    <password>maven-tomcat</password>
+                </configuration>
             </plugin>
         </plugins>
     </build>

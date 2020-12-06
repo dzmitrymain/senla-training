@@ -3,4 +3,3 @@ BASEDIR=`dirname $0`
 echo "Please, enter the root user password:"
 cat $BASEDIR/*.sql | mysql -u root -p
 echo "Script end."
-pause
