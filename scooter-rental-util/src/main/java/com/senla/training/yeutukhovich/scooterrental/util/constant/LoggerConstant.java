@@ -17,6 +17,8 @@ public enum LoggerConstant {
     USER_INVALID_TOKEN("Invalid token. Cause: {}."),
     USER_UNAUTHORIZED_REQUEST("Unauthorized request [{}]."),
     USER_ACCESS_DENIED("Access denied [{}]."),
+    USER_AUTH_SUCCESS("Successful authentication for user: [{}]."),
+    USER_AUTH_FAILURE("Failed authentication attempt."),
 
     DISCOUNTS_ACTIVE("Active discounts searched."),
 

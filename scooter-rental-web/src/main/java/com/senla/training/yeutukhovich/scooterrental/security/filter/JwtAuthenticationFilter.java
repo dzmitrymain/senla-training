@@ -7,6 +7,7 @@ import com.senla.training.yeutukhovich.scooterrental.dto.ErrorDto;
 import com.senla.training.yeutukhovich.scooterrental.security.provider.JwtTokenProvider;
 import com.senla.training.yeutukhovich.scooterrental.security.util.SecurityConstant;
 import com.senla.training.yeutukhovich.scooterrental.util.constant.ExceptionConstant;
+import com.senla.training.yeutukhovich.scooterrental.util.constant.LoggerConstant;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +59,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void unsuccessfulAuthentication(HttpServletRequest request,
                                               HttpServletResponse response,
                                               AuthenticationException failed) throws IOException {
+        log.info(LoggerConstant.USER_AUTH_FAILURE.getMessage());
         ErrorDto errorDto = new ErrorDto(HttpStatus.UNAUTHORIZED, ExceptionConstant.USER_AUTHORIZATION_FAIL.getMessage(),
                 null);
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
@@ -71,6 +73,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             HttpServletResponse response,
                                             FilterChain chain,
                                             Authentication authResult) throws IOException {
+        log.info(LoggerConstant.USER_AUTH_SUCCESS.getMessage(), authResult.getName());
         String token = tokenProvider.generateToken(authResult);
         response.addHeader(SecurityConstant.HEADER_STRING.getConstant(),
                 SecurityConstant.TOKEN_PREFIX.getConstant() + token);
