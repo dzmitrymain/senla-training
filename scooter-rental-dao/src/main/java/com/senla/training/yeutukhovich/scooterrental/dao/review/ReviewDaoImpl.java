@@ -21,7 +21,10 @@ public class ReviewDaoImpl extends AbstractDao<Review, Long> implements ReviewDa
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Double> criteriaQuery = criteriaBuilder.createQuery(Double.class);
         Root<Review> reviews = criteriaQuery.from(Review.class);
-        criteriaQuery.select(criteriaBuilder.avg(reviews.get(Review_.score)));
+        CriteriaBuilder.Coalesce<Double> coalesce = criteriaBuilder.coalesce();
+        coalesce.value(criteriaBuilder.avg(reviews.get(Review_.score)));
+        coalesce.value(0.0);
+        criteriaQuery.select(coalesce);
         return entityManager.createQuery(criteriaQuery).getSingleResult();
     }
 }
