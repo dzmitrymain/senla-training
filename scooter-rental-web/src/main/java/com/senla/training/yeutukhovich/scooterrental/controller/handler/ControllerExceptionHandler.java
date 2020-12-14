@@ -83,7 +83,7 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
                                                              HttpStatus status,
                                                              WebRequest request) {
         if (body == null) {
-            body = new ErrorDto(status, ex.getMessage(), null);
+            body = new ErrorDto(status, ex.getClass().getSimpleName(), null);
         }
         return ResponseEntity.status(status)
                 .headers(headers)
