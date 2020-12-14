@@ -137,7 +137,7 @@ public class RentServiceImpl implements RentService {
         log.info(LoggerConstant.RENT_END.getMessage(), id);
         Rent rent = findRentById(id);
         checkUserMatch(rent.getUser());
-        if (!rent.getActive()) {
+        if (Boolean.FALSE.equals(rent.getActive())) {
             throw new BusinessException(
                     String.format(ExceptionConstant.RENT_ALREADY_ENDS.getMessage(), id), HttpStatus.FORBIDDEN);
         }

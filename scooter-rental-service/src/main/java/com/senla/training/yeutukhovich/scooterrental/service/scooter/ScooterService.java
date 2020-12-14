@@ -18,7 +18,7 @@ public interface ScooterService {
 
     ScooterDto create(@Valid ScooterDto scooterDto);
 
-    Integer findDistanceTravelledByScooterId(Long id);
+    Long findDistanceTravelledByScooterId(Long id);
 
     List<RentDto> findSortedByCreationScooterRents(Long id);
 

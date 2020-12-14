@@ -38,16 +38,37 @@ public class RentDaoImpl extends AbstractDao<Rent, Long> implements RentDao {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<BigDecimal> criteriaQuery = criteriaBuilder.createQuery(BigDecimal.class);
 
+        // sum of Pass prices
         Subquery<BigDecimal> subquery = criteriaQuery.subquery(BigDecimal.class);
         Root<Pass> subqueryPasses = subquery.from(Pass.class);
         subquery.where(criteriaBuilder.notEqual(subqueryPasses.get(Pass_.price), BigDecimal.ZERO));
-        subquery.select(criteriaBuilder.sum(subqueryPasses.get(Pass_.price)));
+        CriteriaBuilder.Coalesce<BigDecimal> passPriceCoalesce = criteriaBuilder.coalesce();
+        passPriceCoalesce.value(subqueryPasses.get(Pass_.price));
+        passPriceCoalesce.value(BigDecimal.ZERO);
+        CriteriaBuilder.Coalesce<BigDecimal> sumPassPriceCoalesce = criteriaBuilder.coalesce();
+        sumPassPriceCoalesce.value(criteriaBuilder.sum(passPriceCoalesce));
+        sumPassPriceCoalesce.value(BigDecimal.ZERO);
+        subquery.select(sumPassPriceCoalesce);
 
+        // sum of Rent prices
         Root<Rent> rents = criteriaQuery.from(Rent.class);
         criteriaQuery.where(criteriaBuilder.equal(rents.get(Rent_.active), false));
-        Expression<BigDecimal> rentPriceSum = criteriaBuilder.sum(rents.get(Rent_.price));
-        Expression<BigDecimal> rentPenaltySum = criteriaBuilder.sum(rents.get(Rent_.overtimePenalty));
-        Expression<BigDecimal> rentPricePenaltySum = criteriaBuilder.sum(rentPriceSum, rentPenaltySum);
+        CriteriaBuilder.Coalesce<BigDecimal> rentPriceCoalesce = criteriaBuilder.coalesce();
+        rentPriceCoalesce.value(rents.get(Rent_.price));
+        rentPriceCoalesce.value(BigDecimal.ZERO);
+        CriteriaBuilder.Coalesce<BigDecimal> sumRentPriceCoalesce = criteriaBuilder.coalesce();
+        sumRentPriceCoalesce.value(criteriaBuilder.sum(rentPriceCoalesce));
+        sumRentPriceCoalesce.value(BigDecimal.ZERO);
+
+        // sum of Rent overtimePenalties
+        CriteriaBuilder.Coalesce<BigDecimal> rentPenaltyCoalesce = criteriaBuilder.coalesce();
+        rentPenaltyCoalesce.value(rents.get(Rent_.overtimePenalty));
+        rentPenaltyCoalesce.value(BigDecimal.ZERO);
+        CriteriaBuilder.Coalesce<BigDecimal> sumRentPenaltyCoalesce = criteriaBuilder.coalesce();
+        sumRentPenaltyCoalesce.value(criteriaBuilder.sum(rentPenaltyCoalesce));
+        sumRentPenaltyCoalesce.value(BigDecimal.ZERO);
+
+        Expression<BigDecimal> rentPricePenaltySum = criteriaBuilder.sum(sumRentPriceCoalesce, sumRentPenaltyCoalesce);
         criteriaQuery.select(criteriaBuilder.sum(rentPricePenaltySum, subquery));
         return entityManager.createQuery(criteriaQuery).getSingleResult();
     }

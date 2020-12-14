@@ -20,15 +20,22 @@ public class ScooterDaoImpl extends AbstractDao<Scooter, Long> implements Scoote
         super(Scooter.class);
     }
 
+
     @Override
-    public Integer findDistanceTravelledByScooterId(Long id) {
+    public Long findDistanceTravelledByScooterId(Long id) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Integer> criteriaQuery = criteriaBuilder.createQuery(Integer.class);
+        CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
         Root<Rent> rents = criteriaQuery.from(Rent.class);
         Join<Rent, Scooter> scooters = rents.join(Rent_.scooter);
         criteriaQuery.where(criteriaBuilder.equal(scooters.get(Scooter_.id), id),
                 criteriaBuilder.equal(rents.get(Rent_.active), 0));
-        criteriaQuery.select(criteriaBuilder.sum(rents.get(Rent_.distanceTravelled)));
+        CriteriaBuilder.Coalesce<Integer> coalesce = criteriaBuilder.coalesce();
+        coalesce.value(rents.get(Rent_.distanceTravelled));
+        coalesce.value(0);
+        CriteriaBuilder.Coalesce<Long> sumCoalesce = criteriaBuilder.coalesce();
+        sumCoalesce.value(criteriaBuilder.sumAsLong(coalesce));
+        sumCoalesce.value(0L);
+        criteriaQuery.select(sumCoalesce);
         return entityManager.createQuery(criteriaQuery).getSingleResult();
     }
 

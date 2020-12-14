@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ScooterDao extends GenericDao<Scooter, Long> {
 
-    Integer findDistanceTravelledByScooterId(Long id);
+    Long findDistanceTravelledByScooterId(Long id);
 
     List<Rent> findSortedByCreationScooterRents(Long id);
 

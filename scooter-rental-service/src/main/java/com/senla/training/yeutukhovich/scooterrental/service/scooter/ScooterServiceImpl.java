@@ -102,7 +102,7 @@ public class ScooterServiceImpl implements ScooterService {
 
     @Override
     @Transactional
-    public Integer findDistanceTravelledByScooterId(Long id) {
+    public Long findDistanceTravelledByScooterId(Long id) {
         log.info(LoggerConstant.SCOOTER_DISTANCE.getMessage());
         findScooterById(id);
         return scooterDao.findDistanceTravelledByScooterId(id);

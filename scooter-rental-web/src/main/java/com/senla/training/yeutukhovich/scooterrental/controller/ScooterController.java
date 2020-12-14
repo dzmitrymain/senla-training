@@ -60,7 +60,7 @@ public class ScooterController {
     public Map<String, Long> findDistanceTravelledByScooterId(@PathVariable("id") Long id) {
         Map<String, Long> responseMap = new LinkedHashMap<>();
         responseMap.put("scooterId", id);
-        responseMap.put("distanceTravelledMeters", Long.valueOf(scooterService.findDistanceTravelledByScooterId(id)));
+        responseMap.put("distanceTravelledMeters", scooterService.findDistanceTravelledByScooterId(id));
         return responseMap;
     }
 

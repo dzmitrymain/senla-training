@@ -2,8 +2,8 @@ package com.senla.training.yeutukhovich.scooterrental.service.user;
 
 import com.senla.training.yeutukhovich.scooterrental.dao.user.UserDao;
 import com.senla.training.yeutukhovich.scooterrental.domain.Profile;
-import com.senla.training.yeutukhovich.scooterrental.domain.role.Role;
 import com.senla.training.yeutukhovich.scooterrental.domain.User;
+import com.senla.training.yeutukhovich.scooterrental.domain.role.Role;
 import com.senla.training.yeutukhovich.scooterrental.dto.RegistrationRequestDto;
 import com.senla.training.yeutukhovich.scooterrental.dto.entity.PassDto;
 import com.senla.training.yeutukhovich.scooterrental.dto.entity.RentDto;
@@ -58,7 +58,8 @@ public class UserServiceImpl implements UserService {
     public UserServiceImpl(UserDao userDao,
                            ProfileService profileService,
                            UserDtoMapper userDtoMapper,
-                           ProfileDtoMapper profileDtoMapper, PassDtoMapper passDtoMapper,
+                           ProfileDtoMapper profileDtoMapper,
+                           PassDtoMapper passDtoMapper,
                            RentDtoMapper rentDtoMapper,
                            PasswordEncoder encoder) {
         this.userDao = userDao;
@@ -79,10 +80,8 @@ public class UserServiceImpl implements UserService {
             throw new BusinessException(String.format(ExceptionConstant.USER_ALREADY_EXIST.getMessage(),
                     registrationRequestDto.getUserDto().getUsername()), HttpStatus.FORBIDDEN);
         }
-        if (registrationRequestDto.getUserDto().getRole().toUpperCase().equals(Role.ADMIN.name())) {
-            if (!checkAdmin()) {
-                throw new BusinessException(ExceptionConstant.USER_CREATE_ADMIN_FAIL.getMessage(), HttpStatus.FORBIDDEN);
-            }
+        if (registrationRequestDto.getUserDto().getRole().equalsIgnoreCase(Role.ADMIN.name()) && !checkAdmin()) {
+            throw new BusinessException(ExceptionConstant.USER_CREATE_ADMIN_FAIL.getMessage(), HttpStatus.FORBIDDEN);
         }
         User user = userDtoMapper.map(registrationRequestDto.getUserDto());
         user.setId(null);

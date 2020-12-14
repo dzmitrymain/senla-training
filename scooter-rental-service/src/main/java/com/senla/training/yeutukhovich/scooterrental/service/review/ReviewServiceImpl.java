@@ -17,7 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -78,7 +80,9 @@ public class ReviewServiceImpl implements ReviewService {
     public ReviewDto deleteById(Long id) {
         log.info(LoggerConstant.ENTITY_DELETE.getMessage(), ENTITY_NAME, id);
         Review reviewToDelete = findReviewById(id);
-        checkUserMatch(reviewToDelete.getProfile().getUser());
+        if (!checkAdmin()) {
+            checkUserMatch(reviewToDelete.getProfile().getUser());
+        }
         reviewDao.delete(reviewToDelete);
         return reviewDtoMapper.map(reviewToDelete);
     }
@@ -128,5 +132,22 @@ public class ReviewServiceImpl implements ReviewService {
         if (auth == null || !user.getUsername().equals(auth.getName())) {
             throw new AccessDeniedException(ExceptionConstant.USER_ACCESS_DENIED.getMessage());
         }
+    }
+
+    private boolean checkAdmin() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            return false;
+        }
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        if (userDetails == null) {
+            return false;
+        }
+        for (GrantedAuthority authority : userDetails.getAuthorities()) {
+            if (authority.getAuthority().equals("ROLE_ADMIN")) {
+                return true;
+            }
+        }
+        return false;
     }
 }
