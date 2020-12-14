@@ -15,8 +15,6 @@ import com.senla.training.yeutukhovich.scooterrental.dto.CreationRentDto;
 import com.senla.training.yeutukhovich.scooterrental.dto.entity.RentDto;
 import com.senla.training.yeutukhovich.scooterrental.exception.BusinessException;
 import com.senla.training.yeutukhovich.scooterrental.mapper.RentDtoMapper;
-import com.senla.training.yeutukhovich.scooterrental.mapper.ScooterDtoMapper;
-import com.senla.training.yeutukhovich.scooterrental.mapper.UserDtoMapper;
 import com.senla.training.yeutukhovich.scooterrental.service.model.ModelService;
 import com.senla.training.yeutukhovich.scooterrental.service.scooter.ScooterService;
 import com.senla.training.yeutukhovich.scooterrental.service.user.UserService;
@@ -55,12 +53,7 @@ public class RentServiceImpl implements RentService {
     private final UserDao userDao;
 
     private final RentDtoMapper rentDtoMapper;
-    private final UserDtoMapper userDtoMapper;
-    private final ScooterDtoMapper scooterDtoMapper;
-
     private final ModelService modelService;
-    private final UserService userService;
-    private final ScooterService scooterService;
 
     @Value("${RentServiceImpl.overtimeCoefficient:1.5}")
     private BigDecimal overtimeCoefficient;
@@ -71,21 +64,13 @@ public class RentServiceImpl implements RentService {
                            PassDao passDao,
                            UserDao userDao,
                            RentDtoMapper rentDtoMapper,
-                           UserDtoMapper userDtoMapper,
-                           ScooterDtoMapper scooterDtoMapper,
-                           ModelService modelService,
-                           UserService userService,
-                           ScooterService scooterService) {
+                           ModelService modelService) {
         this.rentDao = rentDao;
         this.scooterDao = scooterDao;
         this.passDao = passDao;
         this.userDao = userDao;
         this.rentDtoMapper = rentDtoMapper;
-        this.userDtoMapper = userDtoMapper;
-        this.scooterDtoMapper = scooterDtoMapper;
         this.modelService = modelService;
-        this.userService = userService;
-        this.scooterService = scooterService;
     }
 
     @Override
@@ -187,9 +172,11 @@ public class RentServiceImpl implements RentService {
         log.info(LoggerConstant.RENT_START.getMessage(), creationRentDto.getUserId(), creationRentDto.getScooterId(),
                 creationRentDto.getPaymentType());
         Rent rent = new Rent();
-        rent.setUser(userDtoMapper.map(userService.findById(creationRentDto.getUserId())));
+        rent.setUser(userDao.findById(creationRentDto.getUserId()).orElseThrow(() -> new BusinessException(
+                String.format(ExceptionConstant.ENTITY_NOT_EXIST.getMessage(), "User"), HttpStatus.NOT_FOUND)));
         checkUserMatch(rent.getUser());
-        rent.setScooter(scooterDtoMapper.map(scooterService.findById(creationRentDto.getScooterId())));
+        rent.setScooter(scooterDao.findById(creationRentDto.getScooterId()).orElseThrow(() -> new BusinessException(
+                String.format(ExceptionConstant.ENTITY_NOT_EXIST.getMessage(), "Scooter"), HttpStatus.NOT_FOUND)));
         if (scooterDao.findActiveRentScooters().contains(rent.getScooter())) {
             throw new BusinessException(
                     String.format(ExceptionConstant.SCOOTER_NOT_AVAILABLE.getMessage(), creationRentDto.getScooterId()),
