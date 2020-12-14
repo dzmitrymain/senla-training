@@ -45,7 +45,7 @@ public class JwtAuthorizationFilter extends GenericFilterBean {
                 if (jwtTokenProvider.validateToken(token)) {
                     setSecurityContext(token);
                 }
-            } catch (JwtException e) {
+            } catch (JwtException | IllegalArgumentException e) {
                 log.warn(LoggerConstant.USER_INVALID_TOKEN.getMessage(), e.getMessage());
             }
         });
