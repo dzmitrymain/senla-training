@@ -1,7 +1,7 @@
 # Scooter Rental
 ## Information
 
-*This is a RESTful web service using Spring final project at Senla training courses.*
+*This is a RESTful web service, final project at Senla training courses.*
 
 ## Installation
 
