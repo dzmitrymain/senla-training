@@ -10,7 +10,7 @@ import com.senla.training.yeutukhovich.scooterrental.mapper.SpotDtoMapper;
 import com.senla.training.yeutukhovich.scooterrental.service.location.LocationService;
 import com.senla.training.yeutukhovich.scooterrental.util.constant.ExceptionConstant;
 import com.senla.training.yeutukhovich.scooterrental.util.constant.LoggerConstant;
-import com.senla.training.yeutukhovich.scooterrental.validator.DecimalDegrees;
+import com.senla.training.yeutukhovich.scooterrental.validator.customannotations.DecimalDegrees;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;

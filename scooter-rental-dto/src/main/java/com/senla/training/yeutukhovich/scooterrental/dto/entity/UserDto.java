@@ -1,9 +1,9 @@
 package com.senla.training.yeutukhovich.scooterrental.dto.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.senla.training.yeutukhovich.scooterrental.validator.UserRoleValue;
-import com.senla.training.yeutukhovich.scooterrental.validator.marker.OnUserCreate;
-import com.senla.training.yeutukhovich.scooterrental.validator.marker.OnUserUpdate;
+import com.senla.training.yeutukhovich.scooterrental.validator.customannotations.UserRoleValue;
+import com.senla.training.yeutukhovich.scooterrental.validator.customannotations.marker.OnUserCreate;
+import com.senla.training.yeutukhovich.scooterrental.validator.customannotations.marker.OnUserUpdate;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;

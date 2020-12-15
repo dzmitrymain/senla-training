@@ -11,8 +11,8 @@ import java.util.List;
 @Repository
 public class RateDaoImpl extends AbstractDao<Rate, Long> implements RateDao {
 
-    private static final String FIND_ALL_ACTUAL_RATES = "SELECT * FROM rates WHERE (model_id, creation_date, id) in " +
-            "(SELECT model_id, MAX(creation_date), MAX(id) FROM rates WHERE creation_date <= :now GROUP BY model_id)";
+    private static final String FIND_ALL_ACTUAL_RATES = "SELECT * FROM rates WHERE (model_id, creation_date) in " +
+            "(SELECT model_id, MAX(creation_date) FROM rates WHERE creation_date <= :now GROUP BY model_id)";
 
     public RateDaoImpl() {
         super(Rate.class);

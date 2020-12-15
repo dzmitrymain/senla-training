@@ -1,7 +1,7 @@
 package com.senla.training.yeutukhovich.scooterrental.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.senla.training.yeutukhovich.scooterrental.validator.PaymentTypeValue;
+import com.senla.training.yeutukhovich.scooterrental.validator.customannotations.PaymentTypeValue;
 import lombok.Data;
 
 import javax.validation.constraints.Future;

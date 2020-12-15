@@ -43,11 +43,11 @@
         <sl4j.version>1.7.30</sl4j.version>
         <logback.version>1.2.3</logback.version>
         <hibernate.version>5.4.21.Final</hibernate.version>
+        <hibernate.validator>6.1.6.Final</hibernate.validator>
         <!-- scooter-rental-service -->
         <junit.version>5.7.0</junit.version>
         <mockito.jupiter.version>3.6.28</mockito.jupiter.version>
         <!-- scooter-rental-dto -->
-        <hibernate.validator>6.1.6.Final</hibernate.validator>
         <apache.commons.version>3.11</apache.commons.version>
         <!-- scooter-rental-dao -->
         <mysql.connector.version>8.0.21</mysql.connector.version>
@@ -69,6 +69,7 @@
             <artifactId>springdoc-openapi-ui</artifactId>
             <version>${springdoc.openapi.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-security</artifactId>
@@ -115,6 +116,13 @@
             <artifactId>spring-security-test</artifactId>
             <version>${spring.secutity.version}</version>
             <scope>test</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-validator -->
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>${hibernate.validator}</version>
         </dependency>
 
         <dependency>

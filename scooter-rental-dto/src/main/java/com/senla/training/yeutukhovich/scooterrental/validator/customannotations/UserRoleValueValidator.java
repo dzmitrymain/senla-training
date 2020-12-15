@@ -1,4 +1,4 @@
-package com.senla.training.yeutukhovich.scooterrental.validator;
+package com.senla.training.yeutukhovich.scooterrental.validator.customannotations;
 
 import com.senla.training.yeutukhovich.scooterrental.domain.role.Role;
 

@@ -1,4 +1,4 @@
-package com.senla.training.yeutukhovich.scooterrental.validator;
+package com.senla.training.yeutukhovich.scooterrental.validator.customannotations;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -11,11 +11,11 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Target({FIELD})
 @Retention(RUNTIME)
-@Constraint(validatedBy = UserRoleValueValidator.class)
+@Constraint(validatedBy = NestedDtoIdNotNullValidator.class)
 @Documented
-public @interface UserRoleValue {
+public @interface NestedDtoIdNotNull {
 
-    String message() default "{userRole.value}";
+    String message() default "{id.notnull}";
 
     Class<?>[] groups() default {};
 

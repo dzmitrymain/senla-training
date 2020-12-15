@@ -1,7 +1,7 @@
 package com.senla.training.yeutukhovich.scooterrental.dto;
 
 import com.senla.training.yeutukhovich.scooterrental.dto.entity.UserDto;
-import com.senla.training.yeutukhovich.scooterrental.validator.marker.OnUserCreate;
+import com.senla.training.yeutukhovich.scooterrental.validator.customannotations.marker.OnUserCreate;
 import lombok.Data;
 
 import javax.validation.Valid;

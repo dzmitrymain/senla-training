@@ -2,7 +2,7 @@ package com.senla.training.yeutukhovich.scooterrental.service.spot;
 
 import com.senla.training.yeutukhovich.scooterrental.dto.entity.ScooterDto;
 import com.senla.training.yeutukhovich.scooterrental.dto.entity.SpotDto;
-import com.senla.training.yeutukhovich.scooterrental.validator.DecimalDegrees;
+import com.senla.training.yeutukhovich.scooterrental.validator.customannotations.DecimalDegrees;
 
 import javax.validation.Valid;
 import java.util.List;

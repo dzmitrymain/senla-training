@@ -1,7 +1,7 @@
 package com.senla.training.yeutukhovich.scooterrental.dto.entity;
 
-import com.senla.training.yeutukhovich.scooterrental.validator.NestedDtoIdNotNull;
-import com.senla.training.yeutukhovich.scooterrental.validator.marker.OnUserCreate;
+import com.senla.training.yeutukhovich.scooterrental.validator.customannotations.NestedDtoIdNotNull;
+import com.senla.training.yeutukhovich.scooterrental.validator.customannotations.marker.OnUserCreate;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
