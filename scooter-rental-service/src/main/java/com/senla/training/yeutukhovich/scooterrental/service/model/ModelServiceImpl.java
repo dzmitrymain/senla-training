@@ -16,6 +16,7 @@ import com.senla.training.yeutukhovich.scooterrental.mapper.ReviewDtoMapper;
 import com.senla.training.yeutukhovich.scooterrental.mapper.ScooterDtoMapper;
 import com.senla.training.yeutukhovich.scooterrental.util.constant.ExceptionConstant;
 import com.senla.training.yeutukhovich.scooterrental.util.constant.LoggerConstant;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,6 +36,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @Validated
+@RequiredArgsConstructor
 public class ModelServiceImpl implements ModelService {
 
     private static final String ENTITY_NAME = "Model";
@@ -46,21 +48,6 @@ public class ModelServiceImpl implements ModelService {
     private final RateDtoMapper rateDtoMapper;
     private final DiscountDtoMapper discountDtoMapper;
 
-
-    @Autowired
-    public ModelServiceImpl(ModelDao modelDao,
-                            ModelDtoMapper modelDtoMapper,
-                            ScooterDtoMapper scooterDtoMapper,
-                            ReviewDtoMapper reviewDtoMapper,
-                            RateDtoMapper rateDtoMapper,
-                            DiscountDtoMapper discountDtoMapper) {
-        this.modelDao = modelDao;
-        this.modelDtoMapper = modelDtoMapper;
-        this.scooterDtoMapper = scooterDtoMapper;
-        this.reviewDtoMapper = reviewDtoMapper;
-        this.rateDtoMapper = rateDtoMapper;
-        this.discountDtoMapper = discountDtoMapper;
-    }
 
     @Override
     @Transactional

@@ -31,7 +31,7 @@ public class ModelDaoImpl extends AbstractDao<Model, Long> implements ModelDao {
         Root<Rate> rates = criteriaQuery.from(Rate.class);
         Join<Rate, Model> model = rates.join(Rate_.model);
         criteriaQuery.where(cb.equal(model.get(Model_.id), id));
-        criteriaQuery.orderBy(cb.desc(rates.get(Rate_.CREATION_DATE)), cb.desc(rates.get(Rate_.id)));
+        criteriaQuery.orderBy(cb.desc(rates.get(Rate_.creationDate)), cb.desc(rates.get(Rate_.id)));
         criteriaQuery.select(rates);
         try {
             return Optional.of(entityManager.createQuery(criteriaQuery).setMaxResults(1).getSingleResult());
